@@ -1,4 +1,4 @@
-import { Stack, Text, Box } from '@chakra-ui/react'
+import { Stack, Text, Button, Box } from '@chakra-ui/react'
 
 export const Dashboard = () => (
   <Stack
@@ -38,56 +38,16 @@ export const Dashboard = () => (
           align="flex-start"
           spacing="16px"
         >
-          <Stack
-            paddingX="24px"
-            active="Default"
-            height="40px"
-            direction="row"
-            justify="center"
-            align="center"
-            overflow="hidden"
-            borderColor="#534C46"
-            borderStartWidth="2px"
-            borderEndWidth="2px"
-            borderTopWidth="2px"
-            borderBottomWidth="2px"
-          >
-            <Text
-              fontFamily="Outfit"
-              lineHeight="1.11"
-              fontWeight="semibold"
-              fontSize="18px"
-              color="#534C46"
-              textAlign="center"
-            >
+          <Button active="Default">
+            <Text>
               Submit Sales Report
             </Text>
-          </Stack>
-          <Stack
-            paddingX="24px"
-            active="Default"
-            height="40px"
-            direction="row"
-            justify="center"
-            align="center"
-            overflow="hidden"
-            borderColor="#534C46"
-            borderStartWidth="2px"
-            borderEndWidth="2px"
-            borderTopWidth="2px"
-            borderBottomWidth="2px"
-          >
-            <Text
-              fontFamily="Outfit"
-              lineHeight="1.11"
-              fontWeight="semibold"
-              fontSize="18px"
-              color="#534C46"
-              textAlign="center"
-            >
+          </Button>
+          <Button active="Default">
+            <Text>
               Apply to Markets
             </Text>
-          </Stack>
+          </Button>
         </Stack>
       </Stack>
       <Stack

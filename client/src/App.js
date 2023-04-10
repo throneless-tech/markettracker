@@ -1,26 +1,31 @@
 import React from 'react';
+import '@fontsource/outfit/100.css'
+import '@fontsource/outfit/400.css'
+import '@fontsource/outfit/500.css'
+import '@fontsource/outfit/600.css'
+import '@fontsource/outfit/700.css'
+import '@fontsource/outfit/800.css'
+import '@fontsource/zilla-slab/400.css'
+import '@fontsource/zilla-slab/700.css'
 import {
   ChakraProvider,
   Box,
-  Text,
-  Link,
-  VStack,
-  Code,
-  Grid,
-  theme,
+  Tabs,
 } from '@chakra-ui/react';
+import theme from './theme';
 import { ColorModeSwitcher } from './ColorModeSwitcher';
-import { Logo } from './Logo';
 import { Dashboard } from './components/dashboard';
+import { Nav } from './components/nav';
 
 function App() {
   return (
     <ChakraProvider theme={theme}>
-      <Box textAlign="center" fontSize="xl">
-        <Grid minH="100vh" p={3}>
-          <ColorModeSwitcher justifySelf="flex-end" />
+      <Box>
+        {/* <ColorModeSwitcher justifySelf="flex-end" /> */}
+        <Tabs variant='unstyled' colorScheme='teal'>
+          <Nav />
           <Dashboard />
-        </Grid>
+        </Tabs>
       </Box>
     </ChakraProvider>
   );
