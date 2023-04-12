@@ -14,11 +14,11 @@ import { Logo } from '../icons/logo'
 
 export const Nav = () => (
   <Stack
-    paddingX="40px"
+    px={4}
     direction="row"
     justify="space-between"
     align="center"
-    spacing="32px"
+    spacing={3}
     alignSelf="stretch"
     background="#534C46"
   >
@@ -103,7 +103,7 @@ export const Nav = () => (
     </Flex>
     <Stack direction="row" justify="flex-end" align="center">
       <Avatar width="32px" height="32px" />
-      <Text>Astrid Pleitez</Text>
+      <Text color="white">Astrid Pleitez</Text>
     </Stack>
   </Stack>
 )

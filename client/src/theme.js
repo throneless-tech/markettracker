@@ -7,20 +7,18 @@ const Button = defineStyleConfig({
     lineHeight: '1.11',
     borderRadius: '2000px',
   },
-  // Two sizes: sm and md
   sizes: {
     sm: {
       fontSize: 'sm',
-      px: 4, // <-- px is short for paddingLeft and paddingRight
-      py: 3, // <-- py is short for paddingTop and paddingBottom
+      px: 4,
+      py: 3,
     },
     md: {
       fontSize: 'md',
-      px: 6, // <-- these values are tokens from the design system
-      py: 4, // <-- these values are tokens from the design system
+      px: 6,
+      py: 4,
     },
   },
-  // Two variants: outline and solid
   variants: {
     outline: {
       border: '2px solid',
@@ -37,6 +35,22 @@ const Button = defineStyleConfig({
     size: 'md',
     variant: 'outline',
   },
+})
+
+const Tag = defineStyleConfig({
+  baseStyle: {
+    borderRadius: '8px',
+    fontFamily: 'Outfit',
+    fontStyle: 'normal',
+    fontWeight: 600,
+    fontSize: 14,
+    lineHeight: 16,
+  },
+  variants: {
+    solid: {
+      border: '2px solid white',
+    }
+  }
 })
 
 const theme = extendTheme({
@@ -116,6 +130,7 @@ const theme = extendTheme({
   },
   components: {
     Button,
+    Tag
   },
   fonts: {
     body: "'Outfit', sans-serif",

@@ -14,8 +14,8 @@ import {
 } from '@chakra-ui/react';
 import theme from './theme';
 import { ColorModeSwitcher } from './ColorModeSwitcher';
-import { Dashboard } from './components/dashboard';
-import { Nav } from './components/nav';
+import { Dashboard } from './Components/Dashboard/Dashboard';
+import { Nav } from './Components/Nav';
 
 function App() {
   return (
