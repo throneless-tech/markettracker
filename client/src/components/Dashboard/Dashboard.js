@@ -7,7 +7,9 @@ import {
   Stack,
   Tag,
   Text,
+  Wrap,
 } from '@chakra-ui/react'
+import { Card } from './Card'
 import { Standing } from './Standing'
 
 export const Dashboard = () => (
@@ -46,8 +48,12 @@ export const Dashboard = () => (
         </Stack>
       </Box>
     </Flex>
-    
     <Standing />
+    <Wrap my={8} justify="center" spacing={4}>
+      <Card />
+      <Card />
+      <Card />
+    </Wrap>
   </Box>
 )
 

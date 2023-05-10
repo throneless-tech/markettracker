@@ -2,8 +2,8 @@ import { createIcon } from '@chakra-ui/icons'
 
 export const HomeIcon = createIcon({
   displayName: 'HomeIcon',
-  viewBox: '0 0 19 19',
+  viewBox: '0 0 24 24',
   path: (
-    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M11.67 17.5V13a.75.75 0 0 0-.75-.75h-3a.75.75 0 0 0-.75.75v4.5a.75.75 0 0 1-.75.75h-4.5a.75.75 0 0 1-.75-.75V8.83a.78.78 0 0 1 .25-.56l7.5-6.81a.75.75 0 0 1 1.01 0l7.5 6.81a.78.78 0 0 1 .24.56v8.67a.75.75 0 0 1-.75.75h-4.5a.75.75 0 0 1-.75-.75Z" />
+    <path d="M14.25 19.5V15a.75.75 0 0 0-.75-.75h-3a.75.75 0 0 0-.75.75v4.5a.75.75 0 0 1-.75.75H4.5a.75.75 0 0 1-.75-.75v-8.67a.78.78 0 0 1 .24-.55l7.5-6.82a.75.75 0 0 1 1.02 0l7.5 6.82a.78.78 0 0 1 .24.55v8.67a.75.75 0 0 1-.75.75H15a.75.75 0 0 1-.75-.75Z" stroke="#F6F5F4" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
   )
 })
