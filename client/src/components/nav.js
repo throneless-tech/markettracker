@@ -3,6 +3,10 @@ import {
   Center,
   Flex,
   IconButton,
+  Menu,
+  MenuButton,
+  MenuList,
+  MenuItem,
   Stack, 
   Spacer,
   Tab,
@@ -189,9 +193,16 @@ export const Nav = () => (
         </Tab>
       </TabList>
     </Flex>
-    <Stack direction="row" justify="flex-end" align="center">
-      <Avatar width="32px" height="32px" />
-      <Text color="white">Astrid Pleitez</Text>
-    </Stack>
+    <Menu>
+      <MenuButton sx={{ width: '146px' }}>
+      <Stack direction="row" justify="flex-end" align="center">
+          <Avatar width="32px" height="32px" sx={{ border: '1px solid var(--chakra-colors-teal-300)' }} />
+        <Text color="white">Astrid Pleitez</Text>
+      </Stack>
+      </MenuButton>
+      <MenuList>
+        <MenuItem>Log out</MenuItem>
+      </MenuList>
+    </Menu>
   </Stack>
 )

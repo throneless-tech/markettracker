@@ -11,6 +11,8 @@ import {
   ChakraProvider,
   Box,
   Tabs,
+  TabPanel,
+  TabPanels
 } from '@chakra-ui/react';
 import theme from './theme';
 import { ColorModeSwitcher } from './ColorModeSwitcher';
@@ -24,7 +26,23 @@ function App() {
         {/* <ColorModeSwitcher justifySelf="flex-end" /> */}
         <Tabs variant='unstyled' colorScheme='teal'>
           <Nav />
-          <Dashboard />
+          <TabPanels>
+            <TabPanel>
+             <Dashboard />
+            </TabPanel>
+            <TabPanel>
+              <p>my markets</p>
+            </TabPanel>
+            <TabPanel>
+              <p>my sales</p>
+            </TabPanel>
+            <TabPanel>
+              <p>my licenses</p>
+            </TabPanel>
+            <TabPanel>
+              <p>my profile</p>
+            </TabPanel>
+          </TabPanels>
         </Tabs>
       </Box>
     </ChakraProvider>

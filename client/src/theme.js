@@ -54,6 +54,11 @@ const Tag = defineStyleConfig({
 })
 
 const theme = extendTheme({
+  sizes: {
+    container: {
+      xl: '1440px'
+    }
+  },
   colors: {
     "green": {
       "50": "#F6F8ED",

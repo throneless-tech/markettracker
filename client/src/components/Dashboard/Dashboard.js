@@ -1,11 +1,11 @@
 import {
   Box,
   Button,
+  Container,
   Flex,
   Heading,
   Spacer,
   Stack,
-  Tag,
   Text,
   Wrap,
 } from '@chakra-ui/react'
@@ -13,7 +13,7 @@ import { Card } from './Card'
 import { Standing } from './Standing'
 
 export const Dashboard = () => (
-  <Box mx={8}>
+  <Container maxW='container.xl'>
     <Flex my={8} justify="space-between">
       <Box>
         <Heading as="h1" sx={{ textTransform: "uppercase" }} >
@@ -49,11 +49,11 @@ export const Dashboard = () => (
       </Box>
     </Flex>
     <Standing />
-    <Wrap my={8} justify="center" spacing={4}>
+    <Wrap my={8} justify="space-between" spacing={4}>
       <Card />
       <Card />
       <Card />
     </Wrap>
-  </Box>
+  </Container>
 )
 
