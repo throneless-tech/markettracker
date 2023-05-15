@@ -10,11 +10,13 @@ import {
   Wrap,
 } from '@chakra-ui/react'
 import { Card } from './Card'
+import { SalesChart } from './SalesChart'
 import { Standing } from './Standing'
+import { Stats } from './Stats'
 
 export const Dashboard = () => (
   <Container maxW='container.xl'>
-    <Flex my={8} justify="space-between">
+    <Flex my={8} justify="space-between" flexWrap={"wrap"}>
       <Box>
         <Heading as="h1" sx={{ textTransform: "uppercase" }} >
           Dashboard
@@ -22,8 +24,8 @@ export const Dashboard = () => (
       </Box>
       <Spacer />
       <Box>
-        <Stack direction="row" justify="flex-end" align="flex-start" spacing="16px">
-          <Button active="Default">
+        <Stack direction="row" justify={{base: "flex-start", md:"flex-end"}} align="flex-start" spacing="16px" flexWrap={"wrap"}>
+          <Button active="Default" marginBottom={{ base: 2, md: 0 }}>
             <Text
               lineHeight="1.11"
               fontWeight="semibold"
@@ -49,11 +51,16 @@ export const Dashboard = () => (
       </Box>
     </Flex>
     <Standing />
-    <Wrap my={8} justify="space-between" spacing={4}>
-      <Card />
-      <Card />
-      <Card />
+    <Wrap my={8} justify={{base: "center", xl: "space-between"}} spacing={4}>
+      <Card icon="market" title="My Upcoming Markets" />
+      <Card icon="sales" title="Sales Reports Due" />
+      <Card icon="sales" title="Sales Reports Submitted" />
     </Wrap>
+    <Stack spacing={8}>
+      <Stats />
+      <SalesChart />
+      <SalesChart />
+    </Stack>
   </Container>
 )
 

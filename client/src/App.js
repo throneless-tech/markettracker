@@ -17,6 +17,7 @@ import {
 import theme from './theme';
 import { ColorModeSwitcher } from './ColorModeSwitcher';
 import { Dashboard } from './Components/Dashboard/Dashboard';
+import { Footer } from './Components/Footer';
 import { Nav } from './Components/Nav';
 
 function App() {
@@ -44,6 +45,7 @@ function App() {
             </TabPanel>
           </TabPanels>
         </Tabs>
+        <Footer />
       </Box>
     </ChakraProvider>
   );
