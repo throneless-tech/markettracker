@@ -13,6 +13,46 @@ import {
   Text
 } from '@chakra-ui/react'
 
+const headings = [
+  'Market',
+  'Date',
+  'Penalties/Credits',
+  'Sales Total',
+  'Coupon Total',
+  'Review Status',
+  'Invoice Date'
+]
+
+const data = [
+  {
+    name: 'Columbia Heights',
+    day: 'Saturday',
+    penaltiesCredits: 200,
+    salesTotal: 451.56,
+    couponTotal: 145.12,
+    reviewStatus: 'approved',
+    invoiceDate: null
+  },
+  {
+    name: 'Monroe St',
+    day: null,
+    penaltiesCredits: -100,
+    salesTotal: 4253.18,
+    couponTotal: 45.10,
+    reviewStatus: 'pending',
+    invoiceDate: null
+  },
+  {
+    name: 'Columbia Heights',
+    day: 'Wednesday',
+    penaltiesCredits: 50,
+    salesTotal: 354.23,
+    couponTotal: 45.00,
+    reviewStatus: 'denied',
+    invoiceDate: null
+  },
+]
+
 export const StyledTable = () => (
   <Stack
     justify="flex-start"
@@ -40,16 +80,23 @@ export const StyledTable = () => (
       <Box bg="gray.600" h="2px" w="100%" />
     </Stack>
     <TableContainer>
-      <Table variant='simple'>
-        <Thead>
+      <Table>
+        <Thead
+          sx={{
+            backgroundColor: 'gray.100'
+          }}
+        >
           <Tr>
-            <Th>Market</Th>
-            <Th>Date</Th>
-            <Th isNumeric>Penalties/Credits</Th>
-            <Th isNumeric>Sales Total</Th>
-            <Th isNumeric>Coupon Total</Th>
-            <Th>Review Status</Th>
-            <Th>Invoice Date</Th>
+            {headings.map(heading => (
+              <Th
+                sx={{
+                  color: "gray.700",
+                  fontFamily: "'Outfit', 'sans-serif'"
+                }}
+              >
+                {heading}
+              </Th>
+            ))}
           </Tr>
         </Thead>
       </Table>
