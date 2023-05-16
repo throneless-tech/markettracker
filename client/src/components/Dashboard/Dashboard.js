@@ -10,9 +10,10 @@ import {
   Wrap,
 } from '@chakra-ui/react'
 import { Card } from './Card'
-import { SalesChart } from './SalesChart'
+import { Graph } from './Graph'
 import { Standing } from './Standing'
 import { Stats } from './Stats'
+import { StyledTable } from './Table'
 
 export const Dashboard = () => (
   <Container maxW='container.xl'>
@@ -58,8 +59,9 @@ export const Dashboard = () => (
     </Wrap>
     <Stack spacing={8}>
       <Stats />
-      <SalesChart />
-      <SalesChart />
+      <StyledTable />
+      <Graph />
+      <Graph />
     </Stack>
   </Container>
 )

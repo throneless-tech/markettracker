@@ -53,6 +53,12 @@ const Tag = defineStyleConfig({
   }
 })
 
+const Thead = defineStyleConfig({
+  baseStyle: {
+    backgroundColor: 'gray.100',
+    fontFamily: 'Outfit'
+  }
+})
 const theme = extendTheme({
   sizes: {
     container: {
@@ -122,7 +128,7 @@ const theme = extendTheme({
     },
     "gray": {
       "50": "#F6F5F4",
-      "100": "#DFDBD8",
+      "100": "#D1CCC7",
       "200": "#CAC4BF",
       "300": "#B5ADA6",
       "400": "#A0958D",
@@ -135,7 +141,8 @@ const theme = extendTheme({
   },
   components: {
     Button,
-    Tag
+    Tag,
+    Thead
   },
   fonts: {
     body: "'Outfit', sans-serif",

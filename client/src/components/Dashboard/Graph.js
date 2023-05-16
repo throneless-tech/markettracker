@@ -1,6 +1,6 @@
 import { Stack, Box, Text } from '@chakra-ui/react'
 
-export const SalesChart = () => (
+export const Graph = () => (
   <Stack
     padding="32px"
     borderRadius="8px"
