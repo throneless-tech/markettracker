@@ -25,7 +25,7 @@ const Dashboard = () => (
       </Box>
       <Spacer />
       <Box>
-        <Stack direction="row" justify={{base: "flex-start", md:"flex-end"}} align="flex-start" spacing="16px" flexWrap={"wrap"}>
+        <Stack direction="row" justify={{ base: "flex-start", md: "flex-end" }} align="flex-start" spacing="16px" flexWrap={"wrap"}>
           <Button active="Default" marginBottom={{ base: 2, md: 0 }}>
             <Text
               lineHeight="1.11"
@@ -52,7 +52,7 @@ const Dashboard = () => (
       </Box>
     </Flex>
     <Standing />
-    <Wrap my={8} justify={{base: "center", xl: "space-between"}} spacing={4}>
+    <Wrap my={8} justify={{ base: "center", xl: "space-between" }} spacing={4}>
       <Card icon="market" title="My Upcoming Markets" />
       <Card icon="sales" title="Sales Reports Due" />
       <Card icon="sales" title="Sales Reports Submitted" />

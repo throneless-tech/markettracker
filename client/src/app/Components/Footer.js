@@ -1,58 +1,33 @@
-import { Stack, Text } from '@chakra-ui/react'
+import { Box, Flex, Spacer, Text } from '@chakra-ui/react'
 
 const Footer = () => (
-  <Stack
-    paddingX="42px"
-    property1="Default"
-    height="64px"
-    alignSelf="stretch"
-    justify="center"
-    align="center"
-    overflow="hidden"
+  <Box
+    bg="gray.600"
     borderColor="#F6F5F4"
     borderTopWidth="4px"
+    color="gray.50"
+    fontFamily="Inter"
+    sx={{
+      bottom: 0,
+      position: "absolute",
+      width: "100%",
+    }}
   >
-    <Stack
-      direction="row"
-      justify="space-between"
-      align="center"
-      spacing="24px"
-      alignSelf="stretch"
-    >
-      <Text
-        fontFamily="Inter"
-        lineHeight="1.25"
-        fontWeight="regular"
-        fontSize="16px"
-        color="cauliflower"
-        textAlign="center"
-      >
+    <Flex padding={4}>
+      <Text>
         © 2022 FRESHFARM Markets, Inc. Registered 501(c)(3). EIN: 35-2169859
       </Text>
-      <Stack direction="row" justify="flex-start" align="center" spacing="16px">
-        <Text
-          fontFamily="Inter"
-          lineHeight="1.25"
-          fontWeight="regular"
-          fontSize="16px"
-          color="cauliflower"
-          textAlign="center"
-        >
+      <Spacer />
+      <Flex gap={2}>
+        <Text>
           Terms
         </Text>
-        <Text
-          fontFamily="Inter"
-          lineHeight="1.25"
-          fontWeight="regular"
-          fontSize="16px"
-          color="cauliflower"
-          textAlign="center"
-        >
+        <Text>
           Privacy
         </Text>
-      </Stack>
-    </Stack>
-  </Stack>
+      </Flex>
+    </Flex>
+  </Box>
 )
 
 export default Footer;

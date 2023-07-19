@@ -8,4 +8,4 @@ const Logo = createIcon({
   )
 })
 
-export { Logo };
+export default Logo;

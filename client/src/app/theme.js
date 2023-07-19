@@ -37,6 +37,14 @@ const Button = defineStyleConfig({
   },
 })
 
+const Input = defineStyleConfig({
+  variant: {
+    filled: {
+      backgroundColor: 'gray.50',
+    }
+  }
+})
+
 const Select = defineStyleConfig({
   baseStyle: {
     background: '#EFF6F5',
@@ -143,6 +151,7 @@ const theme = extendTheme({
   },
   components: {
     Button,
+    Input,
     Select,
     Tag
   },
