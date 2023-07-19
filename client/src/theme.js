@@ -37,6 +37,14 @@ const Button = defineStyleConfig({
   },
 })
 
+const Select = defineStyleConfig({
+  baseStyle: {
+    background: '#EFF6F5',
+    border: '2px solid teal.300',
+    borderRadius: '8px',
+  }
+})
+
 const Tag = defineStyleConfig({
   baseStyle: {
     borderRadius: '8px',
@@ -135,6 +143,7 @@ const theme = extendTheme({
   },
   components: {
     Button,
+    Select,
     Tag
   },
   fonts: {

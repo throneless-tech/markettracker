@@ -19,6 +19,7 @@ import { ColorModeSwitcher } from './ColorModeSwitcher';
 import { Dashboard } from './Components/Dashboard/Main.js';
 import { Footer } from './Components/Footer';
 import { Nav } from './Components/Nav.js';
+import { SalesPanel } from './Components/SalesPanel/Main.js';
 
 function App() {
   return (
@@ -35,7 +36,7 @@ function App() {
               <p>my markets</p>
             </TabPanel>
             <TabPanel>
-              <p>my sales</p>
+              <SalesPanel />
             </TabPanel>
             <TabPanel>
               <p>my licenses</p>
