@@ -68,7 +68,7 @@ const Login = () => (
             <Stack gap={2}>
               <HStack>
                 <Text>New Here?</Text>
-                <Link sx={{ textDecoration: "underline", textDecorationColor: "teal.500", }} href="FIXME">Create an account</Link>
+                <Link sx={{ textDecoration: "underline", textDecorationColor: "teal.500", }} href="/register">Create an account</Link>
               </HStack>
               <Link>Forgot your password?</Link>
             </Stack>

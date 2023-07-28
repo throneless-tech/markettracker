@@ -1,4 +1,7 @@
 import { defineStyleConfig, extendTheme } from '@chakra-ui/react'
+import { inputTheme } from './themeComponents/input';
+import { selectTheme } from './themeComponents/select';
+import { textareaTheme } from './themeComponents/textarea';
 
 const Button = defineStyleConfig({
   baseStyle: {
@@ -38,6 +41,10 @@ const Button = defineStyleConfig({
 })
 
 const Input = defineStyleConfig({
+  baseStyle: {
+    backgroundColor: 'gray.50',
+
+  },
   variant: {
     filled: {
       backgroundColor: 'gray.50',
@@ -151,9 +158,10 @@ const theme = extendTheme({
   },
   components: {
     Button,
-    Input,
-    Select,
-    Tag
+    Input: inputTheme,
+    Select: selectTheme,
+    Tag,
+    Textarea: textareaTheme,
   },
   fonts: {
     body: "'Outfit', sans-serif",
@@ -174,6 +182,7 @@ const theme = extendTheme({
       lineHeight: '24px',
     },
     h1: {
+      color: 'gray.700',
       fontFamily: "'Zilla Slab', serif",
       fontSize: ['42px'],
       fontWeight: '700',

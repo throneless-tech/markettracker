@@ -9,11 +9,11 @@ import {
   Text,
   Wrap,
 } from '@chakra-ui/react'
-import { Card } from './Card'
-import { Graph } from './Graph'
-import { Standing } from './Standing'
-import { Stats } from './Stats'
-import { StyledTable } from './Table'
+import { Card } from '../dashboard/Components/Card'
+import { Graph } from '../dashboard/Components/Graph'
+import { Standing } from '../dashboard/Components/Standing'
+import { Stats } from '../dashboard/Components/Stats'
+import { StyledTable } from '../dashboard/Components/Table'
 
 const Dashboard = () => (
   <Container maxW='container.xl'>
