@@ -1,6 +1,6 @@
 import { Box, Flex, Heading, Spacer, Stack, Text } from '@chakra-ui/react'
-import { MarketIcon } from '../../icons/market'
-import { SalesIcon } from '../../icons/sales'
+import { MarketIcon } from '../icons/market'
+import { SalesIcon } from '../icons/sales'
 
 const Card = (props) => {
   const { icon, title } = props;

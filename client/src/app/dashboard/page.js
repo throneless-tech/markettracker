@@ -7,9 +7,9 @@ import {
   TabPanel,
   TabPanels,
 } from '@chakra-ui/react';
-import Dashboard from './Components/Home.js';
-import Nav from './Components/Nav.js';
-import SalesPanel from './Components/SalesPanel/Main.js';
+import Dashboard from '../Components/Home.js';
+import Nav from '../Components/Nav.js';
+import SalesPanel from '../Components/SalesPanel/Main.js';
 import theme from '../theme.js';
 
 function App() {

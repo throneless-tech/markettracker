@@ -132,7 +132,7 @@ export const steps = (props) => {
             </Text>
             <Input placeholder='Street' isRequired />
             <Flex gap={2}>
-              <Input placeholder='City' flex={4} isRequired />
+              <Input placeholder='City' flex={6} isRequired />
               <Select placeholder='State' flex={2} isRequired>
                 <option value="AK">AK</option>
                 <option value="AL">AL</option>
@@ -186,7 +186,7 @@ export const steps = (props) => {
                 <option value="WV">WV</option>
                 <option value="WY">WY</option>
               </Select>
-              <Input placeholder='Zipcode' flex={2} type='number' isRequired />
+              <Input placeholder='Zipcode' flex={3} type='number' isRequired />
             </Flex>
           </Stack>
           <Stack spacing={2} marginTop={4}>
@@ -204,6 +204,12 @@ export const steps = (props) => {
             </Text>
             <Textarea placeholder='Start typing...' />
           </Stack>
+          <Stack spacing={2} marginTop={4}>
+                <Text as='div' textStyle='bodyMain' fontWeight={500}>
+                  Year company established
+                </Text>
+                <Input placeholder='eg. 2017' type='number' />
+              </Stack>
         </>
       ) : null}
     </div>
