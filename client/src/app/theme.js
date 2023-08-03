@@ -40,23 +40,20 @@ const Button = defineStyleConfig({
   },
 })
 
-const Input = defineStyleConfig({
-  baseStyle: {
-    backgroundColor: 'gray.50',
-
-  },
-  variant: {
-    filled: {
-      backgroundColor: 'gray.50',
+const Radio = defineStyleConfig({
+  parts: ['control', 'container', 'label'],
+  variants: {
+    scale: {
+      container: {
+        alignItems: 'center',
+        display: 'flex',
+        flexDirection: 'column',
+      },
+      label: {
+        marginInlineStart: 0,
+        // marginLeft: 2,
+      }
     }
-  }
-})
-
-const Select = defineStyleConfig({
-  baseStyle: {
-    background: '#EFF6F5',
-    border: '2px solid teal.300',
-    borderRadius: '8px',
   }
 })
 
@@ -159,6 +156,7 @@ const theme = extendTheme({
   components: {
     Button,
     Input: inputTheme,
+    Radio,
     Select: selectTheme,
     Tag,
     Textarea: textareaTheme,
@@ -170,6 +168,7 @@ const theme = extendTheme({
   },
   textStyles: {
     bodyMain: {
+      color: 'gray.700',
       fontFamily: "'Outfit', sans-serif",
       fontWeight: '400',
       fontSize: ['18px'],
@@ -204,6 +203,7 @@ const theme = extendTheme({
       lineHeight: '24px',
     },
     h4: {
+      color: 'gray.700',
       fontFamily: "'Outfit', sans-serif",
       fontSize: ['10px'],
       fontWeight: '900',

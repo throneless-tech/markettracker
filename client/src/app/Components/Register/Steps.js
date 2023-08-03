@@ -3,6 +3,8 @@ import React, { useState } from 'react';
 import {
   Button,
   Center,
+  Checkbox,
+  CheckboxGroup,
   Divider,
   Flex,
   Heading,
@@ -16,6 +18,8 @@ import {
   Stack,
   Text,
   Textarea,
+  Wrap,
+  WrapItem,
 } from '@chakra-ui/react'
 
 // icons + images
@@ -205,11 +209,371 @@ export const steps = (props) => {
             <Textarea placeholder='Start typing...' />
           </Stack>
           <Stack spacing={2} marginTop={4}>
-                <Text as='div' textStyle='bodyMain' fontWeight={500}>
-                  Year company established
+            <Text as='div' textStyle='bodyMain' fontWeight={500}>
+              Year company established
+            </Text>
+            <Input placeholder='eg. 2017' type='number' />
+          </Stack>
+          <Stack spacing={2} marginTop={4}>
+            <Text as='div' textStyle='bodyMain' fontWeight={500}>
+              Number of employees
+            </Text>
+            <Text as="div" color='gray.400' fontSize={14}>
+              Including yourself how many people work for your company?
+            </Text>
+            <Wrap align='center' spacing={4}>
+              <WrapItem alignItems='center' >
+                <Text as='span' paddingRight={2} textStyle='bodyMain' fontWeight={500}>
+                  Full time
                 </Text>
-                <Input placeholder='eg. 2017' type='number' />
+                <Input maxWidth={160} placeholder='# of full time staff' />
+              </WrapItem>
+              <WrapItem alignItems='center' >
+                <Text as='span' paddingRight={2} textStyle='bodyMain' fontWeight={500}>
+                  Part time
+                </Text>
+                <Input maxWidth={160} placeholder='# of part time staff' />
+              </WrapItem>
+              <WrapItem alignItems='center' >
+                <Text as='span' paddingRight={2} textStyle='bodyMain' fontWeight={500}>
+                  Interns
+                </Text>
+                <Input maxWidth={160} placeholder='# of interns' />
+              </WrapItem>
+              <WrapItem alignItems='center' >
+                <Text as='span' paddingRight={2} textStyle='bodyMain' fontWeight={500}>
+                  H2A
+                </Text>
+                <Input maxWidth={160} placeholder='# of H2A' />
+              </WrapItem>
+              <WrapItem alignItems='center' >
+                <Text as='span' paddingRight={2} textStyle='bodyMain' fontWeight={500}>
+                  Volunteers
+                </Text>
+                <Input maxWidth={160} placeholder='# of volunteers' />
+              </WrapItem>
+            </Wrap>
+          </Stack>
+        </>
+      ) : props.index === 3 ? (
+        <>
+          <Heading as='h1' textStyle='h1' size='xl' noOfLines={2} marginTop={12} textAlign='center'>
+            [Vendor's Name] Company Info
+          </Heading>
+          <Text as="div" marginTop={2} textAlign='center'>Please share your company information</Text>
+          <Flex align='center' justify='flex-start' marginTop={8}>
+            <Heading as='h2' fontFamily={'font.body'} textStyle='h4' size='md' width={426}>
+              Business Information
+            </Heading>
+            <Divider color='gray.700' borderBottomWidth={2} opacity={1} flexGrow={1} />
+          </Flex>
+          <Stack marginTop={4}>
+            <Text as='div' textStyle='bodyMain' fontWeight={500}>
+              What type of vendor are you? (required)
+            </Text>
+            <Select placeholder='Farm, Non Farm' flex={2} isRequired>
+              <option value="farm">Farm</option>
+              <option value="nonFarm">Non Farm</option>
+            </Select>
+            <Text as='div' color='gray.500'>
+              Select the category that describes the majority of what you sell
+            </Text>
+          </Stack>
+          <Stack marginTop={4}>
+            <Text as='div' textStyle='bodyMain' fontWeight={500}>
+              What is the structure of your business? (required)
+            </Text>
+            <Select placeholder='LLC, sole proprietor, nonprofit, etc' flex={2} isRequired>
+              <option value="farm">LLC</option>
+              <option value="soleProprietor">Sole proprietor</option>
+              <option value="nonprofit">Nonprofit</option>
+            </Select>
+            <Text as='div' color='gray.500'>
+              Select which type of legal entity your business is registered as in your state
+            </Text>
+          </Stack>
+          <Stack marginTop={4}>
+            <Text as='div' textStyle='bodyMain' fontWeight={500}>
+              Do you use any of the following growing practices?
+            </Text>
+            <Text as='div' color='gray.500'>
+              Check all that apply
+            </Text>
+            <CheckboxGroup colorScheme='green'>
+              <Stack>
+                <Checkbox value='organicManagement'>Organic Management</Checkbox>
+                <Checkbox value='certifiedNaturallyGrown'>Certified Naturally Grown</Checkbox>
+                <Checkbox value='IntegratedPestManagement'>Integrated Pest Management (IPM)</Checkbox>
+                <Checkbox value='certifiedOrganic'>Certified Organic</Checkbox>
+                <Checkbox value='gmoUse'>GMO Use</Checkbox>
+                <Checkbox value='growthHormoneUse'>Growth Hormone Use</Checkbox>
               </Stack>
+            </CheckboxGroup>
+          </Stack>
+          <Stack marginTop={4}>
+            <Text as='div' textStyle='bodyMain' fontWeight={500}>
+              Where are you selling products locally (required)
+            </Text>
+            <Text as='div' color='gray.500'>
+              Check all that apply
+            </Text>
+            <CheckboxGroup colorScheme='green'>
+              <Stack>
+                <Checkbox value='nowhere'>Nowhere yet</Checkbox>
+                <Checkbox value='freshfarm'>At FreshFarm markets</Checkbox>
+                <Checkbox value='other'>At other non-FreshFarm markets or in stores</Checkbox>
+                <Input marginLeft={6} variant='filled' placeholder='Please list other locations you sell products' />
+              </Stack>
+            </CheckboxGroup>
+          </Stack>
+          <Stack marginTop={4}>
+            <Text as='div' textStyle='bodyMain' fontWeight={500}>
+              Rank the following revenue outlets in order of importance to your sales: (required)
+            </Text>
+            <Wrap justify='space-between' spacing={8}>
+              <WrapItem sx={{ flexDirection: 'column' }}>
+                <Text as='div' color='gray.600'>
+                  Stores
+                </Text>
+                <RadioGroup onChange={newValue => props.setStoreRevenue(newValue)} value={props.storeRevenue}>
+                  <Stack
+                    align='flex-start'
+                    color='gray.500'
+                    spacing={6} direction='row'
+                    textAlign='center'
+                  >
+                    <Radio value='1' variant="scale">
+                      <Text as='span' fontSize={'xs'} sx={{ display: 'block', marginTop: 1, width: '100%' }}>1</Text>
+                      <Text as='span' fontSize={'xs'} sx={{ display: 'block', width: 14 }}>Not at all important</Text>
+                    </Radio>
+                    <Radio value='2' variant="scale" width={6}><Text as='span' fontSize={'xs'}>2</Text></Radio>
+                    <Radio value='3' variant="scale" width={6}>
+                      <Text as='span' fontSize={'xs'}>3</Text>
+                    </Radio>
+                    <Radio value='4' variant="scale" width={6}>
+                      <Text as='span' fontSize={'xs'}>4</Text>
+                    </Radio>
+                    <Radio value='5' variant="scale">
+                      <Text as='span' fontSize={'xs'} sx={{ display: 'block', marginTop: 1, width: '100%' }}>5</Text>
+                      <Text as='span' fontSize={'xs'} sx={{ display: 'block', width: 14 }}>Very Important</Text>
+                    </Radio>
+                  </Stack>
+                </RadioGroup>
+              </WrapItem>
+              <WrapItem sx={{ flexDirection: 'column' }}>
+                <Text as='div' color='gray.600'>
+                  Farmers markets
+                </Text>
+                <RadioGroup onChange={newValue => props.setMarketRevenue(newValue)} value={props.marketRevenue}>
+                  <Stack
+                    align='flex-start'
+                    color='gray.500'
+                    spacing={6} direction='row'
+                    textAlign='center'
+                  >
+                    <Radio value='1' variant="scale">
+                      <Text as='span' fontSize={'xs'} sx={{ display: 'block', marginTop: 1, width: '100%' }}>1</Text>
+                      <Text as='span' fontSize={'xs'} sx={{ display: 'block', width: 14 }}>Not at all important</Text>
+                    </Radio>
+                    <Radio value='2' variant="scale" width={6}><Text as='span' fontSize={'xs'}>2</Text></Radio>
+                    <Radio value='3' variant="scale" width={6}>
+                      <Text as='span' fontSize={'xs'}>3</Text>
+                    </Radio>
+                    <Radio value='4' variant="scale" width={6}>
+                      <Text as='span' fontSize={'xs'}>4</Text>
+                    </Radio>
+                    <Radio value='5' variant="scale">
+                      <Text as='span' fontSize={'xs'} sx={{ display: 'block', marginTop: 1, width: '100%' }}>5</Text>
+                      <Text as='span' fontSize={'xs'} sx={{ display: 'block', width: 14 }}>Very Important</Text>
+                    </Radio>
+                  </Stack>
+                </RadioGroup>
+              </WrapItem>
+              <WrapItem sx={{ flexDirection: 'column' }}>
+                <Text as='div' color='gray.600'>
+                  Own brick & mortar
+                </Text>
+                <RadioGroup onChange={newValue => props.setBrickRevenue(newValue)} value={props.brickRevenue}>
+                  <Stack
+                    align='flex-start'
+                    color='gray.500'
+                    spacing={6} direction='row'
+                    textAlign='center'
+                  >
+                    <Radio value='1' variant="scale">
+                      <Text as='span' fontSize={'xs'} sx={{ display: 'block', marginTop: 1, width: '100%' }}>1</Text>
+                      <Text as='span' fontSize={'xs'} sx={{ display: 'block', width: 14 }}>Not at all important</Text>
+                    </Radio>
+                    <Radio value='2' variant="scale" width={6}><Text as='span' fontSize={'xs'}>2</Text></Radio>
+                    <Radio value='3' variant="scale" width={6}>
+                      <Text as='span' fontSize={'xs'}>3</Text>
+                    </Radio>
+                    <Radio value='4' variant="scale" width={6}>
+                      <Text as='span' fontSize={'xs'}>4</Text>
+                    </Radio>
+                    <Radio value='5' variant="scale">
+                      <Text as='span' fontSize={'xs'} sx={{ display: 'block', marginTop: 1, width: '100%' }}>5</Text>
+                      <Text as='span' fontSize={'xs'} sx={{ display: 'block', width: 14 }}>Very Important</Text>
+                    </Radio>
+                  </Stack>
+                </RadioGroup>
+              </WrapItem>
+              <WrapItem sx={{ flexDirection: 'column' }}>
+                <Text as='div' color='gray.600'>
+                  Online sales
+                </Text>
+                <RadioGroup onChange={newValue => props.setSalesRevenue(newValue)} value={props.salesRevenue}>
+                  <Stack
+                    align='flex-start'
+                    color='gray.500'
+                    spacing={6} direction='row'
+                    textAlign='center'
+                  >
+                    <Radio value='1' variant="scale">
+                      <Text as='span' fontSize={'xs'} sx={{ display: 'block', marginTop: 1, width: '100%' }}>1</Text>
+                      <Text as='span' fontSize={'xs'} sx={{ display: 'block', width: 14 }}>Not at all important</Text>
+                    </Radio>
+                    <Radio value='2' variant="scale" width={6}><Text as='span' fontSize={'xs'}>2</Text></Radio>
+                    <Radio value='3' variant="scale" width={6}>
+                      <Text as='span' fontSize={'xs'}>3</Text>
+                    </Radio>
+                    <Radio value='4' variant="scale" width={6}>
+                      <Text as='span' fontSize={'xs'}>4</Text>
+                    </Radio>
+                    <Radio value='5' variant="scale">
+                      <Text as='span' fontSize={'xs'} sx={{ display: 'block', marginTop: 1, width: '100%' }}>5</Text>
+                      <Text as='span' fontSize={'xs'} sx={{ display: 'block', width: 14 }}>Very Important</Text>
+                    </Radio>
+                  </Stack>
+                </RadioGroup>
+              </WrapItem>
+            </Wrap>
+          </Stack>
+          <Flex align='center' justify='flex-start' marginTop={8}>
+            <Heading as='h2' fontFamily={'font.body'} textStyle='h4' size='md' width={426}>
+              Production practices
+            </Heading>
+            <Divider color='gray.700' borderBottomWidth={2} opacity={1} flexGrow={1} />
+          </Flex>
+          <Text as='div' textStyle='bodyMain' fontWeight={500}>
+
+            Do you work out of a shared kitchen?
+          </Text>
+          <RadioGroup onChange={newValue => props.setSharedKitchenValue(newValue)} value={props.sharedKitchenValue}>
+            <Stack marginTop={1}>
+              <HStack>
+                <Radio value={true}>Yes</Radio>
+                <Input marginLeft={2} variant='filled' placeholder='Please share the name of the kitchen' />
+              </HStack>
+              <Radio value={false}>No</Radio>
+            </Stack>
+          </RadioGroup>
+          <Text as='div' textStyle='bodyMain' fontWeight={500}>
+
+            Do you use a co-packer?
+          </Text>
+          <RadioGroup onChange={newValue => props.setCopackerValue(newValue)} value={props.copackerKitchenValue}>
+            <Stack marginTop={1}>
+              <HStack>
+                <Radio value={true}>Yes</Radio>
+                <Input marginLeft={2} variant='filled' placeholder='Please share the name of the co-packer' />
+              </HStack>
+              <Radio value={false}>No</Radio>
+            </Stack>
+          </RadioGroup>
+          <Flex align='center' justify='flex-start' marginTop={8}>
+            <Heading as='h2' fontFamily={'font.body'} textStyle='h4' size='md' width={426}>
+              Contact information
+            </Heading>
+            <Divider color='gray.700' borderBottomWidth={2} opacity={1} flexGrow={1} />
+          </Flex>
+          <Text as='div' textStyle='bodyMain' marginTop={4}>
+            Add all the members of your staff that will be manning your booth(s); these contacts will be visible to managers of the markets you participate in.
+          </Text>
+          <Button marginTop={4}>Add contact</Button>
+          <Flex align='center' justify='flex-start' marginTop={8}>
+            <Heading as='h2' fontFamily={'font.body'} textStyle='h4' size='md' width={200}>
+              Paper work
+            </Heading>
+            <Divider color='gray.700' borderBottomWidth={2} opacity={1} flexGrow={1} />
+          </Flex>
+          <Text as='div' textStyle='bodyMain' marginTop={4}>
+            Upload business license (required)
+          </Text>
+          <Text as='div' color='gray.500'>
+            Add a statement of explanantion
+          </Text>
+          <Button marginTop={4}>Upload file</Button>
+          <Text as='div' textStyle='bodyMain' marginTop={4}>
+            Upload insurance documentation (required)
+          </Text>
+          <Text as='div' color='gray.500'>
+            Add a statement of explanantion
+          </Text>
+          <Button marginTop={4}>Upload file</Button>
+          <Flex align='center' justify='flex-start' marginTop={8}>
+            <Heading as='h2' fontFamily={'font.body'} textStyle='h4' size='md' width={526}>
+              Demographic information
+            </Heading>
+            <Divider color='gray.700' borderBottomWidth={2} opacity={1} flexGrow={1} />
+          </Flex>
+          <Text as='div' textStyle='bodyMain' marginTop={4}>
+            The following demographic questions are intended to assess how members of various communities are participating in our programming. The responses will help us make decisions about our outreach, engagement, and programming efforts to ensure we are effectively serving our diverse membership.
+          </Text>
+          <Text as='div' textStyle='bodyMain' fontWeight={500} marginTop={8}>
+            Is the business owner a first generation farmer?
+          </Text>
+          <RadioGroup onChange={newValue => props.setfirstGen(newValue)} marginTop={2} >
+            <HStack spacing={4}>
+              <Radio value={true}>Yes</Radio>
+              <Radio value={false}>No</Radio>
+              <Radio value='NA'>Prefer not to answer</Radio>
+            </HStack>
+          </RadioGroup>
+          <Text as='div' textStyle='bodyMain' fontWeight={500} marginTop={8}>
+            Is this a veteran-owned busines?
+          </Text>
+          <RadioGroup onChange={newValue => props.setVeteran(newValue)} marginTop={2} >
+            <HStack spacing={4}>
+              <Radio value={true}>Yes</Radio>
+              <Radio value={false}>No</Radio>
+              <Radio value='NA'>Prefer not to answer</Radio>
+            </HStack>
+          </RadioGroup>
+          <Text as='div' textStyle='bodyMain' fontWeight={500} marginTop={8}>
+            Do any of the business owners identify as Black, Indigenous, and/or a Person of Color?
+          </Text>
+          <RadioGroup onChange={newValue => props.setPrimaryContact(newValue)} marginTop={2} >
+            <HStack spacing={4}>
+              <Radio value={true}>Yes</Radio>
+              <Radio value={false}>No</Radio>
+              <Radio value='NA'>Prefer not to answer</Radio>
+            </HStack>
+          </RadioGroup>
+          <Text as='div' textStyle='bodyMain' fontWeight={500} marginTop={8}>
+            Is this an immigrant or refugee-owned business?
+          </Text>
+          <RadioGroup onChange={newValue => props.setPrimaryContact(newValue)} marginTop={2} >
+            <HStack spacing={4}>
+              <Radio value={true}>Yes</Radio>
+              <Radio value={false}>No</Radio>
+              <Radio value='NA'>Prefer not to answer</Radio>
+            </HStack>
+          </RadioGroup>
+          <Text as='div' textStyle='bodyMain' fontWeight={500} marginTop={8}>
+            Is this an LGBTQIA+ (lesbian, gay, bisexual, transgender, queer, intersex, asexual, plus) owned business?
+          </Text>
+          <RadioGroup onChange={newValue => props.setPrimaryContact(newValue)} marginTop={2} >
+            <HStack spacing={4}>
+              <Radio value={true}>Yes</Radio>
+              <Radio value={false}>No</Radio>
+              <Radio value='NA'>Prefer not to answer</Radio>
+            </HStack>
+          </RadioGroup>
+          <Text as='div' textStyle='bodyMain' fontWeight={500} marginTop={8}>
+            Other
+          </Text>
+          <Input placeholder='Self describe' />
         </>
       ) : null}
     </div>
