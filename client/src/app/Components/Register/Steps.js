@@ -867,6 +867,18 @@ export const steps = (props) => {
             </Text>
           </Stack>
         </>
+      ) : props.index === 7 ? (
+        <>
+          <Heading as='h1' textStyle='h1' size='xl' marginTop={12} textAlign='center'>
+            Thank you for applying to FreshFarm!
+          </Heading>
+          <Text as='div' textStyle='bodyMain' fontWeight={500} >
+            [ INSTRUCTIONS ABOUT MARKET APPLICATIONS] To sell at Fresh Farm Markets vendors must apply to each market. We accept applications annually from farmers and producers selling items that feature agricultural products grown within 200 miles of Washington, DC.
+          </Text>
+          <Text as='div' textStyle='bodyMain' fontWeight={500} >
+            Remember, a Jedi can feel the Force flowing through him. You are a part of the Rebel Alliance and a traitor! Take her away! I suggest you try it again, Luke. This time, let go your conscious self and act on instinct.
+          </Text>
+        </>
       ) : null}
     </div>
   )

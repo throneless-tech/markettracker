@@ -126,7 +126,7 @@ const Register = () => {
                   </Button>
                 </HStack>
               </Center>
-            ) : (
+            ) : index === 6 ? (
               <Center>
                 <HStack spacing={4}>
                   <Button
@@ -135,7 +135,7 @@ const Register = () => {
                     variant='solid'
                     width={125}
                     isDisabled={index === 0}
-
+                    onClick={handleNextClick}
                   >
                     Accept
                   </Button>
@@ -147,6 +147,30 @@ const Register = () => {
                       width={125}
                     >
                       Cancel
+                    </Button>
+                  </Link>
+                </HStack>
+              </Center>
+            ) : (
+              <Center>
+                <HStack spacing={4}>
+                  <Link href='/dashboard'>
+                    <Button
+                      colorScheme='green'
+                      marginTop={12}
+                      variant='solid'
+                      isDisabled={index === 0}
+                    >
+                      Apply to markets now
+                    </Button>
+                  </Link>
+                  <Link href='/'>
+                    <Button
+                      colorScheme='green'
+                      marginTop={12}
+                      variant='outline'
+                    >
+                      Apply to markets later
                     </Button>
                   </Link>
                 </HStack>
