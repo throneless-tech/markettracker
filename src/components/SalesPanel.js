@@ -1,3 +1,4 @@
+import React from 'react'
 import {
   Box,
   Container,
@@ -6,7 +7,7 @@ import {
   Spacer
 } from '@chakra-ui/react'
 
-import { Dropdown } from '../Dropdown'
+import { Dropdown } from './Dropdown'
 
 const SalesPanel = () => (
   <Container maxW='container.xl'>

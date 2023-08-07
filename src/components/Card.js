@@ -1,3 +1,4 @@
+import React from 'react'
 import { Box, Flex, Heading, Spacer, Stack, Text } from '@chakra-ui/react'
 import { MarketIcon } from '../icons/market'
 import { SalesIcon } from '../icons/sales'

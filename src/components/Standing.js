@@ -1,3 +1,4 @@
+import React from 'react'
 import { Flex, Stack, Text, Tag } from '@chakra-ui/react'
 
 const Standing = () => (

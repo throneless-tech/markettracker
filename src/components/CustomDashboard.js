@@ -1,5 +1,7 @@
 "use client"
 
+import React from 'react'
+
 import {
   ChakraProvider,
   Box,
@@ -7,12 +9,12 @@ import {
   TabPanel,
   TabPanels,
 } from '@chakra-ui/react';
-import Dashboard from '../Components/Home.js';
-import Nav from '../Components/Nav.js';
-import SalesPanel from '../Components/SalesPanel/Main.js';
-import theme from '../theme.js';
+import Dashboard from './Home.js';
+import Nav from './Nav.js';
+import SalesPanel from './SalesPanel.js';
+import theme from '../styles/theme.js';
 
-function App() {
+function CustomDashboard() {
   return (
     <ChakraProvider theme={theme}>
       <Box>
@@ -41,4 +43,4 @@ function App() {
   );
 }
 
-export default App;
+export default CustomDashboard;

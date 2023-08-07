@@ -1,16 +1,14 @@
 import { buildConfig } from "payload/config";
 import path from "path";
 // import Examples from './collections/Examples';
-import Users from "./collections/Users";
+import { Vendors } from "./collections/Vendors";
 
-import {
-  CustomDashboard,
-} from "./components/Dashboard";
+import CustomDashboard from "./components/CustomDashboard";
 
 export default buildConfig({
   serverURL: "http://localhost:3000",
   admin: {
-    user: Users.slug,
+    // user: Users.slug,
     components: {
       views: {
         Dashboard: CustomDashboard
@@ -18,8 +16,7 @@ export default buildConfig({
     }
   },
   collections: [
-    Users,
-    // Vendors,
+    Vendors,
     // Markets,
     // Instances,
     // Applications,
