@@ -8,6 +8,7 @@ import {
   TabPanels,
 } from '@chakra-ui/react';
 import Dashboard from '../Components/Home.js';
+import Markets from '../Components/Markets/Main.js';
 import Nav from '../Components/Nav.js';
 import SalesPanel from '../Components/SalesPanel/Main.js';
 import theme from '../theme.js';
@@ -23,7 +24,7 @@ function App() {
               <Dashboard />
             </TabPanel>
             <TabPanel>
-              <p>my markets</p>
+              <Markets />
             </TabPanel>
             <TabPanel>
               <SalesPanel />
