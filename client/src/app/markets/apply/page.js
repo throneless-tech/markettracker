@@ -20,7 +20,7 @@ function App() {
         <Tabs variant="unstyled" colorScheme="teal">
           <Nav />
           <Box>
-            test
+            Market name
           </Box>
         </Tabs>
       </Box>
