@@ -36,7 +36,7 @@ const Nav = () => (
           as='a'
           href='/'
           aria-label='Market Tracker home'
-          icon={<Logo sx={{ height: 40, width: 41 }} />}
+          icon={<Logo sx={{ height: 10, width: 41 }} />}
           sx={{ border: 'none', borderRadius: '0 !important', }}
           _hover={{
             background: "transparent",
