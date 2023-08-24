@@ -1,5 +1,4 @@
 "use client"
-
 import {
     ChakraProvider,
     Box,
@@ -18,10 +17,13 @@ import {
     TabPanels,
     Tag,
     Text,
+    Wrap,
+    WrapItem,
 } from '@chakra-ui/react';
 
 // components
 import Dashboard from '../Components/Home.js';
+import Calendar from '../Components/Calendar.js';
 import Markets from '../Components/Markets/Main.js';
 import Nav from '../Components/Nav.js';
 import SalesPanel from '../Components/SalesPanel/Main.js';
@@ -127,7 +129,7 @@ function App() {
                                             </Box>
                                         </Box>
                                     </Container>
-                                    <Container marginTop={4} maxW={"5xl"}>
+                                    <Container marginTop={8} maxW={"5xl"}>
                                         <HStack>
                                             <Text color={"gray.700"} fontWeight={700} textTransform={"uppercase"} width={40}>
                                                 Market size
@@ -137,6 +139,65 @@ function App() {
                                             </Text>
                                             <Divider sx={{ borderColor: "gray.600", borderBottomWidth: 2 }} />
                                         </HStack>
+                                        <Text color={"gray.600"} marginTop={4} fontSize={"sm"}>
+                                            [ DEFINITIONS ABOUT MARKET SIZES: flagship, large, medium, small, farm stand] flagship market- can support 5 prepared food vendors large market- can support 3 prepared food / etc. vendors Remember, a Jedi can feel the Force flowing through him. You are a part of the Rebel Alliance and a traitor! Take her away! I suggest you try it again, Luke. This time, let go your conscious self and act on instinct.
+                                        </Text>
+                                        <HStack marginTop={4}>
+                                            <Text as={"span"} color={"blue.500"} fontWeight={700}>
+                                                1,234
+                                            </Text>
+                                            <Text as={"span"} color={"blue.500"}>
+                                                visitors per market
+                                            </Text>
+                                            <Text as={"span"} color={"gray.400"}>
+                                                (avg)
+                                            </Text>
+                                        </HStack>
+                                        <HStack marginTop={4}>
+                                            <Text color={"gray.700"} fontWeight={700} textTransform={"uppercase"} width={"660px"}>
+                                                Managers scheduled for this market
+                                            </Text>
+                                            <Divider sx={{ borderColor: "gray.600", borderBottomWidth: 2 }} />
+                                        </HStack>
+                                        <HStack marginTop={2}>
+                                            <Tag bg={"gray.50"}>Manager 1</Tag>
+                                        </HStack>
+                                        <HStack marginTop={4}>
+                                            <Text color={"gray.700"} fontWeight={700} textTransform={"uppercase"} width={"620px"}>
+                                                Vendors scheduled for this market
+                                            </Text>
+                                            <Divider sx={{ borderColor: "gray.600", borderBottomWidth: 2 }} />
+                                        </HStack>
+                                        <HStack marginTop={2}>
+                                            <Tag bg={"gray.50"}>Vendor 1</Tag>
+                                        </HStack>
+                                        <HStack marginTop={4}>
+                                            <Text color={"gray.700"} fontWeight={700} textTransform={"uppercase"} width={"620px"}>
+                                                Stats & info
+                                            </Text>
+                                            <Divider sx={{ borderColor: "gray.600", borderBottomWidth: 2 }} />
+                                        </HStack>
+                                        <HStack marginTop={4}>
+                                            <Text color={"gray.700"} fontWeight={700} textTransform={"uppercase"} width={"620px"}>
+                                                Market dates
+                                            </Text>
+                                            <Divider sx={{ borderColor: "gray.600", borderBottomWidth: 2 }} />
+                                        </HStack>
+                                        <Text color={"gray.600"} marginTop={4} fontSize={"sm"}>
+                                            Dates [market name] is open this season
+                                        </Text>
+                                        <Wrap marginTop={4} columns={3} spacing={3}>
+                                            <WrapItem>
+                                                <Calendar view='month' />    
+                                            </WrapItem>
+                                            <WrapItem>
+                                                <Calendar view='month' />
+                                            </WrapItem><WrapItem>
+                                                <Calendar view='month' />
+                                            </WrapItem><WrapItem>
+                                                <Calendar view='month' />
+                                            </WrapItem>
+                                        </Wrap>
                                     </Container>
                                 </TabPanel>
                                 <TabPanel>
