@@ -1,24 +1,24 @@
-import { CollectionConfig } from 'payload/types';
+import { CollectionConfig } from "payload/types";
 
 export const Contacts: CollectionConfig = {
-  slug: 'contacts',
+  slug: "contacts",
   fields: [
     {
-      name: 'firstName',
-      type: 'string',
+      name: "firstName",
+      type: "text",
       required: true,
     },
     {
-      name: 'lastName',
-      type: 'string',
+      name: "lastName",
+      type: "text",
     },
     {
-      name: 'middleName',
-      type: 'string',
+      name: "middleName",
+      type: "text",
     },
     {
-      name: 'email',
-      type: 'email',
-    }
+      name: "email",
+      type: "email",
+    },
   ],
-}
+};

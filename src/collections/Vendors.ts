@@ -1,11 +1,11 @@
 import { CollectionConfig } from "payload/types";
 
-export const Vendors = {
+export const Vendors: CollectionConfig = {
   slug: "vendors",
   fields: [
     {
       name: "name",
-      type: "string",
+      type: "text",
       required: true,
     },
     {

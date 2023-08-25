@@ -6,7 +6,7 @@ export const Days: CollectionConfig = {
     {
       name: "instance",
       type: "relationship",
-      relationTo: "instance",
+      relationTo: "instances",
       required: true,
     },
     {
