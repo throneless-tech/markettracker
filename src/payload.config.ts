@@ -16,14 +16,22 @@ import { Supplies } from "./collections/Supplies";
 import { Vendors } from "./collections/Vendors";
 
 import CustomDashboard from "./components/CustomDashboard";
+import CustomNav from "./components/CustomNav";
+import CustomLogo from "./icons/logo";
 
 export default buildConfig({
   serverURL: "http://localhost:3000",
   admin: {
     // user: Users.slug,
+    css: path.resolve(__dirname, 'styles/main.scss'),
     components: {
+      graphics: {
+        Icon: CustomLogo,
+        Logo: CustomLogo,
+      },
+      Nav: CustomNav,
       views: {
-        Dashboard: CustomDashboard,
+        // Dashboard: CustomDashboard,
       },
     },
   },

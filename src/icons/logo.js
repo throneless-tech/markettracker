@@ -1,7 +1,7 @@
 import React from 'react'
 import { createIcon } from '@chakra-ui/icons'
 
-const Logo = createIcon({
+const CustomLogo = createIcon({
   displayName: 'Logo',
   viewBox: '0 0 41 40',
   path: (
@@ -9,4 +9,4 @@ const Logo = createIcon({
   )
 })
 
-export default Logo;
+export default CustomLogo;
