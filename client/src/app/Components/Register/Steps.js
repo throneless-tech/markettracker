@@ -12,6 +12,9 @@ import {
   Input,
   InputGroup,
   InputRightElement,
+  List,
+  ListItem,
+  OrderedList,
   Radio,
   RadioGroup,
   Select,
@@ -261,11 +264,11 @@ export const steps = (props) => {
             [Vendor's Name] Company Info
           </Heading>
           <Text as="div" marginTop={2} textAlign='center'>Please share your company information</Text>
-          <Flex align='center' justify='flex-start' marginTop={8}>
-            <Heading as='h2' fontFamily={'font.body'} textStyle='h4' size='md' width={426}>
+          <Flex align='center' justify='space-between' marginTop={8}>
+            <Heading as='h2' fontFamily={'font.body'} textStyle='h4' size='md' width={'80%'}>
               Business Information
             </Heading>
-            <Divider color='gray.700' borderBottomWidth={2} opacity={1} flexGrow={1} />
+            <Divider color='gray.700' borderBottomWidth={2} opacity={1} />
           </Flex>
           <Stack marginTop={4}>
             <Text as='div' textStyle='bodyMain' fontWeight={500}>
@@ -450,13 +453,12 @@ export const steps = (props) => {
             </Wrap>
           </Stack>
           <Flex align='center' justify='flex-start' marginTop={8}>
-            <Heading as='h2' fontFamily={'font.body'} textStyle='h4' size='md' width={426}>
+            <Heading as='h2' fontFamily={'font.body'} textStyle='h4' size='md' width={'90%'}>
               Production practices
             </Heading>
             <Divider color='gray.700' borderBottomWidth={2} opacity={1} flexGrow={1} />
           </Flex>
           <Text as='div' textStyle='bodyMain' fontWeight={500}>
-
             Do you work out of a shared kitchen?
           </Text>
           <RadioGroup onChange={newValue => props.setSharedKitchenValue(newValue)} value={props.sharedKitchenValue}>
@@ -469,7 +471,6 @@ export const steps = (props) => {
             </Stack>
           </RadioGroup>
           <Text as='div' textStyle='bodyMain' fontWeight={500}>
-
             Do you use a co-packer?
           </Text>
           <RadioGroup onChange={newValue => props.setCopackerValue(newValue)} value={props.copackerKitchenValue}>
@@ -482,7 +483,7 @@ export const steps = (props) => {
             </Stack>
           </RadioGroup>
           <Flex align='center' justify='flex-start' marginTop={8}>
-            <Heading as='h2' fontFamily={'font.body'} textStyle='h4' size='md' width={426}>
+            <Heading as='h2' fontFamily={'font.body'} textStyle='h4' size='md' width={'80%'}>
               Contact information
             </Heading>
             <Divider color='gray.700' borderBottomWidth={2} opacity={1} flexGrow={1} />
@@ -492,7 +493,7 @@ export const steps = (props) => {
           </Text>
           <Button marginTop={4}>Add contact</Button>
           <Flex align='center' justify='flex-start' marginTop={8}>
-            <Heading as='h2' fontFamily={'font.body'} textStyle='h4' size='md' width={200}>
+            <Heading as='h2' fontFamily={'font.body'} textStyle='h4' size='md' width={'36%'}>
               Paper work
             </Heading>
             <Divider color='gray.700' borderBottomWidth={2} opacity={1} flexGrow={1} />
@@ -503,19 +504,19 @@ export const steps = (props) => {
           <Text as='div' color='gray.500'>
             Add a statement of explanantion
           </Text>
-          <Button marginTop={4}>Upload file</Button>
+          <Input type='file' />
           <Text as='div' textStyle='bodyMain' marginTop={4}>
             Upload insurance documentation (required)
           </Text>
           <Text as='div' color='gray.500'>
             Add a statement of explanantion
           </Text>
-          <Button marginTop={4}>Upload file</Button>
+          <Input type='file' />
           <Flex align='center' justify='flex-start' marginTop={8}>
-            <Heading as='h2' fontFamily={'font.body'} textStyle='h4' size='md' width={526}>
+            <Heading as='h2' fontFamily={'font.body'} textStyle='h4' size='md' width={'112%'}>
               Demographic information
             </Heading>
-            <Divider color='gray.700' borderBottomWidth={2} opacity={1} flexGrow={1} />
+            <Divider color='gray.700' borderBottomWidth={2} opacity={1} />
           </Flex>
           <Text as='div' textStyle='bodyMain' marginTop={4}>
             The following demographic questions are intended to assess how members of various communities are participating in our programming. The responses will help us make decisions about our outreach, engagement, and programming efforts to ensure we are effectively serving our diverse membership.
@@ -574,6 +575,309 @@ export const steps = (props) => {
             Other
           </Text>
           <Input placeholder='Self describe' />
+        </>
+      ) : props.index === 4 ? (
+        <>
+          <Flex align='center' justify='flex-start' marginTop={8}>
+            <Heading as='h2' fontFamily={'font.body'} textStyle='h4' size='md' width={'60%'} flexGrow={0}>
+              Marketing & Links
+            </Heading>
+            <Divider color='gray.700' borderBottomWidth={2} opacity={1} flexGrow={1} />
+          </Flex>
+          <Stack marginTop={4}>
+            <Text as='div' textStyle='bodyMain' fontWeight={500}>
+              Website address
+            </Text>
+            <Input placeholder='www.yourcompany.com' type='url' />
+          </Stack>
+          <Stack marginTop={4}>
+            <Text as='div' textStyle='bodyMain' fontWeight={500}>
+              Instagram handle
+            </Text>
+            <Input placeholder='@yourcompany' />
+          </Stack>
+          <Stack marginTop={4}>
+            <Text as='div' textStyle='bodyMain' fontWeight={500}>
+              Twitter handle
+            </Text>
+            <Input placeholder='@yourcompany' />
+          </Stack>
+          <Stack marginTop={4}>
+            <Text as='div' textStyle='bodyMain' fontWeight={500}>
+              Facebook page
+            </Text>
+            <Input placeholder='facebook.com/yourcompany' />
+          </Stack>
+          <Stack marginTop={4}>
+            <Text as='div' textStyle='bodyMain' fontWeight={500}>
+              Online store
+            </Text>
+            <Input placeholder='shop.yourcompany.com' />
+          </Stack>
+          <Stack marginTop={4}>
+            <Text as='div' textStyle='bodyMain' fontWeight={500}>
+              Outside of social media, describe any marketing channels or presence
+            </Text>
+            <Text as="div" color='gray.400' fontSize={14}>
+              If you have a newsletter or other online marketing tools to share with us, please do so here
+            </Text>
+            <Textarea placeholder='Start typing...' />
+          </Stack>
+          <Stack marginTop={4}>
+            <Text as='div' textStyle='bodyMain' fontWeight={500}>
+              Upload recent images of your market set up. If you are new, please share product images and/or diagrams.
+            </Text>
+            <Input type='file' />
+          </Stack>
+          <Flex align='center' justify='flex-start' marginTop={8}>
+            <Heading as='h2' fontFamily={'font.body'} textStyle='h4' size='md' width={'90%'}>
+              Set up needs at market
+            </Heading>
+            <Divider color='gray.700' borderBottomWidth={2} opacity={1} />
+          </Flex>
+          <Stack marginTop={4} >
+            <Text as='div' textStyle='bodyMain' fontWeight={500}>
+              Would you like to use a FreshFarm tent? If yes, choose a size.
+            </Text>
+            <RadioGroup onChange={newValue => props.setTentSize(newValue)} value={props.tentSize}>
+              <HStack spacing={6}>
+                <Radio value='1'>Size 1</Radio>
+                <Radio value='2'>Size 2</Radio>
+                <Radio value='3'>Size 3</Radio>
+                <Radio value='4'>Size 4</Radio>
+              </HStack>
+            </RadioGroup>
+          </Stack>
+          <Stack marginTop={4} >
+            <Text as='div' textStyle='bodyMain' fontWeight={500}>
+              Do you need access to a generator?
+            </Text>
+            <RadioGroup onChange={newValue => props.setNeedGenerator(newValue)} value={props.needGenerator}>
+              <HStack spacing={6}>
+                <Radio value={true}>Yes</Radio>
+                <Radio value={false}>No</Radio>
+              </HStack>
+            </RadioGroup>
+          </Stack>
+          <Stack marginTop={4} >
+            <Text as='div' textStyle='bodyMain' fontWeight={500}>
+              Will you need to bring a vehicle into the market?
+            </Text>
+            <RadioGroup onChange={newValue => props.setNeedVehicle(newValue)} value={props.needVehicle}>
+              <HStack spacing={6}>
+                <Radio value={true}>Yes</Radio>
+                <Radio value={false}>No</Radio>
+              </HStack>
+            </RadioGroup>
+          </Stack>
+        </>
+      ) : props.index === 5 ? (
+        <>
+          <Flex align='center' justify='flex-start' marginTop={8}>
+            <Heading as='h2' fontFamily={'font.body'} textStyle='h4' size='md' width={"90%"}>
+              Product information
+            </Heading>
+            <Divider color='gray.700' borderBottomWidth={2} opacity={1} />
+          </Flex>
+          <Text as='div' textStyle='bodyMain' fontWeight={500} marginTop={4}>
+            Which products do you carry? Check all that apply
+          </Text>
+          <Wrap marginTop={4} spacing={8}>
+            <Stack spacing={4}>
+              <Heading as='h2' fontFamily={'font.body'} textStyle='h4' size='xs'>
+                Meat & Dairy
+              </Heading>
+              <CheckboxGroup colorScheme='green'>
+                <Stack>
+                  <Checkbox size='sm' value='poultry'>Poultry</Checkbox>
+                  <Checkbox size='sm' value='rabbit'>Rabbit</Checkbox>
+                  <Checkbox size='sm' value='lamb'>Lamb</Checkbox>
+                  <Checkbox size='sm' value='beef'>Beef</Checkbox>
+                  <Checkbox size='sm' value='pork'>Pork</Checkbox>
+                  <Checkbox size='sm' value='goat'>Goat</Checkbox>
+                  <Checkbox size='sm' value='bison'>Bison</Checkbox>
+                  <Checkbox size='sm' value='seafood'>Seafood</Checkbox>
+                  <Checkbox size='sm' value='milk'>Milk</Checkbox>
+                  <Checkbox size='sm' value='cheese'>Cheese</Checkbox>
+                  <Checkbox size='sm' value='yogurt'>Yogurt</Checkbox>
+                  <Checkbox size='sm' value='dairyGoat'>Dairy (goat)</Checkbox>
+                  <Checkbox size='sm' value='eggs'>Eggs</Checkbox>
+                </Stack>
+              </CheckboxGroup>
+              <Heading as='h2' fontFamily={'font.body'} textStyle='h4' size='xs'>
+                Produce & Plants
+              </Heading>
+              <CheckboxGroup colorScheme='green'>
+                <Stack>
+                  <Checkbox size='sm' value='vegetables'>Vegetables</Checkbox>
+                  <Checkbox size='sm' value='microgreens'>Microgreens</Checkbox>
+                  <Checkbox size='sm' value='mushrooms'>Mushrooms</Checkbox>
+                  <Checkbox size='sm' value='fruitOrchard'>Fruit (orchard)</Checkbox>
+                  <Checkbox size='sm' value='fruitBerries'>Fruit (berries)</Checkbox>
+                  <Checkbox size='sm' value='herbs'>Herbs</Checkbox>
+                  <Checkbox size='sm' value='plants'>Plants</Checkbox>
+                  <Checkbox size='sm' value='cutFlowers'>Cut flowers</Checkbox>
+                </Stack>
+              </CheckboxGroup>
+            </Stack>
+            <Stack spacing={4}>
+              <Heading as='h2' fontFamily={'font.body'} textStyle='h4' size='xs'>
+                Dried goods
+              </Heading>
+              <CheckboxGroup colorScheme='green'>
+                <Stack>
+                  <Checkbox size='sm' value='driedFruit'>Dried fruit</Checkbox>
+                  <Checkbox size='sm' value='grains'>Grains</Checkbox>
+                  <Checkbox size='sm' value='legumes'>Legumes</Checkbox>
+                </Stack>
+              </CheckboxGroup>
+              <Heading as='h2' fontFamily={'font.body'} textStyle='h4' size='xs'>
+                Value added products
+              </Heading>
+              <CheckboxGroup colorScheme='green'>
+                <Stack>
+                  <Checkbox size='sm' value='jamJellySauce'>Jams, jellies, sauces</Checkbox>
+                  <Checkbox size='sm' value='fermetsPickes'>Fermets/pickles</Checkbox>
+                  <Checkbox size='sm' value='fermentedDrinks'>Fermented drinks</Checkbox>
+                  <Checkbox size='sm' value='fermentedFood'>Fermented food</Checkbox>
+                  <Checkbox size='sm' value='oilVinegarSpices'>Oil, vinegar, spices</Checkbox>
+                  <Checkbox size='sm' value='spreadsCondiments'>Spreads & condiments</Checkbox>
+                  <Checkbox size='sm' value='honey'>Honey</Checkbox>
+                </Stack>
+              </CheckboxGroup>
+              <Heading as='h2' fontFamily={'font.body'} textStyle='h4' size='xs'>
+                Prepared & baked goods
+              </Heading>
+              <CheckboxGroup colorScheme='green'>
+                <Stack>
+                  <Checkbox size='sm' value='bread'>Bread</Checkbox>
+                  <Checkbox size='sm' value='patries'>Pastries</Checkbox>
+                  <Checkbox size='sm' value='pasta'>Pasta</Checkbox>
+                  <Checkbox size='sm' value='hotBreakfast'>Hot breakfast</Checkbox>
+                  <Checkbox size='sm' value='hotLunch'>Hot lunch</Checkbox>
+                  <Checkbox size='sm' value='icecream'>Ice cream</Checkbox>
+                  <Checkbox size='sm' value='glutenFree'>Gluten free</Checkbox>
+                  <Checkbox size='sm' value='vegan'>Vegan</Checkbox>
+                  <Checkbox size='sm' value='honey'>Honey</Checkbox>
+                </Stack>
+              </CheckboxGroup>
+            </Stack>
+            <Stack spacing={4}>
+              <Heading as='h2' fontFamily={'font.body'} textStyle='h4' size='xs'>
+                Beverages
+              </Heading>
+              <CheckboxGroup colorScheme='green'>
+                <Stack>
+                  <Checkbox size='sm' value='farmedSourcedAlcohol'>Farmed sourced alcohol</Checkbox>
+                  <Checkbox size='sm' value='beer'>Beer</Checkbox>
+                  <Checkbox size='sm' value='wine'>Wine</Checkbox>
+                  <Checkbox size='sm' value='liquor'>Liquor</Checkbox>
+                  <Checkbox size='sm' value='coffeePackaged'>Coffee (packaged)</Checkbox>
+                  <Checkbox size='sm' value='coffeePrepared'>Coffee (prepared)</Checkbox>
+                  <Checkbox size='sm' value='tea'>Tea</Checkbox>
+                  <Checkbox size='sm' value='juice'>Juice</Checkbox>
+                  <Checkbox size='sm' value='smoothies'>Smoothies</Checkbox>
+                </Stack>
+              </CheckboxGroup>
+              <Heading as='h2' fontFamily={'font.body'} textStyle='h4' size='xs'>
+                Non-food
+              </Heading>
+              <CheckboxGroup colorScheme='green'>
+                <Stack>
+                  <Checkbox size='sm' value='petTreats'>Pet treats</Checkbox>
+                  <Checkbox size='sm' value='cbdHemp'>CBD/hemp</Checkbox>
+                  <Checkbox size='sm' value='farmSourcedTextiles'>Farm-sourced textiles</Checkbox>
+                  <Checkbox size='sm' value='soap'>Soap</Checkbox>
+                </Stack>
+              </CheckboxGroup>
+            </Stack>
+          </Wrap>
+          <Flex align='center' justify='flex-start' marginTop={8}>
+            <Heading as='h2' fontFamily={'font.body'} textStyle='h4' size='md' width={'90%'}>
+              Sourcing information
+            </Heading>
+            <Divider color='gray.700' borderBottomWidth={2} opacity={1} />
+          </Flex>
+          <Stack marginTop={4}>
+            <Text as='div' textStyle='bodyMain' fontWeight={500} >
+              Which local vendors do you source from?
+            </Text>
+            <Text as="div" color='gray.400' fontSize={14}>
+              List vendors outside of FreshFarm that you source ingredients from
+            </Text>
+            <Textarea placeholder='Start typing...' />
+            <Text as="div" color='gray.400' fontSize={14}>
+              List FreshFarm vendors you source ingredients from
+            </Text>
+            <Textarea placeholder='Start typing...' />
+          </Stack>
+        </>
+      ) : props.index === 6 ? (
+        <>
+          <Flex align='center' justify='flex-start' marginTop={8}>
+            <Heading as='h2' fontFamily={'font.body'} textStyle='h4' size='md' width={'100%'} >
+              Terms
+            </Heading>
+            <Divider color='gray.700' borderBottomWidth={2} opacity={1} />
+          </Flex>
+          <Stack marginTop={4} spacing={4}>
+            <Text as='div' textStyle='bodyMain' fontWeight={500} >
+              As a private nonprofit organization, FRESHFARM has the right to implement rules to ensure our farmers markets are safe and prosperous. Everyone who enters the market’s permitted space is required to comply with FRESHFARM’s market rules as outlined below. Anyone that demonstrates behavior considered threatening or disruptive to market operations will be asked to leave at the discretion of market management. Failure to comply with the rules will result in immediate suspension or expulsion from the market space.
+            </Text>
+            <OrderedList fontSize={'sm'} spacing={2}>
+              <ListItem>
+                Customers, vendors, and market staff may not participate in activities within the market space that impedes or disrupts ongoing market operations.
+              </ListItem>
+              <ListItem>
+                Disruptive behaviors, threats, or any acts of violence will not be tolerated.
+              </ListItem>
+              <ListItem>
+                Language that disrupts market operations will not be tolerated. Examples include shouting, berating, cursing, etc.
+              </ListItem>
+              <ListItem>
+                Signs and flyers are not permitted to be displayed or distributed within the market space unless approved by market management.
+              </ListItem>
+              <ListItem>
+                While elected officials are permitted to engage with their constituents at markets, campaigning for political candidates is strictly prohibited due to our 501(c)(3) status.
+              </ListItem>
+              <ListItem>
+                Harassment of any nature will not be tolerated.
+              </ListItem>
+              <ListItem>
+                Firearms and other weapons are not welcomed.
+              </ListItem>
+              <ListItem>
+                All customers, vendors, and staff must adhere to FRESHFARM’s COVID-19 safety policies.
+              </ListItem>
+              <ListItem>
+                Dogs must have the ability to walk through the market without lunging, barking excessively, or jumping on others.
+              </ListItem>
+            </OrderedList>
+            <Heading as='h3' fontFamily={'font.body'} textStyle='h5' size='sm'>
+              Producer-only requirement
+            </Heading>
+            <Text as='div' textStyle='bodyMain' fontWeight={500} >
+              All businesses selling at FRESHFARM Markets must exclusively sell products that they have grown or produced. Absolutely NO resales or third-party sales are allowed.
+            </Text>
+            <Heading as='h3' fontFamily={'font.body'} textStyle='h5' size='sm'>
+              Commitment to equity
+            </Heading>
+            <Text as='div' textStyle='bodyMain' fontWeight={500} >
+              FRESHFARM is committed to diversity and building an equitable and inclusive marketplace for people of all backgrounds and experiences. We encourage members of traditionally underrepresented groups to apply to sell at market, including people of color, LGBTQ+ people, veterans, and people with disabilities. We do not discriminate and will take affirmative action measures to prevent discrimination against any vendor or applicant on the basis of race, color, national origin, gender, gender identity, gender expression, sexual orientation, age, religion, creed, disability, or veteran status.
+            </Text>
+          </Stack>
+        </>
+      ) : props.index === 7 ? (
+        <>
+          <Heading as='h1' textStyle='h1' size='xl' marginTop={12} textAlign='center'>
+            Thank you for applying to FreshFarm!
+          </Heading>
+          <Text as='div' textStyle='bodyMain' fontWeight={500} >
+            [ INSTRUCTIONS ABOUT MARKET APPLICATIONS] To sell at Fresh Farm Markets vendors must apply to each market. We accept applications annually from farmers and producers selling items that feature agricultural products grown within 200 miles of Washington, DC.
+          </Text>
+          <Text as='div' textStyle='bodyMain' fontWeight={500} >
+            Remember, a Jedi can feel the Force flowing through him. You are a part of the Rebel Alliance and a traitor! Take her away! I suggest you try it again, Luke. This time, let go your conscious self and act on instinct.
+          </Text>
         </>
       ) : null}
     </div>

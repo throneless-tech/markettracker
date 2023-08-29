@@ -10,6 +10,7 @@ import {
   Card,
   CardBody,
   Center,
+  HStack,
   Link,
   Stack,
   Text
@@ -20,6 +21,7 @@ import Footer from '../Components/Footer';
 import { steps } from '../Components/Register/Steps'
 
 // icons + images
+import { ArrowBackIcon } from '@chakra-ui/icons'
 import { ArrowForwardIcon } from '@chakra-ui/icons'
 
 import background from '../../../public/login-background.jpg'
@@ -38,11 +40,15 @@ const Register = () => {
     )
   }
 
+  function handleBackClick() {
+    setIndex(index - 1);
+  }
+
   function handleNextClick() {
     setIndex(index + 1);
   }
 
-  useEffect(() => {}, [index]);
+  useEffect(() => { }, [index]);
 
   return (
     <Box>
@@ -93,19 +99,84 @@ const Register = () => {
               billingContact={billingContact}
               setBillingContact={setBillingContact}
             />
-            <Center>
-              <Button
-                colorScheme='green'
-                marginTop={12}
-                variant='solid'
-                width={115}
-                onClick={handleNextClick}
-              >
-                Next
-                <ArrowForwardIcon sx={{ marginLeft: 4 }} />
-              </Button>
-            </Center>
-            {index === 0 ? (
+            {index < 6 ? (
+              <Center>
+                <HStack spacing={4}>
+                  <Button
+                    colorScheme='green'
+                    marginTop={12}
+                    variant='solid'
+                    width={125}
+                    onClick={handleBackClick}
+                    leftIcon={<ArrowBackIcon />}
+                    isDisabled={index === 0}
+
+                  >
+                    Back
+                  </Button>
+                  <Button
+                    colorScheme='green'
+                    marginTop={12}
+                    variant='solid'
+                    width={125}
+                    onClick={handleNextClick}
+                    rightIcon={<ArrowForwardIcon />}
+                  >
+                    {index === 5 ? "Finish" : "Next"}
+                  </Button>
+                </HStack>
+              </Center>
+            ) : index === 6 ? (
+              <Center>
+                <HStack spacing={4}>
+                  <Button
+                    colorScheme='green'
+                    marginTop={12}
+                    variant='solid'
+                    width={125}
+                    isDisabled={index === 0}
+                    onClick={handleNextClick}
+                  >
+                    Accept
+                  </Button>
+                  <Link href='/'>
+                    <Button
+                      colorScheme='green'
+                      marginTop={12}
+                      variant='outline'
+                      width={125}
+                    >
+                      Cancel
+                    </Button>
+                  </Link>
+                </HStack>
+              </Center>
+            ) : (
+              <Center>
+                <HStack spacing={4}>
+                  <Link href='/dashboard'>
+                    <Button
+                      colorScheme='green'
+                      marginTop={12}
+                      variant='solid'
+                      isDisabled={index === 0}
+                    >
+                      Apply to markets now
+                    </Button>
+                  </Link>
+                  <Link href='/'>
+                    <Button
+                      colorScheme='green'
+                      marginTop={12}
+                      variant='outline'
+                    >
+                      Apply to markets later
+                    </Button>
+                  </Link>
+                </HStack>
+              </Center>
+            )}
+            {index === 0 || index === 1 ? (
               <Center>
                 <Stack direction={'row'} marginTop={12}>
                   <Text as='div' color='gray.500'>
@@ -115,6 +186,12 @@ const Register = () => {
                     Login here
                   </Link>
                 </Stack>
+              </Center>
+            ) : index > 1 ? (
+              <Center marginTop={12}>
+                <Text as='div' color='gray.500'>
+                  Progress: {index}/6
+                </Text>
               </Center>
             ) : null}
           </CardBody>
