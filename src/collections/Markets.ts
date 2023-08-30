@@ -1,7 +1,17 @@
 import { CollectionConfig } from "payload/types";
+import CustomMarketsEdit from "../components/Markets/CustomMarketsEdit";
+import CustomMarketsList from "../components/Markets/CustomMarketsList";
 
 export const Markets: CollectionConfig = {
   slug: "markets",
+  admin: {
+    components: {
+      views: {
+        Edit: CustomMarketsEdit,
+        List: CustomMarketsList,
+      },
+    },
+  },
   fields: [
     {
       name: "name",

@@ -1,3 +1,6 @@
+import React from 'react'
+import { useHistory } from 'react-router-dom'
+
 import {
   Box,
   Button,
@@ -17,9 +20,9 @@ import { MarketIcon } from '../../icons/market'
 import { ProfileIcon } from '../../icons/profile'
 
 const MarketCard = (props) => {
+  const history = useHistory();
   const {
-    open,
-    name,
+    market,
     day,
     address,
     time,
@@ -30,6 +33,13 @@ const MarketCard = (props) => {
     managerPhone,
     marketNeeds
   } = props;
+
+  const viewMarket = (market) => {
+    history.push({
+      pathname: `/admin/collections/markets/${market.id}`,
+      state: market,
+    });
+  }
 
   return (
     <Box
@@ -53,7 +63,7 @@ const MarketCard = (props) => {
           />
           <Stack color={'#fff'} spacing={2}>
             <Text fontSize={28} textStyle={'h3'}>
-              {name}
+              {market.name}
             </Text>
             <Text>
               {address}
@@ -118,7 +128,7 @@ const MarketCard = (props) => {
           </HStack>
         </Stack>
       </Box>
-      {open && (
+      {market.state == 'active' && (
         <Box margin={4}>
           <Center>
             <Text as={'div'} textStyle={'h4'}>
@@ -145,10 +155,10 @@ const MarketCard = (props) => {
         <Divider color='green.600' borderBottomWidth={2} opacity={1} marginBottom={8} />
         <Center>
           <Text textStyle={'h4'}>
-            {open ? '' : 'Not '}Accepting applications
+            {market.state == 'active' ? '' : 'Not '}Accepting applications
           </Text>
         </Center>
-        {open && (
+        {market.state == 'active' && (
           <Center marginBottom={2}>
             <Link href='/markets/apply'>
               <Button rightIcon={<ArrowForwardIcon />} variant={'solid'}>
@@ -158,11 +168,9 @@ const MarketCard = (props) => {
           </Center>
         )}
       <Center>
-        <Link href='#FIXME'>
-          <Button rightIcon={<ArrowForwardIcon />}>
+          <Button rightIcon={<ArrowForwardIcon />} onClick={e => { e.preventDefault; viewMarket(market)}}>
             View market
           </Button>
-        </Link>
       </Center>
       </Box>
     </Box>

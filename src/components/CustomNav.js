@@ -44,8 +44,6 @@ const CustomNav = () => {
   let location = useLocation();
   const { user } = useAuth();
 
-  console.log(location);
-
   return (
     <ChakraProvider theme={theme}>
       <Stack

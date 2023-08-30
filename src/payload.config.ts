@@ -31,7 +31,7 @@ export default buildConfig({
       },
       Nav: CustomNav,
       views: {
-        // Dashboard: CustomDashboard,
+        Dashboard: CustomDashboard,
       },
     },
   },
