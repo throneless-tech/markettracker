@@ -21,7 +21,6 @@ export const Vendors: CollectionConfig = {
       type: "checkbox",
       required: true,
     },
-
     {
       name: "address",
       label: "Address",
@@ -236,7 +235,7 @@ export const Vendors: CollectionConfig = {
       label: "Do you use any of the following growing practices?",
       type: "select",
       required: true,
-      hasMany: false,
+      hasMany: true,
       options: [
         {
           label: "Organic Management",
@@ -266,6 +265,379 @@ export const Vendors: CollectionConfig = {
       admin: {
         description: "Check all that apply",
       },
+    },
+    {
+      name: "sellingLocally",
+      label: "Where are you selling your products locally?",
+      type: "select",
+      required: true,
+      hasMany: false,
+      options: [
+        {
+          label: "Nowhere Yet",
+          value: "nowhere",
+        },
+        {
+          label: "At Fresh Farm markets",
+          value: "freshfarm",
+        },
+        {
+          label: "At other, non Frsh Farm, markets or in stores",
+          value: "other",
+        },
+      ],
+    },
+    {
+      name: "outletImportance",
+      label:
+        "Rank the following revenue outlets in order of importance to your sales:",
+      type: "group",
+      fields: [
+        {
+          name: "stores",
+          label: "Stores",
+          type: "radio",
+          required: true,
+          options: ["1", "2", "3", "4", "5"],
+          admin: {
+            layout: "horizontal",
+          },
+        },
+        {
+          name: "markets",
+          label: "Farmers Markets",
+          type: "radio",
+          required: true,
+          options: ["1", "2", "3", "4", "5"],
+          admin: {
+            layout: "horizontal",
+          },
+        },
+        {
+          name: "own",
+          label: "Own Brick & Mortar",
+          type: "radio",
+          required: true,
+          options: ["1", "2", "3", "4", "5"],
+          admin: {
+            layout: "horizontal",
+          },
+        },
+        {
+          name: "online",
+          label: "Online Sales",
+          type: "radio",
+          required: true,
+          options: ["1", "2", "3", "4", "5"],
+          admin: {
+            layout: "horizontal",
+          },
+        },
+      ],
+    },
+    {
+      name: "sharedKitchen",
+      label: "Do you work out of a Shared Kitchen?",
+      type: "text",
+    },
+    {
+      name: "copacker",
+      label: "Do you use a Co-Packer?",
+      type: "text",
+    },
+    {
+      name: "contacts",
+      label:
+        "Add all the members of your staff that will be manning your booth(s); these contacts will be visible to the managers of markets your participate in.",
+      type: "relationship",
+      required: true,
+      hasMany: true,
+      relationTo: "contacts",
+    },
+    {
+      name: "licenses",
+      label: {
+        singular: "Upload Business License",
+        plural: "Upload Business Licenses",
+      },
+      type: "array",
+      required: true,
+      fields: [
+        {
+          name: "licenseDocument",
+          type: "upload",
+          relationTo: "documents",
+          required: true,
+        },
+      ],
+      admin: {
+        description: "TODO",
+      },
+    },
+    {
+      name: "insurance",
+      label: "Upload Insurance Documentation",
+      type: "array",
+      required: true,
+      fields: [
+        {
+          name: "insuranceDocument",
+          type: "upload",
+          relationTo: "documents",
+          required: true,
+        },
+      ],
+      admin: {
+        description: "TODO",
+      },
+    },
+    {
+      name: "sharedKitchenInsurance",
+      label: "Upload Shared Kitchen Insurance Documentation",
+      type: "array",
+      required: true,
+      fields: [
+        {
+          name: "sharedKitchenInsuranceDocument",
+          type: "upload",
+          relationTo: "documents",
+          required: true,
+        },
+      ],
+      admin: {
+        description: "TODO",
+      },
+    },
+    {
+      name: "copackerInsurance",
+      label: "Upload Co-packer Insurance Documentation",
+      type: "array",
+      required: true,
+      fields: [
+        {
+          name: "copackerInsuranceDocument",
+          type: "upload",
+          relationTo: "documents",
+          required: true,
+        },
+      ],
+      admin: {
+        description: "TODO",
+      },
+    },
+    {
+      name: "demographics",
+      label: "Demographic Information",
+      type: "group",
+      fields: [
+        {
+          name: "firstGeneration",
+          label: "Is the business owner a first generation farmer?",
+          type: "radio",
+          options: [
+            {
+              label: "Yes",
+              value: "yes",
+            },
+            {
+              label: "No",
+              value: "no",
+            },
+            {
+              label: "Prefer not to answer",
+              value: "no_answer",
+            },
+          ],
+        },
+        {
+          name: "veteranOwned",
+          label: "Is this a Veteran owned business?",
+          type: "radio",
+          options: [
+            {
+              label: "Yes",
+              value: "yes",
+            },
+            {
+              label: "No",
+              value: "no",
+            },
+            {
+              label: "Prefer not to answer",
+              value: "no_answer",
+            },
+          ],
+        },
+        {
+          name: "bipoc",
+          label:
+            "Do any of the business owners identify as Black, Indigenous, and/or Person of Color?",
+          type: "radio",
+          options: [
+            {
+              label: "Yes",
+              value: "yes",
+            },
+            {
+              label: "No",
+              value: "no",
+            },
+            {
+              label: "Prefer not to answer",
+              value: "no_answer",
+            },
+          ],
+        },
+        {
+          name: "immigrantOrRefugee",
+          label: "Is this an immigrant or refugee owned business?",
+          type: "radio",
+          options: [
+            {
+              label: "Yes",
+              value: "yes",
+            },
+            {
+              label: "No",
+              value: "no",
+            },
+            {
+              label: "Prefer not to answer",
+              value: "no_answer",
+            },
+          ],
+        },
+        {
+          name: "lgbtqia",
+          label:
+            "Is this an LGBTQIA+ (Lesbian, Gay, Bisexual, Transgender, Queer, Intersex, Asexual, Plus) owned business?",
+          type: "radio",
+          options: [
+            {
+              label: "Yes",
+              value: "yes",
+            },
+            {
+              label: "No",
+              value: "no",
+            },
+            {
+              label: "Prefer not to answer",
+              value: "no_answer",
+            },
+          ],
+        },
+        {
+          name: "other",
+          label: "Other",
+          type: "text",
+          admin: {
+            description: "self describe",
+          },
+        },
+      ],
+      admin: {
+        description:
+          "The following demographic questions are intended to assess how members of various communities are participating in our programming. The responses will help us make decisions about our outreach, engagement, and programming efforts to ensure we are effectively serving our diverse membership",
+      },
+    },
+    {
+      name: "marketing",
+      label: "Marketing & Links",
+      type: "group",
+      fields: [
+        {
+          name: "website",
+          label: "Website Address (if you have one)",
+          type: "text",
+        },
+        {
+          name: "instagram",
+          label: "Instagram Handle (if you have one)",
+          type: "text",
+        },
+        {
+          name: "twitter",
+          label: "Twitter Handle (if you have one)",
+          type: "text",
+        },
+        {
+          name: "facebook",
+          label: "Facebook page (if you have one)",
+          type: "text",
+        },
+        {
+          name: "store",
+          label: "Online Store (if you have one)",
+          type: "text",
+        },
+        {
+          name: "other",
+          label:
+            "Outside of social media, describe any marketing channels or presence",
+          type: "textarea",
+          admin: {
+            description:
+              "If you have a newsletter or other online marketing tools to share with us please do so here.",
+          },
+        },
+        {
+          name: "pictures",
+          label:
+            "Upload some recent images of yoru market set up. If you are new, please share product images and/or diagrams",
+          type: "upload",
+          relationTo: "media",
+        },
+      ],
+    },
+    {
+      name: "setupNeeds",
+      label: "Set up needs at market",
+      type: "group",
+      fields: [
+        {
+          name: "tent",
+          label: "Would you like to use a Fresh Farm tent?",
+          type: "radio",
+          options: ["size 1", "size 2", "size 3", "size 4"],
+        },
+        {
+          name: "generator",
+          label: "Do you need access to a generator?",
+          type: "checkbox",
+        },
+        {
+          name: "vehicle",
+          label: "Will you need to bring a vehicle into the market?",
+          type: "checkbox",
+        },
+      ],
+    },
+    {
+      name: "products", // TODO custom component
+      label: "Product Information",
+      type: "text",
+      admin: {
+        description: "What products do you carry? check all that apply",
+      },
+    },
+    {
+      name: "sourcing",
+      label: "Sourcing Information",
+      type: "group",
+      fields: [
+        {
+          name: "outsideVendors",
+          label:
+            "List vendors outside of FRESHFARMS you source ingredients from",
+          type: "textarea",
+        },
+        {
+          name: "freshfarmVendors",
+          label: "List FRESHFARM vendors you source ingredients from",
+          type: "textarea",
+        },
+      ],
     },
   ],
 };

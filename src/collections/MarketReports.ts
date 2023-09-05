@@ -16,13 +16,6 @@ export const MarketReports: CollectionConfig = {
       hasMany: true,
     },
     {
-      name: "day",
-      type: "relationship",
-      relationTo: "days",
-      hasMany: false,
-      required: true,
-    },
-    {
       name: "suppliesNeeded",
       type: "select",
       hasMany: true,

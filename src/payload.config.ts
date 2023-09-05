@@ -2,17 +2,15 @@ import { buildConfig } from "payload/config";
 import path from "path";
 // import Examples from './collections/Examples';
 import { Applications } from "./collections/Applications";
-import { Appointments } from "./collections/Appointments";
 import { Contacts } from "./collections/Contacts";
-import { Coupons } from "./collections/Coupons";
-import { Days } from "./collections/Days";
-import { Instances } from "./collections/Instances";
+import { Documents } from "./collections/Documents";
 import { Invoices } from "./collections/Invoices";
 import { MarketReports } from "./collections/MarketReports";
 import { Markets } from "./collections/Markets";
+import { Media } from "./collections/Media";
 import { Products } from "./collections/Products";
 import { SalesReports } from "./collections/SalesReports";
-import { Supplies } from "./collections/Supplies";
+import { Seasons } from "./collections/Seasons";
 import { Vendors } from "./collections/Vendors";
 
 import CustomDashboard from "./components/CustomDashboard";
@@ -29,17 +27,15 @@ export default buildConfig({
   },
   collections: [
     Applications,
-    Appointments,
     Contacts,
-    Coupons,
-    Days,
-    Instances,
+    Documents,
     Invoices,
     MarketReports,
     Markets,
+    Media,
     Products,
     SalesReports,
-    Supplies,
+    Seasons,
     Vendors,
     // Add Collections here
     // Examples,
