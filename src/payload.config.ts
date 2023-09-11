@@ -11,6 +11,7 @@ import { Media } from "./collections/Media";
 import { Products } from "./collections/Products";
 import { SalesReports } from "./collections/SalesReports";
 import { Seasons } from "./collections/Seasons";
+import { Supplies} from "./collections/Supplies";
 import { Vendors } from "./collections/Vendors";
 
 import CustomDashboard from "./components/CustomDashboard";
@@ -36,6 +37,7 @@ export default buildConfig({
     Products,
     SalesReports,
     Seasons,
+    Supplies,
     Vendors,
     // Add Collections here
     // Examples,
