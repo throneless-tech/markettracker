@@ -1,11 +1,14 @@
-import React from 'react'
-import { Box, Flex, Heading, Spacer, Stack, Text } from '@chakra-ui/react'
-import { MarketIcon } from '../icons/market'
-import { SalesIcon } from '../icons/sales'
+import React, { FC } from "react";
+import { Box, Flex, Heading, Spacer, Stack, Text } from "@chakra-ui/react";
+import { MarketIcon } from "../icons/market";
+import { SalesIcon } from "../icons/sales";
 
-const Card = (props) => {
-  const { icon, title } = props;
+interface CardProps {
+  title: string;
+  icon?: string;
+}
 
+const Card: FC<CardProps> = ({ title, icon }) => {
   return (
     <Box
       padding="16px"
@@ -22,27 +25,33 @@ const Card = (props) => {
         maxWidth="100%"
         direction="row"
       >
-        {icon == "market" ? (
-          <MarketIcon
-            sx={{
-              fill: 'none',
-              height: "24px",
-              width: "24px",
-              '& path': {
-                stroke: 'teal.300 !important'
-              }
-            }} />
-        ) : icon == "sales" ? (
-            <SalesIcon
+        {icon == "market"
+          ? (
+            <MarketIcon
               sx={{
-                fill: 'none',
+                fill: "none",
                 height: "24px",
                 width: "24px",
-                '& path': {
-                  stroke: 'teal.300 !important'
-                }
-              }} />
-        ) : null}
+                "& path": {
+                  stroke: "teal.300 !important",
+                },
+              }}
+            />
+          )
+          : icon == "sales"
+          ? (
+            <SalesIcon
+              sx={{
+                fill: "none",
+                height: "24px",
+                width: "24px",
+                "& path": {
+                  stroke: "teal.300 !important",
+                },
+              }}
+            />
+          )
+          : null}
         <Heading
           as="h2"
           lineHeight="1"
@@ -85,18 +94,18 @@ const Card = (props) => {
             Columbia Heights [Saturday]
           </Text>
           <Spacer
-            sx={{ position: 'relative' }}
+            sx={{ position: "relative" }}
             _before={{
-              borderBottom: '1px dotted black',
-              borderWidth: '2px',
+              borderBottom: "1px dotted black",
+              borderWidth: "2px",
               bottom: 0,
               content: '" "',
-              display: 'block',
-              left: '50%',
-              position: 'absolute',
-              top: '50%',
-              transform: 'translate(-50%, -50%)',
-              width: '90%'
+              display: "block",
+              left: "50%",
+              position: "absolute",
+              top: "50%",
+              transform: "translate(-50%, -50%)",
+              width: "90%",
             }}
           />
           <Text
@@ -128,18 +137,18 @@ const Card = (props) => {
             Monroe St.
           </Text>
           <Spacer
-            sx={{ position: 'relative' }}
+            sx={{ position: "relative" }}
             _before={{
-              borderBottom: '1px dotted black',
-              borderWidth: '2px',
+              borderBottom: "1px dotted black",
+              borderWidth: "2px",
               bottom: 0,
               content: '" "',
-              display: 'block',
-              left: '50%',
-              position: 'absolute',
-              top: '50%',
-              transform: 'translate(-50%, -50%)',
-              width: '90%'
+              display: "block",
+              left: "50%",
+              position: "absolute",
+              top: "50%",
+              transform: "translate(-50%, -50%)",
+              width: "90%",
             }}
           />
           <Text
@@ -171,18 +180,18 @@ const Card = (props) => {
             Columbia Heights [Wednesday]
           </Text>
           <Spacer
-            sx={{ position: 'relative' }}
+            sx={{ position: "relative" }}
             _before={{
-              borderBottom: '1px dotted black',
-              borderWidth: '2px',
+              borderBottom: "1px dotted black",
+              borderWidth: "2px",
               bottom: 0,
               content: '" "',
-              display: 'block',
-              left: '50%',
-              position: 'absolute',
-              top: '50%',
-              transform: 'translate(-50%, -50%)',
-              width: '90%'
+              display: "block",
+              left: "50%",
+              position: "absolute",
+              top: "50%",
+              transform: "translate(-50%, -50%)",
+              width: "90%",
             }}
           />
           <Text
@@ -214,18 +223,18 @@ const Card = (props) => {
             Columbia Heights [Saturday]
           </Text>
           <Spacer
-            sx={{ position: 'relative' }}
+            sx={{ position: "relative" }}
             _before={{
-              borderBottom: '1px dotted black',
-              borderWidth: '2px',
+              borderBottom: "1px dotted black",
+              borderWidth: "2px",
               bottom: 0,
               content: '" "',
-              display: 'block',
-              left: '50%',
-              position: 'absolute',
-              top: '50%',
-              transform: 'translate(-50%, -50%)',
-              width: '90%'
+              display: "block",
+              left: "50%",
+              position: "absolute",
+              top: "50%",
+              transform: "translate(-50%, -50%)",
+              width: "90%",
             }}
           />
           <Text
@@ -257,18 +266,18 @@ const Card = (props) => {
             Monroe St.
           </Text>
           <Spacer
-            sx={{ position: 'relative' }}
+            sx={{ position: "relative" }}
             _before={{
-              borderBottom: '1px dotted black',
-              borderWidth: '2px',
+              borderBottom: "1px dotted black",
+              borderWidth: "2px",
               bottom: 0,
               content: '" "',
-              display: 'block',
-              left: '50%',
-              position: 'absolute',
-              top: '50%',
-              transform: 'translate(-50%, -50%)',
-              width: '90%'
+              display: "block",
+              left: "50%",
+              position: "absolute",
+              top: "50%",
+              transform: "translate(-50%, -50%)",
+              width: "90%",
             }}
           />
           <Text
@@ -285,7 +294,7 @@ const Card = (props) => {
         </Flex>
       </Stack>
     </Box>
-  )
-}
+  );
+};
 
 export { Card };
