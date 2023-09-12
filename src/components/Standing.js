@@ -1,7 +1,11 @@
 import React from 'react'
 import { Flex, Stack, Text, Tag } from '@chakra-ui/react'
 
-const Standing = () => (
+const Standing = (props) => {
+  const { user } = props;
+
+  console.log(user);
+  return (
     <Flex
       padding={6}
       direction="row"
@@ -23,13 +27,15 @@ const Standing = () => (
         fontSize="24px"
         color="#000000"
         flex="1"
+        marginBottom={0}
       >
-        Pleitez Produce is in good standing [explanation about standing status]{' '}
+        {user.name ? user.name : user.email} is in [good] standing [explanation about standing status]{' '}
       </Text>
       <Tag variant='solid' colorScheme='teal'>
         Good
       </Tag>
     </Flex>
 )
+}
 
 export { Standing };

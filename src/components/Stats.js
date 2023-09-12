@@ -48,7 +48,7 @@ const Stats = () => (
           textTransform="uppercase"
           color="gray.700"
         >
-          $320,776
+          $0
         </Text>
         <Text
           fontFamily="Zilla Slab"
@@ -77,7 +77,7 @@ const Stats = () => (
           textTransform="uppercase"
           color="gray.700"
         >
-          118
+          0
         </Text>
         <Text
           fontFamily="Zilla Slab"
@@ -106,7 +106,7 @@ const Stats = () => (
           textTransform="uppercase"
           color="gray.700"
         >
-          4
+          0
         </Text>
         <Text
           fontFamily="Zilla Slab"
@@ -135,7 +135,7 @@ const Stats = () => (
           textTransform="uppercase"
           color="gray.700"
         >
-          $16,903
+          $0
         </Text>
         <Text
           fontFamily="Zilla Slab"

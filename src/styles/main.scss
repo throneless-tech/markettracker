@@ -1,0 +1,21 @@
+p {
+  margin-bottom: 0;
+}
+
+#app {
+  overflow-x: hidden;
+}
+
+.nav {
+  height: unset;
+  position: relative;
+  width: 100%;
+}
+
+.nav__scroll, .nav__wrap {
+  flex-direction: row;
+}
+
+.template-default {
+  display: block;
+}
