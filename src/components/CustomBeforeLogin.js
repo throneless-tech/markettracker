@@ -1,5 +1,5 @@
 import React from 'react'
-import Image from 'next/image'
+import { Image } from '@chakra-ui/react'
 
 import {
   AbsoluteCenter,
@@ -15,9 +15,9 @@ import {
 } from '@chakra-ui/react'
 
 import LogoMarketTracker from "../assets/icons/logoMarketTracker.js"
-import background from '../../../public/login-background.jpg'
+import background from '../assets/images/login-background.jpg'
 
-const Login = () => (
+const CustomBeforeLogin = () => (
   <Box h="100vh">
     <Box
       bg="teal.500"
@@ -31,11 +31,8 @@ const Login = () => (
     >
       <Image
         src={background}
-        placeholder="blur"
-        quality={100}
-        fill
-        sizes="100vw"
-        style={{
+        boxSize="100vw"
+        sx={{
           backgroundRepeat: 'no-repeat',
           mixBlendMode: 'multiply',
           objectFit: 'cover',
@@ -80,4 +77,4 @@ const Login = () => (
   </Box>
 )
 
-export default Login;
+export default CustomBeforeLogin;

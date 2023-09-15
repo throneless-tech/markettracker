@@ -14,12 +14,12 @@ import {
   TabList,
   Text
 } from '@chakra-ui/react'
-import { HomeIcon } from '../icons/home'
-import { LicenseIcon } from '../icons/license'
-import { MarketIcon } from '../icons/market'
-import { ProfileIcon } from '../icons/profile'
-import { SalesIcon } from '../icons/sales'
-import Logo from '../icons/logo'
+import { HomeIcon } from '../assets/icons/home'
+import { LicenseIcon } from '../assets/icons/license'
+import { MarketIcon } from '../assets/icons/market'
+import { ProfileIcon } from '../assets/icons/profile'
+import { SalesIcon } from '../assets/icons/sales'
+import Logo from '../assets/icons/logo'
 
 const Nav = () => (
   <Stack

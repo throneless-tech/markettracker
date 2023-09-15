@@ -33,7 +33,7 @@ import theme from '../../styles/theme.js';
 import Calendar from '../Calendar.js';
 
 // icons
-import StarIcon from '../../icons/star.js'
+import StarIcon from '../../assets/icons/star.js'
 
 // fonts
 import '@fontsource/inter/300.css';

@@ -14,9 +14,11 @@ import { Seasons } from "./collections/Seasons";
 import { Supplies} from "./collections/Supplies";
 import { Vendors } from "./collections/Vendors";
 
+import CustomBeforeLogin from "./components/CustomBeforeLogin";
 import CustomDashboard from "./components/CustomDashboard";
+import CustomProvider from "./styles/themeProvider";
 import CustomNav from "./components/CustomNav";
-import CustomLogo from "./icons/logo";
+import CustomLogo from "./assets/icons/logo";
 
 export default buildConfig({
   serverURL: "http://localhost:3000",
@@ -24,11 +26,13 @@ export default buildConfig({
     // user: Users.slug,
     css: path.resolve(__dirname, 'styles/main.scss'),
     components: {
+      // BeforeLogin: CustomBeforeLogin,
       graphics: {
         Icon: CustomLogo,
         Logo: CustomLogo,
       },
       Nav: CustomNav,
+      providers: [CustomProvider],
       views: {
         Dashboard: CustomDashboard,
       },

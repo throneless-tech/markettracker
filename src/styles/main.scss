@@ -12,10 +12,31 @@ p {
   width: 100%;
 }
 
-.nav__scroll, .nav__wrap {
+.nav__scroll,
+.nav__wrap {
   flex-direction: row;
 }
 
 .template-default {
   display: block;
+}
+
+.form-submit {
+  text-align: center;
+
+  button[type="submit"] {
+    background-color: #38615C;
+    border-radius: 2000px;
+    border: 2px solid #38615C;
+    color: #F6F5F4;
+    font-size: 16px;
+    font-weight: 600;
+    width: initial;
+
+    &:active,
+    &:focus,
+    &:hover {
+      background-color: #26423E !important;
+    }
+  }
 }
