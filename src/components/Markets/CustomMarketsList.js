@@ -5,7 +5,6 @@ import React, { useEffect } from 'react'
 import { List } from "payload/components/views/List"; // Payload's default List view component and its props
 
 import {
-  ChakraProvider,
   Box,
   Button,
   Container,
@@ -18,29 +17,17 @@ import {
   Text
 } from '@chakra-ui/react';
 
-import theme from '../../styles/theme.js';
 
 //components
 import MarketCard from './MarketCard'
 
-// fonts
-import '@fontsource/inter/300.css';
-import '@fontsource/outfit/100.css';
-import '@fontsource/outfit/400.css';
-import '@fontsource/outfit/500.css';
-import '@fontsource/outfit/600.css';
-import '@fontsource/outfit/700.css';
-import '@fontsource/outfit/800.css';
-import '@fontsource/zilla-slab/400.css';
-import '@fontsource/zilla-slab/700.css';
-
 function CustomMarketsList(props) {
   const { data } = props;
-  
-  useEffect(() => {}, [data])
+
+  useEffect(() => { }, [data])
 
   return (
-    <ChakraProvider theme={theme}>
+    <>
       <Container maxW='container.xl'>
         <Flex my={8} justify="space-between" flexWrap={"wrap"}>
           <Box>
@@ -84,7 +71,7 @@ function CustomMarketsList(props) {
           ))}
         </HStack>
       </HStack>
-    </ChakraProvider>
+    </>
   );
 }
 

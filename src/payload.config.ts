@@ -14,6 +14,7 @@ import { Seasons } from "./collections/Seasons";
 import { Supplies} from "./collections/Supplies";
 import { Vendors } from "./collections/Vendors";
 
+import CustomAccount from "./components/CustomAccount";
 import CustomBeforeLogin from "./components/CustomBeforeLogin";
 import CustomDashboard from "./components/CustomDashboard";
 import CustomProvider from "./styles/themeProvider";
@@ -34,6 +35,7 @@ export default buildConfig({
       Nav: CustomNav,
       providers: [CustomProvider],
       views: {
+        Account: CustomAccount,
         Dashboard: CustomDashboard,
       },
     },
