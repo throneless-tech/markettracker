@@ -1,7 +1,7 @@
 import React from 'react'
 import { Box, Flex, Spacer, Text } from '@chakra-ui/react'
 
-const Footer = () => (
+const CustomAfterLogin = () => (
   <Box
     bg="gray.600"
     borderColor="#F6F5F4"
@@ -31,4 +31,4 @@ const Footer = () => (
   </Box>
 )
 
-export default Footer;
+export default CustomAfterLogin;

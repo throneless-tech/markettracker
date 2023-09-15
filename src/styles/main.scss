@@ -21,6 +21,20 @@ p {
   display: block;
 }
 
+.login {
+  background: linear-gradient(0deg, #5DA29A 0%, #5DA29A 100%), url('/assets/images/login-background.jpg'), lightgray 50% / cover no-repeat;
+  background-blend-mode: multiply, multiply;
+  background-repeat: no-repeat;
+  background-size: cover;
+  opacity: 80%;
+
+  .template-minimal__wrap {
+    background: #FFF;
+    border-radius: 8px;
+    padding: 48px;
+  }
+}
+
 .form-submit {
   text-align: center;
 

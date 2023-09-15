@@ -59,19 +59,21 @@ const Login = () => (
             <Text>
               Welcome back, please login to your account
             </Text>
-            <Stack gap={4} width={"100%"}>
-              <Input variant='filled' placeholder='email' />
-              <Input variant='filled' placeholder='password' />
-            </Stack>
-            <Button colorScheme='green' variant='solid' width={90}>
-              Login
-            </Button>
+            <form novalidate="" method="post" action="/api/users/login">
+              <Stack gap={4} width={"100%"}>
+                <Input variant='filled' placeholder='email' />
+                <Input variant='filled' placeholder='password' type='password' />
+              </Stack>
+              <Button type='submit' colorScheme='green' variant='solid' width={90}>
+                Login
+              </Button>
+            </form>
             <Stack gap={2}>
               <HStack>
                 <Text>New Here?</Text>
-                <Link sx={{ textDecoration: "underline", textDecorationColor: "teal.500", }} href="/register">Create an account</Link>
+                <Link sx={{ textDecoration: "underline", textDecorationColor: "teal.500", }} href="/admin/register">Create an account</Link>
               </HStack>
-              <Link>Forgot your password?</Link>
+              <Link href="/admin/forgot">Forgot your password?</Link>
             </Stack>
           </Stack>
         </CardBody>
