@@ -11,7 +11,7 @@ import { Media } from "./collections/Media";
 import { Products } from "./collections/Products";
 import { SalesReports } from "./collections/SalesReports";
 import { Seasons } from "./collections/Seasons";
-import { Supplies} from "./collections/Supplies";
+import { Supplies } from "./collections/Supplies";
 import { Vendors } from "./collections/Vendors";
 
 import CustomAccount from "./components/CustomAccount";
@@ -25,9 +25,9 @@ export default buildConfig({
   serverURL: "http://localhost:3000",
   admin: {
     // user: Users.slug,
-    css: path.resolve(__dirname, 'styles/main.scss'),
+    css: path.resolve(__dirname, "styles/main.scss"),
     components: {
-      // BeforeLogin: CustomBeforeLogin,
+      beforeLogin: [CustomBeforeLogin],
       graphics: {
         Icon: CustomLogo,
         Logo: CustomLogo,
