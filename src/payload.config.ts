@@ -1,4 +1,5 @@
 import { buildConfig } from "payload/config";
+import { payloadCloud } from "@payloadcms/plugin-cloud";
 import path from "path";
 // import Examples from './collections/Examples';
 import { Applications } from "./collections/Applications";
@@ -11,7 +12,7 @@ import { Media } from "./collections/Media";
 import { Products } from "./collections/Products";
 import { SalesReports } from "./collections/SalesReports";
 import { Seasons } from "./collections/Seasons";
-import { Supplies} from "./collections/Supplies";
+import { Supplies } from "./collections/Supplies";
 import { Vendors } from "./collections/Vendors";
 
 import CustomDashboard from "./components/CustomDashboard";
@@ -22,7 +23,7 @@ export default buildConfig({
   serverURL: "http://localhost:3000",
   admin: {
     // user: Users.slug,
-    css: path.resolve(__dirname, 'styles/main.scss'),
+    css: path.resolve(__dirname, "styles/main.scss"),
     components: {
       graphics: {
         Icon: CustomLogo,
@@ -50,6 +51,7 @@ export default buildConfig({
     // Add Collections here
     // Examples,
   ],
+  plugins: [payloadCloud()],
   typescript: {
     outputFile: path.resolve(__dirname, "payload-types.ts"),
   },
