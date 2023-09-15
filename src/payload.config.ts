@@ -20,7 +20,6 @@ import CustomNav from "./components/CustomNav";
 import CustomLogo from "./icons/logo";
 
 export default buildConfig({
-  serverURL: "http://localhost:3000",
   admin: {
     // user: Users.slug,
     css: path.resolve(__dirname, "styles/main.scss"),
