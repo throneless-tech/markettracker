@@ -15,9 +15,9 @@ import {
 
 // icons + images
 import { ArrowForwardIcon } from '@chakra-ui/icons'
-import { CalendarIcon } from '../../icons/calendar'
-import { MarketIcon } from '../../icons/market'
-import { ProfileIcon } from '../../icons/profile'
+import { CalendarIcon } from '../../assets/icons/calendar'
+import { MarketIcon } from '../../assets/icons/market'
+import { ProfileIcon } from '../../assets/icons/profile'
 
 const MarketCard = (props) => {
   const history = useHistory();

@@ -15,23 +15,41 @@ import { Seasons } from "./collections/Seasons";
 import { Supplies } from "./collections/Supplies";
 import { Vendors } from "./collections/Vendors";
 
+import CustomAccount from "./components/CustomAccount";
+import CustomAfterLogin from "./components/CustomAfterLogin";
+import CustomBeforeLogin from "./components/CustomBeforeLogin";
 import CustomDashboard from "./components/CustomDashboard";
+import CustomLogo from "./components/CustomLogo";
+import CustomLogoutButton from "./components/CustomLogoutButton";
+import CustomProvider from "./styles/themeProvider";
 import CustomNav from "./components/CustomNav";
-import CustomLogo from "./icons/logo";
+import CustomIcon from "./assets/icons/logo";
 
 export default buildConfig({
   admin: {
     // user: Users.slug,
     css: path.resolve(__dirname, "styles/main.scss"),
     components: {
+      // beforeLogin: [CustomBeforeLogin],
+      // afterLogin: [CustomAfterLogin],
       graphics: {
-        Icon: CustomLogo,
+        Icon: CustomIcon,
         Logo: CustomLogo,
       },
+      logout: {
+        Button: CustomLogoutButton,
+      },
       Nav: CustomNav,
+      providers: [CustomProvider],
       views: {
+        Account: CustomAccount,
         Dashboard: CustomDashboard,
       },
+    },
+    meta: {
+      titleSuffix: '• Market Tracker',
+      favicon: '/assets/icons/logos/ff-mark.svg',
+      ogImage: '/assets/icons/logos/ff-mark.svg',
     },
   },
   collections: [

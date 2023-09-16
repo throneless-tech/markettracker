@@ -12,10 +12,45 @@ p {
   width: 100%;
 }
 
-.nav__scroll, .nav__wrap {
+.nav__scroll,
+.nav__wrap {
   flex-direction: row;
 }
 
 .template-default {
   display: block;
+}
+
+.login {
+  background: linear-gradient(0deg, #5DA29A 0%, #5DA29A 100%), url('/assets/images/login-background.jpg'), lightgray 50% / cover no-repeat;
+  background-blend-mode: multiply, multiply;
+  background-repeat: no-repeat;
+  background-size: cover;
+  opacity: 80%;
+
+  .template-minimal__wrap {
+    background: #FFF;
+    border-radius: 8px;
+    padding: 48px;
+  }
+}
+
+.form-submit {
+  text-align: center;
+
+  button[type="submit"] {
+    background-color: #38615C;
+    border-radius: 2000px;
+    border: 2px solid #38615C;
+    color: #F6F5F4;
+    font-size: 16px;
+    font-weight: 600;
+    width: initial;
+
+    &:active,
+    &:focus,
+    &:hover {
+      background-color: #26423E !important;
+    }
+  }
 }

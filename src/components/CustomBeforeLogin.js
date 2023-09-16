@@ -1,5 +1,5 @@
 import React from 'react'
-import Image from 'next/image'
+import { Image } from '@chakra-ui/react'
 
 import {
   AbsoluteCenter,
@@ -15,9 +15,9 @@ import {
 } from '@chakra-ui/react'
 
 import LogoMarketTracker from "../assets/icons/logoMarketTracker.js"
-import background from '../../../public/login-background.jpg'
+import background from '../assets/images/login-background.jpg'
 
-const Login = () => (
+const CustomBeforeLogin = () => (
   <Box h="100vh">
     <Box
       bg="teal.500"
@@ -31,11 +31,8 @@ const Login = () => (
     >
       <Image
         src={background}
-        placeholder="blur"
-        quality={100}
-        fill
-        sizes="100vw"
-        style={{
+        boxSize="100vw"
+        sx={{
           backgroundRepeat: 'no-repeat',
           mixBlendMode: 'multiply',
           objectFit: 'cover',
@@ -59,21 +56,19 @@ const Login = () => (
             <Text>
               Welcome back, please login to your account
             </Text>
-            <form novalidate="" method="post" action="/api/users/login">
-              <Stack gap={4} width={"100%"}>
-                <Input variant='filled' placeholder='email' />
-                <Input variant='filled' placeholder='password' type='password' />
-              </Stack>
-              <Button type='submit' colorScheme='green' variant='solid' width={90}>
-                Login
-              </Button>
-            </form>
+            <Stack gap={4} width={"100%"}>
+              <Input variant='filled' placeholder='email' />
+              <Input variant='filled' placeholder='password' type='password' />
+            </Stack>
+            <Button colorScheme='green' variant='solid' width={90}>
+              Login
+            </Button>
             <Stack gap={2}>
               <HStack>
                 <Text>New Here?</Text>
                 <Link sx={{ textDecoration: "underline", textDecorationColor: "teal.500", }} href="/admin/register">Create an account</Link>
               </HStack>
-              <Link href="/admin/forgot">Forgot your password?</Link>
+              <Link href='/admin/forgot'>Forgot your password?</Link>
             </Stack>
           </Stack>
         </CardBody>
@@ -82,4 +77,4 @@ const Login = () => (
   </Box>
 )
 
-export default Login;
+export default CustomBeforeLogin;
