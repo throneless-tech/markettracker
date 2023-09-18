@@ -26,6 +26,8 @@ function CustomMarketsList(props) {
 
   useEffect(() => { }, [data])
 
+  console.log(data);
+
   return (
     <>
       <Container maxW='container.xl'>

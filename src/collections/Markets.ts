@@ -7,10 +7,11 @@ export const Markets: CollectionConfig = {
   admin: {
     components: {
       views: {
-        Edit: CustomMarketsEdit,
-        List: CustomMarketsList,
+        // Edit: CustomMarketsEdit,
+        // List: CustomMarketsList,
       },
     },
+    useAsTitle: "name",
   },
   fields: [
     {

@@ -30,11 +30,14 @@ import {
 // components
 import Calendar from '../Calendar.js';
 
+// utils
+import formatTime from '../../utils/formatTime'
+
 // icons
 import StarIcon from '../../assets/icons/star.js'
 
 function CustomMarketsEdit(props) {
-  const { id } = useDocumentInfo();
+  const { id, publishedDoc } = useDocumentInfo();
   const { data } = props;
   const [name, setName] = useState('')
 
@@ -48,6 +51,8 @@ function CustomMarketsEdit(props) {
       setName(data.name);
     }
   }, [])
+
+  console.log(publishedDoc);
 
   useEffect(() => { }, [data, name]);
   if (data) {
@@ -110,11 +115,19 @@ function CustomMarketsEdit(props) {
                         </Flex>
                         <Flex marginTop={4}>
                           <HStack>
-                            <Text as={"span"} color={"gray.50"} fontSize="2xl" fontWeight={700}>
-                              Day, start-endtime
+                            <Text as={"span"} color={"gray.50"} fontSize="2xl" fontWeight={700} sx={{ textTransform: 'capitalize' }}>
+                              {data.days.map((day, index) => {
+                                if (index == data.days.length - 1) {
+                                  return day
+                                } else {
+                                  return `${day}, `
+                                }
+                              })}
+                              {' '}
+                              {formatTime(data.time.startTime)}-{formatTime(data.time.endTime)}
                             </Text>
                             <Text as={"span"} color={"gray.50"} fontSize="2xl">
-                              Street address, City, State, Zip
+                              {data.address.street}{', '}{data.address.city}{', '}{data.address.state}{', '}{data.address.zipcode}
                             </Text>
                           </HStack>
                           <Spacer />

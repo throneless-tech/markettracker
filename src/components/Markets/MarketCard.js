@@ -13,6 +13,9 @@ import {
   Text
 } from '@chakra-ui/react'
 
+// utils
+import formatTime from '../../utils/formatTime'
+
 // icons + images
 import { ArrowForwardIcon } from '@chakra-ui/icons'
 import { CalendarIcon } from '../../assets/icons/calendar'
@@ -31,14 +34,7 @@ const MarketCard = (props) => {
     marketNeeds
   } = props;
 
-  const formatTime = (dateTime) => {
-    const date = new Date(dateTime);
-    return date.toLocaleTimeString("en-US", { hour12: true, hour: 'numeric', minute: '2-digit'});
-  }
-
   const options = { hour12: true, timeStyle: 'short' };
-
-  console.log(market);
 
   const viewMarket = (market) => {
     history.push({
