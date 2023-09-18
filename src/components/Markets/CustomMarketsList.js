@@ -49,27 +49,29 @@ function CustomMarketsList(props) {
         </Flex>
         <Divider color='gray.900' borderBottomWidth={2} opacity={1} />
       </Container>
-      <HStack align={'flex-start'} marginTop={8} spacing={8}>
-        <Stack backgroundColor={'gray.50'} padding={4} width={230}>
+      <Container>
+        <HStack align={'flex-start'} marginTop={8} spacing={8}>
+          {/* <Stack backgroundColor={'gray.50'} padding={4} width={230}>
           <Text>
             Filter
           </Text>
-        </Stack>
-        <HStack align={'flex-start'} wrap={'wrap'} spacing={6}>
-          {data.docs && data.docs.length && data.docs.map(market => (
-            <MarketCard
-              key={market.id}
-              market={market}
-              description="Blurb about the market goes here lorem ipsum dolor emet."
-              openingDay="Sat, April 16, 2024"
-              closingDay="Sat, December 31, 2024"
-              managerName="Alex"
-              managerPhone="202-555-1234"
-              marketNeeds={['vegetables', 'coffee', 'meat', 'yogurt', 'fruit']}
-            />
-          ))}
+        </Stack> */}
+          <HStack align={'flex-start'} wrap={'wrap'} spacing={6}>
+            {data.docs && data.docs.length && data.docs.map(market => (
+              <MarketCard
+                key={market.id}
+                market={market}
+                description="Blurb about the market goes here lorem ipsum dolor emet."
+                openingDay="Sat, April 16, 2024"
+                closingDay="Sat, December 31, 2024"
+                managerName="Alex"
+                managerPhone="202-555-1234"
+                marketNeeds={['vegetables', 'coffee', 'meat', 'yogurt', 'fruit']}
+              />
+            ))}
+          </HStack>
         </HStack>
-      </HStack>
+      </Container>
     </>
   );
 }
