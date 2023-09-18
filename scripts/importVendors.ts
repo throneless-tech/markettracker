@@ -5,6 +5,8 @@ import humanparser from "humanparser";
 import payload from "payload";
 import { Contact, User, Vendor } from "../src/payload-types";
 
+const REMOVE_EXISTING = true;
+
 type VendorSource = {
   Vendor: string;
   Farm: string;
@@ -19,13 +21,16 @@ type VendorSource = {
 };
 
 dotenv.config();
-payload.init({
-  secret: process.env.PAYLOAD_SECRET || "",
-  mongoURL: process.env.MONGODB_URI || "",
-  local: true,
-});
 
 (async () => {
+  await payload.init({
+    secret: process.env.PAYLOAD_SECRET || "",
+    mongoURL: process.env.MONGODB_URI || "",
+    local: true,
+  });
+  let userCount = 0;
+  let contactCount = 0;
+  let vendorCount = 0;
   const vendorsSource: { [key: string]: VendorSource } = {};
   const csvPath = path.resolve(__dirname, "../vendors.csv");
   csv()
@@ -37,10 +42,12 @@ payload.init({
       // eslint-disable-next-line no-restricted-syntax
       for (const key of Object.keys(vendorsSource)) {
         const source = vendorsSource[key];
+
         const userData: Omit<User, "id" | "createdAt" | "updatedAt"> = {
-          name: source["Owner Name"],
-          email: source["Primary Email"],
+          name: source["Owner Name"] || source.POC,
+          email: source["Primary Email"] || "null@example.com",
           role: "vendor",
+          password: "dummyPassword",
         };
         console.log("userData:", userData);
         let user: User;
@@ -49,15 +56,16 @@ payload.init({
           user = await payload.create({
             collection: "users",
             overrideAccess: true,
+            disableVerificationEmail: true,
             data: userData,
           });
-          console.log("created user: ", userData.email);
+          console.log("created user: ", user);
+          userCount += 1;
         } catch (e) {
           console.log(e);
           // eslint-disable-next-line no-continue
           console.log("skip user: ", userData.email);
           // eslint-disable-next-line no-continue
-          continue;
         }
         const contactData: Omit<Contact, "id" | "createdAt" | "updatedAt"> = {
           name: user.name,
@@ -73,17 +81,17 @@ payload.init({
             overrideAccess: true,
             data: contactData,
           });
-          console.log("created contact: ", contactData.email);
+          console.log("created contact: ", contact);
+          contactCount += 1;
         } catch (e) {
           console.log(e);
           console.log("skip contact: ", contactData.email);
-          continue;
         }
 
         const address = humanparser.parseAddress(source.Address);
         const data: Omit<Vendor, "id" | "createdAt" | "updatedAt"> = {
           name: source.Vendor,
-          user: user,
+          user: user.id,
           isPrimaryContact: true,
           isBillingContact: false,
           address: {
@@ -95,26 +103,32 @@ payload.init({
           type: source.Farm === "YES" ? "farmer" : "other",
           phoneNumber: source.Phone,
           isSeparateBilling: false,
-          description: source["Company Description"],
-          contacts: [contact],
+          description: source["Company Description"] || "None",
+          contacts: [contact.id],
         };
+        let vendor;
         try {
           // eslint-disable-next-line no-await-in-loop
-          await payload.create({
+          vendor = await payload.create({
             collection: "vendors",
             overrideAccess: true,
             data,
           });
-          console.log("created vendor: ", data.name);
+          console.log("created vendor: ", vendor);
+          vendorCount += 1;
         } catch (e) {
           console.log(e);
           // eslint-disable-next-line no-continue
           console.log("skip vendor: ", data.name);
           // eslint-disable-next-line no-continue
-          continue;
         }
+
         console.log("DONE");
       }
+      console.log("userCount:", userCount);
+      console.log("contactCount:", contactCount);
+      console.log("vendorCount:", vendorCount);
+      console.log("records length:", vendorsSource.size);
     })
     .then(() => process.exit(0));
 })();

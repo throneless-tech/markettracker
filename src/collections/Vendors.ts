@@ -36,7 +36,7 @@ export const Vendors: CollectionConfig = {
           name: "street",
           label: "Street",
           type: "text",
-          required: true,
+          //required: true, //temporarily disabled for data import
         },
         {
           type: "row",
@@ -45,19 +45,19 @@ export const Vendors: CollectionConfig = {
               name: "city",
               label: "City",
               type: "text",
-              required: true,
+              //required: true, //temporarily disabled for data import
             },
             {
               name: "state",
               label: "State",
               type: "text",
-              required: true,
+              //required: true, //temporarily disabled for data import
             },
             {
               name: "zipcode",
               label: "Zipcode",
               type: "text",
-              required: true,
+              //required: true, //temporarily disabled for data import
             },
           ],
         },
