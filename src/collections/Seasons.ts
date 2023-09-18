@@ -41,7 +41,9 @@ export const Seasons: CollectionConfig = {
     {
       name: "productGaps",
       label: "Product Gaps",
-      type: "text", // TODO placeholder for custom field
+      type: "relationship", // TODO placeholder for custom field
+      relationTo: "products",
+      hasMany: true,
       admin: {
         description: "Check All Products Desired at market",
       },

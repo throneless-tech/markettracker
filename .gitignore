@@ -169,3 +169,6 @@ dist
 
 # PayloadCMS build output
 build
+
+# PayloadCMS generated types
+src/payload-types.ts

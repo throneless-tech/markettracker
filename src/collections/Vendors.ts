@@ -10,6 +10,12 @@ export const Vendors: CollectionConfig = {
       required: true,
     },
     {
+      name: "user",
+      type: "relationship",
+      relationTo: "users",
+      required: true,
+    },
+    {
       name: "isPrimaryContact",
       label: "Are you the primary contact for the business?",
       type: "checkbox",
@@ -205,7 +211,7 @@ export const Vendors: CollectionConfig = {
       name: "structure",
       label: "What is the business structure of your business?",
       type: "select",
-      required: true,
+      //required: true, //temporarily disabled for data import
       hasMany: false,
       options: [
         {
@@ -234,7 +240,7 @@ export const Vendors: CollectionConfig = {
       name: "growingPractices",
       label: "Do you use any of the following growing practices?",
       type: "select",
-      required: true,
+      //required: true, //temporarily disabled for data import
       hasMany: true,
       options: [
         {
@@ -270,7 +276,7 @@ export const Vendors: CollectionConfig = {
       name: "sellingLocally",
       label: "Where are you selling your products locally?",
       type: "select",
-      required: true,
+      //required: true, //temporarily disabled for data import
       hasMany: false,
       options: [
         {
@@ -297,7 +303,7 @@ export const Vendors: CollectionConfig = {
           name: "stores",
           label: "Stores",
           type: "radio",
-          required: true,
+          //required: true, //temporarily disabled for data import
           options: ["1", "2", "3", "4", "5"],
           admin: {
             layout: "horizontal",
@@ -307,7 +313,7 @@ export const Vendors: CollectionConfig = {
           name: "markets",
           label: "Farmers Markets",
           type: "radio",
-          required: true,
+          //required: true, //temporarily disabled for data import
           options: ["1", "2", "3", "4", "5"],
           admin: {
             layout: "horizontal",
@@ -317,7 +323,7 @@ export const Vendors: CollectionConfig = {
           name: "own",
           label: "Own Brick & Mortar",
           type: "radio",
-          required: true,
+          //required: true, //temporarily disabled for data import
           options: ["1", "2", "3", "4", "5"],
           admin: {
             layout: "horizontal",
@@ -327,7 +333,7 @@ export const Vendors: CollectionConfig = {
           name: "online",
           label: "Online Sales",
           type: "radio",
-          required: true,
+          //required: true, //temporarily disabled for data import
           options: ["1", "2", "3", "4", "5"],
           admin: {
             layout: "horizontal",
@@ -361,7 +367,7 @@ export const Vendors: CollectionConfig = {
         plural: "Upload Business Licenses",
       },
       type: "array",
-      required: true,
+      //required: true, //temporarily disabled for data import
       fields: [
         {
           name: "licenseDocument",
@@ -378,7 +384,7 @@ export const Vendors: CollectionConfig = {
       name: "insurance",
       label: "Upload Insurance Documentation",
       type: "array",
-      required: true,
+      //required: true, //temporarily disabled for data import
       fields: [
         {
           name: "insuranceDocument",
@@ -395,7 +401,7 @@ export const Vendors: CollectionConfig = {
       name: "sharedKitchenInsurance",
       label: "Upload Shared Kitchen Insurance Documentation",
       type: "array",
-      required: true,
+      //required: true, //temporarily disabled for data import
       fields: [
         {
           name: "sharedKitchenInsuranceDocument",
@@ -412,7 +418,7 @@ export const Vendors: CollectionConfig = {
       name: "copackerInsurance",
       label: "Upload Co-packer Insurance Documentation",
       type: "array",
-      required: true,
+      //required: true, //temporarily disabled for data import
       fields: [
         {
           name: "copackerInsuranceDocument",
@@ -616,7 +622,9 @@ export const Vendors: CollectionConfig = {
     {
       name: "products", // TODO custom component
       label: "Product Information",
-      type: "text",
+      type: "relationship",
+      relationTo: "products",
+      hasMany: true,
       admin: {
         description: "What products do you carry? check all that apply",
       },
