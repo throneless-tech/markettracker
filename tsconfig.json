@@ -11,6 +11,11 @@
     "esModuleInterop": true,
     "skipLibCheck": true,
     "outDir": "./dist",
+    "paths": {
+      "payload/generated-types": [
+        "./src/payload-types.ts"
+      ]
+    },
     "rootDir": "./src",
     "jsx": "react"
   },
@@ -20,7 +25,7 @@
   "exclude": [
     "node_modules",
     "dist",
-    "build",
+    "build"
   ],
   "ts-node": {
     "transpileOnly": true
