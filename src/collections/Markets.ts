@@ -159,8 +159,8 @@ export const Markets: CollectionConfig = {
       ],
     },
     {
-      name: "type",
-      label: "What type of market is it?",
+      name: "focus",
+      label: "Market Focus",
       type: "select",
       hasMany: true,
       options: [
@@ -181,6 +181,18 @@ export const Markets: CollectionConfig = {
           value: "prepared",
         },
       ],
+      admin: {
+        description: "Check all that apply",
+      },
+    },
+    {
+      name: "description",
+      label: "Brief Market Description",
+      type: "textarea",
+      required: true,
+      admin: {
+        placeholder: "start typing...",
+      },
     },
   ],
 };

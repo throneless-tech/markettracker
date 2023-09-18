@@ -60,5 +60,41 @@ export const Applications: CollectionConfig = {
         update: ({ req }) => req.user.role !== "vendor",
       },
     },
+    {
+      name: "dates",
+      label: "Market Dates",
+      type: "array",
+      required: true,
+      minRows: 1,
+      fields: [
+        {
+          name: "date",
+          type: "date",
+          admin: {
+            date: {
+              pickerAppearance: "dayOnly",
+            },
+          },
+        },
+      ],
+    },
+    {
+      name: "products",
+      type: "relationship",
+      relationTo: "products",
+      hasMany: true,
+    },
+    {
+      name: "isCSA",
+      label:
+        "Do you intend to sell and coordinate CSA share pickups at the market?",
+      type: "checkbox",
+    },
+    {
+      name: "staff",
+      type: "relationship",
+      relationTo: "contacts",
+      hasMany: true,
+    },
   ],
 };
