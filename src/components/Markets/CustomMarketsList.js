@@ -37,10 +37,10 @@ function CustomMarketsList(props) {
           </Box>
           <Spacer />
           <HStack flexGrow={1} spacing={4}>
-            <Button>
+            <Button as="a" href="#FIXME/admin/collections/markets/review">
               Review market applications
             </Button>
-            <Button>
+            <Button as="a" href="/admin/collections/markets/create">
               Create a new market
             </Button>
           </HStack>
@@ -58,9 +58,6 @@ function CustomMarketsList(props) {
             <MarketCard
               key={market.id}
               market={market}
-              address="Market address"
-              day="Saturday"
-              time="8am-12pm"
               description="Blurb about the market goes here lorem ipsum dolor emet."
               openingDay="Sat, April 16, 2024"
               closingDay="Sat, December 31, 2024"

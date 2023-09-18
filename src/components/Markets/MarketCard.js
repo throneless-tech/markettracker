@@ -23,9 +23,6 @@ const MarketCard = (props) => {
   const history = useHistory();
   const {
     market,
-    day,
-    address,
-    time,
     description,
     openingDay,
     closingDay,
@@ -33,6 +30,15 @@ const MarketCard = (props) => {
     managerPhone,
     marketNeeds
   } = props;
+
+  const formatTime = (dateTime) => {
+    const date = new Date(dateTime);
+    return date.toLocaleTimeString("en-US", { hour12: true, hour: 'numeric', minute: '2-digit'});
+  }
+
+  const options = { hour12: true, timeStyle: 'short' };
+
+  console.log(market);
 
   const viewMarket = (market) => {
     history.push({
@@ -66,15 +72,23 @@ const MarketCard = (props) => {
               {market.name}
             </Text>
             <Text>
-              {address}
+              {market.address.street}{', '}{market.address.city}{', '}{market.address.state}{', '}{market.address.zipcode}
             </Text>
           </Stack>
         </HStack>
       </Box>
       <Box margin={4}>
         <Stack marginTop={4} spacing={4}>
-          <Text fontSize={18} fontWeight={500}>
-            {day}{' '}{time}
+          <Text fontSize={18} fontWeight={500} sx={{ textTransform: 'capitalize' }}>
+            {market.days.map( (day, index) => {
+              if (index == market.days.length - 1) {
+                return day
+              } else {
+                return `${day}, `
+              }
+            })}
+            {' '}
+            {formatTime(market.time.startTime)}-{formatTime(market.time.endTime)}
           </Text>
           <Text>
             {description}
