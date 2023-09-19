@@ -10,6 +10,10 @@ p {
   height: unset;
   position: relative;
   width: 100%;
+
+  &:before, &:after {
+    content: unset;
+  }
 }
 
 .nav__scroll,
@@ -19,6 +23,7 @@ p {
 
 .template-default {
   display: block;
+  padding-top: 0;
 }
 
 .login {

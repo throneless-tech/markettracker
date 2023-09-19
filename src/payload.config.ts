@@ -47,7 +47,7 @@ export default buildConfig({
         Logo: CustomLogo,
       },
       logout: {
-        Button: CustomLogoutButton,
+        // Button: CustomLogoutButton,
       },
       Nav: CustomNav,
       providers: [CustomProvider],

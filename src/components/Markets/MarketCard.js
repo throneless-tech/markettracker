@@ -13,6 +13,9 @@ import {
   Text
 } from '@chakra-ui/react'
 
+// utils
+import formatTime from '../../utils/formatTime'
+
 // icons + images
 import { ArrowForwardIcon } from '@chakra-ui/icons'
 import { CalendarIcon } from '../../assets/icons/calendar'
@@ -23,9 +26,6 @@ const MarketCard = (props) => {
   const history = useHistory();
   const {
     market,
-    day,
-    address,
-    time,
     description,
     openingDay,
     closingDay,
@@ -33,6 +33,8 @@ const MarketCard = (props) => {
     managerPhone,
     marketNeeds
   } = props;
+
+  const options = { hour12: true, timeStyle: 'short' };
 
   const viewMarket = (market) => {
     history.push({
@@ -66,16 +68,26 @@ const MarketCard = (props) => {
               {market.name}
             </Text>
             <Text>
-              {address}
+              {market.address.street}{', '}{market.address.city}{', '}{market.address.state}{', '}{market.address.zipcode}
             </Text>
           </Stack>
         </HStack>
       </Box>
       <Box margin={4}>
         <Stack marginTop={4} spacing={4}>
-          <Text fontSize={18} fontWeight={500}>
-            {day}{' '}{time}
-          </Text>
+          {market.time ? (
+            <Text fontSize={18} fontWeight={500} sx={{ textTransform: 'capitalize' }}>
+              {market.days.map((day, index) => {
+                if (index == market.days.length - 1) {
+                  return day
+                } else {
+                  return `${day}, `
+                }
+              })}
+              {' '}
+              {formatTime(market.time.startTime)}-{formatTime(market.time.endTime)}
+            </Text>
+          ) : null}
           <Text>
             {description}
           </Text>

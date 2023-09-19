@@ -1,7 +1,18 @@
 import { CollectionConfig } from "payload/types";
+import CustomVendorsEdit from "../components/Vendors/CustomVendorsEdit";
+import CustomVendorsList from "../components/Vendors/CustomVendorsList";
 
 export const Vendors: CollectionConfig = {
   slug: "vendors",
+  admin: {
+    components: {
+      views: {
+        Edit: CustomVendorsEdit,
+        List: CustomVendorsList,
+      },
+    },
+    useAsTitle: "name",
+  },
   fields: [
     {
       name: "name",
