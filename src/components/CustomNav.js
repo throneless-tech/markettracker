@@ -527,19 +527,19 @@ const CustomNav = () => {
                   paddingX={6}
                   paddingY={8}
                   sx={{
-                    borderLeft: location.pathname == '/admin/collections/reports' ? '2px solid white' : '',
-                    borderRight: location.pathname == '/admin/collections/reports' ? '2px solid white' : '',
-                    color: location.pathname == '/admin/collections/reports' ? 'gray.700' : 'gray.50',
-                    bg: location.pathname == '/admin/collections/reports' ? 'teal.300' : 'gray.700',
+                    borderLeft: location.pathname == '/admin/collections/sales-reports' ? '2px solid white' : '',
+                    borderRight: location.pathname == '/admin/collections/sales-reports' ? '2px solid white' : '',
+                    color: location.pathname == '/admin/collections/sales-reports' ? 'gray.700' : 'gray.50',
+                    bg: location.pathname == '/admin/collections/sales-reports' ? 'teal.300' : 'gray.700',
                     '& path': {
-                      stroke: location.pathname == '/admin/collections/reports' ? 'gray.700 !important' : ''
+                      stroke: location.pathname == '/admin/collections/sales-reports' ? 'gray.700 !important' : ''
                     }
                   }}
                 >
                   <Stack direction="row" justify="flex-start" align="center">
                     <LicenseIcon sx={{ fill: 'none', height: "24px", width: "24px" }} />
                     <LinkOverlay
-                      href='/admin/collections/reports'
+                      href='/admin/collections/sales-reports'
                       fontFamily="Outfit"
                       fontWeight="semibold"
                       fontSize="2xl"

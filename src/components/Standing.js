@@ -3,14 +3,12 @@ import { Flex, Stack, Text, Tag } from '@chakra-ui/react'
 
 const Standing = (props) => {
   const { user } = props;
-
-  console.log(user);
   return (
     <Flex
       padding={6}
       direction="row"
       justify="flex-start"
-      align="stretch"
+      align="flex-start"
       spacing="24px"
       background="#EFF6F5"
       borderColor="#60A29B"
@@ -29,7 +27,7 @@ const Standing = (props) => {
         flex="1"
         marginBottom={0}
       >
-        {user.name ? user.name : user.email} is in [good] standing [explanation about standing status]{' '}
+        {user.name ? user.name : user.email} is in {user.standing} standing. Vendor standing is based on market attendance, sales report submissions, invoice payments, instances of rule violations, and site visit completion.
       </Text>
       <Tag variant='solid' colorScheme='teal'>
         Good

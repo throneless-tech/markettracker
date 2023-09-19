@@ -1,5 +1,6 @@
 "use client"
 import React, { useEffect, useState } from 'react'
+import { useAuth } from 'payload/components/utilities'
 
 // Payload imports
 import { useDocumentInfo } from 'payload/components/utilities';
@@ -57,6 +58,7 @@ import EditIcon from '../../assets/icons/edit.js'
 import StarIcon from '../../assets/icons/star.js'
 
 function CustomMarketsEdit(props) {
+  const { user } = useAuth();
   const { id } = useDocumentInfo();
   const { data } = props;
   const { isOpen, onOpen, onClose } = useDisclosure()
@@ -82,8 +84,12 @@ function CustomMarketsEdit(props) {
             <Tabs position="relative" variant="unstyled">
               <TabList bg={"gray.50"}>
                 <Tab _selected={{ color: "#000", fontWeight: "700" }} sx={{ fontSize: 16 }}>Markets</Tab>
-                <Tab _selected={{ color: "#000", fontWeight: "700" }} sx={{ fontSize: 16 }}>Market Reports</Tab>
-                <Tab _selected={{ color: "#000", fontWeight: "700" }} sx={{ fontSize: 16 }}>Market Applications</Tab>
+                {user.role ==  'vendor' ? null : (
+                  <>
+                    <Tab _selected={{ color: "#000", fontWeight: "700" }} sx={{ fontSize: 16 }}>Market Reports</Tab>
+                    <Tab _selected={{ color: "#000", fontWeight: "700" }} sx={{ fontSize: 16 }}>Market Applications</Tab>
+                  </>
+                )}
               </TabList>
               <TabIndicator
                 mt="-1.5px"
@@ -99,15 +105,19 @@ function CustomMarketsEdit(props) {
                       <Heading as="h1" color={"gray.700"} textTransform={"uppercase"}>
                         {data.name}
                       </Heading>
-                      <Spacer />
-                      <HStack spacing={4}>
-                        <Button size="md" borderColor={"gray.700"}>
-                          Review market applications
-                        </Button>
-                        <Button size="md" borderColor={"gray.700"}>
-                          Create a new season
-                        </Button>
-                      </HStack>
+                      {user.role == 'vendor' ? null : (
+                        <>
+                          <Spacer />
+                          <HStack spacing={4}>
+                            <Button size="md" borderColor={"gray.700"}>
+                              Review market applications
+                            </Button>
+                            <Button size="md" borderColor={"gray.700"}>
+                              Create a new season
+                            </Button>
+                          </HStack>
+                        </>
+                      )}
                     </Flex>
                     <Box
                       direction="row"
@@ -186,190 +196,194 @@ function CustomMarketsEdit(props) {
                     </Box>
                   </Container>
                   <Container marginTop={8} maxW={"container.lg"}>
-                    <Button
-                      onClick={onOpen}
-                      leftIcon={<EditIcon sx={{ fill: 'none', height: 6, width: 6 }} />}
-                      variant={'unstyled'}
-                      sx={{
-                        display: 'block',
-                        marginBottom: 4,
-                        marginLeft: 'auto',
-                        marginRight: 0,
-                        '&:active, &:focus, &:hover': {
-                          textDecoration: 'underline',
-                        }
-                      }}
-                    >
-                      Edit market information
-                    </Button>
-                    <Modal isOpen={isOpen} onClose={onClose} size={'full'}>
-                      <ModalOverlay />
-                      <ModalContent>
-                        <ModalHeader>
-                          <Heading as="h2" color={"gray.700"} textTransform={"uppercase"} marginBottom={2}>
-                            Edit market information
-                          </Heading>
-                          <Divider sx={{ borderColor: "gray.600", borderBottomWidth: 2 }} />
-                        </ModalHeader>
-                        <ModalCloseButton />
-                        <ModalBody>
-                          <Container maxW={'lg'}>
-                            <FormControl>
-                              <FormLabel>Market name (required)</FormLabel>
-                              <Input placeholder="Start typing..." />
-                            </FormControl>
-                            <Stack spacing={2} marginTop={4}>
-                              <FormControl>
-                                <FormLabel as='div' textStyle='bodyMain' fontWeight={500}>
-                                  Market address (required)
-                                </FormLabel>
-                                <Input placeholder='Street' isRequired />
-                              </FormControl>
-                              <Flex gap={2}>
-                                <Input placeholder='City' flex={6} isRequired />
-                                <Select placeholder='State' flex={2} isRequired>
-                                  <option value="AK">AK</option>
-                                  <option value="AL">AL</option>
-                                  <option value="AR">AR</option>
-                                  <option value="AZ">AZ</option>
-                                  <option value="CA">CA</option>
-                                  <option value="CO">CO</option>
-                                  <option value="CT">CT</option>
-                                  <option value="DC">DC</option>
-                                  <option value="DE">DE</option>
-                                  <option value="FL">FL</option>
-                                  <option value="GA">GA</option>
-                                  <option value="HI">HI</option>
-                                  <option value="IA">IA</option>
-                                  <option value="ID">ID</option>
-                                  <option value="IL">IL</option>
-                                  <option value="IN">IN</option>
-                                  <option value="KS">KS</option>
-                                  <option value="KY">KY</option>
-                                  <option value="LA">LA</option>
-                                  <option value="MA">MA</option>
-                                  <option value="MD">MD</option>
-                                  <option value="ME">ME</option>
-                                  <option value="MI">MI</option>
-                                  <option value="MN">MN</option>
-                                  <option value="MO">MO</option>
-                                  <option value="MS">MS</option>
-                                  <option value="MT">MT</option>
-                                  <option value="NC">NC</option>
-                                  <option value="ND">ND</option>
-                                  <option value="NE">NE</option>
-                                  <option value="NH">NH</option>
-                                  <option value="NJ">NJ</option>
-                                  <option value="NM">NM</option>
-                                  <option value="NV">NV</option>
-                                  <option value="NY">NY</option>
-                                  <option value="OH">OH</option>
-                                  <option value="OK">OK</option>
-                                  <option value="OR">OR</option>
-                                  <option value="PA">PA</option>
-                                  <option value="RI">RI</option>
-                                  <option value="SC">SC</option>
-                                  <option value="SD">SD</option>
-                                  <option value="TN">TN</option>
-                                  <option value="TX">TX</option>
-                                  <option value="UT">UT</option>
-                                  <option value="VA">VA</option>
-                                  <option value="VT">VT</option>
-                                  <option value="WA">WA</option>
-                                  <option value="WI">WI</option>
-                                  <option value="WV">WV</option>
-                                  <option value="WY">WY</option>
-                                </Select>
-                                <Input placeholder='Zipcode' flex={3} type='number' isRequired />
-                              </Flex>
-                            </Stack>
-                            <FormControl>
-                              <FormLabel as='div' textStyle='bodyMain' fontWeight={500}>
-                                Market day (required)
-                              </FormLabel>
-                              <RadioGroup onChange={newValue => props.setValue(newValue)} value={props.value}>
-                                <HStack>
-                                  <Radio value='monday'>Monday</Radio>
-                                  <Radio value='tuesday'>Tuesday</Radio>
-                                  <Radio value='wednesday'>Wednesday</Radio>
-                                  <Radio value='thursday'>Thursday</Radio>
-                                  <Radio value='friday'>Friday</Radio>
-                                  <Radio value='saturday'>Sarturday</Radio>
-                                  <Radio value='sunday'>Sunday</Radio>
-                                </HStack>
-                              </RadioGroup>
-                            </FormControl>
-                            <FormControl>
-                              <FormLabel as='div' textStyle='bodyMain' fontWeight={500}>
-                                Market size (required)
-                              </FormLabel>
-                              <RadioGroup onChange={newValue => props.setValue(newValue)} value={props.value}>
-                                <HStack>
-                                  <Radio value='flagship'>Flagship</Radio>
-                                  <Radio value='large'>Large</Radio>
-                                  <Radio value='medium'>Medium</Radio>
-                                  <Radio value='small'>Small</Radio>
-                                  <Radio value='stand'>Farm stand</Radio>
-                                </HStack>
-                              </RadioGroup>
-                            </FormControl>
-                            <FormControl>
-                              <FormLabel as='div' textStyle='bodyMain' fontWeight={500}>
-                                Market focus (required)
-                              </FormLabel>
-                              <FormHelperText>Check all that apply</FormHelperText>
-                              <CheckboxGroup colorScheme='green'>
-                                <HStack>
-                                  <Checkbox value='neighborhood'>Neighborhood</Checkbox>
-                                  <Checkbox value='downtown'>Downtown</Checkbox>
-                                  <Checkbox value='grocery'>Grocery shopping</Checkbox>
-                                  <Checkbox value='prepared'>Prepared food shopping</Checkbox>
-                                </HStack>
-                              </CheckboxGroup>
-                            </FormControl>
-                            <FormControl>
-                              <FormLabel as='div' textStyle='bodyMain' fontWeight={500}>
-                                Brief market description (required)
-                              </FormLabel>
-                              <FormHelperText>Add a statement of explanation</FormHelperText>
-                              <Textarea placeholder='Start typing...' />
-                            </FormControl>
-                          </Container>
-                          <Heading as="h2" color={"gray.700"} textTransform={"uppercase"} marginBottom={2} marginTop={6}>
-                            Edit season for {data.name}
-                          </Heading>
-                          <Divider sx={{ borderColor: "gray.600", borderBottomWidth: 2 }} />
-                          <Container>
-                            <Flex align='center' justify='space-between' marginTop={8}>
-                              <Heading as='h2' textStyle='h4' size='md' width={'100%'}>
-                                Accepting Applications (required)
+                    {user.role == 'vendor' ? null : (
+                      <>
+                        <Button
+                          onClick={onOpen}
+                          leftIcon={<EditIcon sx={{ fill: 'none', height: 6, width: 6 }} />}
+                          variant={'unstyled'}
+                          sx={{
+                            display: 'block',
+                            marginBottom: 4,
+                            marginLeft: 'auto',
+                            marginRight: 0,
+                            '&:active, &:focus, &:hover': {
+                              textDecoration: 'underline',
+                            }
+                          }}
+                        >
+                          Edit market information
+                        </Button>
+                        <Modal isOpen={isOpen} onClose={onClose} size={'full'}>
+                          <ModalOverlay />
+                          <ModalContent>
+                            <ModalHeader>
+                              <Heading as="h2" color={"gray.700"} textTransform={"uppercase"} marginBottom={2}>
+                                Edit market information
                               </Heading>
-                              <RadioGroup onChange={newValue => props.setValue(newValue)} value={props.value}>
-                                <HStack marginRight={2}>
-                                  <Radio value='yes'>Yes</Radio>
-                                  <Radio value='no'>No</Radio>
-                                </HStack>
-                              </RadioGroup>
-                              <Divider color='gray.700' borderBottomWidth={2} opacity={1} />
-                            </Flex>
-                            <Flex align='center' justify='space-between' marginTop={8}>
-                              <Heading as='h2' textStyle='h4' size='md' width={'70%'}>
-                                Market time & dates
+                              <Divider sx={{ borderColor: "gray.600", borderBottomWidth: 2 }} />
+                            </ModalHeader>
+                            <ModalCloseButton />
+                            <ModalBody>
+                              <Container maxW={'lg'}>
+                                <FormControl>
+                                  <FormLabel>Market name (required)</FormLabel>
+                                  <Input placeholder="Start typing..." />
+                                </FormControl>
+                                <Stack spacing={2} marginTop={4}>
+                                  <FormControl>
+                                    <FormLabel as='div' textStyle='bodyMain' fontWeight={500}>
+                                      Market address (required)
+                                    </FormLabel>
+                                    <Input placeholder='Street' isRequired />
+                                  </FormControl>
+                                  <Flex gap={2}>
+                                    <Input placeholder='City' flex={6} isRequired />
+                                    <Select placeholder='State' flex={2} isRequired>
+                                      <option value="AK">AK</option>
+                                      <option value="AL">AL</option>
+                                      <option value="AR">AR</option>
+                                      <option value="AZ">AZ</option>
+                                      <option value="CA">CA</option>
+                                      <option value="CO">CO</option>
+                                      <option value="CT">CT</option>
+                                      <option value="DC">DC</option>
+                                      <option value="DE">DE</option>
+                                      <option value="FL">FL</option>
+                                      <option value="GA">GA</option>
+                                      <option value="HI">HI</option>
+                                      <option value="IA">IA</option>
+                                      <option value="ID">ID</option>
+                                      <option value="IL">IL</option>
+                                      <option value="IN">IN</option>
+                                      <option value="KS">KS</option>
+                                      <option value="KY">KY</option>
+                                      <option value="LA">LA</option>
+                                      <option value="MA">MA</option>
+                                      <option value="MD">MD</option>
+                                      <option value="ME">ME</option>
+                                      <option value="MI">MI</option>
+                                      <option value="MN">MN</option>
+                                      <option value="MO">MO</option>
+                                      <option value="MS">MS</option>
+                                      <option value="MT">MT</option>
+                                      <option value="NC">NC</option>
+                                      <option value="ND">ND</option>
+                                      <option value="NE">NE</option>
+                                      <option value="NH">NH</option>
+                                      <option value="NJ">NJ</option>
+                                      <option value="NM">NM</option>
+                                      <option value="NV">NV</option>
+                                      <option value="NY">NY</option>
+                                      <option value="OH">OH</option>
+                                      <option value="OK">OK</option>
+                                      <option value="OR">OR</option>
+                                      <option value="PA">PA</option>
+                                      <option value="RI">RI</option>
+                                      <option value="SC">SC</option>
+                                      <option value="SD">SD</option>
+                                      <option value="TN">TN</option>
+                                      <option value="TX">TX</option>
+                                      <option value="UT">UT</option>
+                                      <option value="VA">VA</option>
+                                      <option value="VT">VT</option>
+                                      <option value="WA">WA</option>
+                                      <option value="WI">WI</option>
+                                      <option value="WV">WV</option>
+                                      <option value="WY">WY</option>
+                                    </Select>
+                                    <Input placeholder='Zipcode' flex={3} type='number' isRequired />
+                                  </Flex>
+                                </Stack>
+                                <FormControl>
+                                  <FormLabel as='div' textStyle='bodyMain' fontWeight={500}>
+                                    Market day (required)
+                                  </FormLabel>
+                                  <RadioGroup onChange={newValue => props.setValue(newValue)} value={props.value}>
+                                    <HStack>
+                                      <Radio value='monday'>Monday</Radio>
+                                      <Radio value='tuesday'>Tuesday</Radio>
+                                      <Radio value='wednesday'>Wednesday</Radio>
+                                      <Radio value='thursday'>Thursday</Radio>
+                                      <Radio value='friday'>Friday</Radio>
+                                      <Radio value='saturday'>Sarturday</Radio>
+                                      <Radio value='sunday'>Sunday</Radio>
+                                    </HStack>
+                                  </RadioGroup>
+                                </FormControl>
+                                <FormControl>
+                                  <FormLabel as='div' textStyle='bodyMain' fontWeight={500}>
+                                    Market size (required)
+                                  </FormLabel>
+                                  <RadioGroup onChange={newValue => props.setValue(newValue)} value={props.value}>
+                                    <HStack>
+                                      <Radio value='flagship'>Flagship</Radio>
+                                      <Radio value='large'>Large</Radio>
+                                      <Radio value='medium'>Medium</Radio>
+                                      <Radio value='small'>Small</Radio>
+                                      <Radio value='stand'>Farm stand</Radio>
+                                    </HStack>
+                                  </RadioGroup>
+                                </FormControl>
+                                <FormControl>
+                                  <FormLabel as='div' textStyle='bodyMain' fontWeight={500}>
+                                    Market focus (required)
+                                  </FormLabel>
+                                  <FormHelperText>Check all that apply</FormHelperText>
+                                  <CheckboxGroup colorScheme='green'>
+                                    <HStack>
+                                      <Checkbox value='neighborhood'>Neighborhood</Checkbox>
+                                      <Checkbox value='downtown'>Downtown</Checkbox>
+                                      <Checkbox value='grocery'>Grocery shopping</Checkbox>
+                                      <Checkbox value='prepared'>Prepared food shopping</Checkbox>
+                                    </HStack>
+                                  </CheckboxGroup>
+                                </FormControl>
+                                <FormControl>
+                                  <FormLabel as='div' textStyle='bodyMain' fontWeight={500}>
+                                    Brief market description (required)
+                                  </FormLabel>
+                                  <FormHelperText>Add a statement of explanation</FormHelperText>
+                                  <Textarea placeholder='Start typing...' />
+                                </FormControl>
+                              </Container>
+                              <Heading as="h2" color={"gray.700"} textTransform={"uppercase"} marginBottom={2} marginTop={6}>
+                                Edit season for {data.name}
                               </Heading>
-                              <Divider color='gray.700' borderBottomWidth={2} opacity={1} />
-                            </Flex>
-                            <Text as='div' color='gray.500'>
-                              Select a start and end date for the season
-                            </Text>
-                          </Container>
-                        </ModalBody>
-                        <ModalFooter>
-                          <Button colorScheme='blue' onClick={onClose}>
-                            Save
-                          </Button>
-                        </ModalFooter>
-                      </ModalContent>
-                    </Modal>
+                              <Divider sx={{ borderColor: "gray.600", borderBottomWidth: 2 }} />
+                              <Container>
+                                <Flex align='center' justify='space-between' marginTop={8}>
+                                  <Heading as='h2' textStyle='h4' size='md' width={'100%'}>
+                                    Accepting Applications (required)
+                                  </Heading>
+                                  <RadioGroup onChange={newValue => props.setValue(newValue)} value={props.value}>
+                                    <HStack marginRight={2}>
+                                      <Radio value='yes'>Yes</Radio>
+                                      <Radio value='no'>No</Radio>
+                                    </HStack>
+                                  </RadioGroup>
+                                  <Divider color='gray.700' borderBottomWidth={2} opacity={1} />
+                                </Flex>
+                                <Flex align='center' justify='space-between' marginTop={8}>
+                                  <Heading as='h2' textStyle='h4' size='md' width={'70%'}>
+                                    Market time & dates
+                                  </Heading>
+                                  <Divider color='gray.700' borderBottomWidth={2} opacity={1} />
+                                </Flex>
+                                <Text as='div' color='gray.500'>
+                                  Select a start and end date for the season
+                                </Text>
+                              </Container>
+                            </ModalBody>
+                            <ModalFooter>
+                              <Button colorScheme='blue' onClick={onClose}>
+                                Save
+                              </Button>
+                            </ModalFooter>
+                          </ModalContent>
+                        </Modal>
+                      </>
+                    )}                    
                     <HStack>
                       <Text color={"gray.700"} fontSize={"2xl"} fontWeight={700} textTransform={"uppercase"} width={56}>
                         Market size

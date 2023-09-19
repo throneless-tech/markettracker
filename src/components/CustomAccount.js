@@ -36,12 +36,14 @@ const CustomDashboard = () => {
       <Tabs>
         <Box>
           <Tabs>
-            <TabList bg={"gray.50"}>
-              <Tab _selected={{ color: "#000", fontWeight: "700" }} sx={{ fontSize: 16 }}>Company Info</Tab>
-              <Tab _selected={{ color: "#000", fontWeight: "700" }} sx={{ fontSize: 16 }}>Staff</Tab>
-              <Tab _selected={{ color: "#000", fontWeight: "700" }} sx={{ fontSize: 16 }}>Business Info</Tab>
-              <Tab _selected={{ color: "#000", fontWeight: "700" }} sx={{ fontSize: 16 }}>My Products</Tab>
-            </TabList>
+            {user.role == 'vendor' ? (
+              <TabList bg={"gray.50"}>
+                <Tab _selected={{ color: "#000", fontWeight: "700" }} sx={{ fontSize: 16 }}>Company Info</Tab>
+                <Tab _selected={{ color: "#000", fontWeight: "700" }} sx={{ fontSize: 16 }}>Staff</Tab>
+                <Tab _selected={{ color: "#000", fontWeight: "700" }} sx={{ fontSize: 16 }}>Business Info</Tab>
+                <Tab _selected={{ color: "#000", fontWeight: "700" }} sx={{ fontSize: 16 }}>My Products</Tab>
+              </TabList>
+            ) : null}
             <TabIndicator
               mt="-1.5px"
               height="2px"

@@ -26,6 +26,8 @@ import FooterAdmin from './FooterAdmin'
 const CustomDashboard = () => {
   const { user } = useAuth();
 
+  console.log(user);
+
   return (
     <>
       <Container maxW='container.xl' marginBottom={4}>
@@ -71,7 +73,9 @@ const CustomDashboard = () => {
             </Stack>
           </Box>
         </Flex>
-        <Standing user={user} />
+        {user.role == "vendor" ? (
+          <Standing user={user} />
+        ) : null}
         <Wrap my={8} justify={{ base: "center", xl: "space-between" }} spacing={4}>
           <Card icon="market" title="My Upcoming Markets" />
           <Card icon="sales" title="Sales Reports Due" />
