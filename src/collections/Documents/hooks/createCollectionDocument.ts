@@ -43,15 +43,20 @@ export const createCollectionDocument: CollectionAfterChangeHook = async (
   props,
 ) => {
   const { doc, req, operation } = props;
-  console.log("***req***:", req);
+  console.log("***files***:", req.files);
+  console.log("***file***:", req.files.file);
+  console.log("***file***:", req.files.file.mimetype);
+  console.log("***operation***:", operation);
 
   if (
     operation === "create" && req.files.file.mimetype === "text/csv"
   ) {
+    console.log("Found csv file!");
     csv()
       .fromString(req.files.file.data.toString())
       .then(async (fromCSV: any) => {
         if (req.files.file.name === "vendors.csv") {
+          console.log("Processing vendors.csv");
           let userCount = 0;
           let contactCount = 0;
           let vendorCount = 0;
@@ -196,6 +201,7 @@ export const createCollectionDocument: CollectionAfterChangeHook = async (
           console.log("New contacts created:", contactCount);
           console.log("New vendors created:", vendorCount);
         } else if (req.files.file.name === "markets.csv") {
+          console.log("Processing markets.csv");
           let marketCount = 0;
           let seasonCount = 0;
           const marketSource: { [key: string]: MarketSource } = {};
@@ -292,6 +298,7 @@ export const createCollectionDocument: CollectionAfterChangeHook = async (
           console.log("New markets created:", marketCount);
           console.log("New seasons created:", seasonCount);
         } else if (req.files.file.name === "products.csv") {
+          console.log("Processing products.csv");
           let productCount = 0;
           const productSource: { [key: string]: ProductSource } = {};
 
