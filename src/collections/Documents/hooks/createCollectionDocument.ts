@@ -54,7 +54,7 @@ export const createCollectionDocument: CollectionAfterChangeHook = async (
     console.log("***data.toString***:", req.files.file.data.toString());
     let content: string;
     if (req.files.file.tempFilePath) {
-      content = (await readFile(req.files.file.tempFile)).toString();
+      content = (await readFile(req.files.file.tempFilePath)).toString();
     } else {
       content = req.files.file.data.toString();
     }
