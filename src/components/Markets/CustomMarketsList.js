@@ -1,6 +1,7 @@
 "use client"
 
 import React, { useEffect } from 'react'
+import { useAuth } from 'payload/components/utilities'
 
 import { List } from "payload/components/views/List"; // Payload's default List view component and its props
 
@@ -23,6 +24,7 @@ import MarketCard from './MarketCard'
 
 function CustomMarketsList(props) {
   const { data } = props;
+  const { user } = useAuth();
 
   useEffect(() => { }, [data])
 
@@ -37,15 +39,19 @@ function CustomMarketsList(props) {
               Markets
             </Heading>
           </Box>
-          <Spacer />
-          <HStack flexGrow={1} spacing={4} justify={"flex-end"}>
-            <Button as="a" href="#FIXME/admin/collections/markets/review">
-              Review market applications
-            </Button>
-            <Button as="a" href="/admin/collections/markets/create">
-              Create a new market
-            </Button>
-          </HStack>
+          {user.role == 'vendor' ? null : (
+            <>
+              <Spacer />
+              <HStack flexGrow={1} spacing={4} justify={"flex-end"}>
+                <Button as="a" href="#FIXME/admin/collections/markets/review">
+                  Review market applications
+                </Button>
+                <Button as="a" href="/admin/collections/markets/create">
+                  Create a new market
+                </Button>
+              </HStack>
+            </>
+          )}
         </Flex>
         <Divider color='gray.900' borderBottomWidth={2} opacity={1} />
       </Container>
