@@ -127,13 +127,17 @@ function CustomMarketsEdit(props) {
                               Dates
                             </Text>
                           </HStack>
-                          <Spacer />
-                          <HStack>
-                            <Text color={"gray.50"} fontSize="sm" fontWeight={700} textAlign={"right"} textTransform={"uppercase"} width={28}>
-                              Accepting applications
-                            </Text>
-                            <StarIcon height={8} width={8} />
-                          </HStack>
+                          {data.acceptingApplications ? (
+                            <>
+                              <Spacer />
+                              <HStack>
+                                <Text color={"gray.50"} fontSize="sm" fontWeight={700} textAlign={"right"} textTransform={"uppercase"} width={28}>
+                                  Accepting applications
+                                </Text>
+                                <StarIcon height={8} width={8} />
+                              </HStack>
+                            </>
+                          ) : null}
                         </Flex>
                         <Flex marginTop={4}>
                           <HStack>
@@ -371,16 +375,16 @@ function CustomMarketsEdit(props) {
                         Market size
                       </Text>
                       <Text color={"gray.600"} fontFamily={"Zilla Slab"} fontSize={"2xl"} fontWeight={700} textTransform={"uppercase"}>
-                        Flagship
+                        {data.size}
                       </Text>
                       <Divider sx={{ borderColor: "gray.600", borderBottomWidth: 2 }} />
                     </HStack>
                     <Text color={"gray.600"} marginTop={4} fontSize={"md"}>
-                      [ DEFINITIONS ABOUT MARKET SIZES: flagship, large, medium, small, farm stand] flagship market- can support 5 prepared food vendors large market- can support 3 prepared food / etc. vendors Remember, a Jedi can feel the Force flowing through him. You are a part of the Rebel Alliance and a traitor! Take her away! I suggest you try it again, Luke. This time, let go your conscious self and act on instinct.
+                      {data.size == 'flagship' ? 'Daily sales for the entire market are upwards of $150,000. This market can support upwards of 20 produce vendors, 14 prepared food vendors, 9 baked goods vendors, 6 alcohol vendors, 5 dairy vendors, and 2 to 4 vendors from each additional category.' : data.size == 'large' ? 'Daily sales for large markets range from $20,000 to $70,000. They can support average numbers of 8 produce vendors, 8 prepared food vendors, 5 baked goods vendors, 3 alcohol vendors, and 1 to 2 vendors from each additional category.' : data.size == 'medium' ? 'Daily sales for medium markets range from $10,000 to $19,000. They can support average numbers of 5 prepared food vendors, 4 produce vendors, and 1 to 2 vendors from each additional category.' : data.size == 'small' ? 'Daily sales for small markets range from $1,500 to $9,000. They can support average numbers of 4 produce vendors, 4 prepared food vendors, and 1 to 2 vendors from each additional category with some product category gaps.' : 'These markets are limited to one produce vendor for retail and wholesale sales.'}
                     </Text>
                     <HStack marginTop={4}>
                       <Text as={"span"} color={"blue.500"} fontWeight={700}>
-                        1,234
+                        0
                       </Text>
                       <Text as={"span"} color={"blue.500"}>
                         visitors per market
