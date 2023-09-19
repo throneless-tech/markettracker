@@ -21,6 +21,9 @@ const roles = [
 
 export const Users: CollectionConfig = {
   slug: "users",
+  admin: {
+    useAsTitle: "name",
+  },
   auth: true,
   fields: [
     {

@@ -2,7 +2,19 @@ import { CollectionConfig } from "payload/types";
 
 export const Seasons: CollectionConfig = {
   slug: "seasons",
+  admin: {
+    useAsTitle: "name",
+  },
   fields: [
+    {
+      name: "name",
+      label: "Season Name",
+      type: "text",
+      required: true,
+      admin: {
+        placeholder: "Winter 2024",
+      },
+    },
     {
       name: "isAccepting",
       label: "Accepting Applications",
@@ -256,6 +268,13 @@ export const Seasons: CollectionConfig = {
       type: "relationship",
       relationTo: "markets",
       required: true,
+      filterOptions: ({relationTo}) => {
+        if (relationTo === "markets") {
+          return {
+            name: { exists: true }
+          }
+        }
+      },
     },
   ],
 };
