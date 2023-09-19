@@ -49,7 +49,7 @@ function CustomMarketsList(props) {
         </Flex>
         <Divider color='gray.900' borderBottomWidth={2} opacity={1} />
       </Container>
-      <Container>
+      <Container sx={{ maxWidth: 'unset' }}>
         <HStack align={'flex-start'} marginTop={8} spacing={8}>
           {/* <Stack backgroundColor={'gray.50'} padding={4} width={230}>
           <Text>

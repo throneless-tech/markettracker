@@ -137,17 +137,19 @@ function CustomMarketsEdit(props) {
                         </Flex>
                         <Flex marginTop={4}>
                           <HStack>
-                            <Text as={"span"} color={"gray.50"} fontSize="2xl" fontWeight={700} sx={{ textTransform: 'capitalize' }}>
-                              {data.days.map((day, index) => {
-                                if (index == data.days.length - 1) {
-                                  return day
-                                } else {
-                                  return `${day}, `
-                                }
-                              })}
-                              {' '}
-                              {formatTime(data.time.startTime)}-{formatTime(data.time.endTime)}
-                            </Text>
+                            {data.time ? (
+                              <Text as={"span"} color={"gray.50"} fontSize="2xl" fontWeight={700} sx={{ textTransform: 'capitalize' }}>
+                                {data.days.map((day, index) => {
+                                  if (index == data.days.length - 1) {
+                                    return day
+                                  } else {
+                                    return `${day}, `
+                                  }
+                                })}
+                                {' '}
+                                {formatTime(data.time.startTime)}-{formatTime(data.time.endTime)}
+                              </Text>
+                            ) : null}
                             <Text as={"span"} color={"gray.50"} fontSize="2xl">
                               {data.address.street}{', '}{data.address.city}{', '}{data.address.state}{', '}{data.address.zipcode}
                             </Text>

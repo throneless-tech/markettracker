@@ -63,8 +63,6 @@ const CustomNav = () => {
     }
   )
 
-  console.log(user);
-
   return (
     <ChakraProvider theme={theme}>
       <Show below='md'>

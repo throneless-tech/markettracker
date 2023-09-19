@@ -75,17 +75,19 @@ const MarketCard = (props) => {
       </Box>
       <Box margin={4}>
         <Stack marginTop={4} spacing={4}>
-          <Text fontSize={18} fontWeight={500} sx={{ textTransform: 'capitalize' }}>
-            {market.days.map( (day, index) => {
-              if (index == market.days.length - 1) {
-                return day
-              } else {
-                return `${day}, `
-              }
-            })}
-            {' '}
-            {formatTime(market.time.startTime)}-{formatTime(market.time.endTime)}
-          </Text>
+          {market.time ? (
+            <Text fontSize={18} fontWeight={500} sx={{ textTransform: 'capitalize' }}>
+              {market.days.map((day, index) => {
+                if (index == market.days.length - 1) {
+                  return day
+                } else {
+                  return `${day}, `
+                }
+              })}
+              {' '}
+              {formatTime(market.time.startTime)}-{formatTime(market.time.endTime)}
+            </Text>
+          ) : null}
           <Text>
             {description}
           </Text>
