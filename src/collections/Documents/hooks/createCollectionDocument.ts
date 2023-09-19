@@ -43,10 +43,6 @@ export const createCollectionDocument: CollectionAfterChangeHook = async (
   props,
 ) => {
   const { doc, req, operation } = props;
-  console.log("***files***:", req.files);
-  console.log("***file***:", req.files.file);
-  console.log("***file***:", req.files.file.mimetype);
-  console.log("***operation***:", operation);
 
   if (
     operation === "create" && req.files.file.mimetype === "text/csv"
@@ -55,6 +51,7 @@ export const createCollectionDocument: CollectionAfterChangeHook = async (
     csv()
       .fromString(req.files.file.data.toString())
       .then(async (fromCSV: any) => {
+        console.log("***fromCSV***", fromCSV);
         if (req.files.file.name === "vendors.csv") {
           console.log("Processing vendors.csv");
           let userCount = 0;
