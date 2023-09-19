@@ -42,16 +42,24 @@ function CustomMarketsList(props) {
   const { user } = useAuth();
   const history = useHistory();
   const [markets, setMarkets] = useState([]);
+  const [seasons, setSeasons] = useState([]);
   
   useEffect(() => {
     const getMarkets = async () => {
       const response = await fetch('/api/markets?depth=2');
-      const apps = await response.json();
-      console.log(apps);
-      setMarkets(apps)
+      const theseMarkets = await response.json();
+      setMarkets(theseMarkets)
+    }
+
+    const getSeasons = async () => {
+      const response = await fetch('/api/seasons?depth=2');
+      const theseSeasons = await response.json();
+      console.log(theseSeasons);
+      setSeasons(theseSeasons)
     }
 
     getMarkets();
+    getSeasons()
   }, [])
   
   useEffect(() => {}, [markets, data])
