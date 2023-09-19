@@ -19,6 +19,7 @@ import { Vendors } from "./collections/Vendors";
 
 import CustomAccount from "./components/CustomAccount";
 import CustomAfterLogin from "./components/CustomAfterLogin";
+import CustomApplications from "./components/CustomApplications";
 import CustomBeforeLogin from "./components/CustomBeforeLogin";
 import CustomDashboard from "./components/CustomDashboard";
 import CustomLogo from "./components/CustomLogo";
@@ -44,6 +45,12 @@ export default buildConfig({
       },
       Nav: CustomNav,
       providers: [CustomProvider],
+      routes: [
+        {
+          Component: CustomApplications,
+          path: '/markets/applications/:id'
+        }
+      ],
       views: {
         Account: CustomAccount,
         Dashboard: CustomDashboard,

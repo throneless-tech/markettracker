@@ -89,7 +89,7 @@ const MarketCard = (props) => {
             </Text>
           ) : null}
           <Text>
-            {description}
+            {market.description}
           </Text>
           <Divider color='green.600' borderBottomWidth={2} opacity={1} />
         </Stack>

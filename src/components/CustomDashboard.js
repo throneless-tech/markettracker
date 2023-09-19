@@ -26,8 +26,6 @@ import FooterAdmin from './FooterAdmin'
 const CustomDashboard = () => {
   const { user } = useAuth();
 
-  console.log(user);
-
   return (
     <>
       <Container maxW='container.xl' marginBottom={4}>

@@ -61,6 +61,7 @@ function CustomVendorsEdit(props) {
   const { data } = props;
   const { isOpen, onOpen, onClose } = useDisclosure()
   const [name, setName] = useState('')
+  const [vendor, setVendor] = useState(null);
 
   // id will be undefined on the create form
   if (!id) {
@@ -68,14 +69,25 @@ function CustomVendorsEdit(props) {
   }
 
   useEffect(() => {
+    const getVendor = async () => {
+      const response = await fetch(`/api/vendors/${id}?depth=2`);
+      const thisVendor = await response.json();
+      console.log(thisVendor);
+      setVendor(thisVendor)
+    }
+
+    getVendor();
+
     if (data) {
       setName(data.name);
+      setVendor(data)
     }
   }, [])
 
-  console.log(data);
+  useEffect(() => { }, [data, name, vendor]);
 
-  useEffect(() => { }, [data, name]);
+  console.log(vendor);
+
   if (data) {
     return (
       <Box>
@@ -114,17 +126,27 @@ function CustomVendorsEdit(props) {
                   </Text>
                 </HStack>
                 <Spacer />
-                <HStack>
-                  <Text as={"span"} color={"gray.50"} fontSize="2xl" fontWeight={700}>
-                    Primary contact:
-                  </Text>
-                  <Text as={"span"} color={"gray.50"} fontSize="2xl">
-                    Manager name
-                  </Text>
-                  <Text as={"span"} color={"gray.50"} fontSize="2xl">
-                    202-123-4567
-                  </Text>
-                </HStack>
+                {vendor.contacts && vendor.contacts.length ? vendor.contacts.map(contact => {
+                  if (contact.type && contact.type.length) {
+                    const type = contact.type.find(type => type == "primary")
+                    if (type) {
+                      return (
+                        <HStack>
+                          <Text as={"span"} color={"gray.50"} fontSize="2xl" fontWeight={700}>
+                            Primary contact:
+                          </Text>
+                          <Text as={"span"} color={"gray.50"} fontSize="2xl">
+                            {contact.name}
+                          </Text>
+                          <Text as={"span"} color={"gray.50"} fontSize="2xl">
+                            {contact.phone}
+                          </Text>
+                        </HStack>
+                      )
+                    }
+                  }
+                }) : null}
+                
               </Flex>              
             </Box>
             <Box background={"#90B132"} borderBottomRadius="8px" padding={4}>

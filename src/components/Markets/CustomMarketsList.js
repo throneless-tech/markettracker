@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from 'react'
 import { useAuth } from 'payload/components/utilities'
+import { useHistory } from 'react-router-dom'
 
 import { List } from "payload/components/views/List"; // Payload's default List view component and its props
 
@@ -34,10 +35,12 @@ import {
 
 //components
 import MarketCard from './MarketCard'
+import FooterAdmin from '../FooterAdmin';
 
 function CustomMarketsList(props) {
   const { data } = props;
   const { user } = useAuth();
+  const history = useHistory();
   const [markets, setMarkets] = useState([]);
   
   useEffect(() => {
@@ -52,8 +55,6 @@ function CustomMarketsList(props) {
   }, [])
   
   useEffect(() => {}, [markets, data])
-
-  console.log(markets);
 
   return (
     <>
@@ -122,9 +123,11 @@ function CustomMarketsList(props) {
                 </HStack>
               </HStack>
             </Container>
+            <FooterAdmin />
           </TabPanel>
           <TabPanel>
             Coming soon.
+            <FooterAdmin />
           </TabPanel>
           <TabPanel>
             <TableContainer>
@@ -140,19 +143,22 @@ function CustomMarketsList(props) {
                   </Tr>
                 </Thead>
                 <Tbody>
-                  {data.docs && data.docs.length && data.docs.map(vendor => (
-                    <Tr key={vendor.id}>
+                  {data.docs && data.docs.length && data.docs.map(market => (
+                    <Tr key={market.id}>
                       <Td>
-                        <Link href={`/admin/collections/vendors/${vendor.id}`}>
-                          {vendor.name}
+                        <Link href={`/admin/collections/markets/${market.id}`}>
+                          {market.name}
                         </Link>
                       </Td>
-                      <Td>{vendor.type}</Td>
-                      <Td>{vendor.markets || ''}</Td>
-                      <Td>{vendor.region || ''}</Td>
-                      <Td>{''}</Td>
-                      <Td>{''}</Td>
-                      <Td>{''}</Td>
+                      <Td>{(market.applications && market.applications.length) || '0'}{' '}applications</Td>
+                      <Td>{(market.applications && market.applications.reviewers.length) || '0'}{' '}reviewers</Td>
+                      <Td>{market.acceptingApplications ? 'yes': 'no'}</Td>
+                      <Td>{market.reviewStatus ? 'done' : 'todo'}</Td>
+                      <Td>
+                        <Button variant={'outline'} as='a' href={`/admin/markets/applications/${market.id}`}>
+                          View applications
+                        </Button>
+                      </Td>
                     </Tr>
                   ))}
                 </Tbody>
@@ -168,6 +174,7 @@ function CustomMarketsList(props) {
                 </Tfoot>
               </Table>
             </TableContainer>
+            <FooterAdmin />
           </TabPanel>
         </TabPanels>
       </Tabs>
