@@ -1,6 +1,7 @@
 import payload from "payload";
 import csv from "csvtojson";
 import humanparser from "humanparser";
+import { readFile } from "fs/promises";
 import { CollectionAfterChangeHook } from "payload/types";
 import {
   Contact,
@@ -51,8 +52,14 @@ export const createCollectionDocument: CollectionAfterChangeHook = async (
     console.log("***file***:", req.files.file);
     console.log("***data***:", req.files.file.data);
     console.log("***data.toString***:", req.files.file.data.toString());
+    let content: string;
+    if (req.files.file.tempFilePath) {
+      content = (await readFile(req.files.file.tempFile)).toString();
+    } else {
+      content = req.files.file.data.toString();
+    }
     csv()
-      .fromString(req.files.file.data.toString())
+      .fromString(content)
       .then(async (fromCSV: any) => {
         console.log("***fromCSV***", fromCSV);
         if (req.files.file.name === "vendors.csv") {
