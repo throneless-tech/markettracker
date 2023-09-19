@@ -75,6 +75,9 @@ export default buildConfig({
   ],
   cors: ["*", "https://markettracker.payloadcms.app"],
   debug: true,
+  upload: {
+    disableLocalStorage: true,
+  },
   plugins: [payloadCloud()],
   typescript: {
     outputFile: path.resolve(__dirname, "payload-types.ts"),
