@@ -43,6 +43,7 @@ export const createCollectionDocument: CollectionAfterChangeHook = async (
   props,
 ) => {
   const { doc, req, operation } = props;
+  console.log("***req***:", req);
 
   if (
     operation === "create" && req.files.file.mimetype === "text/csv"
