@@ -64,7 +64,7 @@ export const Markets: CollectionConfig = {
       label: "Market Manager",
       type: "relationship",
       relationTo: "contacts",
-      required: true,
+      //required: true, //temporarily disabled for data import
     },
     {
       name: "days",
@@ -100,35 +100,6 @@ export const Markets: CollectionConfig = {
         {
           label: "Saturday",
           value: "saturday",
-        },
-      ],
-    },
-    {
-      name: "time",
-      label: "Market Time",
-      type: "group",
-      fields: [
-        {
-          name: "startTime",
-          label: "Start time",
-          type: "date",
-          required: true,
-          admin: {
-            date: {
-              pickerAppearance: "timeOnly",
-            },
-          },
-        },
-        {
-          name: "endTime",
-          label: "End time",
-          type: "date",
-          required: true,
-          admin: {
-            date: {
-              pickerAppearance: "timeOnly",
-            },
-          },
         },
       ],
     },
@@ -190,7 +161,7 @@ export const Markets: CollectionConfig = {
       name: "description",
       label: "Brief Market Description",
       type: "textarea",
-      required: true,
+      //required: true, //temporarily disabled for data import
       admin: {
         placeholder: "start typing...",
       },

@@ -175,3 +175,7 @@ src/payload-types.ts
 
 # Imported data
 vendors.csv
+
+# PayloadCMS static doc uploads
+src/documents
+src/media

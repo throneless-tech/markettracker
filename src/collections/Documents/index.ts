@@ -1,11 +1,15 @@
 import { CollectionConfig } from "payload/types";
+import { createCollectionDocument } from "./hooks/createCollectionDocument";
 
 export const Documents: CollectionConfig = {
   slug: "documents",
+  hooks: {
+    afterChange: [createCollectionDocument],
+  },
   upload: {
     staticURL: "/documents",
     staticDir: "documents",
-    mimeTypes: ["image/*", "application/pdf"],
+    //mimeTypes: ["image/*", "application/pdf"],
   },
   fields: [
     {
@@ -16,7 +20,7 @@ export const Documents: CollectionConfig = {
       admin: {
         date: {
           pickerAppearance: "dayOnly",
-          displayFormat: "MM/DD/YYYY",
+          displayFormat: "MM/dd/yyyy",
         },
         description: "example 01/15/2023",
       },
