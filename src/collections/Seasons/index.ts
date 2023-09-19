@@ -1,7 +1,11 @@
 import { CollectionConfig } from "payload/types";
+import { createCollectionSeason } from "./hooks/createCollectionSeasons";
 
 export const Seasons: CollectionConfig = {
   slug: "seasons",
+  hooks: {
+    afterChange: [createCollectionSeason],
+  },
   fields: [
     {
       name: "isAccepting",
