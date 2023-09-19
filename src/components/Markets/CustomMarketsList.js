@@ -38,7 +38,7 @@ function CustomMarketsList(props) {
             </Heading>
           </Box>
           <Spacer />
-          <HStack flexGrow={1} spacing={4}>
+          <HStack flexGrow={1} spacing={4} justify={"flex-end"}>
             <Button as="a" href="#FIXME/admin/collections/markets/review">
               Review market applications
             </Button>

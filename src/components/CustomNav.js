@@ -21,6 +21,7 @@ import {
   MenuButton,
   MenuList,
   MenuItem,
+  Portal,
   Show,
   Stack,
   Text,
@@ -31,10 +32,12 @@ import { HamburgerIcon } from '@chakra-ui/icons'
 import { HomeIcon } from '../assets/icons/home'
 import { LicenseIcon } from '../assets/icons/license'
 import { MarketIcon } from '../assets/icons/market'
+import { ProductsIcon } from '../assets/icons/products'
 import { ProfileIcon } from '../assets/icons/profile'
 import { SalesIcon } from '../assets/icons/sales'
+import { VendorsIcon } from '../assets/icons/vendors'
 import Logo from '../assets/icons/logo'
-import LogoLarge from '../assets/icons/logoMarketTracker'
+import LogoMarketTracker from '../assets/icons/logoMarketTracker'
 
 import theme from '../styles/theme.js'
 
@@ -48,7 +51,6 @@ import '@fontsource/outfit/700.css'
 import '@fontsource/outfit/800.css'
 import '@fontsource/zilla-slab/400.css'
 import '@fontsource/zilla-slab/700.css'
-import LogoMarketTracker from '../assets/icons/logoMarketTracker'
 
 const CustomNav = () => {
   let location = useLocation();
@@ -60,6 +62,8 @@ const CustomNav = () => {
       md: (<Logo sx={{ height: 41, width: 41 }} />)
     }
   )
+
+  console.log(user);
 
   return (
     <ChakraProvider theme={theme}>
@@ -84,7 +88,7 @@ const CustomNav = () => {
           </Center>
           <IconButton
             height={50}
-            icon={<HamburgerIcon sx={{ height: 50, width: 50}} />}
+            icon={<HamburgerIcon sx={{ height: 50, width: 50 }} />}
             onClick={onOpen}
             variant={'none'}
             width={50}
@@ -136,7 +140,7 @@ const CustomNav = () => {
                 <LinkBox
                   paddingX={2}
                   paddingY={2}
-                  sx={{                    
+                  sx={{
                     color: 'gray.700',
                     '& path': {
                       stroke: location.pathname == '/admin/collections/markets' ? 'gray.700 !important' : ''
@@ -152,60 +156,136 @@ const CustomNav = () => {
                       marginBottom={0}
                       textTransform="capitalize"
                     >
-                      My markets
+                      {user.role == 'vendor' ? 'My markets' : 'Markets'}
                     </LinkOverlay>
                   </Stack>
                 </LinkBox>
-                <LinkBox
-                  paddingX={2}
-                  paddingY={2}
-                  sx={{                    
-                    color: 'gray.700',
-                    '& path': {
-                      stroke: location.pathname == '/admin/collections/sales-reports' ? 'gray.700 !important' : ''
-                    }
-                  }}
-                >
-                  <Stack direction="row" justify="flex-start" align="center">
-                    <LinkOverlay
-                      href='/admin/collections/sales-reports'
-                      fontFamily="Outfit"
-                      fontWeight="semibold"
-                      fontSize="2xl"
-                      marginBottom={0}
-                      textTransform="capitalize"
+                {user.role == 'vendor' ? (
+                  <>
+                    <LinkBox
+                      paddingX={2}
+                      paddingY={2}
+                      sx={{
+                        color: 'gray.700',
+                        '& path': {
+                          stroke: location.pathname == '/admin/collections/sales-reports' ? 'gray.700 !important' : ''
+                        }
+                      }}
                     >
-                      My Sales
-                    </LinkOverlay>
-                  </Stack>
-                </LinkBox>
-                <LinkBox
-                  paddingX={2}
-                  paddingY={2}
-                  sx={{                    
-                    color: 'gray.700',
-                    '& path': {
-                      stroke: location.pathname == '#FIXME/admin/licenses' ? 'gray.700 !important' : ''
-                    }
-                  }}
-                >
-                  <Stack direction="row" justify="flex-start" align="center">
-                    <LinkOverlay
-                      href='#FIXME/admin/licenses'
-                      fontFamily="Outfit"
-                      fontWeight="semibold"
-                      fontSize="2xl"
-                      marginBottom={0}
-                      textTransform="capitalize"
+                      <Stack direction="row" justify="flex-start" align="center">
+                        <LinkOverlay
+                          href='/admin/collections/sales-reports'
+                          fontFamily="Outfit"
+                          fontWeight="semibold"
+                          fontSize="2xl"
+                          marginBottom={0}
+                          textTransform="capitalize"
+                        >
+                          My Sales
+                        </LinkOverlay>
+                      </Stack>
+                    </LinkBox>
+                    <LinkBox
+                      paddingX={2}
+                      paddingY={2}
+                      sx={{
+                        color: 'gray.700',
+                        '& path': {
+                          stroke: location.pathname == '#FIXME/admin/licenses' ? 'gray.700 !important' : ''
+                        }
+                      }}
                     >
-                      My Licenses
-                    </LinkOverlay>
-                  </Stack>
-                </LinkBox>
+                      <Stack direction="row" justify="flex-start" align="center">
+                        <LinkOverlay
+                          href='#FIXME/admin/licenses'
+                          fontFamily="Outfit"
+                          fontWeight="semibold"
+                          fontSize="2xl"
+                          marginBottom={0}
+                          textTransform="capitalize"
+                        >
+                          My Licenses
+                        </LinkOverlay>
+                      </Stack>
+                    </LinkBox>
+                  </>
+                ) : (
+                  <>
+                    <LinkBox
+                      paddingX={2}
+                      paddingY={2}
+                      sx={{
+                        color: 'gray.700',
+                        '& path': {
+                          stroke: location.pathname == '/admin/collections/vendors' ? 'gray.700 !important' : ''
+                        }
+                      }}
+                    >
+                      <Stack direction="row" justify="flex-start" align="center">
+                        <LinkOverlay
+                          href='/admin/collections/vendors'
+                          fontFamily="Outfit"
+                          fontWeight="semibold"
+                          fontSize="2xl"
+                          marginBottom={0}
+                          textTransform="capitalize"
+                        >
+                          Vendors
+                        </LinkOverlay>
+                      </Stack>
+                    </LinkBox>
+                    <LinkBox
+                      paddingX={2}
+                      paddingY={2}
+                      sx={{
+                        color: 'gray.700',
+                        '& path': {
+                          stroke: location.pathname == '/admin/collections/products' ? 'gray.700 !important' : ''
+                        }
+                      }}
+                    >
+                      <Stack direction="row" justify="flex-start" align="center">
+                        <LinkOverlay
+                          href='/admin/collections/products'
+                          fontFamily="Outfit"
+                          fontWeight="semibold"
+                          fontSize="2xl"
+                          marginBottom={0}
+                          textTransform="capitalize"
+                        >
+                          Products
+                        </LinkOverlay>
+                      </Stack>
+                    </LinkBox>
+                    <LinkBox
+                      paddingX={2}
+                      paddingY={2}
+                      sx={{
+                        color: 'gray.700',
+                        '& path': {
+                          stroke: location.pathname == '/admin/collections/products' ? 'gray.700 !important' : ''
+                        }
+                      }}
+                    >
+                      <Stack direction="row" justify="flex-start" align="center">
+                        <LinkOverlay
+                          href='/admin/collections/products'
+                          fontFamily="Outfit"
+                          fontWeight="semibold"
+                          fontSize="2xl"
+                          marginBottom={0}
+                          textTransform="capitalize"
+                        >
+                          Reports
+                        </LinkOverlay>
+                      </Stack>
+                    </LinkBox>
+                  </>
+                )}
                 <LinkBox
                   paddingX={2}
                   paddingY={2}
-                  sx={{                    
+                  sx={{
                     color: 'gray.700',
                     '& path': {
                       stroke: location.pathname == "/admin/account" ? 'gray.700 !important' : ''
@@ -222,7 +302,7 @@ const CustomNav = () => {
                       textTransform="capitalize"
                     >
                       {' '}
-                      My Profile
+                      {user.role == 'vendor' ? 'My profile' : 'Profile'}
                     </LinkOverlay>
                   </Stack>
                 </LinkBox>
@@ -312,7 +392,7 @@ const CustomNav = () => {
                 borderLeft: location.pathname == '/admin/collections/markets' ? '2px solid white' : '',
                 borderRight: location.pathname == '/admin/collections/markets' ? '2px solid white' : '',
                 color: location.pathname == '/admin/collections/markets' ? 'gray.700' : 'gray.50',
-                bg: location.pathname == '/admin/collections/markets' ? 'teal.300' : 'gray.700' ,
+                bg: location.pathname == '/admin/collections/markets' ? 'teal.300' : 'gray.700',
                 '& path': {
                   stroke: location.pathname == '/admin/collections/markets' ? 'gray.700 !important' : ''
                 }
@@ -328,70 +408,158 @@ const CustomNav = () => {
                   marginBottom={0}
                   textTransform="capitalize"
                 >
-                  My markets
+                  {user.role == 'vendor' ? 'My markets' : 'Markets'}
                 </LinkOverlay>
               </Stack>
             </LinkBox>
-            <LinkBox
-              paddingX={6}
-              paddingY={8}
-              sx={{
-                borderLeft: location.pathname == '/admin/collections/sales-reports' ? '2px solid white' : '' ,
-                borderRight: location.pathname == '/admin/collections/sales-reports' ? '2px solid white' : '' ,
-                color: location.pathname == '/admin/collections/sales-reports' ? 'gray.700' : 'gray.50',
-                bg: location.pathname == '/admin/collections/sales-reports' ? 'teal.300' : 'gray.700',
-                '& path': {
-                  stroke: location.pathname == '/admin/collections/sales-reports' ? 'gray.700 !important' : ''
-                }
-              }}
-            >
-              <Stack direction="row" justify="flex-start" align="center">
-                <SalesIcon sx={{ fill: 'none', height: "24px", width: "24px" }} />
-                <LinkOverlay
-                  href='/admin/collections/sales-reports'
-                  fontFamily="Outfit"
-                  fontWeight="semibold"
-                  fontSize="2xl"
-                  marginBottom={0}
-                  textTransform="capitalize"
+            {user.role == 'vendor' ? (
+              <>
+                <LinkBox
+                  paddingX={6}
+                  paddingY={8}
+                  sx={{
+                    borderLeft: location.pathname == '/admin/collections/sales-reports' ? '2px solid white' : '',
+                    borderRight: location.pathname == '/admin/collections/sales-reports' ? '2px solid white' : '',
+                    color: location.pathname == '/admin/collections/sales-reports' ? 'gray.700' : 'gray.50',
+                    bg: location.pathname == '/admin/collections/sales-reports' ? 'teal.300' : 'gray.700',
+                    '& path': {
+                      stroke: location.pathname == '/admin/collections/sales-reports' ? 'gray.700 !important' : ''
+                    }
+                  }}
                 >
-                  My Sales
-                </LinkOverlay>
-              </Stack>
-            </LinkBox>
-            <LinkBox
-              paddingX={6}
-              paddingY={8}
-              sx={{
-                borderLeft: location.pathname == '#FIXME/admin/licenses' ? '2px solid white' : '',
-                borderRight: location.pathname == '#FIXME/admin/licenses' ? '2px solid white' : '',
-                color: location.pathname == '#FIXME/admin/licenses' ? 'gray.700' : 'gray.50',
-                bg: location.pathname == '#FIXME/admin/licenses' ? 'teal.300' : 'gray.700',
-                '& path': {
-                  stroke: location.pathname == '#FIXME/admin/licenses' ? 'gray.700 !important' : ''
-                }
-              }}
-            >
-              <Stack direction="row" justify="flex-start" align="center">
-                <LicenseIcon sx={{ fill: 'none', height: "24px", width: "24px" }} />
-                <LinkOverlay
-                  href='#FIXME/admin/licenses'
-                  fontFamily="Outfit"
-                  fontWeight="semibold"
-                  fontSize="2xl"
-                  marginBottom={0}
-                  textTransform="capitalize"
+                  <Stack direction="row" justify="flex-start" align="center">
+                    <SalesIcon sx={{ fill: 'none', height: "24px", width: "24px" }} />
+                    <LinkOverlay
+                      href='/admin/collections/sales-reports'
+                      fontFamily="Outfit"
+                      fontWeight="semibold"
+                      fontSize="2xl"
+                      marginBottom={0}
+                      textTransform="capitalize"
+                    >
+                      My Sales
+                    </LinkOverlay>
+                  </Stack>
+                </LinkBox>
+                <LinkBox
+                  paddingX={6}
+                  paddingY={8}
+                  sx={{
+                    borderLeft: location.pathname == '#FIXME/admin/licenses' ? '2px solid white' : '',
+                    borderRight: location.pathname == '#FIXME/admin/licenses' ? '2px solid white' : '',
+                    color: location.pathname == '#FIXME/admin/licenses' ? 'gray.700' : 'gray.50',
+                    bg: location.pathname == '#FIXME/admin/licenses' ? 'teal.300' : 'gray.700',
+                    '& path': {
+                      stroke: location.pathname == '#FIXME/admin/licenses' ? 'gray.700 !important' : ''
+                    }
+                  }}
                 >
-                  My Licenses
-                </LinkOverlay>
-              </Stack>
-            </LinkBox>
+                  <Stack direction="row" justify="flex-start" align="center">
+                    <LicenseIcon sx={{ fill: 'none', height: "24px", width: "24px" }} />
+                    <LinkOverlay
+                      href='#FIXME/admin/licenses'
+                      fontFamily="Outfit"
+                      fontWeight="semibold"
+                      fontSize="2xl"
+                      marginBottom={0}
+                      textTransform="capitalize"
+                    >
+                      My Licenses
+                    </LinkOverlay>
+                  </Stack>
+                </LinkBox>
+              </>
+            ) : (
+              <>
+                <LinkBox
+                  paddingX={6}
+                  paddingY={8}
+                  sx={{
+                    borderLeft: location.pathname == '/admin/collections/vendors' ? '2px solid white' : '',
+                    borderRight: location.pathname == '/admin/collections/vendors' ? '2px solid white' : '',
+                    color: location.pathname == '/admin/collections/vendors' ? 'gray.700' : 'gray.50',
+                    bg: location.pathname == '/admin/collections/vendors' ? 'teal.300' : 'gray.700',
+                    '& path': {
+                      stroke: location.pathname == '/admin/collections/vendors' ? 'gray.700 !important' : ''
+                    }
+                  }}
+                >
+                  <Stack direction="row" justify="flex-start" align="center">
+                    <VendorsIcon sx={{ fill: 'none', height: "24px", width: "24px" }} />
+                    <LinkOverlay
+                      href='/admin/collections/vendors'
+                      fontFamily="Outfit"
+                      fontWeight="semibold"
+                      fontSize="2xl"
+                      marginBottom={0}
+                      textTransform="capitalize"
+                    >
+                      Vendors
+                    </LinkOverlay>
+                  </Stack>
+                </LinkBox>
+                <LinkBox
+                  paddingX={6}
+                  paddingY={8}
+                  sx={{
+                    borderLeft: location.pathname == '/admin/collections/products' ? '2px solid white' : '',
+                    borderRight: location.pathname == '/admin/collections/products' ? '2px solid white' : '',
+                    color: location.pathname == '/admin/collections/products' ? 'gray.700' : 'gray.50',
+                    bg: location.pathname == '/admin/collections/products' ? 'teal.300' : 'gray.700',
+                    '& path': {
+                      stroke: location.pathname == '/admin/collections/products' ? 'gray.700 !important' : ''
+                    }
+                  }}
+                >
+                  <Stack direction="row" justify="flex-start" align="center">
+                    <ProductsIcon sx={{ fill: 'none', height: "24px", width: "24px" }} />
+                    <LinkOverlay
+                      href='/admin/collections/products'
+                      fontFamily="Outfit"
+                      fontWeight="semibold"
+                      fontSize="2xl"
+                      marginBottom={0}
+                      textTransform="capitalize"
+                    >
+                      Products
+                    </LinkOverlay>
+                  </Stack>
+                </LinkBox>
+                <LinkBox
+                  paddingX={6}
+                  paddingY={8}
+                  sx={{
+                    borderLeft: location.pathname == '/admin/collections/reports' ? '2px solid white' : '',
+                    borderRight: location.pathname == '/admin/collections/reports' ? '2px solid white' : '',
+                    color: location.pathname == '/admin/collections/reports' ? 'gray.700' : 'gray.50',
+                    bg: location.pathname == '/admin/collections/reports' ? 'teal.300' : 'gray.700',
+                    '& path': {
+                      stroke: location.pathname == '/admin/collections/reports' ? 'gray.700 !important' : ''
+                    }
+                  }}
+                >
+                  <Stack direction="row" justify="flex-start" align="center">
+                    <LicenseIcon sx={{ fill: 'none', height: "24px", width: "24px" }} />
+                    <LinkOverlay
+                      href='/admin/collections/reports'
+                      fontFamily="Outfit"
+                      fontWeight="semibold"
+                      fontSize="2xl"
+                      marginBottom={0}
+                      textTransform="capitalize"
+                    >
+                      Reports
+                    </LinkOverlay>
+                  </Stack>
+                </LinkBox>
+              </>
+            )}
             <LinkBox
               paddingX={6}
               paddingY={8}
               sx={{
-                borderLeft: location.pathname == "/admin/account" ? '2px solid white' : '' ,
-                borderRight: location.pathname == "/admin/account" ? '2px solid white' : '' ,
+                borderLeft: location.pathname == "/admin/account" ? '2px solid white' : '',
+                borderRight: location.pathname == "/admin/account" ? '2px solid white' : '',
                 color: location.pathname == "/admin/account" ? 'gray.700' : 'gray.50',
                 bg: location.pathname == "/admin/account" ? 'teal.300' : 'gray.700',
                 '& path': {
@@ -410,7 +578,7 @@ const CustomNav = () => {
                   textTransform="capitalize"
                 >
                   {' '}
-                  My Profile
+                  {user.role == 'vendor' ? 'My profile' : 'Profile'}
                 </LinkOverlay>
               </Stack>
             </LinkBox>
@@ -423,13 +591,15 @@ const CustomNav = () => {
                   <Text color="white" marginBottom={0}>{user.name ? user.name : user.email}</Text>
                 </Stack>
               </MenuButton>
-              <MenuList>
-                <MenuItem>
-                  <Link href="/admin/logout">
-                    Log out
-                  </Link>
-                </MenuItem>
-              </MenuList>
+              <Portal>
+                <MenuList>
+                  <MenuItem>
+                    <Link href="/admin/logout">
+                      Log out
+                    </Link>
+                  </MenuItem>
+                </MenuList>
+              </Portal>
             </Menu>
           </Show>
         </Stack>

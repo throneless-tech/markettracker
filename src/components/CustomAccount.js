@@ -53,7 +53,7 @@ const CustomDashboard = () => {
               <TabPanel>
                 <Container maxW='container.xl' marginBottom={4}>
                   <Heading as="h1" sx={{ marginY: 8, textTransform: "uppercase" }} >
-                    My Company Info
+                    {user.role == 'vendor' ? 'My Company Info' : 'My Profile'}
                   </Heading>
                   <Box
                     direction="row"
@@ -79,19 +79,16 @@ const CustomDashboard = () => {
                       <Flex marginTop={4}>
                         <HStack>
                           <Text as={"span"} color={"gray.50"} fontSize="2xl" fontWeight={700}>
-                            Day, start-endtime
+                            Type
                           </Text>
                           <Text as={"span"} color={"gray.50"} fontSize="2xl">
-                            Street address, City, State, Zip
+                            Address
                           </Text>
                         </HStack>
                         <Spacer />
                         <HStack>
-                          <Text as={"span"} color={"gray.50"} fontSize="2xl" fontWeight={700}>
-                            Manager:
-                          </Text>
                           <Text as={"span"} color={"gray.50"} fontSize="2xl">
-                            Manager name
+                            Primary contact:
                           </Text>
                           <Text as={"span"} color={"gray.50"} fontSize="2xl">
                             202-123-4567

@@ -172,3 +172,6 @@ build
 
 # PayloadCMS generated types
 src/payload-types.ts
+
+# Imported data
+vendors.csv
