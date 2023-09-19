@@ -48,7 +48,9 @@ export const createCollectionDocument: CollectionAfterChangeHook = async (
     operation === "create" && req.files.file.mimetype === "text/csv"
   ) {
     console.log("Found csv file!");
-    console.log("***data***", req.files.file.data.toString());
+    console.log("***file***:", req.files.file);
+    console.log("***data***:", req.files.file.data);
+    console.log("***data.toString***:", req.files.file.data.toString());
     csv()
       .fromString(req.files.file.data.toString())
       .then(async (fromCSV: any) => {
