@@ -103,7 +103,7 @@ function CustomApplications() {
                 {applications && applications.length && applications.map(app => (
                   <Tr key={app.id}>
                     <Td>
-                      <Link href={`/admin/collections/vendor/${app.id}`}>
+                      <Link href={`/admin/collections/applications/${app.id}`}>
                         {app.vendor.name}
                       </Link>
                     </Td>

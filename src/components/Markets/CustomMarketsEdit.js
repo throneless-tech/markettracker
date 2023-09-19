@@ -58,7 +58,6 @@ import EditIcon from "../../assets/icons/edit.js";
 import StarIcon from "../../assets/icons/star.js";
 
 function CustomMarketsEdit(props) {
-  console.log("***props***:", props);
   const { user } = useAuth();
   const { id } = useDocumentInfo();
   const { data } = props;

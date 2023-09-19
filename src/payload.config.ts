@@ -56,7 +56,11 @@ export default buildConfig({
         {
           Component: CustomApplications,
           path: '/markets/applications/:id'
-        }
+        },
+        // {
+        //   Component: CustomApplications,
+        //   path: '/applications/:id'
+        // }
       ],
       views: {
         Account: CustomAccount,
