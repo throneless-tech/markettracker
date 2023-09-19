@@ -28,8 +28,9 @@ import CustomNav from "./components/CustomNav";
 import CustomIcon from "./assets/icons/logo";
 
 export default buildConfig({
+  //serverURL: "http://locahost:3000",
   admin: {
-    //user: Users.slug,
+    user: Users.slug,
     css: path.resolve(__dirname, "styles/main.scss"),
     components: {
       // beforeLogin: [CustomBeforeLogin],
@@ -72,7 +73,8 @@ export default buildConfig({
     // Add Collections here
     // Examples,
   ],
-  //debug: true,
+  cors: ["*", "https://markettracker.payloadcms.app"],
+  debug: true,
   plugins: [payloadCloud()],
   typescript: {
     outputFile: path.resolve(__dirname, "payload-types.ts"),
