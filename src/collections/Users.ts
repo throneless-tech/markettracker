@@ -26,14 +26,14 @@ export const Users: CollectionConfig = {
     {
       name: "name",
       type: "text",
-      required: true,
+      //required: true,
     },
     {
       name: "role",
       label: "Role",
       type: "select",
       options: roles,
-      required: true,
+      //required: true,
     },
     {
       name: "vendor",
