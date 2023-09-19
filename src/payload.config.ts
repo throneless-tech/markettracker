@@ -28,6 +28,13 @@ import CustomProvider from "./styles/themeProvider";
 import CustomNav from "./components/CustomNav";
 import CustomIcon from "./assets/icons/logo";
 
+const createCollectionDocumentPath = path.resolve(
+  __dirname,
+  "collections/Documents/hooks/createCollectionDocument",
+);
+
+const mockModulePath = path.resolve(__dirname, "mocks/emptyObject.js");
+
 export default buildConfig({
   //serverURL: "http://locahost:3000",
   admin: {
@@ -61,6 +68,16 @@ export default buildConfig({
       favicon: "/assets/icons/logos/ff-mark.svg",
       ogImage: "/assets/icons/logos/ff-mark.svg",
     },
+    webpack: (config) => ({
+      ...config,
+      resolve: {
+        ...config.resolve,
+        alias: {
+          ...config.resolve.alias,
+          [createCollectionDocumentPath]: mockModulePath,
+        },
+      },
+    }),
   },
   collections: [
     Applications,

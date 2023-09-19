@@ -166,5 +166,12 @@ export const Markets: CollectionConfig = {
         placeholder: "start typing...",
       },
     },
+    {
+      name: "seasons",
+      label: "Seasons",
+      type: "relationship",
+      relationTo: "seasons",
+      hasMany: true,
+    },
   ],
 };

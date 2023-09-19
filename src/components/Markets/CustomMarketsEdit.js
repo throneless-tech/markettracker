@@ -1,10 +1,10 @@
-"use client"
-import React, { useEffect, useState } from 'react'
-import { useAuth } from 'payload/components/utilities'
+"use client";
+import React, { useEffect, useState } from "react";
+import { useAuth } from "payload/components/utilities";
 
 // Payload imports
-import { useDocumentInfo } from 'payload/components/utilities';
-import { useField } from "payload/components/forms";
+import { useDocumentInfo } from "payload/components/utilities";
+import { useField, useFormFields } from "payload/components/forms";
 
 // Chakra imports
 import {
@@ -13,69 +13,73 @@ import {
   Checkbox,
   CheckboxGroup,
   Container,
+  Divider,
   Flex,
   FormControl,
   FormHelperText,
   FormLabel,
-  Divider,
   Heading,
   HStack,
   Input,
   Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalFooter,
   ModalBody,
   ModalCloseButton,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  ModalOverlay,
   Radio,
   RadioGroup,
   Select,
   Spacer,
   Stack,
   Tab,
-  Tabs,
   TabIndicator,
   TabList,
   TabPanel,
   TabPanels,
+  Tabs,
   Tag,
   Text,
   Textarea,
+  useDisclosure,
   Wrap,
   WrapItem,
-  useDisclosure,
-} from '@chakra-ui/react';
+} from "@chakra-ui/react";
 
 // components
-import Calendar from '../Calendar.js';
+import Calendar from "../Calendar.js";
 
 // utils
-import formatTime from '../../utils/formatTime'
+import formatTime from "../../utils/formatTime";
 
 // icons
-import EditIcon from '../../assets/icons/edit.js'
-import StarIcon from '../../assets/icons/star.js'
+import EditIcon from "../../assets/icons/edit.js";
+import StarIcon from "../../assets/icons/star.js";
 
 function CustomMarketsEdit(props) {
+  console.log("***props***:", props);
   const { user } = useAuth();
   const { id } = useDocumentInfo();
   const { data } = props;
-  const { isOpen, onOpen, onClose } = useDisclosure()
-  const [name, setName] = useState('')
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  //const [name, setName] = useState("");
+
+  const { name, setName } = useField({ path: "name" });
+  console.log("name:", name);
 
   // id will be undefined on the create form
   if (!id) {
     return null;
   }
 
-  useEffect(() => {
-    if (data) {
-      setName(data.name);
-    }
-  }, [])
+  // useEffect(() => {
+  //   if (data) {
+  //     setName(data.name);
+  //   }
+  // }, []);
 
-  useEffect(() => { }, [data, name]);
+  useEffect(() => {}, [data, name]);
   if (data) {
     return (
       <Box>
@@ -83,11 +87,26 @@ function CustomMarketsEdit(props) {
           <Box>
             <Tabs position="relative" variant="unstyled">
               <TabList bg={"gray.50"}>
-                <Tab _selected={{ color: "#000", fontWeight: "700" }} sx={{ fontSize: 16 }}>Markets</Tab>
-                {user.role ==  'vendor' ? null : (
+                <Tab
+                  _selected={{ color: "#000", fontWeight: "700" }}
+                  sx={{ fontSize: 16 }}
+                >
+                  Markets
+                </Tab>
+                {user.role == "vendor" ? null : (
                   <>
-                    <Tab _selected={{ color: "#000", fontWeight: "700" }} sx={{ fontSize: 16 }}>Market Reports</Tab>
-                    <Tab _selected={{ color: "#000", fontWeight: "700" }} sx={{ fontSize: 16 }}>Market Applications</Tab>
+                    <Tab
+                      _selected={{ color: "#000", fontWeight: "700" }}
+                      sx={{ fontSize: 16 }}
+                    >
+                      Market Reports
+                    </Tab>
+                    <Tab
+                      _selected={{ color: "#000", fontWeight: "700" }}
+                      sx={{ fontSize: 16 }}
+                    >
+                      Market Applications
+                    </Tab>
                   </>
                 )}
               </TabList>
@@ -100,12 +119,16 @@ function CustomMarketsEdit(props) {
               />
               <TabPanels>
                 <TabPanel>
-                  <Container maxW='container.xl'>
+                  <Container maxW="container.xl">
                     <Flex spacing={8}>
-                      <Heading as="h1" color={"gray.700"} textTransform={"uppercase"}>
+                      <Heading
+                        as="h1"
+                        color={"gray.700"}
+                        textTransform={"uppercase"}
+                      >
                         {data.name}
                       </Heading>
-                      {user.role == 'vendor' ? null : (
+                      {user.role == "vendor" ? null : (
                         <>
                           <Spacer />
                           <HStack spacing={4}>
@@ -129,48 +152,93 @@ function CustomMarketsEdit(props) {
                       marginTop={8}
                     >
                       <Box background="green.600" padding={6}>
-                        <Flex borderBottom={"2px solid #F6F5F4"} paddingBottom={6}>
+                        <Flex
+                          borderBottom={"2px solid #F6F5F4"}
+                          paddingBottom={6}
+                        >
                           <HStack>
-                            <Text as={"span"} color={"gray.50"} fontFamily={"Zilla Slab"} fontSize="3xl" fontWeight={700} textTransform={"uppercase"}>
-                              {data.name}</Text>
-                            <Text as={"span"} color={"gray.50"} fontSize="2xl" textTransform={"uppercase"}>
+                            <Text
+                              as={"span"}
+                              color={"gray.50"}
+                              fontFamily={"Zilla Slab"}
+                              fontSize="3xl"
+                              fontWeight={700}
+                              textTransform={"uppercase"}
+                            >
+                              {data.name}
+                            </Text>
+                            <Text
+                              as={"span"}
+                              color={"gray.50"}
+                              fontSize="2xl"
+                              textTransform={"uppercase"}
+                            >
                               Dates
                             </Text>
                           </HStack>
-                          {data.acceptingApplications ? (
-                            <>
-                              <Spacer />
-                              <HStack>
-                                <Text color={"gray.50"} fontSize="sm" fontWeight={700} textAlign={"right"} textTransform={"uppercase"} width={28}>
-                                  Accepting applications
-                                </Text>
-                                <StarIcon height={8} width={8} />
-                              </HStack>
-                            </>
-                          ) : null}
+                          {data.acceptingApplications
+                            ? (
+                              <>
+                                <Spacer />
+                                <HStack>
+                                  <Text
+                                    color={"gray.50"}
+                                    fontSize="sm"
+                                    fontWeight={700}
+                                    textAlign={"right"}
+                                    textTransform={"uppercase"}
+                                    width={28}
+                                  >
+                                    Accepting applications
+                                  </Text>
+                                  <StarIcon height={8} width={8} />
+                                </HStack>
+                              </>
+                            )
+                            : null}
                         </Flex>
                         <Flex marginTop={4}>
                           <HStack>
-                            {data.time ? (
-                              <Text as={"span"} color={"gray.50"} fontSize="2xl" fontWeight={700} sx={{ textTransform: 'capitalize' }}>
-                                {data.days.map((day, index) => {
-                                  if (index == data.days.length - 1) {
-                                    return day
-                                  } else {
-                                    return `${day}, `
-                                  }
-                                })}
-                                {' '}
-                                {formatTime(data.time.startTime)}-{formatTime(data.time.endTime)}
-                              </Text>
-                            ) : null}
+                            {data.time
+                              ? (
+                                <Text
+                                  as={"span"}
+                                  color={"gray.50"}
+                                  fontSize="2xl"
+                                  fontWeight={700}
+                                  sx={{ textTransform: "capitalize" }}
+                                >
+                                  {data.days.map((day, index) => {
+                                    if (index == data.days.length - 1) {
+                                      return day;
+                                    } else {
+                                      return `${day}, `;
+                                    }
+                                  })}{" "}
+                                  {formatTime(data.time.startTime)}-{formatTime(
+                                    data.time.endTime,
+                                  )}
+                                </Text>
+                              )
+                              : null}
                             <Text as={"span"} color={"gray.50"} fontSize="2xl">
-                              {data.address.street}{', '}{data.address.city}{', '}{data.address.state}{', '}{data.address.zipcode}
+                              {data.address.street}
+                              {", "}
+                              {data.address.city}
+                              {", "}
+                              {data.address.state}
+                              {", "}
+                              {data.address.zipcode}
                             </Text>
                           </HStack>
                           <Spacer />
                           <HStack>
-                            <Text as={"span"} color={"gray.50"} fontSize="2xl" fontWeight={700}>
+                            <Text
+                              as={"span"}
+                              color={"gray.50"}
+                              fontSize="2xl"
+                              fontWeight={700}
+                            >
                               Manager:
                             </Text>
                             <Text as={"span"} color={"gray.50"} fontSize="2xl">
@@ -182,12 +250,25 @@ function CustomMarketsEdit(props) {
                           </HStack>
                         </Flex>
                         <Text marginTop={4} fontSize={"xl"}>
-                          In a vibrant community gathering space, in one of DC's most diverse neighborhoods, a powerhouse boasting a bountiful roster of vendors. With products ranging from fresh produce, to authentic Mexican food prepared with locally grown ingredients, this market's offerings are as dynamic as the neighborhood itself.
+                          In a vibrant community gathering space, in one of DC's
+                          most diverse neighborhoods, a powerhouse boasting a
+                          bountiful roster of vendors. With products ranging
+                          from fresh produce, to authentic Mexican food prepared
+                          with locally grown ingredients, this market's
+                          offerings are as dynamic as the neighborhood itself.
                         </Text>
                       </Box>
-                      <Box background={"#90B132"} borderBottomRadius="8px" padding={4}>
+                      <Box
+                        background={"#90B132"}
+                        borderBottomRadius="8px"
+                        padding={4}
+                      >
                         <HStack>
-                          <Text fontSize={"sm"} textTransform={"uppercase"} fontWeight={700}>
+                          <Text
+                            fontSize={"sm"}
+                            textTransform={"uppercase"}
+                            fontWeight={700}
+                          >
                             Market needs:
                           </Text>
                           <Tag bg={"gray.50"} fontWeight={700}>Meat</Tag>
@@ -196,50 +277,80 @@ function CustomMarketsEdit(props) {
                     </Box>
                   </Container>
                   <Container marginTop={8} maxW={"container.lg"}>
-                    {user.role == 'vendor' ? null : (
+                    {user.role == "vendor" ? null : (
                       <>
                         <Button
                           onClick={onOpen}
-                          leftIcon={<EditIcon sx={{ fill: 'none', height: 6, width: 6 }} />}
-                          variant={'unstyled'}
+                          leftIcon={
+                            <EditIcon
+                              sx={{ fill: "none", height: 6, width: 6 }}
+                            />
+                          }
+                          variant={"unstyled"}
                           sx={{
-                            display: 'block',
+                            display: "block",
                             marginBottom: 4,
-                            marginLeft: 'auto',
+                            marginLeft: "auto",
                             marginRight: 0,
-                            '&:active, &:focus, &:hover': {
-                              textDecoration: 'underline',
-                            }
+                            "&:active, &:focus, &:hover": {
+                              textDecoration: "underline",
+                            },
                           }}
                         >
                           Edit market information
                         </Button>
-                        <Modal isOpen={isOpen} onClose={onClose} size={'full'}>
+                        <Modal isOpen={isOpen} onClose={onClose} size={"full"}>
                           <ModalOverlay />
                           <ModalContent>
                             <ModalHeader>
-                              <Heading as="h2" color={"gray.700"} textTransform={"uppercase"} marginBottom={2}>
+                              <Heading
+                                as="h2"
+                                color={"gray.700"}
+                                textTransform={"uppercase"}
+                                marginBottom={2}
+                              >
                                 Edit market information
                               </Heading>
-                              <Divider sx={{ borderColor: "gray.600", borderBottomWidth: 2 }} />
+                              <Divider
+                                sx={{
+                                  borderColor: "gray.600",
+                                  borderBottomWidth: 2,
+                                }}
+                              />
                             </ModalHeader>
                             <ModalCloseButton />
                             <ModalBody>
-                              <Container maxW={'lg'}>
+                              <Container maxW={"lg"}>
                                 <FormControl>
                                   <FormLabel>Market name (required)</FormLabel>
-                                  <Input placeholder="Start typing..." />
+                                  <Input
+                                    placeholder="Start typing..."
+                                    value={name}
+                                    onChange={(e) => setName(e.target.value)}
+                                  />
                                 </FormControl>
                                 <Stack spacing={2} marginTop={4}>
                                   <FormControl>
-                                    <FormLabel as='div' textStyle='bodyMain' fontWeight={500}>
+                                    <FormLabel
+                                      as="div"
+                                      textStyle="bodyMain"
+                                      fontWeight={500}
+                                    >
                                       Market address (required)
                                     </FormLabel>
-                                    <Input placeholder='Street' isRequired />
+                                    <Input placeholder="Street" isRequired />
                                   </FormControl>
                                   <Flex gap={2}>
-                                    <Input placeholder='City' flex={6} isRequired />
-                                    <Select placeholder='State' flex={2} isRequired>
+                                    <Input
+                                      placeholder="City"
+                                      flex={6}
+                                      isRequired
+                                    />
+                                    <Select
+                                      placeholder="State"
+                                      flex={2}
+                                      isRequired
+                                    >
                                       <option value="AK">AK</option>
                                       <option value="AL">AL</option>
                                       <option value="AR">AR</option>
@@ -292,109 +403,213 @@ function CustomMarketsEdit(props) {
                                       <option value="WV">WV</option>
                                       <option value="WY">WY</option>
                                     </Select>
-                                    <Input placeholder='Zipcode' flex={3} type='number' isRequired />
+                                    <Input
+                                      placeholder="Zipcode"
+                                      flex={3}
+                                      type="number"
+                                      isRequired
+                                    />
                                   </Flex>
                                 </Stack>
                                 <FormControl>
-                                  <FormLabel as='div' textStyle='bodyMain' fontWeight={500}>
+                                  <FormLabel
+                                    as="div"
+                                    textStyle="bodyMain"
+                                    fontWeight={500}
+                                  >
                                     Market day (required)
                                   </FormLabel>
-                                  <RadioGroup onChange={newValue => props.setValue(newValue)} value={props.value}>
+                                  <RadioGroup
+                                    onChange={(newValue) =>
+                                      props.setValue(newValue)}
+                                    value={props.value}
+                                  >
                                     <HStack>
-                                      <Radio value='monday'>Monday</Radio>
-                                      <Radio value='tuesday'>Tuesday</Radio>
-                                      <Radio value='wednesday'>Wednesday</Radio>
-                                      <Radio value='thursday'>Thursday</Radio>
-                                      <Radio value='friday'>Friday</Radio>
-                                      <Radio value='saturday'>Sarturday</Radio>
-                                      <Radio value='sunday'>Sunday</Radio>
+                                      <Radio value="monday">Monday</Radio>
+                                      <Radio value="tuesday">Tuesday</Radio>
+                                      <Radio value="wednesday">Wednesday</Radio>
+                                      <Radio value="thursday">Thursday</Radio>
+                                      <Radio value="friday">Friday</Radio>
+                                      <Radio value="saturday">Sarturday</Radio>
+                                      <Radio value="sunday">Sunday</Radio>
                                     </HStack>
                                   </RadioGroup>
                                 </FormControl>
                                 <FormControl>
-                                  <FormLabel as='div' textStyle='bodyMain' fontWeight={500}>
+                                  <FormLabel
+                                    as="div"
+                                    textStyle="bodyMain"
+                                    fontWeight={500}
+                                  >
                                     Market size (required)
                                   </FormLabel>
-                                  <RadioGroup onChange={newValue => props.setValue(newValue)} value={props.value}>
+                                  <RadioGroup
+                                    onChange={(newValue) =>
+                                      props.setValue(newValue)}
+                                    value={props.value}
+                                  >
                                     <HStack>
-                                      <Radio value='flagship'>Flagship</Radio>
-                                      <Radio value='large'>Large</Radio>
-                                      <Radio value='medium'>Medium</Radio>
-                                      <Radio value='small'>Small</Radio>
-                                      <Radio value='stand'>Farm stand</Radio>
+                                      <Radio value="flagship">Flagship</Radio>
+                                      <Radio value="large">Large</Radio>
+                                      <Radio value="medium">Medium</Radio>
+                                      <Radio value="small">Small</Radio>
+                                      <Radio value="stand">Farm stand</Radio>
                                     </HStack>
                                   </RadioGroup>
                                 </FormControl>
                                 <FormControl>
-                                  <FormLabel as='div' textStyle='bodyMain' fontWeight={500}>
+                                  <FormLabel
+                                    as="div"
+                                    textStyle="bodyMain"
+                                    fontWeight={500}
+                                  >
                                     Market focus (required)
                                   </FormLabel>
-                                  <FormHelperText>Check all that apply</FormHelperText>
-                                  <CheckboxGroup colorScheme='green'>
+                                  <FormHelperText>
+                                    Check all that apply
+                                  </FormHelperText>
+                                  <CheckboxGroup colorScheme="green">
                                     <HStack>
-                                      <Checkbox value='neighborhood'>Neighborhood</Checkbox>
-                                      <Checkbox value='downtown'>Downtown</Checkbox>
-                                      <Checkbox value='grocery'>Grocery shopping</Checkbox>
-                                      <Checkbox value='prepared'>Prepared food shopping</Checkbox>
+                                      <Checkbox value="neighborhood">
+                                        Neighborhood
+                                      </Checkbox>
+                                      <Checkbox value="downtown">
+                                        Downtown
+                                      </Checkbox>
+                                      <Checkbox value="grocery">
+                                        Grocery shopping
+                                      </Checkbox>
+                                      <Checkbox value="prepared">
+                                        Prepared food shopping
+                                      </Checkbox>
                                     </HStack>
                                   </CheckboxGroup>
                                 </FormControl>
                                 <FormControl>
-                                  <FormLabel as='div' textStyle='bodyMain' fontWeight={500}>
+                                  <FormLabel
+                                    as="div"
+                                    textStyle="bodyMain"
+                                    fontWeight={500}
+                                  >
                                     Brief market description (required)
                                   </FormLabel>
-                                  <FormHelperText>Add a statement of explanation</FormHelperText>
-                                  <Textarea placeholder='Start typing...' />
+                                  <FormHelperText>
+                                    Add a statement of explanation
+                                  </FormHelperText>
+                                  <Textarea placeholder="Start typing..." />
                                 </FormControl>
                               </Container>
-                              <Heading as="h2" color={"gray.700"} textTransform={"uppercase"} marginBottom={2} marginTop={6}>
+                              <Heading
+                                as="h2"
+                                color={"gray.700"}
+                                textTransform={"uppercase"}
+                                marginBottom={2}
+                                marginTop={6}
+                              >
                                 Edit season for {data.name}
                               </Heading>
-                              <Divider sx={{ borderColor: "gray.600", borderBottomWidth: 2 }} />
+                              <Divider
+                                sx={{
+                                  borderColor: "gray.600",
+                                  borderBottomWidth: 2,
+                                }}
+                              />
                               <Container>
-                                <Flex align='center' justify='space-between' marginTop={8}>
-                                  <Heading as='h2' textStyle='h4' size='md' width={'100%'}>
+                                <Flex
+                                  align="center"
+                                  justify="space-between"
+                                  marginTop={8}
+                                >
+                                  <Heading
+                                    as="h2"
+                                    textStyle="h4"
+                                    size="md"
+                                    width={"100%"}
+                                  >
                                     Accepting Applications (required)
                                   </Heading>
-                                  <RadioGroup onChange={newValue => props.setValue(newValue)} value={props.value}>
+                                  <RadioGroup
+                                    onChange={(newValue) =>
+                                      props.setValue(newValue)}
+                                    value={props.value}
+                                  >
                                     <HStack marginRight={2}>
-                                      <Radio value='yes'>Yes</Radio>
-                                      <Radio value='no'>No</Radio>
+                                      <Radio value="yes">Yes</Radio>
+                                      <Radio value="no">No</Radio>
                                     </HStack>
                                   </RadioGroup>
-                                  <Divider color='gray.700' borderBottomWidth={2} opacity={1} />
+                                  <Divider
+                                    color="gray.700"
+                                    borderBottomWidth={2}
+                                    opacity={1}
+                                  />
                                 </Flex>
-                                <Flex align='center' justify='space-between' marginTop={8}>
-                                  <Heading as='h2' textStyle='h4' size='md' width={'70%'}>
+                                <Flex
+                                  align="center"
+                                  justify="space-between"
+                                  marginTop={8}
+                                >
+                                  <Heading
+                                    as="h2"
+                                    textStyle="h4"
+                                    size="md"
+                                    width={"70%"}
+                                  >
                                     Market time & dates
                                   </Heading>
-                                  <Divider color='gray.700' borderBottomWidth={2} opacity={1} />
+                                  <Divider
+                                    color="gray.700"
+                                    borderBottomWidth={2}
+                                    opacity={1}
+                                  />
                                 </Flex>
-                                <Text as='div' color='gray.500'>
+                                <Text as="div" color="gray.500">
                                   Select a start and end date for the season
                                 </Text>
                               </Container>
                             </ModalBody>
                             <ModalFooter>
-                              <Button colorScheme='blue' onClick={onClose}>
+                              <Button colorScheme="blue" onClick={onClose}>
                                 Save
                               </Button>
                             </ModalFooter>
                           </ModalContent>
                         </Modal>
                       </>
-                    )}                    
+                    )}
                     <HStack>
-                      <Text color={"gray.700"} fontSize={"2xl"} fontWeight={700} textTransform={"uppercase"} width={56}>
+                      <Text
+                        color={"gray.700"}
+                        fontSize={"2xl"}
+                        fontWeight={700}
+                        textTransform={"uppercase"}
+                        width={56}
+                      >
                         Market size
                       </Text>
-                      <Text color={"gray.600"} fontFamily={"Zilla Slab"} fontSize={"2xl"} fontWeight={700} textTransform={"uppercase"}>
+                      <Text
+                        color={"gray.600"}
+                        fontFamily={"Zilla Slab"}
+                        fontSize={"2xl"}
+                        fontWeight={700}
+                        textTransform={"uppercase"}
+                      >
                         {data.size}
                       </Text>
-                      <Divider sx={{ borderColor: "gray.600", borderBottomWidth: 2 }} />
+                      <Divider
+                        sx={{ borderColor: "gray.600", borderBottomWidth: 2 }}
+                      />
                     </HStack>
                     <Text color={"gray.600"} marginTop={4} fontSize={"md"}>
-                      {data.size == 'flagship' ? 'Daily sales for the entire market are upwards of $150,000. This market can support upwards of 20 produce vendors, 14 prepared food vendors, 9 baked goods vendors, 6 alcohol vendors, 5 dairy vendors, and 2 to 4 vendors from each additional category.' : data.size == 'large' ? 'Daily sales for large markets range from $20,000 to $70,000. They can support average numbers of 8 produce vendors, 8 prepared food vendors, 5 baked goods vendors, 3 alcohol vendors, and 1 to 2 vendors from each additional category.' : data.size == 'medium' ? 'Daily sales for medium markets range from $10,000 to $19,000. They can support average numbers of 5 prepared food vendors, 4 produce vendors, and 1 to 2 vendors from each additional category.' : data.size == 'small' ? 'Daily sales for small markets range from $1,500 to $9,000. They can support average numbers of 4 produce vendors, 4 prepared food vendors, and 1 to 2 vendors from each additional category with some product category gaps.' : 'These markets are limited to one produce vendor for retail and wholesale sales.'}
+                      {data.size == "flagship"
+                        ? "Daily sales for the entire market are upwards of $150,000. This market can support upwards of 20 produce vendors, 14 prepared food vendors, 9 baked goods vendors, 6 alcohol vendors, 5 dairy vendors, and 2 to 4 vendors from each additional category."
+                        : data.size == "large"
+                        ? "Daily sales for large markets range from $20,000 to $70,000. They can support average numbers of 8 produce vendors, 8 prepared food vendors, 5 baked goods vendors, 3 alcohol vendors, and 1 to 2 vendors from each additional category."
+                        : data.size == "medium"
+                        ? "Daily sales for medium markets range from $10,000 to $19,000. They can support average numbers of 5 prepared food vendors, 4 produce vendors, and 1 to 2 vendors from each additional category."
+                        : data.size == "small"
+                        ? "Daily sales for small markets range from $1,500 to $9,000. They can support average numbers of 4 produce vendors, 4 prepared food vendors, and 1 to 2 vendors from each additional category with some product category gaps."
+                        : "These markets are limited to one produce vendor for retail and wholesale sales."}
                     </Text>
                     <HStack marginTop={4}>
                       <Text as={"span"} color={"blue.500"} fontWeight={700}>
@@ -408,48 +623,82 @@ function CustomMarketsEdit(props) {
                       </Text>
                     </HStack>
                     <HStack marginTop={4}>
-                      <Text color={"gray.700"} fontSize={"2xl"} fontWeight={700} textTransform={"uppercase"} width={"700px"}>
+                      <Text
+                        color={"gray.700"}
+                        fontSize={"2xl"}
+                        fontWeight={700}
+                        textTransform={"uppercase"}
+                        width={"700px"}
+                      >
                         Managers scheduled for this market
                       </Text>
-                      <Divider sx={{ borderColor: "gray.600", borderBottomWidth: 2 }} />
+                      <Divider
+                        sx={{ borderColor: "gray.600", borderBottomWidth: 2 }}
+                      />
                     </HStack>
                     <HStack marginTop={2}>
                       <Tag bg={"gray.50"}>Manager 1</Tag>
                     </HStack>
                     <HStack marginTop={4}>
-                      <Text color={"gray.700"} fontSize={"2xl"} fontWeight={700} textTransform={"uppercase"} width={"720px"}>
+                      <Text
+                        color={"gray.700"}
+                        fontSize={"2xl"}
+                        fontWeight={700}
+                        textTransform={"uppercase"}
+                        width={"720px"}
+                      >
                         Vendors scheduled for this market
                       </Text>
-                      <Divider sx={{ borderColor: "gray.600", borderBottomWidth: 2 }} />
+                      <Divider
+                        sx={{ borderColor: "gray.600", borderBottomWidth: 2 }}
+                      />
                     </HStack>
                     <HStack marginTop={2}>
                       <Tag bg={"gray.50"}>Vendor 1</Tag>
                     </HStack>
                     <HStack marginTop={4}>
-                      <Text color={"gray.700"} fontSize={"2xl"} fontWeight={700} textTransform={"uppercase"} width={"160px"}>
+                      <Text
+                        color={"gray.700"}
+                        fontSize={"2xl"}
+                        fontWeight={700}
+                        textTransform={"uppercase"}
+                        width={"160px"}
+                      >
                         Stats & info
                       </Text>
-                      <Divider sx={{ borderColor: "gray.600", borderBottomWidth: 2 }} />
+                      <Divider
+                        sx={{ borderColor: "gray.600", borderBottomWidth: 2 }}
+                      />
                     </HStack>
                     <HStack marginTop={4}>
-                      <Text color={"gray.700"} fontSize={"2xl"} fontWeight={700} textTransform={"uppercase"} width={"220px"}>
+                      <Text
+                        color={"gray.700"}
+                        fontSize={"2xl"}
+                        fontWeight={700}
+                        textTransform={"uppercase"}
+                        width={"220px"}
+                      >
                         Market dates
                       </Text>
-                      <Divider sx={{ borderColor: "gray.600", borderBottomWidth: 2 }} />
+                      <Divider
+                        sx={{ borderColor: "gray.600", borderBottomWidth: 2 }}
+                      />
                     </HStack>
                     <Text color={"gray.600"} marginTop={4} fontSize={"md"}>
                       Dates [market name] is open this season
                     </Text>
                     <Wrap marginTop={4} columns={3} spacing={3}>
                       <WrapItem>
-                        <Calendar view='month' />
+                        <Calendar view="month" />
                       </WrapItem>
                       <WrapItem>
-                        <Calendar view='month' />
-                      </WrapItem><WrapItem>
-                        <Calendar view='month' />
-                      </WrapItem><WrapItem>
-                        <Calendar view='month' />
+                        <Calendar view="month" />
+                      </WrapItem>
+                      <WrapItem>
+                        <Calendar view="month" />
+                      </WrapItem>
+                      <WrapItem>
+                        <Calendar view="month" />
                       </WrapItem>
                     </Wrap>
                   </Container>
