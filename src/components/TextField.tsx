@@ -28,7 +28,7 @@ export const TextField: FC<Props> = (
       {description ? <FormHelperText>{description}</FormHelperText> : ""}
       <Input
         placeholder={placeholder}
-        value={value}
+        // value={value}
         onChange={(e) => setValue(e.target.value)}
       />
     </FormControl>
