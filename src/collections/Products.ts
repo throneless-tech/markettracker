@@ -1,9 +1,16 @@
 import { CollectionConfig } from "payload/types";
+import CustomProductsList from "../components/Products/CustomProductsList";
 
 export const Products: CollectionConfig = {
   slug: "products",
   admin: {
-    useAsTitle: "product",
+    components: {
+      views: {
+        // Edit: CustomProductsEdit,
+        List: CustomProductsList,
+      },
+    },
+    useAsTitle: "name",
   },
   fields: [
     {
