@@ -1,5 +1,6 @@
 import { CollectionConfig } from "payload/types";
 import { createCollectionSeason } from "./hooks/createCollectionSeasons";
+import { createSlugField } from "./hooks/createSlugField";
 
 export const Seasons: CollectionConfig = {
   slug: "seasons",
@@ -7,6 +8,7 @@ export const Seasons: CollectionConfig = {
     useAsTitle: "name",
   },
   hooks: {
+    beforeChange: [createSlugField],
     afterChange: [createCollectionSeason],
   },
   fields: [
