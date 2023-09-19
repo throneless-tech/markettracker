@@ -9,6 +9,7 @@ export const Documents: CollectionConfig = {
   upload: {
     staticURL: "/documents",
     staticDir: "documents",
+    disableLocalStorage: true,
     //mimeTypes: ["image/*", "application/pdf"],
   },
   fields: [
