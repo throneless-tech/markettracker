@@ -1,34 +1,16 @@
 import React from 'react'
-import { Box, Flex, Spacer, Text } from '@chakra-ui/react'
+import { Center, HStack, Link, Stack, Text } from '@chakra-ui/react'
 
 const CustomAfterLogin = () => (
-  <Box
-    bg="gray.600"
-    borderColor="#F6F5F4"
-    borderTopWidth="4px"
-    color="gray.50"
-    fontFamily="Inter"
-    sx={{
-      bottom: 0,
-      position: "absolute",
-      width: "100%",
-    }}
-  >
-    <Flex padding={4}>
-      <Text>
-        © 2022 FRESHFARM Markets, Inc. Registered 501(c)(3). EIN: 35-2169859
-      </Text>
-      <Spacer />
-      <Flex gap={2}>
-        <Text>
-          Terms
-        </Text>
-        <Text>
-          Privacy
-        </Text>
-      </Flex>
-    </Flex>
-  </Box>
+  <Center>
+  <Stack gap={2} sx={{ fontSize: 18, textAlign: "center" }}>
+    <HStack>
+      <Text>New Here?</Text>
+      <Link sx={{ color: "#000", textDecoration: "underline", textDecorationColor: "teal.500", }} href="/admin/register">Create an account</Link>
+    </HStack>
+    <Link sx={{ color: "#000" }} href='/admin/forgot'>Forgot your password?</Link>
+  </Stack>
+  </Center>
 )
 
 export default CustomAfterLogin;

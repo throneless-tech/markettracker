@@ -11,7 +11,8 @@ p {
   position: relative;
   width: 100%;
 
-  &:before, &:after {
+  &:before,
+  &:after {
     content: unset;
   }
 }
@@ -37,6 +38,50 @@ p {
     background: #FFF;
     border-radius: 8px;
     padding: 48px;
+
+    form a {
+      display: none;
+    }
+
+    .field-type.email,
+    .field-type.password {
+      position: relative;
+
+      // &:active,
+      // &:focus {
+      //   label {
+      //     border-width: 0 !important;
+      //     clip: rect(1px, 1px, 1px, 1px) !important;
+      //     height: 1px !important;
+      //     overflow: hidden !important;
+      //     padding: 0 !important;
+      //     position: absolute !important;
+      //     white-space: nowrap !important;
+      //     width: 1px !important;
+      //   }
+      // }
+    }
+
+    .field-type.email label,
+    .field-type.password label {
+      color: #A3A3A3;
+      font-family: 'Outfit', sans-serif;
+      font-size: 18px;
+      left: 10px;
+      padding-bottom: 0;
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+
+    .field-type.email input,
+    .field-type.password input {
+      background-color: #F6F5F4;
+      border: none;
+      border-radius: 8px;
+      font-family: 'Outfit', sans-serif;
+      font-size: 18px;
+      }
   }
 }
 
@@ -48,7 +93,7 @@ p {
     border-radius: 2000px;
     border: 2px solid #38615C;
     color: #F6F5F4;
-    font-size: 16px;
+    font-size: 18px;
     font-weight: 600;
     width: initial;
 

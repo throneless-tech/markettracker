@@ -26,9 +26,9 @@ import {
 } from '@chakra-ui/react'
 
 // icons + images
-import LogoMarketTracker from "../../icons/logoMarketTracker.js"
+import LogoMarketTracker from "../assets/icons/logoMarketTracker.js"
 
-export const steps = (props) => {
+const Register = (props) => {
   const [show, setShow] = useState(false)
   const handleClick = () => setShow(!show)
 
@@ -883,3 +883,5 @@ export const steps = (props) => {
     </div>
   )
 }
+
+export default Register;

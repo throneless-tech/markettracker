@@ -61,8 +61,8 @@ const Login = () => (
             </Text>
             <form novalidate="" method="post" action="/api/users/login">
               <Stack gap={4} width={"100%"}>
-                <Input variant='filled' placeholder='email' />
-                <Input variant='filled' placeholder='password' type='password' />
+                <Input variant='filled' placeholder='email' id="field-email" type="email" name="email" autocomplete="email" />
+                <Input variant='filled' placeholder='password' id="field-password" type="password" autocomplete="off" name="password" />
               </Stack>
               <Button type='submit' colorScheme='green' variant='solid' width={90}>
                 Login

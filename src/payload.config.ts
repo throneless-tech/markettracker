@@ -1,6 +1,7 @@
 import { buildConfig } from "payload/config";
 import { payloadCloud } from "@payloadcms/plugin-cloud";
 import path from "path";
+
 // import Examples from './collections/Examples';
 import { Applications } from "./collections/Applications";
 import { Contacts } from "./collections/Contacts";
@@ -17,6 +18,7 @@ import { Supplies } from "./collections/Supplies";
 import { Users } from "./collections/Users";
 import { Vendors } from "./collections/Vendors";
 
+// custom components
 import CustomAccount from "./components/CustomAccount";
 import CustomAfterLogin from "./components/CustomAfterLogin";
 import CustomApplications from "./components/CustomApplications";
@@ -26,6 +28,9 @@ import CustomLogo from "./components/CustomLogo";
 import CustomLogoutButton from "./components/CustomLogoutButton";
 import CustomProvider from "./styles/themeProvider";
 import CustomNav from "./components/CustomNav";
+import Register from "./components/Register";
+
+// icons
 import CustomIcon from "./assets/icons/logo";
 
 const createCollectionDocumentPath = path.resolve(
@@ -41,8 +46,8 @@ export default buildConfig({
     user: Users.slug,
     css: path.resolve(__dirname, "styles/main.scss"),
     components: {
-      // beforeLogin: [CustomBeforeLogin],
-      // afterLogin: [CustomAfterLogin],
+      beforeLogin: [CustomBeforeLogin],
+      afterLogin: [CustomAfterLogin],
       graphics: {
         Icon: CustomIcon,
         Logo: CustomLogo,
@@ -58,8 +63,8 @@ export default buildConfig({
           path: '/markets/applications/:id'
         },
         // {
-        //   Component: CustomApplications,
-        //   path: '/applications/:id'
+        //   Component: Register,
+        //   path: '/register'
         // }
       ],
       views: {
