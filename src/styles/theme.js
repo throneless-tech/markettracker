@@ -166,6 +166,13 @@ const theme = extendTheme({
     heading: "'Zilla Slab', serif",
     mono: "Menlo, monospace",
   },
+  styles: {
+    global: {
+      'html, body': {
+        fontSize: 16,
+      }
+    }
+  },
   textStyles: {
     bodyMain: {
       color: 'gray.700',

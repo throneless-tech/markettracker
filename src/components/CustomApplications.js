@@ -100,7 +100,7 @@ function CustomApplications() {
                 </Tr>
               </Thead>
               <Tbody>
-                {applications && applications.length && applications.map(app => (
+                {applications && applications.length ? applications.map(app => (
                   <Tr key={app.id}>
                     <Td>
                       <Link href={`/admin/collections/applications/${app.id}`}>
@@ -128,7 +128,7 @@ function CustomApplications() {
                       <Tag variant={'outline'}>Received</Tag>
                     </Td>
                   </Tr>
-                ))}
+                )) : null}
               </Tbody>
               <Tfoot>
                 <Tr>

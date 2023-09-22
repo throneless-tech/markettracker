@@ -8,7 +8,7 @@ export const Applications: CollectionConfig = {
   admin: {
     components: {
       views: {
-        Edit: CustomApplicationsEdit,
+        // Edit: CustomApplicationsEdit,
         // List: CustomApplicationsList,
       },
     },

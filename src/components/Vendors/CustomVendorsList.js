@@ -38,8 +38,6 @@ function CustomVendorsList(props) {
 
   useEffect(() => { }, [data])
 
-  console.log(data);
-
   return (
     <>
       <Tabs position="relative" variant="unstyled" colorScheme="teal">
@@ -83,7 +81,7 @@ function CustomVendorsList(props) {
                       </Tr>
                     </Thead>
                     <Tbody>
-                      {data.docs && data.docs.length && data.docs.map(vendor => (
+                      {data.docs && data.docs.length ? data.docs.map(vendor => (
                         <Tr key={vendor.id}>
                           <Td>
                             <Link href={`/admin/collections/vendors/${vendor.id}`}>
@@ -97,7 +95,7 @@ function CustomVendorsList(props) {
                           <Td>{''}</Td>
                           <Td>{''}</Td>
                         </Tr>
-                      ))}
+                      )) : null}
                     </Tbody>
                     <Tfoot>
                       <Tr>

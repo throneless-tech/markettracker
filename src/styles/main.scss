@@ -104,3 +104,50 @@ p {
     }
   }
 }
+
+.not-found h1 {
+  font-family: 'Outfit', sans-serif;
+}
+
+.react-datepicker {
+  font-family: 'Outfit', sans-serif;
+  font-size: 18px;
+
+  .react-datepicker__navigation {
+    top: 10px;
+  }
+
+  .react-datepicker__navigation--next {
+    right: 42px;
+  }
+
+  .react-datepicker__header {
+    background-color: #FFF;
+    border-bottom: none;
+  }
+
+  .react-datepicker__current-month {
+    font-size: 18px;
+    margin-left: 36px;
+    text-align: left;
+    text-transform: uppercase;
+  }
+
+  .react-datepicker__day-names {
+    margin-bottom: 0;
+  }
+
+  .react-datepicker__day-name {
+    width: 32px;
+  }
+
+  .react-datepicker__day {
+    width: 32px;
+  }
+
+  .react-datepicker__day--selected {
+    background-color: #83913A;
+    border: 1px solid #90B132;
+    border-radius: 8px;
+  }
+}

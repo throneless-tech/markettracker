@@ -1,6 +1,8 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { useAuth } from "payload/components/utilities";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 // Payload imports
 import { useDocumentInfo } from "payload/components/utilities";
@@ -62,23 +64,16 @@ function CustomMarketsEdit(props) {
   const { id } = useDocumentInfo();
   const { data } = props;
   const { isOpen, onOpen, onClose } = useDisclosure();
-  //const [name, setName] = useState("");
-
   const { name, setName } = useField({ path: "name" });
-  console.log("name:", name);
+  const [startDate, setStartDate] = useState(new Date());
 
   // id will be undefined on the create form
   if (!id) {
     return null;
   }
 
-  // useEffect(() => {
-  //   if (data) {
-  //     setName(data.name);
-  //   }
-  // }, []);
+  useEffect(() => { }, [data, name]);
 
-  useEffect(() => {}, [data, name]);
   if (data) {
     return (
       <Box>
@@ -162,6 +157,7 @@ function CustomMarketsEdit(props) {
                               fontFamily={"Zilla Slab"}
                               fontSize="3xl"
                               fontWeight={700}
+                              textStyle="bodyMain"
                               textTransform={"uppercase"}
                             >
                               {data.name}
@@ -170,6 +166,7 @@ function CustomMarketsEdit(props) {
                               as={"span"}
                               color={"gray.50"}
                               fontSize="2xl"
+                              textStyle="bodyMain"
                               textTransform={"uppercase"}
                             >
                               Dates
@@ -185,6 +182,7 @@ function CustomMarketsEdit(props) {
                                     fontSize="sm"
                                     fontWeight={700}
                                     textAlign={"right"}
+                                    textStyle="bodyMain"
                                     textTransform={"uppercase"}
                                     width={28}
                                   >
@@ -205,6 +203,7 @@ function CustomMarketsEdit(props) {
                                   color={"gray.50"}
                                   fontSize="2xl"
                                   fontWeight={700}
+                                  textStyle="bodyMain"
                                   sx={{ textTransform: "capitalize" }}
                                 >
                                   {data.days.map((day, index) => {
@@ -220,7 +219,7 @@ function CustomMarketsEdit(props) {
                                 </Text>
                               )
                               : null}
-                            <Text as={"span"} color={"gray.50"} fontSize="2xl">
+                            <Text textStyle="bodyMain" as={"span"} color={"gray.50"} fontSize="2xl">
                               {data.address.street}
                               {", "}
                               {data.address.city}
@@ -237,18 +236,19 @@ function CustomMarketsEdit(props) {
                               color={"gray.50"}
                               fontSize="2xl"
                               fontWeight={700}
+                              textStyle="bodyMain"
                             >
                               Manager:
                             </Text>
-                            <Text as={"span"} color={"gray.50"} fontSize="2xl">
+                            <Text textStyle="bodyMain" as={"span"} color={"gray.50"} fontSize="2xl">
                               Manager name
                             </Text>
-                            <Text as={"span"} color={"gray.50"} fontSize="2xl">
+                            <Text textStyle="bodyMain" as={"span"} color={"gray.50"} fontSize="2xl">
                               202-123-4567
                             </Text>
                           </HStack>
                         </Flex>
-                        <Text marginTop={4} fontSize={"xl"}>
+                        <Text textStyle="bodyMain" marginTop={4} fontSize={"xl"}>
                           In a vibrant community gathering space, in one of DC's
                           most diverse neighborhoods, a powerhouse boasting a
                           bountiful roster of vendors. With products ranging
@@ -267,6 +267,7 @@ function CustomMarketsEdit(props) {
                             fontSize={"sm"}
                             textTransform={"uppercase"}
                             fontWeight={700}
+                            textStyle="bodyMain"
                           >
                             Market needs:
                           </Text>
@@ -424,21 +425,21 @@ function CustomMarketsEdit(props) {
                                     value={props.value}
                                   >
                                     <HStack>
-                                      <Radio value="monday">Monday</Radio>
-                                      <Radio value="tuesday">Tuesday</Radio>
-                                      <Radio value="wednesday">Wednesday</Radio>
-                                      <Radio value="thursday">Thursday</Radio>
-                                      <Radio value="friday">Friday</Radio>
-                                      <Radio value="saturday">Sarturday</Radio>
-                                      <Radio value="sunday">Sunday</Radio>
+                                      <Radio colorScheme="green" value="monday">Monday</Radio>
+                                      <Radio colorScheme="green" value="tuesday">Tuesday</Radio>
+                                      <Radio colorScheme="green" value="wednesday">Wednesday</Radio>
+                                      <Radio colorScheme="green" value="thursday">Thursday</Radio>
+                                      <Radio colorScheme="green" value="friday">Friday</Radio>
+                                      <Radio colorScheme="green" value="saturday">Sarturday</Radio>
+                                      <Radio colorScheme="green" value="sunday">Sunday</Radio>
                                     </HStack>
                                   </RadioGroup>
                                 </FormControl>
                                 <FormControl>
                                   <FormLabel
                                     as="div"
-                                    textStyle="bodyMain"
                                     fontWeight={500}
+                                    textStyle="bodyMain"
                                   >
                                     Market size (required)
                                   </FormLabel>
@@ -448,19 +449,19 @@ function CustomMarketsEdit(props) {
                                     value={props.value}
                                   >
                                     <HStack>
-                                      <Radio value="flagship">Flagship</Radio>
-                                      <Radio value="large">Large</Radio>
-                                      <Radio value="medium">Medium</Radio>
-                                      <Radio value="small">Small</Radio>
-                                      <Radio value="stand">Farm stand</Radio>
+                                      <Radio colorScheme="green" value="flagship">Flagship</Radio>
+                                      <Radio colorScheme="green" value="large">Large</Radio>
+                                      <Radio colorScheme="green" value="medium">Medium</Radio>
+                                      <Radio colorScheme="green" value="small">Small</Radio>
+                                      <Radio colorScheme="green" value="stand">Farm stand</Radio>
                                     </HStack>
                                   </RadioGroup>
                                 </FormControl>
                                 <FormControl>
                                   <FormLabel
                                     as="div"
-                                    textStyle="bodyMain"
                                     fontWeight={500}
+                                    textStyle="bodyMain"
                                   >
                                     Market focus (required)
                                   </FormLabel>
@@ -525,7 +526,7 @@ function CustomMarketsEdit(props) {
                                     size="md"
                                     width={"100%"}
                                   >
-                                    Accepting Applications (required)
+                                    Accepting applications (required)
                                   </Heading>
                                   <RadioGroup
                                     onChange={(newValue) =>
@@ -533,8 +534,8 @@ function CustomMarketsEdit(props) {
                                     value={props.value}
                                   >
                                     <HStack marginRight={2}>
-                                      <Radio value="yes">Yes</Radio>
-                                      <Radio value="no">No</Radio>
+                                      <Radio colorScheme="green" value="yes">Yes</Radio>
+                                      <Radio colorScheme="green" value="no">No</Radio>
                                     </HStack>
                                   </RadioGroup>
                                   <Divider
@@ -562,9 +563,37 @@ function CustomMarketsEdit(props) {
                                     opacity={1}
                                   />
                                 </Flex>
-                                <Text as="div" color="gray.500">
+                                <Text textStyle="bodyMain"  as="div" color="gray.500">
                                   Select a start and end date for the season
                                 </Text>
+                                <HStack marginTop={4} spacing={4}>
+                                  <Stack>
+                                    <Text textStyle="bodyMain"  as="div" fontWeight={700}>
+                                      Start date
+                                    </Text>
+                                    <DatePicker
+                                      inline
+                                      selected={startDate}
+                                      onChange={(date) => setStartDate(date)}
+                                      dayClassName={(date) =>
+                                        date.getDate < Math.random() * 31 ? "random" : undefined
+                                      }
+                                    />
+                                  </Stack>
+                                  <Stack>
+                                    <Text as="div" textStyle="bodyMain" fontWeight={700}>
+                                      End date
+                                    </Text>
+                                    <DatePicker
+                                      inline
+                                      selected={startDate}
+                                      onChange={(date) => setStartDate(date)}
+                                      dayClassName={(date) =>
+                                        date.getDate < Math.random() * 31 ? "random" : undefined
+                                      }
+                                    />
+                                  </Stack>
+                                </HStack>
                               </Container>
                             </ModalBody>
                             <ModalFooter>
@@ -603,12 +632,12 @@ function CustomMarketsEdit(props) {
                       {data.size == "flagship"
                         ? "Daily sales for the entire market are upwards of $150,000. This market can support upwards of 20 produce vendors, 14 prepared food vendors, 9 baked goods vendors, 6 alcohol vendors, 5 dairy vendors, and 2 to 4 vendors from each additional category."
                         : data.size == "large"
-                        ? "Daily sales for large markets range from $20,000 to $70,000. They can support average numbers of 8 produce vendors, 8 prepared food vendors, 5 baked goods vendors, 3 alcohol vendors, and 1 to 2 vendors from each additional category."
-                        : data.size == "medium"
-                        ? "Daily sales for medium markets range from $10,000 to $19,000. They can support average numbers of 5 prepared food vendors, 4 produce vendors, and 1 to 2 vendors from each additional category."
-                        : data.size == "small"
-                        ? "Daily sales for small markets range from $1,500 to $9,000. They can support average numbers of 4 produce vendors, 4 prepared food vendors, and 1 to 2 vendors from each additional category with some product category gaps."
-                        : "These markets are limited to one produce vendor for retail and wholesale sales."}
+                          ? "Daily sales for large markets range from $20,000 to $70,000. They can support average numbers of 8 produce vendors, 8 prepared food vendors, 5 baked goods vendors, 3 alcohol vendors, and 1 to 2 vendors from each additional category."
+                          : data.size == "medium"
+                            ? "Daily sales for medium markets range from $10,000 to $19,000. They can support average numbers of 5 prepared food vendors, 4 produce vendors, and 1 to 2 vendors from each additional category."
+                            : data.size == "small"
+                              ? "Daily sales for small markets range from $1,500 to $9,000. They can support average numbers of 4 produce vendors, 4 prepared food vendors, and 1 to 2 vendors from each additional category with some product category gaps."
+                              : "These markets are limited to one produce vendor for retail and wholesale sales."}
                     </Text>
                     <HStack marginTop={4}>
                       <Text as={"span"} color={"blue.500"} fontWeight={700}>
