@@ -30,8 +30,14 @@ import {
   Td,
   TableCaption,
   TableContainer,
+  Tag,
   Text
 } from '@chakra-ui/react';
+
+// icons
+import { GrayCheckIcon } from '../../assets/icons/gray-check';
+import { GreenCheckIcon } from '../../assets/icons/green-check';
+import { RedXIcon } from '../../assets/icons/red-x';
 
 function CustomVendorsList(props) {
   const { data } = props;
@@ -70,14 +76,14 @@ function CustomVendorsList(props) {
                 <TableContainer>
                   <Table variant='simple'>                    
                     <Thead>
-                      <Tr>
-                        <Th>Vendor name</Th>
-                        <Th>Vendor type</Th>
-                        <Th>Number of markets</Th>
-                        <Th>Region</Th>
-                        <Th>Priority group</Th>
-                        <Th>Sales report status</Th>
-                        <Th>Standing</Th>
+                      <Tr background={'gray.100'}>
+                        <Th sx={{ color: 'gray.900', fontFamily: "Outfit, sans-serif" }}>Vendor name</Th>
+                        <Th sx={{ color: 'gray.900', fontFamily: "Outfit, sans-serif" }}>Vendor type</Th>
+                        <Th sx={{ color: 'gray.900', fontFamily: "Outfit, sans-serif" }}>Number of markets</Th>
+                        <Th sx={{ color: 'gray.900', fontFamily: "Outfit, sans-serif" }}>Region</Th>
+                        <Th sx={{ color: 'gray.900', fontFamily: "Outfit, sans-serif" }}>Priority group</Th>
+                        <Th sx={{ color: 'gray.900', fontFamily: "Outfit, sans-serif" }}>Sales report status</Th>
+                        <Th sx={{ color: 'gray.900', fontFamily: "Outfit, sans-serif" }}>Standing</Th>
                       </Tr>
                     </Thead>
                     <Tbody>
@@ -89,23 +95,31 @@ function CustomVendorsList(props) {
                             </Link>
                           </Td>
                           <Td>{vendor.type}</Td>
-                          <Td>{vendor.markets || ''}</Td>
-                          <Td>{vendor.region || ''}</Td>
-                          <Td>{''}</Td>
-                          <Td>{''}</Td>
-                          <Td>{''}</Td>
+                          <Td>
+                            <Tag colorScheme='gray'>Market name</Tag>
+                          </Td>
+                          <Td>DC</Td>
+                          <Td>
+                            <Tag colorScheme='blue'>LGBTQ+</Tag>
+                          </Td>
+                          <Td>
+                            <RedXIcon sx={{ height: 12, width: 12 }} />
+                          </Td>
+                          <Td>
+                            <Tag colorScheme='teal'>Good</Tag>
+                          </Td>
                         </Tr>
                       )) : null}
                     </Tbody>
                     <Tfoot>
-                      <Tr>
-                        <Th>Vendor name</Th>
-                        <Th>Vendor type</Th>
-                        <Th>Number of markets</Th>
-                        <Th>Region</Th>
-                        <Th>Priority group</Th>
-                        <Th>Sales report status</Th>
-                        <Th>Standing</Th>
+                      <Tr background={'gray.100'}>
+                        <Th sx={{ color: 'gray.900', fontFamily: "Outfit, sans-serif" }}>Vendor name</Th>
+                        <Th sx={{ color: 'gray.900', fontFamily: "Outfit, sans-serif" }}>Vendor type</Th>
+                        <Th sx={{ color: 'gray.900', fontFamily: "Outfit, sans-serif" }}>Number of markets</Th>
+                        <Th sx={{ color: 'gray.900', fontFamily: "Outfit, sans-serif" }}>Region</Th>
+                        <Th sx={{ color: 'gray.900', fontFamily: "Outfit, sans-serif" }}>Priority group</Th>
+                        <Th sx={{ color: 'gray.900', fontFamily: "Outfit, sans-serif" }}>Sales report status</Th>
+                        <Th sx={{ color: 'gray.900', fontFamily: "Outfit, sans-serif" }}>Standing</Th>
                       </Tr>
                     </Tfoot>
                   </Table>

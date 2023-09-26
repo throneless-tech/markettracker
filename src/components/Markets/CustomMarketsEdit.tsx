@@ -7,6 +7,7 @@ import "react-datepicker/dist/react-datepicker.css";
 // Payload imports
 import { useDocumentInfo } from "payload/components/utilities";
 import { useField, useFormFields } from "payload/components/forms";
+import { useAllFormFields, reduceFieldsToValues, getSiblingData } from 'payload/components/forms';
 
 // Chakra imports
 import {
@@ -59,20 +60,26 @@ import formatTime from "../../utils/formatTime";
 import EditIcon from "../../assets/icons/edit.js";
 import StarIcon from "../../assets/icons/star.js";
 
-function CustomMarketsEdit(props) {
+function CustomMarketsEdit(props, {path}) {
   const { user } = useAuth();
-  const { id } = useDocumentInfo();
+  const { id, publishedDoc } = useDocumentInfo();
   const { data } = props;
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const { name, setName } = useField({ path: "name" });
+  const { value, setValue } = useField<string>({ path });
   const [startDate, setStartDate] = useState(new Date());
+  const [fields, dispatchFields] = useAllFormFields();
+
+  const formData = reduceFieldsToValues(fields, true);
+
+  console.log(formData);
 
   // id will be undefined on the create form
   if (!id) {
     return null;
   }
-
-  useEffect(() => { }, [data, name]);
+  console.log('doc: ', publishedDoc);
+  
+  useEffect(() => {}, [data, value]);
 
   if (data) {
     return (
@@ -114,7 +121,7 @@ function CustomMarketsEdit(props) {
               <TabPanels>
                 <TabPanel>
                   <Container maxW="container.xl">
-                    <Flex spacing={8}>
+                    <Flex>
                       <Heading
                         as="h1"
                         color={"gray.700"}
@@ -137,13 +144,10 @@ function CustomMarketsEdit(props) {
                       )}
                     </Flex>
                     <Box
-                      direction="row"
-                      justify="flex-start"
-                      align="stretch"
-                      spacing="24px"
                       borderBottomRadius="8px"
                       borderTop="2px solid #6D635B"
                       marginTop={8}
+                      sx={{ alignItems: "stretch", flexDirection: "row", justifyContent: "flex-start" }}
                     >
                       <Box background="green.600" padding={6}>
                         <Flex
@@ -325,8 +329,8 @@ function CustomMarketsEdit(props) {
                                   <FormLabel>Market name (required)</FormLabel>
                                   <Input
                                     placeholder="Start typing..."
-                                    value={name}
-                                    onChange={(e) => setName(e.target.value)}
+                                    value={value}
+                                    onChange={(e) => setValue(e.target.value)}
                                   />
                                 </FormControl>
                                 <Stack spacing={2} marginTop={4}>
@@ -715,19 +719,8 @@ function CustomMarketsEdit(props) {
                     <Text color={"gray.600"} marginTop={4} fontSize={"md"}>
                       Dates [market name] is open this season
                     </Text>
-                    <Wrap marginTop={4} columns={3} spacing={3}>
-                      <WrapItem>
-                        <Calendar view="month" />
-                      </WrapItem>
-                      <WrapItem>
-                        <Calendar view="month" />
-                      </WrapItem>
-                      <WrapItem>
-                        <Calendar view="month" />
-                      </WrapItem>
-                      <WrapItem>
-                        <Calendar view="month" />
-                      </WrapItem>
+                    <Wrap marginTop={4} spacing={3}>
+                      
                     </Wrap>
                   </Container>
                 </TabPanel>
