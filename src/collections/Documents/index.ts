@@ -1,16 +1,16 @@
 import { CollectionConfig } from "payload/types";
-// import { createCollectionDocument } from "./hooks/createCollectionDocument";
+import { createCollectionDocument } from "./hooks/createCollectionDocument";
 
 export const Documents: CollectionConfig = {
   slug: "documents",
   hooks: {
-    // afterChange: [createCollectionDocument],
+    afterChange: [createCollectionDocument],
   },
   upload: {
     staticURL: "/documents",
     staticDir: "documents",
     disableLocalStorage: true,
-    //mimeTypes: ["image/*", "application/pdf"],
+    // mimeTypes: ["image/*", "application/pdf"],
   },
   fields: [
     {
