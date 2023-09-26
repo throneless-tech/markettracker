@@ -48,13 +48,13 @@ function CustomMarketsList(props) {
     const getMarkets = async () => {
       const response = await fetch('/api/markets?depth=2');
       const theseMarkets = await response.json();
+      console.log(theseMarkets);
       setMarkets(theseMarkets)
     }
 
     const getSeasons = async () => {
       const response = await fetch('/api/seasons?depth=2');
       const theseSeasons = await response.json();
-      console.log(theseSeasons);
       setSeasons(theseSeasons)
     }
 

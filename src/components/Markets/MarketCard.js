@@ -26,7 +26,6 @@ const MarketCard = (props) => {
   const history = useHistory();
   const {
     market,
-    description,
     openingDay,
     closingDay,
     managerName,
