@@ -256,6 +256,58 @@ function CustomVendorsEdit(props) {
                       </>
                     )}
                   </AccordionItem>
+                  <AccordionItem sx={{ border: '1px solid #000', marginY: 8 }}>
+                    {({ isExpanded }) => (
+                      <>
+                        <h2>
+                          <AccordionButton>
+                            <Box as="span" flex='1' textAlign='left'>
+                              <Text textStyle='bodyMain' sx={{ fontWeight: 900, textTransform: 'uppercase' }}>
+                                Business info
+                              </Text>
+                            </Box>
+                            {isExpanded ? (
+                              <Text textStyle='bodyMain'>Hide information</Text>
+                            ) : (
+                              <Text textStyle='bodyMain'>Show information</Text>
+                            )}
+                          </AccordionButton>
+                        </h2>
+                        <AccordionPanel>
+                          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+                          eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad
+                          minim veniam, quis nostrud exercitation ullamco laboris nisi ut
+                          aliquip ex ea commodo consequat.
+                        </AccordionPanel>
+                      </>
+                    )}
+                  </AccordionItem>
+                  <AccordionItem sx={{ border: '1px solid #000', marginY: 8 }}>
+                    {({ isExpanded }) => (
+                      <>
+                        <h2>
+                          <AccordionButton>
+                            <Box as="span" flex='1' textAlign='left'>
+                              <Text textStyle='bodyMain' sx={{ fontWeight: 900, textTransform: 'uppercase' }}>
+                                Products
+                              </Text>
+                            </Box>
+                            {isExpanded ? (
+                              <Text textStyle='bodyMain'>Hide information</Text>
+                            ) : (
+                              <Text textStyle='bodyMain'>Show information</Text>
+                            )}
+                          </AccordionButton>
+                        </h2>
+                        <AccordionPanel>
+                          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+                          eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad
+                          minim veniam, quis nostrud exercitation ullamco laboris nisi ut
+                          aliquip ex ea commodo consequat.
+                        </AccordionPanel>
+                      </>
+                    )}
+                  </AccordionItem>
                 </Accordion>
               </TabPanel>
               <TabPanel>
