@@ -87,16 +87,16 @@ function CustomApplications() {
           <TableContainer>
             <Table variant='simple'>
               <Thead>
-                <Tr>
+                <Tr background={'gray.100'}>
                   <Th>{' '}</Th>
-                  <Th>Vendor type</Th>
-                  <Th>Meet product gap</Th>
-                  <Th>Number of markets</Th>
-                  <Th>Priority group</Th>
-                  <Th>Standing</Th>
-                  <Th>Reviewers</Th>
-                  <Th>Grade (avg)</Th>
-                  <Th>Application status</Th>
+                  <Th sx={{ color: 'gray.900', fontFamily: "Outfit, sans-serif" }}>Vendor type</Th>
+                  <Th sx={{ color: 'gray.900', fontFamily: "Outfit, sans-serif" }}>Meet product gap</Th>
+                  <Th sx={{ color: 'gray.900', fontFamily: "Outfit, sans-serif" }}>Number of markets</Th>
+                  <Th sx={{ color: 'gray.900', fontFamily: "Outfit, sans-serif" }}>Priority group</Th>
+                  <Th sx={{ color: 'gray.900', fontFamily: "Outfit, sans-serif" }}>Standing</Th>
+                  <Th sx={{ color: 'gray.900', fontFamily: "Outfit, sans-serif" }}>Reviewers</Th>
+                  <Th sx={{ color: 'gray.900', fontFamily: "Outfit, sans-serif" }}>Grade (avg)</Th>
+                  <Th sx={{ color: 'gray.900', fontFamily: "Outfit, sans-serif" }}>Application status</Th>
                 </Tr>
               </Thead>
               <Tbody>
@@ -131,16 +131,16 @@ function CustomApplications() {
                 )) : null}
               </Tbody>
               <Tfoot>
-                <Tr>
+                <Tr background={'gray.100'}>
                   <Th>{' '}</Th>
-                  <Th>Vendor type</Th>
-                  <Th>Meet product gap</Th>
-                  <Th>Number of markets</Th>
-                  <Th>Priority group</Th>
-                  <Th>Standing</Th>
-                  <Th>Reviewers</Th>
-                  <Th>Grade (avg)</Th>
-                  <Th>Application status</Th>
+                  <Th sx={{ color: 'gray.900', fontFamily: "Outfit, sans-serif" }}>Vendor type</Th>
+                  <Th sx={{ color: 'gray.900', fontFamily: "Outfit, sans-serif" }}>Meet product gap</Th>
+                  <Th sx={{ color: 'gray.900', fontFamily: "Outfit, sans-serif" }}>Number of markets</Th>
+                  <Th sx={{ color: 'gray.900', fontFamily: "Outfit, sans-serif" }}>Priority group</Th>
+                  <Th sx={{ color: 'gray.900', fontFamily: "Outfit, sans-serif" }}>Standing</Th>
+                  <Th sx={{ color: 'gray.900', fontFamily: "Outfit, sans-serif" }}>Reviewers</Th>
+                  <Th sx={{ color: 'gray.900', fontFamily: "Outfit, sans-serif" }}>Grade (avg)</Th>
+                  <Th sx={{ color: 'gray.900', fontFamily: "Outfit, sans-serif" }}>Application status</Th>
                 </Tr>
               </Tfoot>
             </Table>
