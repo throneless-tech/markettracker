@@ -13,6 +13,7 @@ import {
   AccordionItem,
   AccordionPanel,
   Box,
+  Button,
   Container,
   Flex,
   Heading,
@@ -65,6 +66,7 @@ function CustomVendorsEdit(props) {
       const response = await fetch(`/api/vendors/${id}?depth=2`);
       const thisVendor = await response.json();
       setVendor(thisVendor)
+      console.log(thisVendor);
     }
 
     getVendor();
@@ -116,7 +118,22 @@ function CustomVendorsEdit(props) {
                 </HStack>
                 <Spacer />
                 {vendor.contacts && vendor.contacts.length ? vendor.contacts.map(contact => {
-                  if (contact.type && contact.type.length) {
+                  if (vendor.isPrimaryContact) {
+                    return (
+                      <HStack>
+                        <Text as={"span"} color={"gray.50"} fontSize="2xl" fontWeight={700}>
+                          Primary contact:
+                        </Text>
+                        <Text as={"span"} color={"gray.50"} fontSize="2xl">
+                          {vendor.user.name}
+                        </Text>
+                        <Text as={"span"} color={"gray.50"} fontSize="2xl">
+                          {vendor.user.phone}
+                        </Text>
+                      </HStack>
+                    )
+                  }
+                  else if (contact.type && contact.type.length) {
                     const type = contact.type.find(type => type == "primary")
                     if (type) {
                       return (
@@ -201,27 +218,23 @@ function CustomVendorsEdit(props) {
                                   </Tr>
                                 </Thead>
                                 <Tbody>
-                                  <Tr>
-                                    <Td>Contact 1</Td>
-                                    <Td>Primary</Td>
-                                    <Td>email addy</Td>
-                                    <Td>phone num</Td>
-                                    <Td>button edit/delte</Td>
-                                  </Tr>
-                                  <Tr>
-                                    <Td>Contact 2</Td>
-                                    <Td>Primary</Td>
-                                    <Td>email addy</Td>
-                                    <Td>phone num</Td>
-                                    <Td>button edit/delte</Td>
-                                  </Tr>
-                                  <Tr>
-                                    <Td>Contact 3</Td>
-                                    <Td>Primary</Td>
-                                    <Td>email addy</Td>
-                                    <Td>phone num</Td>
-                                    <Td>button edit/delte</Td>
-                                  </Tr>
+                                  {vendor.contacts && vendor.contacts.length ? vendor.contacts.map(contact => (
+                                    <Tr>
+                                      <Td>{contact.name}</Td>
+                                      <Td>
+                                        {contact.type.map(type => (
+                                          <Tag>{type}</Tag>
+                                        ))}
+                                      </Td>
+                                      <Td>{contact.email}</Td>
+                                      <Td>{contact.phone}</Td>
+                                      <Td>
+                                        <Button>
+                                          Edit/delete
+                                        </Button>
+                                      </Td>
+                                    </Tr>
+                                  )) : null}
                                 </Tbody>
                               </Table>
                             </TableContainer>
