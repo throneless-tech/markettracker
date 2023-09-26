@@ -8,8 +8,8 @@ export const Markets: CollectionConfig = {
   admin: {
     components: {
       views: {
-        Edit: Form,
-        // Edit: CustomMarketsEdit,
+        // Edit: Form,
+        Edit: CustomMarketsEdit,
         List: CustomMarketsList,
       },
     },
