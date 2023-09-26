@@ -100,10 +100,10 @@ function CustomVendorsList(props) {
                           </Td>
                           <Td>DC</Td>
                           <Td>
-                            <Tag colorScheme='blue'>LGBTQ+</Tag>
+                            {/* <Tag colorScheme='blue'>LGBTQ+</Tag> */}
                           </Td>
                           <Td>
-                            <RedXIcon sx={{ height: 12, width: 12 }} />
+                            <GrayCheckIcon sx={{ height: 12, width: 12 }} />
                           </Td>
                           <Td>
                             <Tag colorScheme='teal'>Good</Tag>
