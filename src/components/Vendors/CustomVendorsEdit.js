@@ -3,13 +3,11 @@ import React, { useEffect, useState } from 'react'
 
 // Payload imports
 import { useDocumentInfo } from 'payload/components/utilities';
-import { useField } from "payload/components/forms";
 
 // Chakra imports
 import {
   Accordion,
   AccordionButton,
-  AccordionIcon,
   AccordionItem,
   AccordionPanel,
   Box,
@@ -34,25 +32,15 @@ import {
   Tag,
   Text,
   Wrap,
-  useDisclosure,
   VisuallyHidden,
 } from '@chakra-ui/react';
 
 // components
-import Calendar from '../Calendar.js';
 import { Card } from '../Card';
-
-// utils
-import formatTime from '../../utils/formatTime.js'
-
-// icons
-import EditIcon from '../../assets/icons/edit.js'
-import StarIcon from '../../assets/icons/star.js'
 
 function CustomVendorsEdit(props) {
   const { id } = useDocumentInfo();
   const { data } = props;
-  const { isOpen, onOpen, onClose } = useDisclosure()
   const [name, setName] = useState('')
   const [vendor, setVendor] = useState(null);
 
@@ -120,7 +108,7 @@ function CustomVendorsEdit(props) {
                 {vendor.contacts && vendor.contacts.length ? vendor.contacts.map(contact => {
                   if (vendor.isPrimaryContact) {
                     return (
-                      <HStack>
+                      <HStack key={vendor.user.id}>
                         <Text as={"span"} color={"gray.50"} fontSize="2xl" fontWeight={700}>
                           Primary contact:
                         </Text>
@@ -223,7 +211,7 @@ function CustomVendorsEdit(props) {
                                       <Td>{contact.name}</Td>
                                       <Td>
                                         {contact.type.map(type => (
-                                          <Tag>{type}</Tag>
+                                          <Tag key={type}>{type}</Tag>
                                         ))}
                                       </Td>
                                       <Td>{contact.email}</Td>

@@ -8,7 +8,7 @@ export const Vendors: CollectionConfig = {
   admin: {
     components: {
       views: {
-        //Edit: CustomVendorsEdit,
+        Edit: CustomVendorsEdit,
         List: CustomVendorsList,
       },
     },
