@@ -1,13 +1,14 @@
 import { CollectionConfig } from "payload/types";
-import CustomVendorsEdit from "../components/Vendors/CustomVendorsEdit";
-import CustomVendorsList from "../components/Vendors/CustomVendorsList";
+import CustomVendorsEdit from "../../components/Vendors/CustomVendorsEdit";
+import CustomVendorsList from "../../components/Vendors/CustomVendorsList";
+import { createFieldContacts } from "./hooks/createFieldContacts";
 
 export const Vendors: CollectionConfig = {
   slug: "vendors",
   admin: {
     components: {
       views: {
-        Edit: CustomVendorsEdit,
+        //Edit: CustomVendorsEdit,
         List: CustomVendorsList,
       },
     },
@@ -370,6 +371,9 @@ export const Vendors: CollectionConfig = {
       required: true,
       hasMany: true,
       relationTo: "contacts",
+      hooks: {
+        afterChange: [createFieldContacts],
+      },
     },
     {
       name: "licenses",

@@ -44,5 +44,11 @@ export const Contacts: CollectionConfig = {
         },
       ],
     },
+    {
+      name: "vendors",
+      type: "relationship",
+      relationTo: "vendors",
+      hasMany: true,
+    },
   ],
 };

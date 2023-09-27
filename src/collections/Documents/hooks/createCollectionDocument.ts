@@ -1,6 +1,7 @@
 import payload from "payload";
 import csv from "csvtojson";
 import humanparser from "humanparser";
+import xlsx from "node-xlsx";
 import { readFile } from "fs/promises";
 import { CollectionAfterChangeHook } from "payload/types";
 import {
@@ -261,41 +262,40 @@ export const createCollectionDocument: CollectionAfterChangeHook = async (
             }
 
             // SEASONS
-            // const seasonData: Omit<Season, "id" | "createdAt" | "updatedAt"> = {
-            //   name: source["Owner Name"] || source.POC,
-            //   email: source["Primary Email"] || "null@example.com",
-            //   role: "vendor",
-            //   password: Math.random().toString(36).slice(2),
-            // };
-            // let season: Season;
-            // try {
-            //   const { docs } = await payload.find({
-            //     collection: "users",
-            //     where: {
-            //       email: {
-            //         equals: seasonData.email.toLowerCase(),
-            //       },
-            //     },
-            //   });
-            //   if (docs.length > 0) {
-            //     season = docs[0];
-            //     console.log("found season: ", season);
-            //   } else {
-            //     season = await payload.create({
-            //       collection: "users",
-            //       overrideAccess: true,
-            //       disableVerificationEmail: true,
-            //       user: req.user,
-            //       data: seasonData,
-            //     });
-            //     console.log("created season: ", season);
-            //     seasonCount += 1;
-            //   }
-            // } catch (e) {
-            //   console.log(e);
-            //   // eslint-disable-next-line no-continue
-            //   console.log("skip season: ", seasonData.email);
-            //   // eslint-disable-next-line no-continue
+            const seasonData: Omit<Season, "id" | "createdAt" | "updatedAt"> = {
+              name: "Winter 2024",
+              market: market.id,
+            };
+            let season: Season;
+            try {
+              const { docs } = await payload.find({
+                collection: "seasons",
+                where: {
+                  "market": {
+                    equals: market.id,
+                  },
+                },
+              });
+              if (docs.length > 0) {
+                season = docs[0];
+                console.log("found season: ", season);
+              } else {
+                season = await payload.create({
+                  collection: "seasons",
+                  overrideAccess: true,
+                  disableVerificationEmail: true,
+                  user: req.user,
+                  data: seasonData,
+                });
+                console.log("created season: ", season);
+                seasonCount += 1;
+              }
+            } catch (e) {
+              console.log(e);
+              // eslint-disable-next-line no-continue
+              console.log("skip season: ", seasonData.name);
+              // eslint-disable-next-line no-continue
+            }
           }
           console.log("Import Done!");
           console.log("Rows processed:", Object.keys(marketSource).length);

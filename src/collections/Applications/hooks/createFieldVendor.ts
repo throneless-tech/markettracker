@@ -10,7 +10,7 @@ type ApplicationFieldHook = FieldHook<
 export const createFieldVendor: ApplicationFieldHook = (
   { value, operation, req },
 ) => {
-  if (operation === "create" && req.user.role === "vendor") {
+  if (["create", "update"].includes(operation)) {
     return req.user.vendor;
   }
   return value;
