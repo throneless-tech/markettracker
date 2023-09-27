@@ -73,9 +73,11 @@ const CustomDashboard = () => {
                         </HStack>
                         <Spacer />
                         <HStack>
-                          <Tag variant='solid' colorScheme='teal' sx={{ border: "2px solid #F6F5F4", paddingY: 1 }}>
-                            Good
-                          </Tag>
+                          {user.role == 'vendor' ? (
+                            <Tag variant='solid' colorScheme='teal' sx={{ border: "2px solid #F6F5F4", paddingY: 1 }}>
+                              Good
+                            </Tag>
+                          ) : null}
                         </HStack>
                       </Flex>
                       <Flex marginTop={4}>
@@ -100,7 +102,7 @@ const CustomDashboard = () => {
                     </Box>
                     <Box background={"teal.100"} borderBottomRadius="8px" padding={4}>
                       <Text marginTop={4} fontSize={"xl"}>
-                        Pleitez Produce Farm is an IPM and NON GMO/GES farm located in Westmoreland County & King George County, VA. Our farm is family owned and operated. We have over 25 years of farming experience. We are currently farming 80 acres. We have a total of 9 Greenhouses, planting in 6 of them to get in an early and late production.
+                        Unidentified vessel travelling at sub warp speed, bearing 235.7. Fluctuations in energy readings from it, Captain. All transporters off. A strange set-up, but I'd say the graviton generator is depolarized. The dark colourings of the scrapes are the leavings of natural rubber, a type of non-conductive sole used by researchers experimenting with electricity. The molecules must have been partly de-phased by the anyon beam.
                       </Text>
                     </Box>
                   </Box>

@@ -42,24 +42,16 @@ function CustomMarketsList(props) {
   const { user } = useAuth();
   const history = useHistory();
   const [markets, setMarkets] = useState([]);
-  const [seasons, setSeasons] = useState([]);
   
   useEffect(() => {
     const getMarkets = async () => {
       const response = await fetch('/api/markets?depth=2');
       const theseMarkets = await response.json();
       setMarkets(theseMarkets)
-    }
-
-    const getSeasons = async () => {
-      const response = await fetch('/api/seasons?depth=2');
-      const theseSeasons = await response.json();
-      console.log(theseSeasons);
-      setSeasons(theseSeasons)
+      console.log(theseMarkets);
     }
 
     getMarkets();
-    getSeasons()
   }, [])
   
   useEffect(() => {}, [markets, data])
@@ -141,17 +133,17 @@ function CustomMarketsList(props) {
             <TableContainer>
               <Table variant='simple'>
                 <Thead>
-                  <Tr>
+                  <Tr background={'gray.100'}>
                     <Th>{' '}</Th>
                     <Th>{' '}</Th>
                     <Th>{' '}</Th>
-                    <Th>Accepting applications</Th>
-                    <Th>Review status</Th>
+                    <Th sx={{ color: 'gray.900', fontFamily: "Outfit, sans-serif" }}>Accepting applications</Th>
+                    <Th sx={{ color: 'gray.900', fontFamily: "Outfit, sans-serif" }}>Review status</Th>
                     <Th>{' '}</Th>
                   </Tr>
                 </Thead>
                 <Tbody>
-                  {data.docs && data.docs.length && data.docs.map(market => (
+                  {data.docs && data.docs.length ? data.docs.map(market => (
                     <Tr key={market.id}>
                       <Td>
                         <Link href={`/admin/collections/markets/${market.id}`}>
@@ -168,18 +160,8 @@ function CustomMarketsList(props) {
                         </Button>
                       </Td>
                     </Tr>
-                  ))}
-                </Tbody>
-                <Tfoot>
-                  <Tr>
-                    <Th>{' '}</Th>
-                    <Th>{' '}</Th>
-                    <Th>{' '}</Th>
-                    <Th>Accepting applications</Th>
-                    <Th>Review status</Th>
-                    <Th>{' '}</Th>
-                  </Tr>
-                </Tfoot>
+                  )) : null}
+                </Tbody>                
               </Table>
             </TableContainer>
             <FooterAdmin />

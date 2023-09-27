@@ -10,7 +10,7 @@ export const Documents: CollectionConfig = {
     staticURL: "/documents",
     staticDir: "documents",
     disableLocalStorage: true,
-    //mimeTypes: ["image/*", "application/pdf"],
+    // mimeTypes: ["image/*", "application/pdf"],
   },
   fields: [
     {

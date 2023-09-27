@@ -7,47 +7,40 @@ import { useField } from "payload/components/forms";
 
 // Chakra imports
 import {
+  Accordion,
+  AccordionButton,
+  AccordionIcon,
+  AccordionItem,
+  AccordionPanel,
   Box,
   Button,
-  Checkbox,
-  CheckboxGroup,
   Container,
   Flex,
-  FormControl,
-  FormHelperText,
-  FormLabel,
-  Divider,
   Heading,
   HStack,
-  Input,
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalFooter,
-  ModalBody,
-  ModalCloseButton,
-  Radio,
-  RadioGroup,
-  Select,
   Spacer,
-  Stack,
   Tab,
   Tabs,
-  TabIndicator,
   TabList,
   TabPanel,
   TabPanels,
+  Table,
+  TableContainer,
+  Tbody,
+  Td,
+  Th,
+  Thead,
+  Tr,
   Tag,
   Text,
-  Textarea,
   Wrap,
-  WrapItem,
   useDisclosure,
+  VisuallyHidden,
 } from '@chakra-ui/react';
 
 // components
 import Calendar from '../Calendar.js';
+import { Card } from '../Card';
 
 // utils
 import formatTime from '../../utils/formatTime.js'
@@ -72,8 +65,8 @@ function CustomVendorsEdit(props) {
     const getVendor = async () => {
       const response = await fetch(`/api/vendors/${id}?depth=2`);
       const thisVendor = await response.json();
-      console.log(thisVendor);
       setVendor(thisVendor)
+      console.log(thisVendor);
     }
 
     getVendor();
@@ -85,8 +78,6 @@ function CustomVendorsEdit(props) {
   }, [])
 
   useEffect(() => { }, [data, name, vendor]);
-
-  console.log(vendor);
 
   if (data) {
     return (
@@ -127,11 +118,26 @@ function CustomVendorsEdit(props) {
                 </HStack>
                 <Spacer />
                 {vendor.contacts && vendor.contacts.length ? vendor.contacts.map(contact => {
-                  if (contact.type && contact.type.length) {
+                  if (vendor.isPrimaryContact) {
+                    return (
+                      <HStack>
+                        <Text as={"span"} color={"gray.50"} fontSize="2xl" fontWeight={700}>
+                          Primary contact:
+                        </Text>
+                        <Text as={"span"} color={"gray.50"} fontSize="2xl">
+                          {vendor.user.name}
+                        </Text>
+                        <Text as={"span"} color={"gray.50"} fontSize="2xl">
+                          {vendor.user.phone}
+                        </Text>
+                      </HStack>
+                    )
+                  }
+                  else if (contact.type && contact.type.length) {
                     const type = contact.type.find(type => type == "primary")
                     if (type) {
                       return (
-                        <HStack>
+                        <HStack key={type}>
                           <Text as={"span"} color={"gray.50"} fontSize="2xl" fontWeight={700}>
                             Primary contact:
                           </Text>
@@ -146,8 +152,8 @@ function CustomVendorsEdit(props) {
                     }
                   }
                 }) : null}
-                
-              </Flex>              
+
+              </Flex>
             </Box>
             <Box background={"#90B132"} borderBottomRadius="8px" padding={4}>
               <Text marginTop={4} fontSize={"xl"}>
@@ -155,7 +161,174 @@ function CustomVendorsEdit(props) {
               </Text>
             </Box>
           </Box>
-        </Container>        
+        </Container>
+        <Container maxW='container.xl' marginTop={8}>
+          <Tabs variant='enclosed' colorScheme='green'>
+            <TabList>
+              <Tab>Summary</Tab>
+              <Tab>Sales reports</Tab>
+              <Tab>Markets</Tab>
+              <Tab>Profile</Tab>
+              <Tab>Penalties/credits</Tab>
+            </TabList>
+            <TabPanels>
+              <TabPanel>
+                <Wrap my={8} justify={{ base: "center", xl: "space-between" }} spacing={4}>
+                  <Card icon="market" title="My Upcoming Markets" />
+                  <Card icon="sales" title="Sales Reports Due" />
+                  <Card icon="sales" title="Sales Reports Submitted" />
+                </Wrap>
+              </TabPanel>
+              <TabPanel>
+                Sales reports coming soon.
+              </TabPanel>
+              <TabPanel>
+                Markets coming soon.
+              </TabPanel>
+              <TabPanel>
+                <Accordion allowMultiple>
+                  <AccordionItem sx={{ border: '1px solid #000', marginY: 8 }}>
+                    {({ isExpanded }) => (
+                      <>
+                        <h2>
+                          <AccordionButton>
+                            <Box as="span" flex='1' textAlign='left'>
+                              <Text textStyle='bodyMain' sx={{ fontWeight: 900, textTransform: 'uppercase' }}>
+                                Staff
+                              </Text>
+                            </Box>
+                            {isExpanded ? (
+                              <Text textStyle='bodyMain'>Hide information</Text>
+                            ) : (
+                              <Text textStyle='bodyMain'>Show information</Text>
+                            )}
+                          </AccordionButton>
+                        </h2>
+                        <AccordionPanel>
+                          <TableContainer>
+                            <TableContainer>
+                              <Table>
+                                <Thead>
+                                  <Tr>
+                                    <Th>Name</Th>
+                                    <Th>Contact type</Th>
+                                    <Th>Email</Th>
+                                    <Th>Phone</Th>
+                                    <Th><VisuallyHidden>Edit/delete</VisuallyHidden></Th>
+                                  </Tr>
+                                </Thead>
+                                <Tbody>
+                                  {vendor.contacts && vendor.contacts.length ? vendor.contacts.map(contact => (
+                                    <Tr key={contact.id}>
+                                      <Td>{contact.name}</Td>
+                                      <Td>
+                                        {contact.type.map(type => (
+                                          <Tag>{type}</Tag>
+                                        ))}
+                                      </Td>
+                                      <Td>{contact.email}</Td>
+                                      <Td>{contact.phone}</Td>
+                                      <Td>
+                                        <Button>
+                                          Edit/delete
+                                        </Button>
+                                      </Td>
+                                    </Tr>
+                                  )) : null}
+                                </Tbody>
+                              </Table>
+                            </TableContainer>
+                          </TableContainer>
+                        </AccordionPanel>
+                      </>
+                    )}
+                  </AccordionItem>
+                  <AccordionItem sx={{ border: '1px solid #000', marginY: 8 }}>
+                    {({ isExpanded }) => (
+                      <>
+                        <h2>
+                          <AccordionButton>
+                            <Box as="span" flex='1' textAlign='left'>
+                              <Text textStyle='bodyMain' sx={{ fontWeight: 900, textTransform: 'uppercase' }}>
+                                Company info
+                              </Text>
+                            </Box>
+                            {isExpanded ? (
+                              <Text textStyle='bodyMain'>Hide information</Text>
+                            ) : (
+                              <Text textStyle='bodyMain'>Show information</Text>
+                            )}
+                          </AccordionButton>
+                        </h2>
+                        <AccordionPanel>
+                          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+                          eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad
+                          minim veniam, quis nostrud exercitation ullamco laboris nisi ut
+                          aliquip ex ea commodo consequat.
+                        </AccordionPanel>
+                      </>
+                    )}
+                  </AccordionItem>
+                  <AccordionItem sx={{ border: '1px solid #000', marginY: 8 }}>
+                    {({ isExpanded }) => (
+                      <>
+                        <h2>
+                          <AccordionButton>
+                            <Box as="span" flex='1' textAlign='left'>
+                              <Text textStyle='bodyMain' sx={{ fontWeight: 900, textTransform: 'uppercase' }}>
+                                Business info
+                              </Text>
+                            </Box>
+                            {isExpanded ? (
+                              <Text textStyle='bodyMain'>Hide information</Text>
+                            ) : (
+                              <Text textStyle='bodyMain'>Show information</Text>
+                            )}
+                          </AccordionButton>
+                        </h2>
+                        <AccordionPanel>
+                          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+                          eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad
+                          minim veniam, quis nostrud exercitation ullamco laboris nisi ut
+                          aliquip ex ea commodo consequat.
+                        </AccordionPanel>
+                      </>
+                    )}
+                  </AccordionItem>
+                  <AccordionItem sx={{ border: '1px solid #000', marginY: 8 }}>
+                    {({ isExpanded }) => (
+                      <>
+                        <h2>
+                          <AccordionButton>
+                            <Box as="span" flex='1' textAlign='left'>
+                              <Text textStyle='bodyMain' sx={{ fontWeight: 900, textTransform: 'uppercase' }}>
+                                Products
+                              </Text>
+                            </Box>
+                            {isExpanded ? (
+                              <Text textStyle='bodyMain'>Hide information</Text>
+                            ) : (
+                              <Text textStyle='bodyMain'>Show information</Text>
+                            )}
+                          </AccordionButton>
+                        </h2>
+                        <AccordionPanel>
+                          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+                          eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad
+                          minim veniam, quis nostrud exercitation ullamco laboris nisi ut
+                          aliquip ex ea commodo consequat.
+                        </AccordionPanel>
+                      </>
+                    )}
+                  </AccordionItem>
+                </Accordion>
+              </TabPanel>
+              <TabPanel>
+                Penalties and credits coming soon.
+              </TabPanel>
+            </TabPanels>
+          </Tabs>
+        </Container>
       </Box>
     );
   }
