@@ -9,7 +9,7 @@ export const Markets: CollectionConfig = {
     components: {
       views: {
         // Edit: Form,
-        //Edit: CustomMarketsEdit,
+        Edit: CustomMarketsEdit,
         List: CustomMarketsList,
       },
     },
