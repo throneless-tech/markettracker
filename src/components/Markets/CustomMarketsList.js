@@ -48,6 +48,7 @@ function CustomMarketsList(props) {
       const response = await fetch('/api/markets?depth=2');
       const theseMarkets = await response.json();
       setMarkets(theseMarkets)
+      console.log(theseMarkets);
     }
 
     getMarkets();

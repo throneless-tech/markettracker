@@ -27,14 +27,8 @@ const MarketCard = (props) => {
   const history = useHistory();
   const {
     market,
-    openingDay,
-    closingDay,
-    managerName,
-    managerPhone,
     marketNeeds
   } = props;
-
-  console.log(market);
 
   const viewMarket = (market) => {
     history.push({
@@ -161,6 +155,7 @@ const MarketCard = (props) => {
             <HStack align={'center'} justify={'center'} wrap={'wrap'} maxWidth={212}>
               {marketNeeds && marketNeeds.length ? marketNeeds.map(need => (
                 <Tag
+                  key={need}
                   colorScheme='green'
                   fontWeight={500}
                   textTransform={'capitalize'}
