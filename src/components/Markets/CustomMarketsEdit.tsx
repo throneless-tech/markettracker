@@ -77,7 +77,6 @@ function CustomMarketsEdit(props, {path}) {
   if (!id) {
     return null;
   }
-  console.log('doc: ', publishedDoc);
   
   useEffect(() => {}, [data, value]);
 
