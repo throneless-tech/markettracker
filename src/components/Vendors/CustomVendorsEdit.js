@@ -137,7 +137,7 @@ function CustomVendorsEdit(props) {
                     const type = contact.type.find(type => type == "primary")
                     if (type) {
                       return (
-                        <HStack>
+                        <HStack key={type}>
                           <Text as={"span"} color={"gray.50"} fontSize="2xl" fontWeight={700}>
                             Primary contact:
                           </Text>
@@ -219,7 +219,7 @@ function CustomVendorsEdit(props) {
                                 </Thead>
                                 <Tbody>
                                   {vendor.contacts && vendor.contacts.length ? vendor.contacts.map(contact => (
-                                    <Tr>
+                                    <Tr key={contact.id}>
                                       <Td>{contact.name}</Td>
                                       <Td>
                                         {contact.type.map(type => (
