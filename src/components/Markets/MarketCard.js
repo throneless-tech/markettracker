@@ -79,7 +79,7 @@ const MarketCard = (props) => {
                 }
               })}
               {' '}
-              {market.seasons && market.seasons.length ? (
+              {market.seasons && market.seasons.length && market.seasons[0].marketTime ? (
                 <>
                   {formatTime(market.seasons[0].marketTime.startTime)}-{formatTime(market.seasons[0].marketTime.endTime)}
                 </>
@@ -92,7 +92,7 @@ const MarketCard = (props) => {
           <Divider color='green.600' borderBottomWidth={2} opacity={1} />
         </Stack>
         <Stack marginTop={4} fontSize={18}>
-          {market.seasons && market.seasons.length ? (
+          {market.seasons && market.seasons.length && market.seasons[0].marketDates ? (
             <>
               <HStack>
                 <CalendarIcon
