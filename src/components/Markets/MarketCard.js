@@ -1,5 +1,5 @@
-import React from 'react'
-import { useHistory } from 'react-router-dom'
+import React from "react";
+import { useHistory } from "react-router-dom";
 
 import {
   Box,
@@ -10,188 +10,242 @@ import {
   Link,
   Stack,
   Tag,
-  Text
-} from '@chakra-ui/react'
+  Text,
+} from "@chakra-ui/react";
 
 // utils
-import formatDate from '../../utils/formatDate'
-import formatTime from '../../utils/formatTime'
+import formatDate from "../../utils/formatDate";
+import formatTime from "../../utils/formatTime";
 
 // icons + images
-import { ArrowForwardIcon } from '@chakra-ui/icons'
-import { CalendarIcon } from '../../assets/icons/calendar'
-import { MarketIcon } from '../../assets/icons/market'
-import { ProfileIcon } from '../../assets/icons/profile'
+import { ArrowForwardIcon } from "@chakra-ui/icons";
+import { CalendarIcon } from "../../assets/icons/calendar";
+import { MarketIcon } from "../../assets/icons/market";
+import { ProfileIcon } from "../../assets/icons/profile";
 
 const MarketCard = (props) => {
   const history = useHistory();
   const {
     market,
-    marketNeeds
+    marketNeeds,
   } = props;
+
+  console.log("***props.market***:", market);
 
   const viewMarket = (market) => {
     history.push({
       pathname: `/admin/collections/markets/${market.id}`,
       state: market,
     });
-  }
+  };
 
   return (
     <Box
-      borderColor={'gray.600'}
+      borderColor={"gray.600"}
       borderRadius={8}
-      borderStyle={'solid'}
+      borderStyle={"solid"}
       borderWidth={2}
       maxWidth={348}
     >
-      <Box backgroundColor={open ? 'green.600' : 'gray.700'} padding={4}>
-        <HStack align={'flex-start'}>
+      <Box backgroundColor={open ? "green.600" : "gray.700"} padding={4}>
+        <HStack align={"flex-start"}>
           <MarketIcon
             sx={{
-              fill: '#fff',
+              fill: "#fff",
               height: "24px",
               width: "24px",
               "& path": {
-                stroke: 'gray.700',
-              }
+                stroke: "gray.700",
+              },
             }}
           />
-          <Stack color={'#fff'} spacing={2}>
-            <Text fontSize={28} textStyle={'h3'}>
+          <Stack color={"#fff"} spacing={2}>
+            <Text fontSize={28} textStyle={"h3"}>
               {market.name}
             </Text>
             <Text>
-              {market.address.street}{', '}{market.address.city}{', '}{market.address.state}{', '}{market.address.zipcode}
+              {market.address.street}
+              {", "}
+              {market.address.city}
+              {", "}
+              {market.address.state}
+              {", "}
+              {market.address.zipcode}
             </Text>
           </Stack>
         </HStack>
       </Box>
       <Box margin={4}>
         <Stack marginTop={4} spacing={4}>
-          {market.days && market.days.length ? (
-            <Text fontSize={18} fontWeight={500} sx={{ textTransform: 'capitalize' }}>
-              {market.days.map((day, index) => {
-                if (index == market.days.length - 1) {
-                  return day;
-                } else {
-                  return `${day}, `;
-                }
-              })}
-              {' '}
-              {market.seasons && market.seasons.length && market.seasons[0].marketTime ? (
-                <>
-                  {formatTime(market.seasons[0].marketTime.startTime)}-{formatTime(market.seasons[0].marketTime.endTime)}
-                </>
-              ) : null}
-            </Text>
-          ) : null}
+          {market.days && market.days.length
+            ? (
+              <Text
+                fontSize={18}
+                fontWeight={500}
+                sx={{ textTransform: "capitalize" }}
+              >
+                {market.days.map((day, index) => {
+                  if (index == market.days.length - 1) {
+                    return day;
+                  } else {
+                    return `${day}, `;
+                  }
+                })} {market.seasons && market.seasons.length &&
+                    market.seasons[0].marketTime.startTime &&
+                    market.seasons[0].marketTime.endTime
+                  ? (
+                    <>
+                      {formatTime(
+                        market.seasons[0].marketTime.startTime,
+                      )}-{formatTime(market.seasons[0].marketTime.endTime)}
+                    </>
+                  )
+                  : null}
+              </Text>
+            )
+            : null}
           <Text>
             {market.description}
           </Text>
-          <Divider color='green.600' borderBottomWidth={2} opacity={1} />
+          <Divider color="green.600" borderBottomWidth={2} opacity={1} />
         </Stack>
         <Stack marginTop={4} fontSize={18}>
-          {market.seasons && market.seasons.length && market.seasons[0].marketDates ? (
-            <>
+          {market.seasons && market.seasons.length &&
+              market.seasons[0].marketDates
+            ? (
+              <>
+                <HStack>
+                  <CalendarIcon
+                    sx={{
+                      fill: "#fff",
+                      height: "24px",
+                      width: "24px",
+                      "& path": {
+                        stroke: "green.600",
+                      },
+                    }}
+                  />
+                  <Text fontWeight={500}>
+                    Opens:
+                  </Text>
+                  <Text>
+                    {market.seasons[0].marketDates.startDate
+                      ? formatDate(market.seasons[0].marketDates.startDate)
+                      : "No opening date set"}
+                  </Text>
+                </HStack>
+                <HStack marginLeft={8}>
+                  <Text fontWeight={500}>
+                    Closes:
+                  </Text>
+                  <Text>
+                    {market.seasons[0].marketDates.endDate
+                      ? formatDate(market.seasons[0].marketDates.endDate)
+                      : "No closing date set"}
+                  </Text>
+                </HStack>
+              </>
+            )
+            : null}
+          {market.contact
+            ? (
               <HStack>
-                <CalendarIcon
+                <ProfileIcon
                   sx={{
-                    fill: '#fff',
+                    fill: "#fff",
                     height: "24px",
                     width: "24px",
                     "& path": {
-                      stroke: 'green.600',
-                    }
+                      stroke: "green.600",
+                    },
                   }}
                 />
                 <Text fontWeight={500}>
-                  Opens:
+                  Manager:
                 </Text>
                 <Text>
-                  {formatDate(market.seasons[0].marketDates.startDate)}
+                  {market.contact.name} {market.contact.phone}
                 </Text>
               </HStack>
-              <HStack marginLeft={8}>
-                <Text fontWeight={500}>
-                  Closes:
-                </Text>
-                <Text>
-                  {formatDate(market.seasons[0].marketDates.endDate)}
-                </Text>
-              </HStack>
-            </>
-          ) : null}
-          {market.contact ? (
-            <HStack>
-              <ProfileIcon
-                sx={{
-                  fill: '#fff',
-                  height: "24px",
-                  width: "24px",
-                  "& path": {
-                    stroke: 'green.600',
-                  }
-                }}
-              />
-              <Text fontWeight={500}>
-                Manager:
-              </Text>
-              <Text>
-                {market.contact.name}{' '}{market.contact.phone}
-              </Text>
-            </HStack>
-          ) : null}
+            )
+            : null}
         </Stack>
       </Box>
-      {market.seasons && market.seasons.length && market.seasons[0].isAccepting == true ? (
-        <Box margin={4}>
-          <Center>
-            <Text as={'div'} textStyle={'h4'}>
-              Market needs:
-            </Text>
-          </Center>
-          <Center>
-            <HStack align={'center'} justify={'center'} wrap={'wrap'} maxWidth={212}>
-              {marketNeeds && marketNeeds.length ? marketNeeds.map(need => (
-                <Tag
-                  key={need}
-                  colorScheme='green'
-                  fontWeight={500}
-                  textTransform={'capitalize'}
-                  variant={'solid'}
-                >
-                  {need}
-                </Tag>
-              )) : 'none'}
-            </HStack>
-          </Center>
-        </Box>
-      ) : null}
+      {market.seasons && market.seasons.length &&
+          market.seasons[0].isAccepting == true
+        ? (
+          <Box margin={4}>
+            <Center>
+              <Text as={"div"} textStyle={"h4"}>
+                Market needs:
+              </Text>
+            </Center>
+            <Center>
+              <HStack
+                align={"center"}
+                justify={"center"}
+                wrap={"wrap"}
+                maxWidth={212}
+              >
+                {marketNeeds && marketNeeds.length
+                  ? marketNeeds.map((need) => (
+                    <Tag
+                      key={need}
+                      colorScheme="green"
+                      fontWeight={500}
+                      textTransform={"capitalize"}
+                      variant={"solid"}
+                    >
+                      {need}
+                    </Tag>
+                  ))
+                  : "none"}
+              </HStack>
+            </Center>
+          </Box>
+        )
+        : null}
       <Box margin={4}>
-        <Divider color='green.600' borderBottomWidth={2} opacity={1} marginBottom={8} />
+        <Divider
+          color="green.600"
+          borderBottomWidth={2}
+          opacity={1}
+          marginBottom={8}
+        />
         <Center>
-          <Text textStyle={'h4'}>
-            {market.seasons && market.seasons.length && market.seasons[0].isAccepting == true ? '' : 'Not '}Accepting applications
+          <Text textStyle={"h4"}>
+            {market.seasons && market.seasons.length &&
+                market.seasons[0].isAccepting == true
+              ? ""
+              : "Not "}Accepting applications
           </Text>
         </Center>
-        {market.seasons && market.seasons.length && market.seasons[0].isAccepting == true ? (
-          <Center marginBottom={2}>
-            <Link href='/markets/apply'>
-              <Button rightIcon={<ArrowForwardIcon />} variant={'solid'}>
-                Apply
-              </Button>
-            </Link>
-          </Center>
-        ) : null}
-      <Center>
-          <Button rightIcon={<ArrowForwardIcon />} onClick={e => { e.preventDefault; viewMarket(market)}}>
+        {market.seasons && market.seasons.length &&
+            market.seasons[0].isAccepting == true
+          ? (
+            <Center marginBottom={2}>
+              <Link href="/markets/apply">
+                <Button rightIcon={<ArrowForwardIcon />} variant={"solid"}>
+                  Apply
+                </Button>
+              </Link>
+            </Center>
+          )
+          : null}
+        <Center>
+          <Button
+            rightIcon={<ArrowForwardIcon />}
+            onClick={(e) => {
+              e.preventDefault;
+              viewMarket(market);
+            }}
+          >
             View market
           </Button>
-      </Center>
+        </Center>
       </Box>
     </Box>
-  )
-}
+  );
+};
 
-export default MarketCard
+export default MarketCard;
