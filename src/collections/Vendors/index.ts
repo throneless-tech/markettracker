@@ -1,6 +1,7 @@
 import { CollectionConfig } from "payload/types";
 import CustomVendorsEdit from "../../components/Vendors/CustomVendorsEdit";
 import CustomVendorsList from "../../components/Vendors/CustomVendorsList";
+import { beforeReadHook } from "./hooks/beforeReadHook";
 import { createFieldContacts } from "./hooks/createFieldContacts";
 
 export const Vendors: CollectionConfig = {
@@ -13,6 +14,9 @@ export const Vendors: CollectionConfig = {
       },
     },
     useAsTitle: "name",
+  },
+  hooks: {
+    beforeRead: [beforeReadHook],
   },
   fields: [
     {

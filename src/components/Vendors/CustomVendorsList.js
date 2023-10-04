@@ -2,8 +2,6 @@
 
 import React, { useEffect } from 'react'
 
-import { List } from "payload/components/views/List"; // Payload's default List view component and its props
-
 import {
   Box,
   Button,
@@ -41,6 +39,8 @@ import { RedXIcon } from '../../assets/icons/red-x';
 
 function CustomVendorsList(props) {
   const { data } = props;
+
+  console.log(props);
 
   useEffect(() => { }, [data])
 

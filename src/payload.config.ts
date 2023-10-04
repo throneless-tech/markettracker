@@ -30,6 +30,9 @@ import CustomProvider from "./styles/themeProvider";
 import CustomNav from "./components/CustomNav";
 import Register from "./components/Register";
 
+// custom queries
+import{ myCustomQueryResolver } from './graphQL/resolvers/myCustomQueryResolver';
+
 // icons
 import CustomIcon from "./assets/icons/logo";
 
@@ -112,7 +115,30 @@ export default buildConfig({
   typescript: {
     outputFile: path.resolve(__dirname, "payload-types.ts"),
   },
-  graphQL: {
-    schemaOutputFile: path.resolve(__dirname, "generated-schema.graphql"),
-  },
+  // graphQL: {
+  //   schemaOutputFile: path.resolve(__dirname, "generated-schema.graphql"),
+  //   queries: (GraphQL, payload) => {
+  //     return {
+  //       MyCustomQuery: {
+  //         type: new GraphQL.GraphQLObjectType({
+  //           name: 'MyCustomQuery',
+  //           fields: {
+  //             text: {
+  //               type: GraphQL.GraphQLString,
+  //             },
+  //             someNumberField: {
+  //               type: GraphQL.GraphQLFloat,
+  //             },
+  //           },
+  //         }),
+  //         args: {
+  //           argNameHere: {
+  //             type: new GraphQL.GraphQLNonNull(GraphQLString),
+  //           }
+  //         },
+  //         resolve: myCustomQueryResolver,
+  //       }
+  //     }
+  //   }
+  // },
 });
