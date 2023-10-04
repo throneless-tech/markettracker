@@ -52,6 +52,7 @@ import {
 
 // components
 import Calendar from "../Calendar.js";
+import CustomDefaultEditView from "../CustomDefaultEditView";
 import Form from "../Form";
 
 // utils
@@ -306,7 +307,7 @@ function CustomMarketsEdit(props, { path }) {
                         <Modal isOpen={isOpen} onClose={onClose} size={"full"}>
                           <ModalOverlay />
                           <ModalContent>
-                            <Form {...props}>
+                            <CustomDefaultEditView {...props}>
                               <ModalHeader>
                                 <Heading
                                   as="h2"
@@ -606,7 +607,7 @@ function CustomMarketsEdit(props, { path }) {
                                   Save
                                 </Button>
                               </ModalFooter>
-                            </Form>
+                            </CustomDefaultEditView>
                           </ModalContent>
                         </Modal>
                       </>

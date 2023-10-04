@@ -10,7 +10,7 @@ import { useAllFormFields, reduceFieldsToValues, getSiblingData } from 'payload/
 import { useDocumentInfo } from 'payload/components/utilities';
 
 function CustomForm(props, { path }) {
-  const { submit } = useForm();
+  const formContext = useForm();
   const { user, refreshCookieAsync } = useAuth();
   const { value, setValue } = useField<string>({ path });
   const [startDate, setStartDate] = useState(new Date());
@@ -35,7 +35,7 @@ function CustomForm(props, { path }) {
     updatedAt,
   } = props;
 
-  console.log('doc info: ', publishedDoc);
+  console.log('doc info: ', formContext);
   
 
   const {

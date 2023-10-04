@@ -47,19 +47,39 @@ p {
     .field-type.password {
       position: relative;
 
-      // &:active,
-      // &:focus {
-      //   label {
-      //     border-width: 0 !important;
-      //     clip: rect(1px, 1px, 1px, 1px) !important;
-      //     height: 1px !important;
-      //     overflow: hidden !important;
-      //     padding: 0 !important;
-      //     position: absolute !important;
-      //     white-space: nowrap !important;
-      //     width: 1px !important;
-      //   }
-      // }
+      &:active,
+      &:focus {
+        label {
+          border-width: 0 !important;
+          clip: rect(1px, 1px, 1px, 1px) !important;
+          height: 1px !important;
+          overflow: hidden !important;
+          padding: 0 !important;
+          position: absolute !important;
+          white-space: nowrap !important;
+          width: 1px !important;
+        }
+      }
+    }
+
+    .field-type.email input:active,
+    .field-type.email input:focus,
+    .field-type.email input:active ~ label,
+    .field-type.email input:focus ~ label {
+      border-width: unset;
+      clip: unset;
+      height: 61px;
+      overflow: unset;
+      padding: unset;
+      padding-left: 24px;
+      position: unset;
+      white-space: unset;
+      width: 404px;
+    }
+
+    .parent a:hover,
+    .parent a:hover~a {
+      color: blue;
     }
 
     .field-type.email label,
