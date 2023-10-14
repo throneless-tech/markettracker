@@ -30,11 +30,18 @@ const MarketCard = (props) => {
     marketNeeds,
   } = props;
 
-  console.log("***props.market***:", market);
+  // console.log("***props.market***:", market);
 
   const viewMarket = (market) => {
     history.push({
       pathname: `/admin/collections/markets/${market.id}`,
+      state: market,
+    });
+  };
+
+  const applyToMarket = (market) => {
+    history.push({
+      pathname: `/admin/collections/markets/${market.id}/apply`,
       state: market,
     });
   };
@@ -91,8 +98,8 @@ const MarketCard = (props) => {
                     return `${day}, `;
                   }
                 })} {market.seasons && market.seasons.length &&
-                    market.seasons[0].marketTime.startTime &&
-                    market.seasons[0].marketTime.endTime
+                  market.seasons[0].marketTime.startTime &&
+                  market.seasons[0].marketTime.endTime
                   ? (
                     <>
                       {formatTime(
@@ -111,7 +118,7 @@ const MarketCard = (props) => {
         </Stack>
         <Stack marginTop={4} fontSize={18}>
           {market.seasons && market.seasons.length &&
-              market.seasons[0].marketDates
+            market.seasons[0].marketDates
             ? (
               <>
                 <HStack>
@@ -172,7 +179,7 @@ const MarketCard = (props) => {
         </Stack>
       </Box>
       {market.seasons && market.seasons.length &&
-          market.seasons[0].isAccepting == true
+        market.seasons[0].isAccepting == true
         ? (
           <Box margin={4}>
             <Center>
@@ -215,20 +222,25 @@ const MarketCard = (props) => {
         <Center>
           <Text textStyle={"h4"}>
             {market.seasons && market.seasons.length &&
-                market.seasons[0].isAccepting == true
+              market.seasons[0].isAccepting == true
               ? ""
               : "Not "}Accepting applications
           </Text>
         </Center>
         {market.seasons && market.seasons.length &&
-            market.seasons[0].isAccepting == true
+          market.seasons[0].isAccepting == true
           ? (
             <Center marginBottom={2}>
-              <Link href="/markets/apply">
-                <Button rightIcon={<ArrowForwardIcon />} variant={"solid"}>
-                  Apply
-                </Button>
-              </Link>
+              <Button
+                rightIcon={<ArrowForwardIcon />}
+                variant={"solid"}
+                onClick={(e) => {
+                  e.preventDefault;
+                  applyToMarket(market);
+                }}
+              >
+                Apply
+              </Button>
             </Center>
           )
           : null}

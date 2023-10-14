@@ -22,6 +22,7 @@ import { Vendors } from "./collections/Vendors";
 import CustomAccount from "./components/CustomAccount";
 import CustomAfterLogin from "./components/CustomAfterLogin";
 import CustomApplications from "./components/CustomApplications";
+import CustomApply from "./components/CustomApply";
 import CustomBeforeLogin from "./components/CustomBeforeLogin";
 import CustomDashboard from "./components/CustomDashboard";
 import CustomLogo from "./components/CustomLogo";
@@ -29,9 +30,6 @@ import CustomLogoutButton from "./components/CustomLogoutButton";
 import CustomProvider from "./styles/themeProvider";
 import CustomNav from "./components/CustomNav";
 import Register from "./components/Register";
-
-// custom queries
-import{ myCustomQueryResolver } from './graphQL/resolvers/myCustomQueryResolver';
 
 // icons
 import CustomIcon from "./assets/icons/logo";
@@ -63,7 +61,11 @@ export default buildConfig({
       routes: [
         {
           Component: CustomApplications,
-          path: '/markets/applications/:id'
+          path: '/collections/markets/applications/:id'
+        },
+        {
+          Component: CustomApply,
+          path: '/collections/markets/:id/apply'
         },
         // {
         //   Component: Register,
@@ -115,30 +117,4 @@ export default buildConfig({
   typescript: {
     outputFile: path.resolve(__dirname, "payload-types.ts"),
   },
-  // graphQL: {
-  //   schemaOutputFile: path.resolve(__dirname, "generated-schema.graphql"),
-  //   queries: (GraphQL, payload) => {
-  //     return {
-  //       MyCustomQuery: {
-  //         type: new GraphQL.GraphQLObjectType({
-  //           name: 'MyCustomQuery',
-  //           fields: {
-  //             text: {
-  //               type: GraphQL.GraphQLString,
-  //             },
-  //             someNumberField: {
-  //               type: GraphQL.GraphQLFloat,
-  //             },
-  //           },
-  //         }),
-  //         args: {
-  //           argNameHere: {
-  //             type: new GraphQL.GraphQLNonNull(GraphQLString),
-  //           }
-  //         },
-  //         resolve: myCustomQueryResolver,
-  //       }
-  //     }
-  //   }
-  // },
 });

@@ -46,7 +46,7 @@ function CustomMarketsList(props) {
     const getMarkets = async () => {
       const response = await fetch("/api/markets?depth=2");
       const theseMarkets = await response.json();
-      console.log("***theseMarkets***:", theseMarkets);
+      // console.log("***theseMarkets***:", theseMarkets);
       setMarkets(theseMarkets);
       console.log(theseMarkets);
     };
@@ -105,7 +105,7 @@ function CustomMarketsList(props) {
                     <HStack flexGrow={1} spacing={4} justify={"flex-end"}>
                       <Button
                         as="a"
-                        href="#FIXME/admin/collections/markets/review"
+                        href="/admin/collections/applications"
                       >
                         Review market applications
                       </Button>
@@ -209,7 +209,7 @@ function CustomMarketsList(props) {
                           <Button
                             variant={"outline"}
                             as="a"
-                            href={`/admin/markets/applications/${market.id}`}
+                            href={`/admin/collections/markets/applications/${market.id}`}
                           >
                             View applications
                           </Button>
