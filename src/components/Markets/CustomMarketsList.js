@@ -48,7 +48,6 @@ function CustomMarketsList(props) {
       const theseMarkets = await response.json();
       // console.log("***theseMarkets***:", theseMarkets);
       setMarkets(theseMarkets);
-      console.log(theseMarkets);
     };
 
     getMarkets();

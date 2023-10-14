@@ -30,7 +30,7 @@ const MarketCard = (props) => {
     marketNeeds,
   } = props;
 
-  // console.log("***props.market***:", market);
+  console.log("***props.market***:", market);
 
   const viewMarket = (market) => {
     history.push({
@@ -54,7 +54,7 @@ const MarketCard = (props) => {
       borderWidth={2}
       maxWidth={348}
     >
-      <Box backgroundColor={open ? "green.600" : "gray.700"} padding={4}>
+      <Box backgroundColor={market.seasons && market.seasons[0].isAccepting ? "green.600" : "gray.700"} padding={4}>
         <HStack align={"flex-start"}>
           <MarketIcon
             sx={{

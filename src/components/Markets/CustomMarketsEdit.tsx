@@ -276,7 +276,11 @@ function CustomMarketsEdit(props, { path }) {
                           >
                             Market needs:
                           </Text>
-                          <Tag bg={"gray.50"} fontWeight={700}>Meat</Tag>
+                          {data.seasons[0].needs ? data.seasons[0].needs.map(need => (
+                            <Tag bg={"gray.50"} fontWeight={700}>{need}</Tag>
+                          )) : (
+                            <Tag bg={"gray.50"} fontWeight={700}>TBA</Tag>
+                          )}
                         </HStack>
                       </Box>
                     </Box>
@@ -720,7 +724,7 @@ function CustomMarketsEdit(props, { path }) {
                       />
                     </HStack>
                     <Text color={"gray.600"} marginTop={4} fontSize={"md"}>
-                      Dates [market name] is open this season
+                      Dates {data.name} is open this season
                     </Text>
                     <Wrap marginTop={4} spacing={3}>
 
