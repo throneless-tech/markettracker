@@ -246,20 +246,15 @@ function CustomMarketsEdit(props, { path }) {
                               Manager:
                             </Text>
                             <Text textStyle="bodyMain" as={"span"} color={"gray.50"} fontSize="2xl">
-                              Manager name
+                              {data.contact.name}
                             </Text>
                             <Text textStyle="bodyMain" as={"span"} color={"gray.50"} fontSize="2xl">
-                              202-123-4567
+                              {data.contact.phone}
                             </Text>
                           </HStack>
                         </Flex>
                         <Text textStyle="bodyMain" marginTop={4} fontSize={"xl"}>
-                          In a vibrant community gathering space, in one of DC's
-                          most diverse neighborhoods, a powerhouse boasting a
-                          bountiful roster of vendors. With products ranging
-                          from fresh produce, to authentic Mexican food prepared
-                          with locally grown ingredients, this market's
-                          offerings are as dynamic as the neighborhood itself.
+                          {data.description}
                         </Text>
                       </Box>
                       <Box

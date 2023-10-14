@@ -1,15 +1,16 @@
 import React from 'react'
-import { Flex, Stack, Text, Tag } from '@chakra-ui/react'
+import { HStack, Text, Tag } from '@chakra-ui/react'
 
 const Standing = (props) => {
   const { user } = props;
+  console.log(user);
   return (
-    <Flex
+    <HStack
       padding={6}
       direction="row"
-      justify="flex-start"
+      justify="space-between"
       align="flex-start"
-      spacing="24px"
+      spacing={8}
       background="#EFF6F5"
       borderColor="#60A29B"
       borderStartWidth="2px"
@@ -27,12 +28,12 @@ const Standing = (props) => {
         flex="1"
         marginBottom={0}
       >
-        {user.name ? user.name : user.email} is in {user.standing} standing. Vendor standing is based on market attendance, sales report submissions, invoice payments, instances of rule violations, and site visit completion.
+        {user.name ? user.name : user.email} is in {user.vendor ? user.vendor.standing : 'good'} standing. Vendor standing is based on market attendance, sales report submissions, invoice payments, instances of rule violations, and site visit completion.
       </Text>
-      <Tag variant='solid' colorScheme='teal'>
+      <Tag variant='solid' colorScheme='teal' marginTop={2}>
         Good
       </Tag>
-    </Flex>
+    </HStack>
 )
 }
 

@@ -58,7 +58,6 @@ import FooterAdmin from './FooterAdmin';
 import formatTime from '../utils/formatTime.js'
 
 // icons
-import EditIcon from '../assets/icons/edit.js'
 import StarIcon from '../assets/icons/star.js'
 
 // images
@@ -93,10 +92,11 @@ function CustomApply(props) {
   };
 
   const updateSelectedDates = (date) => {
-    console.log(date);
     let datesArray = selectedDates;
 
-    if (datesArray.includes(date.getDate())) {
+    let dateFound = !!datesArray.find(item => { return item.getTime() == date.getTime() });
+
+    if (dateFound) {
       return;
     } else {
       datesArray = [date, ...selectedDates];

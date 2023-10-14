@@ -22,6 +22,8 @@ import { ArrowForwardIcon } from "@chakra-ui/icons";
 import { CalendarIcon } from "../../assets/icons/calendar";
 import { MarketIcon } from "../../assets/icons/market";
 import { ProfileIcon } from "../../assets/icons/profile";
+import StarIcon from '../../assets/icons/star.js'
+
 
 const MarketCard = (props) => {
   const history = useHistory();
@@ -53,7 +55,19 @@ const MarketCard = (props) => {
       borderStyle={"solid"}
       borderWidth={2}
       maxWidth={348}
+      sx={{position: "relative"}}
     >
+      {market.seasons && market.seasons[0].isAccepting ? (
+        <Box
+          sx={{
+            position: "absolute",
+            right: "-10px",
+            top: "-10px"
+          }}
+        >
+          <StarIcon height={8} width={8} />
+        </Box>
+      ) : null}
       <Box backgroundColor={market.seasons && market.seasons[0].isAccepting ? "green.600" : "gray.700"} padding={4}>
         <HStack align={"flex-start"}>
           <MarketIcon
