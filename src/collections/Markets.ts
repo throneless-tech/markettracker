@@ -1,13 +1,14 @@
 import { CollectionConfig } from "payload/types";
 import CustomMarketsEdit from "../components/Markets/CustomMarketsEdit";
 import CustomMarketsList from "../components/Markets/CustomMarketsList";
+import { withFormContext } from "../utils/withFormContext";
 
 export const Markets: CollectionConfig = {
   slug: "markets",
   admin: {
     components: {
       views: {
-        Edit: CustomMarketsEdit,
+        Edit: withFormContext(CustomMarketsEdit),
         List: CustomMarketsList,
       },
     },

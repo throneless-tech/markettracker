@@ -1,4 +1,7 @@
 import { CollectionConfig } from "payload/types";
+//import { withFormContext } from "../utils/withFormContext";
+//import { UsersEdit } from "../components/Users/Edit";
+import { TextField } from "../components/TextField";
 
 const roles = [
   {
@@ -23,6 +26,11 @@ export const Users: CollectionConfig = {
   slug: "users",
   admin: {
     useAsTitle: "name",
+    // components: {
+    //   views: {
+    //     Edit: withFormContext(UsersEdit),
+    //   },
+    // },
   },
   auth: true,
   fields: [
@@ -30,6 +38,11 @@ export const Users: CollectionConfig = {
       name: "name",
       type: "text",
       //required: true,
+      admin: {
+        components: {
+          Field: TextField,
+        },
+      },
     },
     {
       name: "role",
