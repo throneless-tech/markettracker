@@ -10,17 +10,17 @@ import {
 type Props = {
   label: string;
   path: string;
-  required: boolean;
-  admin: {
-    description: string;
-    placeholder: string;
+  required?: boolean;
+  admin?: {
+    description?: string;
+    placeholder?: string;
   };
 };
 
 export const TextField: FC<Props> = (
-  { label, path, required, admin: { description, placeholder } },
+  { label, path, required, admin: { description, placeholder } = {} },
 ) => {
-  const { value, setValue } = useField<Props>({ path });
+  const { value, setValue } = useField<string>({ path });
 
   return (
     <FormControl>
@@ -28,7 +28,7 @@ export const TextField: FC<Props> = (
       {description ? <FormHelperText>{description}</FormHelperText> : ""}
       <Input
         placeholder={placeholder}
-        // value={value}
+        value={value}
         onChange={(e) => setValue(e.target.value)}
       />
     </FormControl>
