@@ -325,8 +325,8 @@ function CustomMarketsEdit(props, { path }) {
                           >
                             Market needs:
                           </Text>
-                          {seasons && seasons[0].needs
-                            ? seasons[0].needs.map((need) => (
+                          {seasons && seasons[0].productGaps
+                            ? seasons[0].productGaps.map((need) => (
                               <Tag bg={"gray.50"} fontWeight={700}>{need}</Tag>
                             ))
                             : <Tag bg={"gray.50"} fontWeight={700}>TBA</Tag>}
@@ -649,18 +649,15 @@ function CustomMarketsEdit(props, { path }) {
                                     onChange={(newValue) =>
                                       setSeasons([{
                                         ...seasons[0],
-                                        isAccepting: newValue,
+                                        isAccepting: newValue === 'true',
                                       }])}
-                                    value={typeof seasons[0].isAccepting ===
-                                        "boolean"
-                                      ? seasons[0].isAccepting.toString()
-                                      : "false"}
+                                    value={seasons[0].isAccepting.toString()}
                                   >
                                     <HStack marginRight={2}>
-                                      <Radio colorScheme="green" value="yes">
+                                      <Radio colorScheme="green" value="true">
                                         Yes
                                       </Radio>
-                                      <Radio colorScheme="green" value="no">
+                                      <Radio colorScheme="green" value="false">
                                         No
                                       </Radio>
                                     </HStack>

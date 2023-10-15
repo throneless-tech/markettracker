@@ -352,7 +352,7 @@ function CustomApplicationsEdit(props) {
               />
             </HStack>
             <HStack marginTop={2}>
-              <Tag bg={"gray.50"}>Vendor 1</Tag>
+              {/* <Tag bg={"gray.50"}>Vendor 1</Tag> */}
             </HStack>
             <HStack marginTop={4}>
               <Text
