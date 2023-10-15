@@ -1,6 +1,7 @@
 import { CollectionConfig } from "payload/types";
-import { withFormContext } from "../utils/withFormContext";
-import { UsersEdit } from "../components/Users/Edit";
+import { withFormContext } from "../../utils/withFormContext";
+import { UsersEdit } from "../../components/Users/Edit";
+import { afterReadVendor } from "./hooks/populateVendors";
 
 const roles = [
   {
@@ -54,4 +55,7 @@ export const Users: CollectionConfig = {
       },
     },
   ],
+  hooks: {
+    afterRead: [afterReadVendor],
+  },
 };
