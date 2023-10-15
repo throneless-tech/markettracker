@@ -1,7 +1,7 @@
 import { CollectionConfig } from "payload/types";
-import { withFormContext } from "../../utils/withFormContext";
-import { UsersEdit } from "../../components/Users/Edit";
-import { afterReadVendor } from "./hooks/populateVendors";
+//import { withFormContext } from "../../utils/withFormContext";
+//import { UsersEdit } from "../../components/Users/Edit";
+import { afterReadVendor, beforeValidateVendor } from "./hooks/populateVendor";
 
 const roles = [
   {
@@ -26,11 +26,11 @@ export const Users: CollectionConfig = {
   slug: "users",
   admin: {
     useAsTitle: "name",
-    components: {
-      views: {
-        Edit: withFormContext(UsersEdit),
-      },
-    },
+    // components: {
+    //   views: {
+    //     Edit: withFormContext(UsersEdit),
+    //   },
+    // },
   },
   auth: true,
   access: {
@@ -61,5 +61,6 @@ export const Users: CollectionConfig = {
   ],
   hooks: {
     afterRead: [afterReadVendor],
+    beforeValidate: [beforeValidateVendor],
   },
 };

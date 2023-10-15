@@ -30,7 +30,7 @@ import CustomNav from "./components/CustomNav";
 import Register from "./components/Register/Register";
 
 // utils
-import { withFormContext } from "./utils/withFormContext";
+import { withAccountContext } from "./utils/withAccountContext";
 
 // icons
 import CustomIcon from "./assets/icons/logo";
@@ -62,11 +62,11 @@ export default buildConfig({
       routes: [
         {
           Component: Register,
-          path: '/register'
-        }
+          path: "/register",
+        },
       ],
       views: {
-        Account: withFormContext(CustomAccount),
+        Account: withAccountContext(CustomAccount),
         Dashboard: CustomDashboard,
       },
     },
