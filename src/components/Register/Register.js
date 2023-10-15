@@ -13,7 +13,8 @@ import {
   Image,
   Link,
   Stack,
-  Text
+  Text,
+  others
 } from '@chakra-ui/react';
 
 // components + data
@@ -28,14 +29,55 @@ import background from '../../assets/images/login-background.jpg'
 
 const Register = () => {
   const [businessCheck, setBusinessCheck] = useState('none');
-  const [index, setIndex] = useState(0);
-  const [primaryContact, setPrimaryContact] = useState(true);
-  const [billingContact, setBillingContact] = useState(true);
+  const [index, setIndex] = useState(0);  
   const [vendor, setVendor] = useState(null);
   const [companyName, setCompanyName] = useState("");
   const [userName, setUserName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [primaryContact, setPrimaryContact] = useState(true);
+  const [billingContact, setBillingContact] = useState(true);
+  const [street, setStreet] = useState("");
+  const [city, setCity] = useState("");
+  const [state, setState] = useState("");
+  const [zipcode, setZipcode] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [description, setDescription] = useState("");
+  const [yearEstablished, setYearEstablished] = useState(null);
+  const [fullTime, setFullTime] = useState(null);
+  const [partTime, setPartTime] = useState(null);
+  const [interns, setInterns] = useState(null);
+  const [h2a, setH2a] = useState(null);
+  const [volunteers, setVolunteers] = useState(null);
+  const [type, setType] = useState("");
+  const [structure, setStructure] = useState("");
+  const [growingPractices, setGrowingPractices] = useState("");
+  const [sellingLocally, setSellingLocally] = useState("");
+  const [outletImportance, setOutletImportance] = useState("");
+  const [sharedKitchen, setSharedKitchen] = useState(null);
+  const [copacker, setCopacker] = useState(null);
+  const [contacts, setContacts] = useState(null);
+  const [licenses, setLicenses] = useState([]);
+  const [insurance, setInsurance] = useState([]);
+  const [firstGeneration, setFirstGeneration] = useState("");
+  const [veteranOwned, setVeteranOwned] = useState("");
+  const [bipoc, setBipoc] = useState("");
+  const [immigrantOrRefugee, setImmigrantOrRefugee] = useState("");
+  const [lgbtqia, setLgbtqia] = useState("");
+  const [otherDemographics, setOtherDemographics] = useState("");
+  const [website, setWebsite] = useState("");
+  const [instagram, setInstagram] = useState("");
+  const [facebook, setFacebook] = useState("");
+  const [store, setStore] = useState("");
+  const [otherSocial, setOtherSocial] = useState("");
+  const [pictures, setPictures] = useState(null);
+  const [tent, setTent] = useState("");
+  const [generator, setGenerator] = useState("");
+  const [vehicle, setVehicle] = useState("");
+  const [products, setProducts] = useState("");
+  const [outsideVendors, setOutsideVendors] = useState("");
+  const [freshfarmVendors, setFreshfarmVendors] = useState("");
+  
 
   function handleBackClick() {
     setIndex(index - 1);
@@ -79,12 +121,54 @@ const Register = () => {
 
   useEffect(() => { }, [
     index,
-     businessCheck,
-     companyName,
-     email,
-     password,
-     userName,
-     vendor
+    billingContact,
+    bipoc,
+    businessCheck,
+    city,
+    companyName,
+    contacts,
+    copacker,
+    description,
+    email,
+    facebook,
+    firstGeneration,
+    freshfarmVendors,
+    fullTime,
+    generator,
+    growingPractices,
+    h2a,
+    immigrantOrRefugee,
+    instagram,
+    insurance,
+    interns,
+    lgbtqia,
+    licenses,
+    otherDemographics,
+    otherSocial,
+    outletImportance,
+    outsideVendors,
+    partTime,
+    password,
+    phoneNumber,
+    pictures,
+    primaryContact,
+    products,
+    sellingLocally,
+    sharedKitchen,
+    state,
+    store,
+    street,
+    structure,
+    tent,
+    type,
+    userName,
+    vehicle,
+    vendor,
+    veteranOwned,
+    volunteers,
+    website,
+    yearEstablished,
+    zipcode,
   ]);
 
   return (
@@ -126,20 +210,102 @@ const Register = () => {
           <CardBody>
             <Steps
               index={index}
-              businessCheck={businessCheck}
-              companyName={companyName}
-              userName={userName}
-              email={email}
-              password={password}
-              setBusinessCheck={setBusinessCheck}
-              setCompanyName={setCompanyName}
-              setUserName={setUserName}
-              setEmail={setEmail}
-              setPassword={setPassword}
-              primaryContact={primaryContact}
-              setPrimaryContact={setPrimaryContact}
               billingContact={billingContact}
+              bipoc={bipoc}
+              businessCheck={businessCheck}
+              city={city}
+              companyName={companyName}
+              contacts={contacts}
+              copacker={copacker}
+              description={description}
+              email={email}
+              facebook={facebook}
+              firstGeneration={firstGeneration}
+              freshfarmVendors={freshfarmVendors}
+              fullTime={fullTime}
+              generator={generator}
+              growingPractices={growingPractices}
+              h2a={h2a}
+              immigrantOrRefugee={immigrantOrRefugee}
+              instagram={instagram}
+              insurance={insurance}
+              interns={interns}
+              lgbtqia={lgbtqia}
+              licenses={licenses}
+              otherDemographics={otherDemographics}
+              otherSocial={otherSocial}
+              outletImportance={outletImportance}
+              outsideVendors={outsideVendors}
+              partTime={partTime}              
+              password={password}
+              phoneNumber={phoneNumber}
+              pictures={pictures}
+              primaryContact={primaryContact}
+              products={products}
+              sellingLocally={sellingLocally}
+              sharedKitchen={sharedKitchen}
+              state={state}
+              store={store}
+              street={street}
+              structure={structure}
+              tent={tent}
+              type={type}
+              userName={userName}
+              vehicle={vehicle}
+              vendor={vendor}
+              veteranOwned={veteranOwned}
+              volunteers={volunteers}
+              website={website}
+              yearEstablished={yearEstablished}
+              zipcode={zipcode}
               setBillingContact={setBillingContact}
+              setBipoc={setBipoc}
+              setBusinessCheck={setBusinessCheck}
+              setCity={setCity}
+              setCompanyName={setCompanyName}
+              setContacts={setContacts}
+              setCopacker={setCopacker}
+              setDescription={setDescription}
+              setEmail={setEmail}
+              setFacebook={setFacebook}
+              setFirstGeneration={setFirstGeneration}
+              setFreshfarmVendors={setFreshfarmVendors}
+              setFullTime={setFullTime}
+              setGenerator={setGenerator}
+              setGrowingPractices={setGrowingPractices}
+              setH2a={setH2a}
+              setImmigrantOrRefugee={setImmigrantOrRefugee}
+              setInstagram={setInstagram}
+              setInsurance={setInsurance}
+              setInterns={setInterns}
+              setLgbtqia={setLgbtqia}
+              setLicenses={setLicenses}
+              setOtherDemographics={setOtherDemographics}
+              setOtherSocial={setOtherSocial}
+              setOutletImportance={setOutletImportance}
+              setOutsideVendors={setOutsideVendors}
+              setPartTime={setPartTime}
+              setPassword={setPassword}
+              setPhoneNumber={setPhoneNumber}
+              setPictures={setPictures}
+              setPrimaryContact={setPrimaryContact}
+              setProducts={setProducts}
+              setSellingLocally={setSellingLocally}
+              setSharedKitchen={setSharedKitchen}
+              setState={setState}
+              setStore={setStore}
+              setStreet={setStreet}
+              setStructure={setStructure}
+              setTent={setTent}
+              setType={setType}
+              setUserName={setUserName}
+              setVehicle={setVehicle}
+              setVendor={setVendor}
+              setVeteranOwned={setVeteranOwned}
+              setVolunteers={setVolunteers}
+              setWebsite={setWebsite}
+              setYearEstablished={setYearEstablished}
+              setZipcode={setZipcode}
             />
             {index < 6 ? (
               <Center>

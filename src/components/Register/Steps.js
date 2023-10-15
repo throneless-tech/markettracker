@@ -29,7 +29,6 @@ import {
 import LogoMarketTracker from "../../assets/icons/logoMarketTracker.js"
 
 const Steps = (props) => {
-  console.log(props);
   const [show, setShow] = useState(false)
   const handleClick = () => setShow(!show)
 
@@ -160,8 +159,8 @@ const Steps = (props) => {
             </Text>
             <RadioGroup onChange={newValue => props.setBillingContact(newValue)}>
               <Stack>
-                <Radio value={true}>Yes</Radio>
-                <Radio value={false}>No</Radio>
+                <Radio value={"true"}>Yes</Radio>
+                <Radio value={"false"}>No</Radio>
               </Stack>
             </RadioGroup>
           </Stack>
@@ -308,7 +307,7 @@ const Steps = (props) => {
             </Text>
             <Select placeholder='Farm, Non Farm' flex={2} isRequired>
               <option value="farm">Farm</option>
-              <option value="nonFarm">Non Farm</option>
+              <option value="producer">Producer</option>
             </Select>
             <Text as='div' color='gray.500'>
               Select the category that describes the majority of what you sell
