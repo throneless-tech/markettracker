@@ -52,11 +52,10 @@ import {
 
 // components
 import Calendar from "../Calendar.js";
-import CustomDefaultEditView from "../CustomDefaultEditView";
-import Form from "../Form";
 
 // utils
 import formatTime from "../../utils/formatTime";
+import { withFormContext } from "../../utils/withFormContext.js";
 
 // icons
 import EditIcon from "../../assets/icons/edit.js";
@@ -65,24 +64,47 @@ import StarIcon from "../../assets/icons/star.js";
 function CustomMarketsEdit(props, { path }) {
   const { submit } = useForm();
   const { user } = useAuth();
-  const { id, publishedDoc } = useDocumentInfo();
+  const { id } = useDocumentInfo();
   const { data } = props;
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const { value, setValue } = useField<string>({ path });
   const [startDate, setStartDate] = useState(new Date());
   const [fields, dispatchFields] = useAllFormFields();
+  const { value: name, setValue: setName } = useField<string>({ path: "name" });
+  const { value: street, setValue: setStreet } = useField<string>({ path: "address.street" });
+  const { value: city, setValue: setCity } = useField<string>({ path: "address.city" });
+  const { value: state, setValue: setState } = useField<string>({ path: "address.state" });
+  const { value: zipcode, setValue: setZipcode } = useField<string>({ path: "address.zipcode" });
+  const { value: days, setValue: setDays } = useField<Array<string>>({ path: "days" });
+  const { value: size, setValue: setSize } = useField<string>({ path: "size" });
+  const { value: focus, setValue: setFocus } = useField<Array<string>>({ path: "focus" });
+  const { value: description, setValue: setDescription } = useField<string>({ path: "description" });
+  const { value: seasons, setValue: setSeasons } = useField<Array<string>>({ path: "seasons" });
 
-  console.log(fields);
-  
+  const submitForm = () => {
+    submit();
+  }
 
   // id will be undefined on the create form
   if (!id) {
     return null;
   }
 
-  useEffect(() => { }, [data, value]);
+  useEffect(() => { console.log(seasons);
+  },
+  [
+    data,
+    name,
+    street,
+    city,
+    state,
+    zipcode,
+    days,
+    size,
+    focus,
+    description
+  ]);
 
-  if (data) {
+  if (name) {
     return (
       <Box>
         <Tabs position="relative" variant="unstyled" colorScheme="teal">
@@ -128,7 +150,7 @@ function CustomMarketsEdit(props, { path }) {
                         color={"gray.700"}
                         textTransform={"uppercase"}
                       >
-                        {data.name}
+                        {name}
                       </Heading>
                       {user.role == "vendor" ? null : (
                         <>
@@ -165,7 +187,7 @@ function CustomMarketsEdit(props, { path }) {
                               textStyle="bodyMain"
                               textTransform={"uppercase"}
                             >
-                              {data.name}
+                              {name}
                             </Text>
                             <Text
                               as={"span"}
@@ -225,13 +247,13 @@ function CustomMarketsEdit(props, { path }) {
                               )
                               : null}
                             <Text textStyle="bodyMain" as={"span"} color={"gray.50"} fontSize="2xl">
-                              {data.address.street}
+                              {street}
                               {", "}
-                              {data.address.city}
+                              {city}
                               {", "}
-                              {data.address.state}
+                              {state}
                               {", "}
-                              {data.address.zipcode}
+                              {zipcode}
                             </Text>
                           </HStack>
                           <Spacer />
@@ -246,15 +268,15 @@ function CustomMarketsEdit(props, { path }) {
                               Manager:
                             </Text>
                             <Text textStyle="bodyMain" as={"span"} color={"gray.50"} fontSize="2xl">
-                              {data.contact.name}
+                              {data.contact ? data.contact.name : ""}
                             </Text>
                             <Text textStyle="bodyMain" as={"span"} color={"gray.50"} fontSize="2xl">
-                              {data.contact.phone}
-                            </Text>
+                              {data.contact ? data.contact.phone : ""}
+                             </Text>
                           </HStack>
                         </Flex>
                         <Text textStyle="bodyMain" marginTop={4} fontSize={"xl"}>
-                          {data.description}
+                          {description}
                         </Text>
                       </Box>
                       <Box
@@ -271,7 +293,7 @@ function CustomMarketsEdit(props, { path }) {
                           >
                             Market needs:
                           </Text>
-                          {data.seasons[0].needs ? data.seasons[0].needs.map(need => (
+                          {data.seasons && data.seasons[0].needs ? data.seasons[0].needs.map(need => (
                             <Tag bg={"gray.50"} fontWeight={700}>{need}</Tag>
                           )) : (
                             <Tag bg={"gray.50"} fontWeight={700}>TBA</Tag>
@@ -306,307 +328,331 @@ function CustomMarketsEdit(props, { path }) {
                         <Modal isOpen={isOpen} onClose={onClose} size={"full"}>
                           <ModalOverlay />
                           <ModalContent>
-                            <CustomDefaultEditView {...props}>
-                              <ModalHeader>
-                                <Heading
-                                  as="h2"
-                                  color={"gray.700"}
-                                  textTransform={"uppercase"}
-                                  marginBottom={2}
-                                >
-                                  Edit market information
-                                </Heading>
-                                <Divider
-                                  sx={{
-                                    borderColor: "gray.600",
-                                    borderBottomWidth: 2,
-                                  }}
-                                />
-                              </ModalHeader>
-                              <ModalCloseButton />
-                              <ModalBody>
-                                <Container maxW={"lg"}>
+                            <ModalHeader>
+                              <Heading
+                                as="h2"
+                                color={"gray.700"}
+                                textTransform={"uppercase"}
+                                marginBottom={2}
+                              >
+                                Edit market information
+                              </Heading>
+                              <Divider
+                                sx={{
+                                  borderColor: "gray.600",
+                                  borderBottomWidth: 2,
+                                }}
+                              />
+                            </ModalHeader>
+                            <ModalCloseButton />
+                            <ModalBody>
+                              <Container maxW={"lg"}>
+                                <FormControl>
+                                  <FormLabel>Market name (required)</FormLabel>
+                                  <Input
+                                    placeholder="Start typing..."
+                                    value={name}
+                                    onChange={(e) => setName(e.target.value)}
+                                  />
+                                </FormControl>
+                                <Stack spacing={2} marginTop={4}>
                                   <FormControl>
-                                    <FormLabel>Market name (required)</FormLabel>
+                                    <FormLabel
+                                      as="div"
+                                      textStyle="bodyMain"
+                                      fontWeight={500}
+                                    >
+                                      Market address (required)
+                                    </FormLabel>
                                     <Input
-                                      placeholder="Start typing..."
-                                      value={value}
-                                      onChange={(e) => setValue(e.target.value)}
+                                      placeholder="Street"
+                                      value={street}
+                                      onChange={(e) => setStreet(e.target.value)}
+                                      isRequired
                                     />
                                   </FormControl>
-                                  <Stack spacing={2} marginTop={4}>
-                                    <FormControl>
-                                      <FormLabel
-                                        as="div"
-                                        textStyle="bodyMain"
-                                        fontWeight={500}
-                                      >
-                                        Market address (required)
-                                      </FormLabel>
-                                      <Input placeholder="Street" isRequired />
-                                    </FormControl>
-                                    <Flex gap={2}>
-                                      <Input
-                                        placeholder="City"
-                                        flex={6}
-                                        isRequired
-                                      />
-                                      <Select
-                                        placeholder="State"
-                                        flex={2}
-                                        isRequired
-                                      >
-                                        <option value="AK">AK</option>
-                                        <option value="AL">AL</option>
-                                        <option value="AR">AR</option>
-                                        <option value="AZ">AZ</option>
-                                        <option value="CA">CA</option>
-                                        <option value="CO">CO</option>
-                                        <option value="CT">CT</option>
-                                        <option value="DC">DC</option>
-                                        <option value="DE">DE</option>
-                                        <option value="FL">FL</option>
-                                        <option value="GA">GA</option>
-                                        <option value="HI">HI</option>
-                                        <option value="IA">IA</option>
-                                        <option value="ID">ID</option>
-                                        <option value="IL">IL</option>
-                                        <option value="IN">IN</option>
-                                        <option value="KS">KS</option>
-                                        <option value="KY">KY</option>
-                                        <option value="LA">LA</option>
-                                        <option value="MA">MA</option>
-                                        <option value="MD">MD</option>
-                                        <option value="ME">ME</option>
-                                        <option value="MI">MI</option>
-                                        <option value="MN">MN</option>
-                                        <option value="MO">MO</option>
-                                        <option value="MS">MS</option>
-                                        <option value="MT">MT</option>
-                                        <option value="NC">NC</option>
-                                        <option value="ND">ND</option>
-                                        <option value="NE">NE</option>
-                                        <option value="NH">NH</option>
-                                        <option value="NJ">NJ</option>
-                                        <option value="NM">NM</option>
-                                        <option value="NV">NV</option>
-                                        <option value="NY">NY</option>
-                                        <option value="OH">OH</option>
-                                        <option value="OK">OK</option>
-                                        <option value="OR">OR</option>
-                                        <option value="PA">PA</option>
-                                        <option value="RI">RI</option>
-                                        <option value="SC">SC</option>
-                                        <option value="SD">SD</option>
-                                        <option value="TN">TN</option>
-                                        <option value="TX">TX</option>
-                                        <option value="UT">UT</option>
-                                        <option value="VA">VA</option>
-                                        <option value="VT">VT</option>
-                                        <option value="WA">WA</option>
-                                        <option value="WI">WI</option>
-                                        <option value="WV">WV</option>
-                                        <option value="WY">WY</option>
-                                      </Select>
-                                      <Input
-                                        placeholder="Zipcode"
-                                        flex={3}
-                                        type="number"
-                                        isRequired
-                                      />
-                                    </Flex>
-                                  </Stack>
-                                  <FormControl>
-                                    <FormLabel
-                                      as="div"
-                                      textStyle="bodyMain"
-                                      fontWeight={500}
+                                  <Flex gap={2}>
+                                    <Input
+                                      placeholder="City"
+                                      flex={6}
+                                      value={city}
+                                      onChange={(e) => setCity(e.target.value)}
+                                      isRequired
+                                    />
+                                    <Select
+                                      placeholder="State"
+                                      flex={2}
+                                      value={state}
+                                      onChange={(e) => setState(e.target.value)}
+                                      isRequired
                                     >
-                                      Market day (required)
-                                    </FormLabel>
-                                    <RadioGroup
-                                      onChange={(newValue) =>
-                                        props.setValue(newValue)}
-                                      value={props.value}
-                                    >
-                                      <HStack>
-                                        <Radio colorScheme="green" value="monday">Monday</Radio>
-                                        <Radio colorScheme="green" value="tuesday">Tuesday</Radio>
-                                        <Radio colorScheme="green" value="wednesday">Wednesday</Radio>
-                                        <Radio colorScheme="green" value="thursday">Thursday</Radio>
-                                        <Radio colorScheme="green" value="friday">Friday</Radio>
-                                        <Radio colorScheme="green" value="saturday">Sarturday</Radio>
-                                        <Radio colorScheme="green" value="sunday">Sunday</Radio>
-                                      </HStack>
-                                    </RadioGroup>
-                                  </FormControl>
-                                  <FormControl>
-                                    <FormLabel
-                                      as="div"
-                                      fontWeight={500}
-                                      textStyle="bodyMain"
-                                    >
-                                      Market size (required)
-                                    </FormLabel>
-                                    <RadioGroup
-                                      onChange={(newValue) =>
-                                        props.setValue(newValue)}
-                                      value={props.value}
-                                    >
-                                      <HStack>
-                                        <Radio colorScheme="green" value="flagship">Flagship</Radio>
-                                        <Radio colorScheme="green" value="large">Large</Radio>
-                                        <Radio colorScheme="green" value="medium">Medium</Radio>
-                                        <Radio colorScheme="green" value="small">Small</Radio>
-                                        <Radio colorScheme="green" value="stand">Farm stand</Radio>
-                                      </HStack>
-                                    </RadioGroup>
-                                  </FormControl>
-                                  <FormControl>
-                                    <FormLabel
-                                      as="div"
-                                      fontWeight={500}
-                                      textStyle="bodyMain"
-                                    >
-                                      Market focus (required)
-                                    </FormLabel>
-                                    <FormHelperText>
-                                      Check all that apply
-                                    </FormHelperText>
-                                    <CheckboxGroup colorScheme="green">
-                                      <HStack>
-                                        <Checkbox value="neighborhood">
-                                          Neighborhood
-                                        </Checkbox>
-                                        <Checkbox value="downtown">
-                                          Downtown
-                                        </Checkbox>
-                                        <Checkbox value="grocery">
-                                          Grocery shopping
-                                        </Checkbox>
-                                        <Checkbox value="prepared">
-                                          Prepared food shopping
-                                        </Checkbox>
-                                      </HStack>
-                                    </CheckboxGroup>
-                                  </FormControl>
-                                  <FormControl>
-                                    <FormLabel
-                                      as="div"
-                                      textStyle="bodyMain"
-                                      fontWeight={500}
-                                    >
-                                      Brief market description (required)
-                                    </FormLabel>
-                                    <FormHelperText>
-                                      Add a statement of explanation
-                                    </FormHelperText>
-                                    <Textarea placeholder="Start typing..." />
-                                  </FormControl>
-                                </Container>
-                                <Heading
-                                  as="h2"
-                                  color={"gray.700"}
-                                  textTransform={"uppercase"}
-                                  marginBottom={2}
-                                  marginTop={6}
+                                      <option value="AK">AK</option>
+                                      <option value="AL">AL</option>
+                                      <option value="AR">AR</option>
+                                      <option value="AZ">AZ</option>
+                                      <option value="CA">CA</option>
+                                      <option value="CO">CO</option>
+                                      <option value="CT">CT</option>
+                                      <option value="DC">DC</option>
+                                      <option value="DE">DE</option>
+                                      <option value="FL">FL</option>
+                                      <option value="GA">GA</option>
+                                      <option value="HI">HI</option>
+                                      <option value="IA">IA</option>
+                                      <option value="ID">ID</option>
+                                      <option value="IL">IL</option>
+                                      <option value="IN">IN</option>
+                                      <option value="KS">KS</option>
+                                      <option value="KY">KY</option>
+                                      <option value="LA">LA</option>
+                                      <option value="MA">MA</option>
+                                      <option value="MD">MD</option>
+                                      <option value="ME">ME</option>
+                                      <option value="MI">MI</option>
+                                      <option value="MN">MN</option>
+                                      <option value="MO">MO</option>
+                                      <option value="MS">MS</option>
+                                      <option value="MT">MT</option>
+                                      <option value="NC">NC</option>
+                                      <option value="ND">ND</option>
+                                      <option value="NE">NE</option>
+                                      <option value="NH">NH</option>
+                                      <option value="NJ">NJ</option>
+                                      <option value="NM">NM</option>
+                                      <option value="NV">NV</option>
+                                      <option value="NY">NY</option>
+                                      <option value="OH">OH</option>
+                                      <option value="OK">OK</option>
+                                      <option value="OR">OR</option>
+                                      <option value="PA">PA</option>
+                                      <option value="RI">RI</option>
+                                      <option value="SC">SC</option>
+                                      <option value="SD">SD</option>
+                                      <option value="TN">TN</option>
+                                      <option value="TX">TX</option>
+                                      <option value="UT">UT</option>
+                                      <option value="VA">VA</option>
+                                      <option value="VT">VT</option>
+                                      <option value="WA">WA</option>
+                                      <option value="WI">WI</option>
+                                      <option value="WV">WV</option>
+                                      <option value="WY">WY</option>
+                                    </Select>
+                                    <Input
+                                      placeholder="Zipcode"
+                                      flex={3}
+                                      type="number"
+                                      value={zipcode}
+                                      onChange={(e) => setZipcode(e.target.value)}
+                                      isRequired
+                                    />
+                                  </Flex>
+                                </Stack>
+                                <FormControl>
+                                  <FormLabel
+                                    as="div"
+                                    textStyle="bodyMain"
+                                    fontWeight={500}
+                                  >
+                                    Market day (required)
+                                  </FormLabel>
+                                  <RadioGroup
+                                    onChange={(newValue) =>
+                                      setDays([newValue])}
+                                    value={days[0]}
+                                  >
+                                    <HStack>
+                                      <Radio colorScheme="green" value="monday">Monday</Radio>
+                                      <Radio colorScheme="green" value="tuesday">Tuesday</Radio>
+                                      <Radio colorScheme="green" value="wednesday">Wednesday</Radio>
+                                      <Radio colorScheme="green" value="thursday">Thursday</Radio>
+                                      <Radio colorScheme="green" value="friday">Friday</Radio>
+                                      <Radio colorScheme="green" value="saturday">Sarturday</Radio>
+                                      <Radio colorScheme="green" value="sunday">Sunday</Radio>
+                                    </HStack>
+                                  </RadioGroup>
+                                </FormControl>
+                                <FormControl>
+                                  <FormLabel
+                                    as="div"
+                                    fontWeight={500}
+                                    textStyle="bodyMain"
+                                  >
+                                    Market size (required)
+                                  </FormLabel>
+                                  <RadioGroup
+                                    onChange={(newValue) =>
+                                      setSize(newValue)}
+                                    value={size}
+                                  >
+                                    <HStack>
+                                      <Radio colorScheme="green" value="flagship">Flagship</Radio>
+                                      <Radio colorScheme="green" value="large">Large</Radio>
+                                      <Radio colorScheme="green" value="medium">Medium</Radio>
+                                      <Radio colorScheme="green" value="small">Small</Radio>
+                                      <Radio colorScheme="green" value="stand">Farm stand</Radio>
+                                    </HStack>
+                                  </RadioGroup>
+                                </FormControl>
+                                <FormControl>
+                                  <FormLabel
+                                    as="div"
+                                    fontWeight={500}
+                                    textStyle="bodyMain"
+                                  >
+                                    Market focus (required)
+                                  </FormLabel>
+                                  <FormHelperText>
+                                    Check all that apply
+                                  </FormHelperText>
+                                  <CheckboxGroup
+                                    colorScheme="green"
+                                    defaultValue={focus}
+                                    onChange={(newValue) =>
+                                      setFocus(newValue)}
+                                  >
+                                    <HStack>
+                                      <Checkbox value="neighborhood">
+                                        Neighborhood
+                                      </Checkbox>
+                                      <Checkbox value="downtown">
+                                        Downtown
+                                      </Checkbox>
+                                      <Checkbox value="grocery">
+                                        Grocery shopping
+                                      </Checkbox>
+                                      <Checkbox value="prepared">
+                                        Prepared food shopping
+                                      </Checkbox>
+                                    </HStack>
+                                  </CheckboxGroup>
+                                </FormControl>
+                                <FormControl>
+                                  <FormLabel
+                                    as="div"
+                                    textStyle="bodyMain"
+                                    fontWeight={500}
+                                  >
+                                    Brief market description (required)
+                                  </FormLabel>
+                                  <FormHelperText>
+                                    Add a statement of explanation
+                                  </FormHelperText>
+                                  <Textarea
+                                    placeholder="Start typing..."
+                                    onChange={(newValue) =>
+                                      setDescription(newValue)}
+                                    value={description}
+                                  />
+                                </FormControl>
+                              </Container>
+                              <Heading
+                                as="h2"
+                                color={"gray.700"}
+                                textTransform={"uppercase"}
+                                marginBottom={2}
+                                marginTop={6}
+                              >
+                                Edit season for {data.name}
+                              </Heading>
+                              <Divider
+                                sx={{
+                                  borderColor: "gray.600",
+                                  borderBottomWidth: 2,
+                                }}
+                              />
+                              <Container>
+                                <Flex
+                                  align="center"
+                                  justify="space-between"
+                                  marginTop={8}
                                 >
-                                  Edit season for {data.name}
-                                </Heading>
-                                <Divider
-                                  sx={{
-                                    borderColor: "gray.600",
-                                    borderBottomWidth: 2,
-                                  }}
-                                />
-                                <Container>
-                                  <Flex
-                                    align="center"
-                                    justify="space-between"
-                                    marginTop={8}
+                                  <Heading
+                                    as="h2"
+                                    textStyle="h4"
+                                    size="md"
+                                    width={"100%"}
                                   >
-                                    <Heading
-                                      as="h2"
-                                      textStyle="h4"
-                                      size="md"
-                                      width={"100%"}
-                                    >
-                                      Accepting applications (required)
-                                    </Heading>
-                                    <RadioGroup
-                                      onChange={(newValue) =>
-                                        props.setValue(newValue)}
-                                      value={props.value}
-                                    >
-                                      <HStack marginRight={2}>
-                                        <Radio colorScheme="green" value="yes">Yes</Radio>
-                                        <Radio colorScheme="green" value="no">No</Radio>
-                                      </HStack>
-                                    </RadioGroup>
-                                    <Divider
-                                      color="gray.700"
-                                      borderBottomWidth={2}
-                                      opacity={1}
-                                    />
-                                  </Flex>
-                                  <Flex
-                                    align="center"
-                                    justify="space-between"
-                                    marginTop={8}
+                                    Accepting applications (required)
+                                  </Heading>
+                                  <RadioGroup
+                                    onChange={(newValue) =>
+                                      props.setValue(newValue)}
+                                    value={props.value}
                                   >
-                                    <Heading
-                                      as="h2"
-                                      textStyle="h4"
-                                      size="md"
-                                      width={"70%"}
-                                    >
-                                      Market time & dates
-                                    </Heading>
-                                    <Divider
-                                      color="gray.700"
-                                      borderBottomWidth={2}
-                                      opacity={1}
+                                    <HStack marginRight={2}>
+                                      <Radio colorScheme="green" value="yes">Yes</Radio>
+                                      <Radio colorScheme="green" value="no">No</Radio>
+                                    </HStack>
+                                  </RadioGroup>
+                                  <Divider
+                                    color="gray.700"
+                                    borderBottomWidth={2}
+                                    opacity={1}
+                                  />
+                                </Flex>
+                                <Flex
+                                  align="center"
+                                  justify="space-between"
+                                  marginTop={8}
+                                >
+                                  <Heading
+                                    as="h2"
+                                    textStyle="h4"
+                                    size="md"
+                                    width={"70%"}
+                                  >
+                                    Market time & dates
+                                  </Heading>
+                                  <Divider
+                                    color="gray.700"
+                                    borderBottomWidth={2}
+                                    opacity={1}
+                                  />
+                                </Flex>
+                                <Text textStyle="bodyMain" as="div" color="gray.500">
+                                  Select a start and end date for the season
+                                </Text>
+                                <HStack marginTop={4} spacing={4}>
+                                  <Stack>
+                                    <Text textStyle="bodyMain" as="div" fontWeight={700}>
+                                      Start date
+                                    </Text>
+                                    <DatePicker
+                                      inline
+                                      selected={startDate}
+                                      onChange={(date) => setStartDate(date)}
+                                      dayClassName={(date) =>
+                                        date.getDate < Math.random() * 31 ? "random" : undefined
+                                      }
                                     />
-                                  </Flex>
-                                  <Text textStyle="bodyMain" as="div" color="gray.500">
-                                    Select a start and end date for the season
-                                  </Text>
-                                  <HStack marginTop={4} spacing={4}>
-                                    <Stack>
-                                      <Text textStyle="bodyMain" as="div" fontWeight={700}>
-                                        Start date
-                                      </Text>
-                                      <DatePicker
-                                        inline
-                                        selected={startDate}
-                                        onChange={(date) => setStartDate(date)}
-                                        dayClassName={(date) =>
-                                          date.getDate < Math.random() * 31 ? "random" : undefined
-                                        }
-                                      />
-                                    </Stack>
-                                    <Stack>
-                                      <Text as="div" textStyle="bodyMain" fontWeight={700}>
-                                        End date
-                                      </Text>
-                                      <DatePicker
-                                        inline
-                                        selected={startDate}
-                                        onChange={(date) => setStartDate(date)}
-                                        dayClassName={(date) =>
-                                          date.getDate < Math.random() * 31 ? "random" : undefined
-                                        }
-                                      />
-                                    </Stack>
-                                  </HStack>
-                                </Container>
-                              </ModalBody>
-                              <ModalFooter>
-                                <Button colorScheme="blue" onClick={onClose}>
+                                  </Stack>
+                                  <Stack>
+                                    <Text as="div" textStyle="bodyMain" fontWeight={700}>
+                                      End date
+                                    </Text>
+                                    <DatePicker
+                                      inline
+                                      selected={startDate}
+                                      onChange={(date) => setStartDate(date)}
+                                      dayClassName={(date) =>
+                                        date.getDate < Math.random() * 31 ? "random" : undefined
+                                      }
+                                    />
+                                  </Stack>
+                                </HStack>
+                              </Container>
+                            </ModalBody>
+                            <ModalFooter>
+                              <HStack spacing={4}>
+                                <Button colorScheme="teal" variant={"solid"} onClick={submitForm}>
                                   Save
                                 </Button>
-                              </ModalFooter>
-                            </CustomDefaultEditView>
+                                <Button colorScheme="teal" variant={"outline"} onClick={onClose}>
+                                  Close
+                                </Button>
+                              </HStack>                              
+                            </ModalFooter>
                           </ModalContent>
                         </Modal>
                       </>

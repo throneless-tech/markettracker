@@ -1,5 +1,6 @@
 import React from "react";
 import { useHistory } from "react-router-dom";
+import { useAuth } from "payload/components/utilities";
 
 import {
   Box,
@@ -26,6 +27,7 @@ import StarIcon from '../../assets/icons/star.js'
 
 
 const MarketCard = (props) => {
+  const { user } = useAuth();
   const history = useHistory();
   const {
     market,
@@ -44,6 +46,13 @@ const MarketCard = (props) => {
   const applyToMarket = (market) => {
     history.push({
       pathname: `/admin/collections/markets/${market.id}/apply`,
+      state: market,
+    });
+  };
+
+  const viewMarketApplications = (market) => {
+    history.push({
+      pathname: `/admin/collections/markets/applications/${market.id}`,
       state: market,
     });
   };
@@ -234,7 +243,7 @@ const MarketCard = (props) => {
           marginBottom={8}
         />
         <Center>
-          <Text textStyle={"h4"}>
+          <Text textStyle={"h4"} marginBottom={4}>
             {market.seasons && market.seasons.length &&
               market.seasons[0].isAccepting == true
               ? ""
@@ -243,7 +252,7 @@ const MarketCard = (props) => {
         </Center>
         {market.seasons && market.seasons.length &&
           market.seasons[0].isAccepting == true
-          ? (
+          ? user.role == "vendor" ? (
             <Center marginBottom={2}>
               <Button
                 rightIcon={<ArrowForwardIcon />}
@@ -257,7 +266,20 @@ const MarketCard = (props) => {
               </Button>
             </Center>
           )
-          : null}
+          : (
+              <Center marginBottom={2}>
+                <Button
+                  rightIcon={<ArrowForwardIcon />}
+                  variant={"solid"}
+                  onClick={(e) => {
+                    e.preventDefault;
+                    viewMarketApplications(market);
+                  }}
+                >
+                  View applications
+                </Button>
+              </Center>
+          ) : null}
         <Center>
           <Button
             rightIcon={<ArrowForwardIcon />}
