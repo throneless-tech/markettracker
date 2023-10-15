@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { useAuth } from "payload/components/utilities";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
@@ -8,7 +8,6 @@ import "react-datepicker/dist/react-datepicker.css";
 import type { Season } from "payload/generated-types";
 import { useDocumentInfo } from "payload/components/utilities";
 import { useField, useForm } from "payload/components/forms";
-import { useAllFormFields } from "payload/components/forms";
 
 // Chakra imports
 import {
@@ -49,11 +48,10 @@ import {
   Textarea,
   useDisclosure,
   Wrap,
-  WrapItem,
 } from "@chakra-ui/react";
 
 // components
-import Calendar from "../Calendar.js";
+//import Calendar from "../Calendar.js";
 
 // utils
 import formatTime from "../../utils/formatTime";
@@ -74,7 +72,6 @@ function CustomMarketsEdit(props, { path }) {
   const { id } = useDocumentInfo();
   const { data } = props;
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const [startDate, setStartDate] = useState(new Date());
   const { value: name, setValue: setName } = useField<string>({ path: "name" });
   const { value: street, setValue: setStreet } = useField<string>({
     path: "address.street",
@@ -102,9 +99,7 @@ function CustomMarketsEdit(props, { path }) {
     path: "seasons",
   });
 
-  console.log("***seasons***:", seasons);
-
-  const submitForm = () => {
+  const submitForm = async () => {
     submit();
   };
 
@@ -708,10 +703,19 @@ function CustomMarketsEdit(props, { path }) {
                                     </Text>
                                     <DatePicker
                                       inline
-                                      selected={startDate}
-                                      onChange={(date) => setStartDate(date)}
+                                      selected={new Date(
+                                        seasons[0].marketDates.startDate,
+                                      )}
+                                      onChange={(date) =>
+                                        setSeasons([{
+                                          ...seasons[0],
+                                          marketDates: {
+                                            ...seasons[0].marketDates,
+                                            startDate: date.toISOString(),
+                                          },
+                                        }])}
                                       dayClassName={(date) =>
-                                        date.getDate < Math.random() * 31
+                                        date.getDate() < Math.random() * 31
                                           ? "random"
                                           : undefined}
                                     />
@@ -726,10 +730,19 @@ function CustomMarketsEdit(props, { path }) {
                                     </Text>
                                     <DatePicker
                                       inline
-                                      selected={startDate}
-                                      onChange={(date) => setStartDate(date)}
+                                      selected={new Date(
+                                        seasons[0].marketDates.endDate,
+                                      )}
+                                      onChange={(date) =>
+                                        setSeasons([{
+                                          ...seasons[0],
+                                          marketDates: {
+                                            ...seasons[0].marketDates,
+                                            endDate: date.toISOString(),
+                                          },
+                                        }])}
                                       dayClassName={(date) =>
-                                        date.getDate < Math.random() * 31
+                                        date.getDate() < Math.random() * 31
                                           ? "random"
                                           : undefined}
                                     />
