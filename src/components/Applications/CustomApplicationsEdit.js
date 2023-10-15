@@ -57,6 +57,7 @@ import Calendar from '../Calendar.js';
 import formatTime from '../../utils/formatTime.js'
 
 // icons
+import { ArrowForwardIcon } from '@chakra-ui/icons';
 import EditIcon from '../../assets/icons/edit.js'
 import StarIcon from '../../assets/icons/star.js'
 
@@ -97,10 +98,10 @@ function CustomApplicationsEdit(props) {
   const updateSelectedDates = (date) => {
     let datesArray = selectedDates;
 
-    let dateFound = !!datesArray.find(item => item.getTime() == date.getTime() );
+    let dateFound = !!datesArray.find(item => item.getTime() == date.getTime());
 
     if (dateFound) {
-      datesArray = datesArray.filter(item => item.getTime() != date.getTime() )
+      datesArray = datesArray.filter(item => item.getTime() != date.getTime())
     } else {
       datesArray = [date, ...selectedDates];
     }
@@ -498,6 +499,56 @@ function CustomApplicationsEdit(props) {
             <Text color={"gray.600"} marginTop={4} fontSize={"md"}>
               Select anyone who will be staffing your booth at {market.name} this season.
             </Text>
+            <Button onClick={onOpen} marginTop={4} rightIcon={<ArrowForwardIcon />} >
+              Add a contact
+            </Button>
+            <Modal isOpen={isOpen} onClose={onClose} size={"xl"}>
+              <ModalOverlay />
+              <ModalContent background={'gray.600'} color={'gray.50'}>
+                <ModalHeader>
+                  <Stack textAlign={"center"} spacing={1}>
+                    <Heading marginBottom={0}>
+                      Add a contact
+                    </Heading>
+                    <Text>
+                      Please fill in requested information to create a new contact
+                    </Text>
+                  </Stack>
+                </ModalHeader>
+                <ModalCloseButton />
+                <ModalBody>
+                  <FormControl marginBottom={4}>
+                    <FormLabel>Contact name (required)</FormLabel>
+                    <Input />
+                  </FormControl>
+                  <FormControl marginBottom={4}>
+                    <FormLabel>Contact email address (required)</FormLabel>
+                    <Input type='email' />
+                  </FormControl>
+                  <FormControl marginBottom={6}>
+                    <FormLabel>Contact phone number (required)</FormLabel>
+                    <Input type='number' />
+                  </FormControl>
+                  <FormControl marginBottom={4}>
+                    <FormLabel>Type of contact</FormLabel>
+                    <FormHelperText color={'gray.50'} marginBottom={2}>Select the type(s) that best describes this contact’s responsibility for the business</FormHelperText>
+                  <CheckboxGroup colorScheme='brown' defaultValue={[]}>
+                    <Stack spacing={[1, 5]} direction={['column', 'row']}>
+                      <Checkbox value='primary'>Primary</Checkbox>
+                      <Checkbox value='billing'>Billing/financial</Checkbox>
+                      <Checkbox value='market'>At-market</Checkbox>
+                    </Stack>
+                  </CheckboxGroup>
+                  </FormControl>
+                </ModalBody>
+                <ModalFooter>
+                  <Button colorScheme='brown' variant='solid' mr={3}>Save</Button>
+                  <Button color={'gray.50'} colorScheme='brown' variant={"outline"} onClick={onClose}>
+                    Cancel
+                  </Button>
+                </ModalFooter>
+              </ModalContent>
+            </Modal>
             <Divider
               sx={{ borderColor: "gray.600", borderBottomWidth: 2, marginY: 8 }}
             />
@@ -583,20 +634,20 @@ function CustomApplicationsEdit(props) {
               </Text>
             </Box>
             <Text fontSize={18} marginY={4}>
-              Grade the following catagories on a scale from 1 to 5. 1 being least qualified, 5 being most qualified. 
+              Grade the following catagories on a scale from 1 to 5. 1 being least qualified, 5 being most qualified.
             </Text>
             <FormControl marginBottom={8}>
               <HStack alignItems={'center'} spacing={3}>
-              <Input type='number' width={4} />
-              <FormLabel sx={{ fontSize: 18, fontWeight: 700, textTransform: 'uppercase'}}>Vendor type</FormLabel>
-              <Text>{application.vendor.type}</Text>
+                <Input type='number' width={4} />
+                <FormLabel sx={{ fontSize: 18, fontWeight: 700, textTransform: 'uppercase' }}>Vendor type</FormLabel>
+                <Text>{application.vendor.type}</Text>
               </HStack>
             </FormControl>
             <FormControl marginBottom={8}>
               <HStack alignItems={'center'} spacing={3}>
                 <Input type='number' width={4} />
                 <Stack>
-                <FormLabel sx={{ fontSize: 18, fontWeight: 700, textTransform: 'uppercase' }}>Products</FormLabel>
+                  <FormLabel sx={{ fontSize: 18, fontWeight: 700, textTransform: 'uppercase' }}>Products</FormLabel>
                   {application.vendor.products && application.vendor.products.length ? application.vendor.products.map(product => (
                     <Tag>{product.name}</Tag>
                   )) : null}
