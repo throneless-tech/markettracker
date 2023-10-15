@@ -8,7 +8,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import type { Season } from "payload/generated-types";
 import { useDocumentInfo } from "payload/components/utilities";
 import { useField, useForm } from "payload/components/forms";
-import { useAllFormFields } from 'payload/components/forms';
+import { useAllFormFields } from "payload/components/forms";
 
 // Chakra imports
 import {
@@ -75,41 +75,43 @@ function CustomMarketsEdit(props, { path }) {
   const { data } = props;
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [startDate, setStartDate] = useState(new Date());
-  const [fields, dispatchFields] = useAllFormFields();
   const { value: name, setValue: setName } = useField<string>({ path: "name" });
-  const { value: street, setValue: setStreet } = useField<string>({ path: "address.street" });
-  const { value: city, setValue: setCity } = useField<string>({ path: "address.city" });
-  const { value: state, setValue: setState } = useField<string>({ path: "address.state" });
-  const { value: zipcode, setValue: setZipcode } = useField<string>({ path: "address.zipcode" });
-  const { value: days, setValue: setDays } = useField<Array<string>>({ path: "days" });
+  const { value: street, setValue: setStreet } = useField<string>({
+    path: "address.street",
+  });
+  const { value: city, setValue: setCity } = useField<string>({
+    path: "address.city",
+  });
+  const { value: state, setValue: setState } = useField<string>({
+    path: "address.state",
+  });
+  const { value: zipcode, setValue: setZipcode } = useField<string>({
+    path: "address.zipcode",
+  });
+  const { value: days, setValue: setDays } = useField<Array<string>>({
+    path: "days",
+  });
   const { value: size, setValue: setSize } = useField<string>({ path: "size" });
-  const { value: focus, setValue: setFocus } = useField<Array<string>>({ path: "focus" });
-  const { value: description, setValue: setDescription } = useField<string>({ path: "description" });
-  const { value: seasons, setValue: setSeasons } = useField<Season[]>({ path: "seasons" });
+  const { value: focus, setValue: setFocus } = useField<Array<string>>({
+    path: "focus",
+  });
+  const { value: description, setValue: setDescription } = useField<string>({
+    path: "description",
+  });
+  const { value: seasons, setValue: setSeasons } = useField<Season[]>({
+    path: "seasons",
+  });
+
+  console.log("***seasons***:", seasons);
 
   const submitForm = () => {
     submit();
-  }
+  };
 
   // id will be undefined on the create form
   if (!id) {
     return null;
   }
-
-  useEffect(() => { console.log(seasons);
-  },
-  [
-    data,
-    name,
-    street,
-    city,
-    state,
-    zipcode,
-    days,
-    size,
-    focus,
-    description
-  ]);
 
   if (name) {
     return (
@@ -177,7 +179,11 @@ function CustomMarketsEdit(props, { path }) {
                       borderBottomRadius="8px"
                       borderTop="2px solid #6D635B"
                       marginTop={8}
-                      sx={{ alignItems: "stretch", flexDirection: "row", justifyContent: "flex-start" }}
+                      sx={{
+                        alignItems: "stretch",
+                        flexDirection: "row",
+                        justifyContent: "flex-start",
+                      }}
                     >
                       <Box background="green.600" padding={6}>
                         <Flex
@@ -253,7 +259,12 @@ function CustomMarketsEdit(props, { path }) {
                                 </Text>
                               )
                               : null}
-                            <Text textStyle="bodyMain" as={"span"} color={"gray.50"} fontSize="2xl">
+                            <Text
+                              textStyle="bodyMain"
+                              as={"span"}
+                              color={"gray.50"}
+                              fontSize="2xl"
+                            >
                               {street}
                               {", "}
                               {city}
@@ -274,15 +285,29 @@ function CustomMarketsEdit(props, { path }) {
                             >
                               Manager:
                             </Text>
-                            <Text textStyle="bodyMain" as={"span"} color={"gray.50"} fontSize="2xl">
+                            <Text
+                              textStyle="bodyMain"
+                              as={"span"}
+                              color={"gray.50"}
+                              fontSize="2xl"
+                            >
                               {data.contact ? data.contact.name : ""}
                             </Text>
-                            <Text textStyle="bodyMain" as={"span"} color={"gray.50"} fontSize="2xl">
+                            <Text
+                              textStyle="bodyMain"
+                              as={"span"}
+                              color={"gray.50"}
+                              fontSize="2xl"
+                            >
                               {data.contact ? data.contact.phone : ""}
-                             </Text>
+                            </Text>
                           </HStack>
                         </Flex>
-                        <Text textStyle="bodyMain" marginTop={4} fontSize={"xl"}>
+                        <Text
+                          textStyle="bodyMain"
+                          marginTop={4}
+                          fontSize={"xl"}
+                        >
                           {description}
                         </Text>
                       </Box>
@@ -300,11 +325,11 @@ function CustomMarketsEdit(props, { path }) {
                           >
                             Market needs:
                           </Text>
-                          {data.seasons && data.seasons[0].needs ? data.seasons[0].needs.map(need => (
-                            <Tag bg={"gray.50"} fontWeight={700}>{need}</Tag>
-                          )) : (
-                            <Tag bg={"gray.50"} fontWeight={700}>TBA</Tag>
-                          )}
+                          {seasons && seasons[0].needs
+                            ? seasons[0].needs.map((need) => (
+                              <Tag bg={"gray.50"} fontWeight={700}>{need}</Tag>
+                            ))
+                            : <Tag bg={"gray.50"} fontWeight={700}>TBA</Tag>}
                         </HStack>
                       </Box>
                     </Box>
@@ -374,7 +399,8 @@ function CustomMarketsEdit(props, { path }) {
                                     <Input
                                       placeholder="Street"
                                       value={street}
-                                      onChange={(e) => setStreet(e.target.value)}
+                                      onChange={(e) =>
+                                        setStreet(e.target.value)}
                                       isRequired
                                     />
                                   </FormControl>
@@ -450,7 +476,8 @@ function CustomMarketsEdit(props, { path }) {
                                       flex={3}
                                       type="number"
                                       value={zipcode}
-                                      onChange={(e) => setZipcode(e.target.value)}
+                                      onChange={(e) =>
+                                        setZipcode(e.target.value)}
                                       isRequired
                                     />
                                   </Flex>
@@ -464,18 +491,43 @@ function CustomMarketsEdit(props, { path }) {
                                     Market day (required)
                                   </FormLabel>
                                   <RadioGroup
-                                    onChange={(newValue) =>
-                                      setDays([newValue])}
+                                    onChange={(newValue) => setDays([newValue])}
                                     value={days[0]}
                                   >
                                     <HStack>
-                                      <Radio colorScheme="green" value="monday">Monday</Radio>
-                                      <Radio colorScheme="green" value="tuesday">Tuesday</Radio>
-                                      <Radio colorScheme="green" value="wednesday">Wednesday</Radio>
-                                      <Radio colorScheme="green" value="thursday">Thursday</Radio>
-                                      <Radio colorScheme="green" value="friday">Friday</Radio>
-                                      <Radio colorScheme="green" value="saturday">Sarturday</Radio>
-                                      <Radio colorScheme="green" value="sunday">Sunday</Radio>
+                                      <Radio colorScheme="green" value="monday">
+                                        Monday
+                                      </Radio>
+                                      <Radio
+                                        colorScheme="green"
+                                        value="tuesday"
+                                      >
+                                        Tuesday
+                                      </Radio>
+                                      <Radio
+                                        colorScheme="green"
+                                        value="wednesday"
+                                      >
+                                        Wednesday
+                                      </Radio>
+                                      <Radio
+                                        colorScheme="green"
+                                        value="thursday"
+                                      >
+                                        Thursday
+                                      </Radio>
+                                      <Radio colorScheme="green" value="friday">
+                                        Friday
+                                      </Radio>
+                                      <Radio
+                                        colorScheme="green"
+                                        value="saturday"
+                                      >
+                                        Sarturday
+                                      </Radio>
+                                      <Radio colorScheme="green" value="sunday">
+                                        Sunday
+                                      </Radio>
                                     </HStack>
                                   </RadioGroup>
                                 </FormControl>
@@ -488,16 +540,28 @@ function CustomMarketsEdit(props, { path }) {
                                     Market size (required)
                                   </FormLabel>
                                   <RadioGroup
-                                    onChange={(newValue) =>
-                                      setSize(newValue)}
+                                    onChange={(newValue) => setSize(newValue)}
                                     value={size}
                                   >
                                     <HStack>
-                                      <Radio colorScheme="green" value="flagship">Flagship</Radio>
-                                      <Radio colorScheme="green" value="large">Large</Radio>
-                                      <Radio colorScheme="green" value="medium">Medium</Radio>
-                                      <Radio colorScheme="green" value="small">Small</Radio>
-                                      <Radio colorScheme="green" value="stand">Farm stand</Radio>
+                                      <Radio
+                                        colorScheme="green"
+                                        value="flagship"
+                                      >
+                                        Flagship
+                                      </Radio>
+                                      <Radio colorScheme="green" value="large">
+                                        Large
+                                      </Radio>
+                                      <Radio colorScheme="green" value="medium">
+                                        Medium
+                                      </Radio>
+                                      <Radio colorScheme="green" value="small">
+                                        Small
+                                      </Radio>
+                                      <Radio colorScheme="green" value="stand">
+                                        Farm stand
+                                      </Radio>
                                     </HStack>
                                   </RadioGroup>
                                 </FormControl>
@@ -515,8 +579,7 @@ function CustomMarketsEdit(props, { path }) {
                                   <CheckboxGroup
                                     colorScheme="green"
                                     defaultValue={focus}
-                                    onChange={(newValue) =>
-                                      setFocus(newValue)}
+                                    onChange={(newValue) => setFocus(newValue)}
                                   >
                                     <HStack>
                                       <Checkbox value="neighborhood">
@@ -584,12 +647,22 @@ function CustomMarketsEdit(props, { path }) {
                                   </Heading>
                                   <RadioGroup
                                     onChange={(newValue) =>
-                                      props.setValue(newValue)}
-                                    value={props.value}
+                                      setSeasons([{
+                                        ...seasons[0],
+                                        isAccepting: newValue,
+                                      }])}
+                                    value={typeof seasons[0].isAccepting ===
+                                        "boolean"
+                                      ? seasons[0].isAccepting.toString()
+                                      : "false"}
                                   >
                                     <HStack marginRight={2}>
-                                      <Radio colorScheme="green" value="yes">Yes</Radio>
-                                      <Radio colorScheme="green" value="no">No</Radio>
+                                      <Radio colorScheme="green" value="yes">
+                                        Yes
+                                      </Radio>
+                                      <Radio colorScheme="green" value="no">
+                                        No
+                                      </Radio>
                                     </HStack>
                                   </RadioGroup>
                                   <Divider
@@ -617,12 +690,20 @@ function CustomMarketsEdit(props, { path }) {
                                     opacity={1}
                                   />
                                 </Flex>
-                                <Text textStyle="bodyMain" as="div" color="gray.500">
+                                <Text
+                                  textStyle="bodyMain"
+                                  as="div"
+                                  color="gray.500"
+                                >
                                   Select a start and end date for the season
                                 </Text>
                                 <HStack marginTop={4} spacing={4}>
                                   <Stack>
-                                    <Text textStyle="bodyMain" as="div" fontWeight={700}>
+                                    <Text
+                                      textStyle="bodyMain"
+                                      as="div"
+                                      fontWeight={700}
+                                    >
                                       Start date
                                     </Text>
                                     <DatePicker
@@ -630,12 +711,17 @@ function CustomMarketsEdit(props, { path }) {
                                       selected={startDate}
                                       onChange={(date) => setStartDate(date)}
                                       dayClassName={(date) =>
-                                        date.getDate < Math.random() * 31 ? "random" : undefined
-                                      }
+                                        date.getDate < Math.random() * 31
+                                          ? "random"
+                                          : undefined}
                                     />
                                   </Stack>
                                   <Stack>
-                                    <Text as="div" textStyle="bodyMain" fontWeight={700}>
+                                    <Text
+                                      as="div"
+                                      textStyle="bodyMain"
+                                      fontWeight={700}
+                                    >
                                       End date
                                     </Text>
                                     <DatePicker
@@ -643,8 +729,9 @@ function CustomMarketsEdit(props, { path }) {
                                       selected={startDate}
                                       onChange={(date) => setStartDate(date)}
                                       dayClassName={(date) =>
-                                        date.getDate < Math.random() * 31 ? "random" : undefined
-                                      }
+                                        date.getDate < Math.random() * 31
+                                          ? "random"
+                                          : undefined}
                                     />
                                   </Stack>
                                 </HStack>
@@ -652,13 +739,21 @@ function CustomMarketsEdit(props, { path }) {
                             </ModalBody>
                             <ModalFooter>
                               <HStack spacing={4}>
-                                <Button colorScheme="teal" variant={"solid"} onClick={submitForm}>
+                                <Button
+                                  colorScheme="teal"
+                                  variant={"solid"}
+                                  onClick={submitForm}
+                                >
                                   Save
                                 </Button>
-                                <Button colorScheme="teal" variant={"outline"} onClick={onClose}>
+                                <Button
+                                  colorScheme="teal"
+                                  variant={"outline"}
+                                  onClick={onClose}
+                                >
                                   Close
                                 </Button>
-                              </HStack>                              
+                              </HStack>
                             </ModalFooter>
                           </ModalContent>
                         </Modal>
@@ -691,12 +786,12 @@ function CustomMarketsEdit(props, { path }) {
                       {data.size == "flagship"
                         ? "Daily sales for the entire market are upwards of $150,000. This market can support upwards of 20 produce vendors, 14 prepared food vendors, 9 baked goods vendors, 6 alcohol vendors, 5 dairy vendors, and 2 to 4 vendors from each additional category."
                         : data.size == "large"
-                          ? "Daily sales for large markets range from $20,000 to $70,000. They can support average numbers of 8 produce vendors, 8 prepared food vendors, 5 baked goods vendors, 3 alcohol vendors, and 1 to 2 vendors from each additional category."
-                          : data.size == "medium"
-                            ? "Daily sales for medium markets range from $10,000 to $19,000. They can support average numbers of 5 prepared food vendors, 4 produce vendors, and 1 to 2 vendors from each additional category."
-                            : data.size == "small"
-                              ? "Daily sales for small markets range from $1,500 to $9,000. They can support average numbers of 4 produce vendors, 4 prepared food vendors, and 1 to 2 vendors from each additional category with some product category gaps."
-                              : "These markets are limited to one produce vendor for retail and wholesale sales."}
+                        ? "Daily sales for large markets range from $20,000 to $70,000. They can support average numbers of 8 produce vendors, 8 prepared food vendors, 5 baked goods vendors, 3 alcohol vendors, and 1 to 2 vendors from each additional category."
+                        : data.size == "medium"
+                        ? "Daily sales for medium markets range from $10,000 to $19,000. They can support average numbers of 5 prepared food vendors, 4 produce vendors, and 1 to 2 vendors from each additional category."
+                        : data.size == "small"
+                        ? "Daily sales for small markets range from $1,500 to $9,000. They can support average numbers of 4 produce vendors, 4 prepared food vendors, and 1 to 2 vendors from each additional category with some product category gaps."
+                        : "These markets are limited to one produce vendor for retail and wholesale sales."}
                     </Text>
                     <HStack marginTop={4}>
                       <Text as={"span"} color={"blue.500"} fontWeight={700}>
@@ -757,10 +852,22 @@ function CustomMarketsEdit(props, { path }) {
                         sx={{ borderColor: "gray.600", borderBottomWidth: 2 }}
                       />
                     </HStack>
-                    <Image src={stats1} alt='A sample of a pie chart showing product make up, to be filled in with an interactive graph in the future.' />
-                    <Image src={stats2} alt='A sample of a bar graph showing monthly sales compared over the years, to be filled in with an interactive graph in the future.' />
-                    <Image src={stats3} alt='A sample of a bar graph showing weekly sales by product type, to be filled in with an interactive graph in the future.' />
-                    <Image src={stats4} alt='A sample of a bar graph showing monthly sales by vendor, to be filled in with an interactive graph in the future.' />
+                    <Image
+                      src={stats1}
+                      alt="A sample of a pie chart showing product make up, to be filled in with an interactive graph in the future."
+                    />
+                    <Image
+                      src={stats2}
+                      alt="A sample of a bar graph showing monthly sales compared over the years, to be filled in with an interactive graph in the future."
+                    />
+                    <Image
+                      src={stats3}
+                      alt="A sample of a bar graph showing weekly sales by product type, to be filled in with an interactive graph in the future."
+                    />
+                    <Image
+                      src={stats4}
+                      alt="A sample of a bar graph showing monthly sales by vendor, to be filled in with an interactive graph in the future."
+                    />
                     <HStack marginTop={4}>
                       <Text
                         color={"gray.700"}
@@ -779,7 +886,6 @@ function CustomMarketsEdit(props, { path }) {
                       Dates {data.name} is open this season
                     </Text>
                     <Wrap marginTop={4} spacing={3}>
-
                     </Wrap>
                   </Container>
                 </TabPanel>
