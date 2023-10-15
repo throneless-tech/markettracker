@@ -35,41 +35,45 @@ const CustomDashboard = () => {
               Dashboard
             </Heading>
           </Box>
-          <Spacer />
-          <Box>
-            <Stack direction="row" justify={{ base: "flex-start", md: "flex-end" }} align="flex-start" spacing="16px" flexWrap={"wrap"}>
-              <LinkBox>
-                <Button active="Default" marginBottom={{ base: 2, md: 0 }}>
-                  <LinkOverlay
-                    lineHeight="1.11"
-                    fontWeight="semibold"
-                    fontSize="18px"
-                    color="#534C46"
-                    textAlign="center"
-                    marginBottom={0}
-                    href="/admin/collections/sales-reports"
-                  >
-                    Submit Sales Report
-                  </LinkOverlay>
-                </Button>
-              </LinkBox>
-              <LinkBox>
-                <Button active="Default">
-                  <LinkOverlay
-                    lineHeight="1.11"
-                    fontWeight="semibold"
-                    fontSize="18px"
-                    color="#534C46"
-                    textAlign="center"
-                    marginBottom={0}
-                    href="/admin/collections/markets"
-                  >
-                    Apply to Markets
-                  </LinkOverlay>
-                </Button>
-              </LinkBox>
-            </Stack>
-          </Box>
+          {user.role == "vendor" ? (
+            <>
+            <Spacer />
+            <Box>
+              <Stack direction="row" justify={{ base: "flex-start", md: "flex-end" }} align="flex-start" spacing="16px" flexWrap={"wrap"}>
+                <LinkBox>
+                  <Button active="Default" marginBottom={{ base: 2, md: 0 }}>
+                    <LinkOverlay
+                      lineHeight="1.11"
+                      fontWeight="semibold"
+                      fontSize="18px"
+                      color="#534C46"
+                      textAlign="center"
+                      marginBottom={0}
+                      href="/admin/collections/sales-reports"
+                    >
+                      Submit Sales Report
+                    </LinkOverlay>
+                  </Button>
+                </LinkBox>
+                <LinkBox>
+                  <Button active="Default">
+                    <LinkOverlay
+                      lineHeight="1.11"
+                      fontWeight="semibold"
+                      fontSize="18px"
+                      color="#534C46"
+                      textAlign="center"
+                      marginBottom={0}
+                      href="/admin/collections/markets"
+                    >
+                      Apply to Markets
+                    </LinkOverlay>
+                  </Button>
+                </LinkBox>
+              </Stack>
+            </Box>
+            </>
+          ) : null}
         </Flex>
         {user.role == "vendor" ? (
           <Standing user={user} />

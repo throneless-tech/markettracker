@@ -5,7 +5,7 @@ export const afterReadSeasons: CollectionAfterReadHook = async ({
   doc, // full document data
 }) => {
   console.log("doc:", doc);
-  if (doc.seasons.length && typeof doc.seasons[0] === "string") {
+  if (doc.seasons && doc.seasons.length && typeof doc.seasons[0] === "string") {
     console.log("Fetching seasons");
     const seasons = await payload.find({
       collection: "seasons",

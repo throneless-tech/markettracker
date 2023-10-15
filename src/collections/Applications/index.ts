@@ -1,7 +1,7 @@
 import { CollectionConfig } from "payload/types";
 import { createFieldVendor } from "./hooks/createFieldVendor";
 import CustomApplicationsEdit from "../../components/Applications/CustomApplicationsEdit";
-// import CustomApplicationsList from "../components/Applications/CustomApplicationsList";
+import CustomApplicationsList from "../../components/Applications/CustomApplicationsList";
 
 export const Applications: CollectionConfig = {
   slug: "applications",
@@ -9,7 +9,7 @@ export const Applications: CollectionConfig = {
     components: {
       views: {
         Edit: CustomApplicationsEdit,
-        // List: CustomApplicationsList,
+        List: CustomApplicationsList,
       },
     },
     useAsTitle: "name",

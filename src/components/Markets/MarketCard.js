@@ -45,14 +45,14 @@ const MarketCard = (props) => {
 
   const applyToMarket = (market) => {
     history.push({
-      pathname: `/admin/collections/markets/${market.id}/apply`,
+      pathname: `/admin/collections/applications/create`,
       state: market,
     });
   };
 
   const viewMarketApplications = (market) => {
     history.push({
-      pathname: `/admin/collections/markets/applications/${market.id}`,
+      pathname: `/admin/collections/applications`,
       state: market,
     });
   };
