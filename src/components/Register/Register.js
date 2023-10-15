@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useEffect, useState } from 'react'
-import Image from 'next/image'
 
 // chakra UI imports
 import {
@@ -11,44 +10,82 @@ import {
   CardBody,
   Center,
   HStack,
+  Image,
   Link,
   Stack,
   Text
 } from '@chakra-ui/react';
 
 // components + data
-import Footer from '../Components/Footer';
-import { steps } from '../Components/Register/Steps'
+import Footer from '../FooterAdmin';
+import Steps from './Steps'
 
 // icons + images
 import { ArrowBackIcon } from '@chakra-ui/icons'
 import { ArrowForwardIcon } from '@chakra-ui/icons'
 
-import background from '../../../public/login-background.jpg'
+import background from '../../assets/images/login-background.jpg'
 
 const Register = () => {
-  const [value, setValue] = useState('none');
+  const [businessCheck, setBusinessCheck] = useState('none');
   const [index, setIndex] = useState(0);
   const [primaryContact, setPrimaryContact] = useState(true);
   const [billingContact, setBillingContact] = useState(true);
-
-  function Step(props) {
-    return (
-      <>
-        {steps(props)}
-      </>
-    )
-  }
+  const [vendor, setVendor] = useState(null);
+  const [companyName, setCompanyName] = useState("");
+  const [userName, setUserName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
   function handleBackClick() {
     setIndex(index - 1);
   }
 
   function handleNextClick() {
-    setIndex(index + 1);
+    if (businessCheck == "none") {
+      setIndex(8);
+    } else if (index === 1) {
+      const createVendor = async () => {
+        try {
+          const req = await fetch('/api/users', {
+            method: "POST",
+            credentials: "include",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              name: userName,
+              email: email,
+              password: password,
+              role: "vendor",
+            }),
+          })
+          const data = await req.json()
+          setVendor(data.doc);
+          console.log(data);
+        } catch (err) {
+          console.log(err)
+        }
+
+      }
+
+      createVendor();
+
+      setIndex(index + 1);
+    } else {
+      setIndex(index + 1);
+    }
   }
 
-  useEffect(() => { }, [index]);
+  useEffect(() => { }, [
+    index,
+     businessCheck,
+     companyName,
+     email,
+     password,
+     userName,
+     vendor
+  ]);
 
   return (
     <Box>
@@ -59,19 +96,16 @@ const Register = () => {
           height: "100vh",
           width: "100vw",
           overflow: "hidden",
-          zIndex: "-1",
         }}
       >
         <Image
           alt=""
           src={background}
-          placeholder="blur"
-          quality={100}
-          fill
-          sizes="100vw"
-          style={{
+          sx={{
             backgroundRepeat: 'no-repeat',
             mixBlendMode: 'multiply',
+            maxHeight: "100%",
+            maxWidth: "unset",
             objectFit: 'cover',
             opacity: '80%',
           }}
@@ -90,10 +124,18 @@ const Register = () => {
           }}
         >
           <CardBody>
-            <Step
+            <Steps
               index={index}
-              value={value}
-              setValue={setValue}
+              businessCheck={businessCheck}
+              companyName={companyName}
+              userName={userName}
+              email={email}
+              password={password}
+              setBusinessCheck={setBusinessCheck}
+              setCompanyName={setCompanyName}
+              setUserName={setUserName}
+              setEmail={setEmail}
+              setPassword={setPassword}
               primaryContact={primaryContact}
               setPrimaryContact={setPrimaryContact}
               billingContact={billingContact}
@@ -151,6 +193,8 @@ const Register = () => {
                   </Link>
                 </HStack>
               </Center>
+            ) : index === 8 ? (
+              null
             ) : (
               <Center>
                 <HStack spacing={4}>
@@ -187,7 +231,7 @@ const Register = () => {
                   </Link>
                 </Stack>
               </Center>
-            ) : index > 1 ? (
+            ) : index > 1 && index < 8 ? (
               <Center marginTop={12}>
                 <Text as='div' color='gray.500'>
                   Progress: {index}/6

@@ -33,6 +33,10 @@ export const Users: CollectionConfig = {
     },
   },
   auth: true,
+  access: {
+    // Anyone can create a user
+    create: () => true,
+  },
   fields: [
     {
       name: "name",

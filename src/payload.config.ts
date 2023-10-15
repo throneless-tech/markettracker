@@ -27,7 +27,7 @@ import CustomLogo from "./components/CustomLogo";
 import CustomLogoutButton from "./components/CustomLogoutButton";
 import CustomProvider from "./styles/themeProvider";
 import CustomNav from "./components/CustomNav";
-import Register from "./components/Register";
+import Register from "./components/Register/Register";
 
 // utils
 import { withFormContext } from "./utils/withFormContext";
@@ -60,9 +60,10 @@ export default buildConfig({
       Nav: CustomNav,
       providers: [CustomProvider],
       routes: [
-        //   Component: Register,
-        //   path: '/register'
-        // }
+        {
+          Component: Register,
+          path: '/register'
+        }
       ],
       views: {
         Account: withFormContext(CustomAccount),

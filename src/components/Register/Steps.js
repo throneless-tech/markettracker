@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import {
   Button,
@@ -26,11 +26,14 @@ import {
 } from '@chakra-ui/react'
 
 // icons + images
-import LogoMarketTracker from "../assets/icons/logoMarketTracker.js"
+import LogoMarketTracker from "../../assets/icons/logoMarketTracker.js"
 
-const Register = (props) => {
+const Steps = (props) => {
+  console.log(props);
   const [show, setShow] = useState(false)
   const handleClick = () => setShow(!show)
+
+  useEffect(() => {}, [props]);
 
   return (
     <div key={props.index}>
@@ -41,13 +44,18 @@ const Register = (props) => {
             Vendor Registration
           </Heading>
           <Text as="div" marginTop={2} textAlign='center'>Please confirm your status to create an account</Text>
+          <Text as="div" marginTop={2} textAlign='center'>FRESHFARM only admits businesses that abide by our eligibility requirements and that meet our standards of quality, sustainability, and appropriateness. </Text>
+          <Heading as='h2' textStyle='h2' color='blue.500' size='lg' marginTop={12}>Producer-only Requirement</Heading>
+          <Text as='div'>
+            All businesses selling at FRESHFARM Markets must exclusively sell products that they have grown or produced. Absolutely NO resales or third-party sales are allowed.
+          </Text>
           <Heading as='h2' textStyle='h2' color='blue.500' size='lg' marginTop={12}>Local Requirement</Heading>
           <Stack spacing={4}>
             <Text as='div'>
-              FRESHFARM works to support local agriculture and improve the quality of life in Washington, DC, Maryland, and Virginia. Participation in the farmers markets is only for regional farmers who sell what they grow, raise or produce on their farm, and for local producers who make products featuring agricultural ingredients sourced from Mid-Atlantic farms, preferably within a 200-mile radius of Washington, DC.
+              Participation in the farmers markets is for regional farmers who sell what they grow, raise or produce on their farm, and for local producers who make products primarily featuring food that is grown in the Mid-Atlantic region. Applicants will only be considered eligible if they are within a 200-mile radius of the market to which they  have applied.
             </Text>
             <Text as='div'>
-              FRESHFARM gives strong preference to producers and concessionaires who maximize the use of local ingredients (produce, meat, dairy, eggs, grains, etc.) in the value-added foods sold at market.
+              FRESHFARM also invites the participation of local producers to promote culturally-specific foodways from their culture or country of origin. While all ingredients for these products may not be locally-grown year-round, FRESHFARM requires that these products feature local agricultural ingredients.
             </Text>
             <Divider sx={{ borderBottomWidth: 2, borderColor: 'gray.600', borderRadius: 2, opacity: 1, }} />
             <Stack spacing={0}>
@@ -58,7 +66,7 @@ const Register = (props) => {
                 Choose one that best describes your business
               </Text>
             </Stack>
-            <RadioGroup onChange={newValue => props.setValue(newValue)} value={props.value}>
+            <RadioGroup onChange={newValue => props.setBusinessCheck(newValue)} value={props.businessCheck}>
               <Stack>
                 <Radio value='farmer'>A regional farmer who sells what I produce</Radio>
                 <Radio value='producer'>A local producer who makes products featuring agricultural ingredients sourced from local farms</Radio>
@@ -75,11 +83,26 @@ const Register = (props) => {
           <Text as="div" marginTop={2} textAlign='center'>Please create an account</Text>
           <Center>
             <Stack marginTop={12} spacing={6} width={360}>
-              <Input placeholder='Business name' />
-              <Input placeholder='Your name' />
-              <Input placeholder='Your email' type='email' />
+              <Input
+                value={props.companyName}
+                onChange={event => props.setCompanyName(event.target.value)}
+                placeholder='Business name'
+              />
+              <Input
+                value={props.userName}
+                onChange={event => props.setUserName(event.target.value)}
+                placeholder='Your name'
+              />
+              <Input
+                value={props.email}
+                onChange={event => props.setEmail(event.target.value)}
+                placeholder='Your email'
+                type='email'
+              />
               <InputGroup>
                 <Input
+                  value={props.password}
+                  onChange={event => props.setPassword(event.target.value)}
                   placeholder='Password'
                   type={show ? 'text' : 'password'}
                 />
@@ -110,8 +133,17 @@ const Register = (props) => {
           </Heading>
           <Text as="div" marginTop={2} textAlign='center'>Please share your company information</Text>
           <HStack marginTop={12} spacing={4}>
-            <Input placeholder='Company name' />
-            <Input placeholder='Login email' type='email' />
+            <Input
+              value={props.companyName}
+              onChange={event => props.setCompanyName(event.target.value)}
+              placeholder='Company name'
+            />
+            <Input
+              value={props.email}
+              onChange={event => props.setEmail(event.target.value)}
+              placeholder='Login email'
+              type='email'
+            />
           </HStack>
           <Stack marginTop={4}>
             <Text as='div' textStyle='bodyMain' fontWeight={500}>
@@ -879,9 +911,22 @@ const Register = (props) => {
             Remember, a Jedi can feel the Force flowing through him. You are a part of the Rebel Alliance and a traitor! Take her away! I suggest you try it again, Luke. This time, let go your conscious self and act on instinct.
           </Text>
         </>
+      ) : props.index === 8 ? (
+        <>
+          <Heading as='h1' textStyle='h1' size='2xl' noOfLines={2} marginTop={12} textAlign='center'>
+            Vendor Registration
+          </Heading>
+          <Text as="div" marginTop={2} textAlign='center'>Please confirm your status to create an account</Text>
+          <Text as='div' textStyle='bodyMain' fontWeight={500} marginTop={8}>
+            To join FRESHFARM you must fulfill the producer-only and local sourcing requirement:
+          </Text>
+          <Text as='div' textStyle='bodyMain' fontWeight={500} >
+            If you do not currently meet these requirements, you are not eligible to apply for FRESHFARM markets. However, if you are a local producer who is interested in meeting these requirements in the future, we can support you in doing so.
+          </Text>
+        </>
       ) : null}
     </div>
   )
 }
 
-export default Register;
+export default Steps;
