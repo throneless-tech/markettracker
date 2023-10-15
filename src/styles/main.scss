@@ -175,7 +175,11 @@ p {
     width: 32px;
   }
 
-  .react-datepicker__day--selected {
+  .datepicker__day--keyboard-selected {
+    background-color: #fff !important;
+  }
+
+  .react-datepicker__day--selected, .vendor-select {
     background-color: #83913A;
     border: 1px solid #90B132;
     border-radius: 8px;

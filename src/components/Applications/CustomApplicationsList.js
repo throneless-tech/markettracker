@@ -22,18 +22,14 @@ import {
   Text,
 } from '@chakra-ui/react';
 
-// components
-import CustomNav from './CustomNav';
-import FooterAdmin from './FooterAdmin';
-
 // icons
-import StarIcon from '../assets/icons/star.js'
+import StarIcon from '../../assets/icons/star.js'
 
 function CustomApplications() {
   const history = useHistory();
   const marketId = history.location.pathname.split('/').pop();
   const [applications, setApplications] = useState([]);
-  const [ market, setMarket] = useState(null);
+  const [market, setMarket] = useState(null);
 
   useEffect(() => {
     const getApps = async () => {
@@ -54,11 +50,10 @@ function CustomApplications() {
     getMarket()
   }, [])
 
-  useEffect(() => {}, [applications, market])
+  useEffect(() => { }, [applications, market])
   if (applications && market) {
     return (
       <>
-        <CustomNav />
         <Container maxW='container.xl'>
           <Flex>
             <Heading as="h2" sx={{ textTransform: "uppercase" }} marginTop={4} >
@@ -76,7 +71,7 @@ function CustomApplications() {
                   <StarIcon height={8} width={8} />
                 </HStack>
               </>
-            ) : null}  
+            ) : null}
           </Flex>
           <Text>
             {market.description}
@@ -146,7 +141,6 @@ function CustomApplications() {
             </Table>
           </TableContainer>
         </Container>
-        <FooterAdmin />
       </>
     )
   }
