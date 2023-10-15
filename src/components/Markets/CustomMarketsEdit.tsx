@@ -649,9 +649,12 @@ function CustomMarketsEdit(props, { path }) {
                                     onChange={(newValue) =>
                                       setSeasons([{
                                         ...seasons[0],
-                                        isAccepting: newValue === 'true',
+                                        isAccepting: newValue === "true",
                                       }])}
-                                    value={seasons[0].isAccepting.toString()}
+                                    value={typeof seasons[0].isAccepting ===
+                                        "boolean"
+                                      ? seasons[0].isAccepting.toString()
+                                      : "false"}
                                   >
                                     <HStack marginRight={2}>
                                       <Radio colorScheme="green" value="true">
