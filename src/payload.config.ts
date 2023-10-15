@@ -31,6 +31,9 @@ import CustomProvider from "./styles/themeProvider";
 import CustomNav from "./components/CustomNav";
 import Register from "./components/Register";
 
+// utils
+import { withFormContext } from "./utils/withFormContext";
+
 // icons
 import CustomIcon from "./assets/icons/logo";
 
@@ -73,7 +76,7 @@ export default buildConfig({
         // }
       ],
       views: {
-        Account: CustomAccount,
+        Account: withFormContext(CustomAccount),
         Dashboard: CustomDashboard,
       },
     },
