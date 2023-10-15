@@ -83,6 +83,8 @@ function CustomApply(props) {
   //   return null;
   // }
 
+  console.log('props: ', props);
+
   const monthDiff = (d1, d2) => {
     let months;
     months = (d2.getFullYear() - d1.getFullYear()) * 12;

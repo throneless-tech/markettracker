@@ -5,6 +5,7 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
 // Payload imports
+import type { Season } from "payload/generated-types";
 import { useDocumentInfo } from "payload/components/utilities";
 import { useField, useForm } from "payload/components/forms";
 import { useAllFormFields } from 'payload/components/forms';
@@ -23,6 +24,7 @@ import {
   FormLabel,
   Heading,
   HStack,
+  Image,
   Input,
   Modal,
   ModalBody,
@@ -55,11 +57,16 @@ import Calendar from "../Calendar.js";
 
 // utils
 import formatTime from "../../utils/formatTime";
-import { withFormContext } from "../../utils/withFormContext.js";
 
 // icons
 import EditIcon from "../../assets/icons/edit.js";
 import StarIcon from "../../assets/icons/star.js";
+
+// images
+import stats1 from "../../assets/images/FF-sample-stats-1.jpg";
+import stats2 from "../../assets/images/FF-sample-stats-2.jpg";
+import stats3 from "../../assets/images/FF-sample-stats-3.jpg";
+import stats4 from "../../assets/images/FF-sample-stats-4.jpg";
 
 function CustomMarketsEdit(props, { path }) {
   const { submit } = useForm();
@@ -78,7 +85,7 @@ function CustomMarketsEdit(props, { path }) {
   const { value: size, setValue: setSize } = useField<string>({ path: "size" });
   const { value: focus, setValue: setFocus } = useField<Array<string>>({ path: "focus" });
   const { value: description, setValue: setDescription } = useField<string>({ path: "description" });
-  const { value: seasons, setValue: setSeasons } = useField<Array<string>>({ path: "seasons" });
+  const { value: seasons, setValue: setSeasons } = useField<Season[]>({ path: "seasons" });
 
   const submitForm = () => {
     submit();
@@ -750,6 +757,10 @@ function CustomMarketsEdit(props, { path }) {
                         sx={{ borderColor: "gray.600", borderBottomWidth: 2 }}
                       />
                     </HStack>
+                    <Image src={stats1} alt='A sample of a pie chart showing product make up, to be filled in with an interactive graph in the future.' />
+                    <Image src={stats2} alt='A sample of a bar graph showing monthly sales compared over the years, to be filled in with an interactive graph in the future.' />
+                    <Image src={stats3} alt='A sample of a bar graph showing weekly sales by product type, to be filled in with an interactive graph in the future.' />
+                    <Image src={stats4} alt='A sample of a bar graph showing monthly sales by vendor, to be filled in with an interactive graph in the future.' />
                     <HStack marginTop={4}>
                       <Text
                         color={"gray.700"}

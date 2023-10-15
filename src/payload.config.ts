@@ -68,7 +68,7 @@ export default buildConfig({
         },
         {
           Component: CustomApply,
-          path: '/collections/markets/:id/apply'
+          path: '/collections/markets/:id/apply',
         },
         // {
         //   Component: Register,

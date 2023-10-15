@@ -57,7 +57,7 @@ const CustomDashboard = () => {
   const [fields, dispatchFields] = useAllFormFields();
   const { value: name, setValue: setName } = useField < string > ({ path: "name" });
 
-  console.log(fields);
+  console.log(name);
 
   useEffect(() => {}, [fields])
 
