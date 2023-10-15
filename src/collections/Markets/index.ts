@@ -13,6 +13,9 @@ export const Markets: CollectionConfig = {
         List: CustomMarketsList,
       },
     },
+    pagination: {
+      defaultLimit: 20,
+    },
     useAsTitle: "name",
   },
   fields: [

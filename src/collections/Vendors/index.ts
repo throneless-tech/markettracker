@@ -13,6 +13,9 @@ export const Vendors: CollectionConfig = {
         List: CustomVendorsList,
       },
     },
+    pagination: {
+      defaultLimit: 100,
+    },
     useAsTitle: "name",
   },
   hooks: {

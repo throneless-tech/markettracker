@@ -165,7 +165,12 @@ function CustomMarketsEdit(props, { path }) {
                         <>
                           <Spacer />
                           <HStack spacing={4}>
-                            <Button size="md" borderColor={"gray.700"}>
+                            <Button
+                              as="a"
+                              href="/admin/collections/applications"
+                              size="md"
+                              borderColor={"gray.700"}
+                            >
                               Review market applications
                             </Button>
                             <Button size="md" borderColor={"gray.700"}>
