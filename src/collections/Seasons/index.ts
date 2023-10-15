@@ -25,6 +25,7 @@ export const Seasons: CollectionConfig = {
       name: "isAccepting",
       label: "Accepting Applications",
       type: "checkbox",
+      required: true,
     },
     {
       name: "marketDates",
@@ -274,11 +275,11 @@ export const Seasons: CollectionConfig = {
       type: "relationship",
       relationTo: "markets",
       required: true,
-      filterOptions: ({relationTo}) => {
+      filterOptions: ({ relationTo }) => {
         if (relationTo === "markets") {
           return {
-            name: { exists: true }
-          }
+            name: { exists: true },
+          };
         }
       },
     },

@@ -1,7 +1,8 @@
 import { CollectionConfig } from "payload/types";
-import { withFormContext } from "../utils/withFormContext";
-import CustomMarketsEdit from "../components/Markets/CustomMarketsEdit";
-import CustomMarketsList from "../components/Markets/CustomMarketsList";
+import { withFormContext } from "../../utils/withFormContext";
+import CustomMarketsEdit from "../../components/Markets/CustomMarketsEdit";
+import CustomMarketsList from "../../components/Markets/CustomMarketsList";
+import { afterReadSeasons } from "./hooks/populateSeasons";
 
 export const Markets: CollectionConfig = {
   slug: "markets",
@@ -175,4 +176,7 @@ export const Markets: CollectionConfig = {
       hasMany: true,
     },
   ],
+  hooks: {
+    afterRead: [afterReadSeasons],
+  },
 };
