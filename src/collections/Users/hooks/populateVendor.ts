@@ -42,7 +42,7 @@ export const beforeValidateVendor: CollectionBeforeValidateHook = async ({
         data: data.vendor,
       });
     }
+    return { ...data, vendor: data.vendor.id };
   }
-
-  return { ...data, vendor: data.vendor.id };
+  return data;
 };
