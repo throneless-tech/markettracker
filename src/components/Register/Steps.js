@@ -1,4 +1,9 @@
 import React, { useEffect, useState } from 'react';
+import { pdfjs } from 'react-pdf';
+
+pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.js`;
+
+import { Document, Page } from 'react-pdf';
 
 import {
   Button,
@@ -7,13 +12,25 @@ import {
   CheckboxGroup,
   Divider,
   Flex,
+  FormControl,
+  FormErrorMessage,
+  FormHelperText,
+  FormLabel,
   Heading,
   HStack,
   Input,
   InputGroup,
   InputRightElement,
+  Link,
   List,
   ListItem,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalFooter,
+  ModalBody,
+  ModalCloseButton,
   OrderedList,
   Radio,
   RadioGroup,
@@ -23,14 +40,23 @@ import {
   Textarea,
   Wrap,
   WrapItem,
+  useDisclosure,
 } from '@chakra-ui/react'
 
 // icons + images
-import LogoMarketTracker from "../../assets/icons/logoMarketTracker.js"
+import { ArrowForwardIcon } from '@chakra-ui/icons';
+import LogoMarketTracker from "../../assets/icons/logoMarketTracker.js";
 
 const Steps = (props) => {
-  const [show, setShow] = useState(false)
-  const handleClick = () => setShow(!show)
+  const [numPages, setNumPages] = useState();
+  const [pageNumber, setPageNumber] = useState(1);
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const [show, setShow] = useState(false);
+  const handleClick = () => setShow(!show);
+
+  function onDocumentLoadSuccess({ numPages }) {
+    setNumPages(numPages);
+  }
 
   useEffect(() => {}, [props]);
 
@@ -82,46 +108,64 @@ const Steps = (props) => {
           <Text as="div" marginTop={2} textAlign='center'>Please create an account</Text>
           <Center>
             <Stack marginTop={12} spacing={6} width={360}>
-              <Input
-                value={props.companyName}
-                onChange={event => props.setCompanyName(event.target.value)}
-                placeholder='Business name'
-              />
-              <Input
-                value={props.userName}
-                onChange={event => props.setUserName(event.target.value)}
-                placeholder='Your name'
-              />
-              <Input
-                value={props.email}
-                onChange={event => props.setEmail(event.target.value)}
-                placeholder='Your email'
-                type='email'
-              />
-              <InputGroup>
+              <FormControl isInvalid={props.errorCompanyName} isRequired>
                 <Input
-                  value={props.password}
-                  onChange={event => props.setPassword(event.target.value)}
-                  placeholder='Password'
-                  type={show ? 'text' : 'password'}
+                  value={props.companyName}
+                  onChange={event => props.setCompanyName(event.target.value)}
+                  placeholder='Business name'
                 />
-                <InputRightElement width='4.5rem'>
-                  <Button h='1.75rem' size='sm' onClick={handleClick}>
-                    {show ? 'Hide' : 'Show'}
-                  </Button>
-                </InputRightElement>
-              </InputGroup>
-              <InputGroup>
+                <FormErrorMessage>Business name is required.</FormErrorMessage>
+              </FormControl>
+              <FormControl isInvalid={props.errorUserName} isRequired>
                 <Input
-                  placeholder='Confirm password'
-                  type={show ? 'text' : 'password'}
+                  value={props.userName}
+                  onChange={event => props.setUserName(event.target.value)}
+                  placeholder='Your name'
                 />
-                <InputRightElement width='4.5rem'>
-                  <Button h='1.75rem' size='sm' onClick={handleClick}>
-                    {show ? 'Hide' : 'Show'}
-                  </Button>
-                </InputRightElement>
-              </InputGroup>
+                <FormErrorMessage>Your name is required.</FormErrorMessage>
+              </FormControl>
+              <FormControl isInvalid={props.errorEmail} isRequired>
+                <Input
+                  value={props.email}
+                  onChange={event => props.setEmail(event.target.value)}
+                  placeholder='Your email'
+                  type='email'
+                />
+                <FormErrorMessage>Email is required.</FormErrorMessage>
+              </FormControl>
+              <FormControl isInvalid={props.errorPassword} isRequired>
+                <InputGroup>
+                  <Input
+                    value={props.password}
+                    onChange={event => props.setPassword(event.target.value)}
+                    placeholder='Password'
+                    type={show ? 'text' : 'password'}
+                  />
+                  <InputRightElement width='4.5rem'>
+                    <Button h='1.75rem' size='sm' onClick={handleClick}>
+                      {show ? 'Hide' : 'Show'}
+                    </Button>
+                  </InputRightElement>
+                </InputGroup>
+                <FormErrorMessage>Password must be at least 8 characters.</FormErrorMessage>
+              </FormControl>
+              <FormControl isInvalid={props.errorPasswordConfirm} isRequired>
+                <InputGroup>
+                  <Input
+                    value={props.passwordConfirm}
+                    onChange={event => props.setPasswordConfirm(event.target.value)}
+                    placeholder='Confirm password'
+                    type={show ? 'text' : 'password'}
+                  />
+                  <InputRightElement width='4.5rem'>
+                    <Button h='1.75rem' size='sm' onClick={handleClick}>
+                      {show ? 'Hide' : 'Show'}
+                    </Button>
+                  </InputRightElement>
+                </InputGroup>
+                <FormErrorMessage>Passwords must match.</FormErrorMessage>
+              </FormControl>
+
             </Stack>
           </Center>
         </>
@@ -150,8 +194,8 @@ const Steps = (props) => {
             </Text>
             <RadioGroup onChange={newValue => props.setPrimaryContact(newValue)} >
               <Stack>
-                <Radio value={true}>Yes</Radio>
-                <Radio value={false}>No</Radio>
+                <Radio value={"true"}>Yes</Radio>
+                <Radio value={"false"}>No</Radio>
               </Stack>
             </RadioGroup>
             <Text as='div' textStyle='bodyMain' fontWeight={500}>
@@ -168,10 +212,27 @@ const Steps = (props) => {
             <Text as='div' textStyle='bodyMain' fontWeight={500}>
               Company address (required)
             </Text>
-            <Input placeholder='Street' isRequired />
+            <Input
+              value={props.street}
+              onChange={event => props.setStreet(event.target.value)}
+              placeholder='Street'
+              isRequired
+            />
             <Flex gap={2}>
-              <Input placeholder='City' flex={6} isRequired />
-              <Select placeholder='State' flex={2} isRequired>
+              <Input
+                value={props.city}
+                onChange={event => props.setCity(event.target.value)}
+                placeholder='City'
+                flex={6}
+                isRequired
+              />
+              <Select
+                value={props.state}
+                onChange={event => props.setState(event.target.value)}
+                placeholder='State'
+                flex={2}
+                isRequired
+              >
                 <option value="AK">AK</option>
                 <option value="AL">AL</option>
                 <option value="AR">AR</option>
@@ -224,14 +285,27 @@ const Steps = (props) => {
                 <option value="WV">WV</option>
                 <option value="WY">WY</option>
               </Select>
-              <Input placeholder='Zipcode' flex={3} type='number' isRequired />
+              <Input
+                value={props.zipcode}
+                onChange={event => props.setZipcode(event.target.value)}
+                placeholder='Zipcode'
+                flex={3}
+                type='number'
+                isRequired
+              />
             </Flex>
           </Stack>
           <Stack spacing={2} marginTop={4}>
             <Text as='div' textStyle='bodyMain' fontWeight={500}>
               Company phone number (required)
             </Text>
-            <Input placeholder='xxx-xxx-xxxx' type='tel' isRequired />
+            <Input
+              value={props.phoneNumber}
+              onChange={event => props.setPhoneNumber(event.target.value)}
+              placeholder='xxx-xxx-xxxx'
+              type='tel'
+              isRequired
+            />
           </Stack>
           <Stack spacing={2} marginTop={4}>
             <Text as='div' textStyle='bodyMain' fontWeight={500}>
@@ -240,13 +314,22 @@ const Steps = (props) => {
             <Text as="div" color='gray.400' fontSize={14}>
               Add a statement of explanation.
             </Text>
-            <Textarea placeholder='Start typing...' />
+            <Textarea
+              value={props.description}
+              onChange={event => props.setDescription(event.target.value)}
+              placeholder='Start typing...'
+            />
           </Stack>
           <Stack spacing={2} marginTop={4}>
             <Text as='div' textStyle='bodyMain' fontWeight={500}>
               Year company established
             </Text>
-            <Input placeholder='eg. 2017' type='number' />
+            <Input
+              value={props.yearEstablished}
+              onChange={event => props.setYearEstablished(event.target.value)}
+              placeholder='eg. 2017'
+              type='number'
+            />
           </Stack>
           <Stack spacing={2} marginTop={4}>
             <Text as='div' textStyle='bodyMain' fontWeight={500}>
@@ -260,31 +343,56 @@ const Steps = (props) => {
                 <Text as='span' paddingRight={2} textStyle='bodyMain' fontWeight={500}>
                   Full time
                 </Text>
-                <Input maxWidth={160} placeholder='# of full time staff' />
+                <Input
+                  value={props.fullTime}
+                  onChange={event => props.setFullTime(event.target.value)}
+                  maxWidth={160}
+                  placeholder='# of full time staff'
+                />
               </WrapItem>
               <WrapItem alignItems='center' >
                 <Text as='span' paddingRight={2} textStyle='bodyMain' fontWeight={500}>
                   Part time
                 </Text>
-                <Input maxWidth={160} placeholder='# of part time staff' />
+                <Input
+                  value={props.partTime}
+                  onChange={event => props.setPartTime(event.target.value)}
+                  maxWidth={160}
+                  placeholder='# of part time staff'
+                />
               </WrapItem>
               <WrapItem alignItems='center' >
                 <Text as='span' paddingRight={2} textStyle='bodyMain' fontWeight={500}>
                   Interns
                 </Text>
-                <Input maxWidth={160} placeholder='# of interns' />
+                <Input
+                  value={props.interns}
+                  onChange={event => props.setInterns(event.target.value)}
+                  maxWidth={160}
+                  placeholder='# of interns'
+                />
               </WrapItem>
               <WrapItem alignItems='center' >
                 <Text as='span' paddingRight={2} textStyle='bodyMain' fontWeight={500}>
                   H2A
                 </Text>
-                <Input maxWidth={160} placeholder='# of H2A' />
+                <Input
+                  value={props.h2a}
+                  onChange={event => props.setH2a(event.target.value)}
+                  maxWidth={160}
+                  placeholder='# of H2A'
+                />
               </WrapItem>
               <WrapItem alignItems='center' >
                 <Text as='span' paddingRight={2} textStyle='bodyMain' fontWeight={500}>
                   Volunteers
                 </Text>
-                <Input maxWidth={160} placeholder='# of volunteers' />
+                <Input
+                  value={props.volunteers}
+                  onChange={event => props.setVolunteers(event.target.value)}
+                  maxWidth={160}
+                  placeholder='# of volunteers'
+                />
               </WrapItem>
             </Wrap>
           </Stack>
@@ -292,7 +400,7 @@ const Steps = (props) => {
       ) : props.index === 3 ? (
         <>
           <Heading as='h1' textStyle='h1' size='xl' noOfLines={2} marginTop={12} textAlign='center'>
-            [Vendor's Name] Company Info
+            {props.companyName} Company Info
           </Heading>
           <Text as="div" marginTop={2} textAlign='center'>Please share your company information</Text>
           <Flex align='center' justify='space-between' marginTop={8}>
@@ -305,7 +413,13 @@ const Steps = (props) => {
             <Text as='div' textStyle='bodyMain' fontWeight={500}>
               What type of vendor are you? (required)
             </Text>
-            <Select placeholder='Farm, Non Farm' flex={2} isRequired>
+            <Select
+              value={props.type}
+              onChange={event => props.setType(event.target.value)}
+              placeholder='Farm, Non Farm'
+              flex={2}
+              isRequired
+            >
               <option value="farm">Farm</option>
               <option value="producer">Producer</option>
             </Select>
@@ -317,7 +431,13 @@ const Steps = (props) => {
             <Text as='div' textStyle='bodyMain' fontWeight={500}>
               What is the structure of your business? (required)
             </Text>
-            <Select placeholder='LLC, sole proprietor, nonprofit, etc' flex={2} isRequired>
+            <Select
+              value={props.structure}
+              onChange={event => props.setStructure(event.target.value)}
+              placeholder='LLC, sole proprietor, nonprofit, etc'
+              flex={2}
+              isRequired
+            >
               <option value="farm">LLC</option>
               <option value="soleProprietor">Sole proprietor</option>
               <option value="nonprofit">Nonprofit</option>
@@ -333,7 +453,11 @@ const Steps = (props) => {
             <Text as='div' color='gray.500'>
               Check all that apply
             </Text>
-            <CheckboxGroup colorScheme='green'>
+            <CheckboxGroup
+              colorScheme='green'
+              value={props.growingPractices}
+              onChange={newValue => props.setGrowingPractices(newValue)}
+            >
               <Stack>
                 <Checkbox value='organicManagement'>Organic Management</Checkbox>
                 <Checkbox value='certifiedNaturallyGrown'>Certified Naturally Grown</Checkbox>
@@ -351,7 +475,11 @@ const Steps = (props) => {
             <Text as='div' color='gray.500'>
               Check all that apply
             </Text>
-            <CheckboxGroup colorScheme='green'>
+            <CheckboxGroup
+              colorScheme='green'
+              value={props.sellingLocally}
+              onChange={event => props.setSellingLocally(event.target.value)}
+            >
               <Stack>
                 <Checkbox value='nowhere'>Nowhere yet</Checkbox>
                 <Checkbox value='freshfarm'>At FreshFarm markets</Checkbox>
@@ -492,25 +620,25 @@ const Steps = (props) => {
           <Text as='div' textStyle='bodyMain' fontWeight={500}>
             Do you work out of a shared kitchen?
           </Text>
-          <RadioGroup onChange={newValue => props.setSharedKitchenValue(newValue)} value={props.sharedKitchenValue}>
+          <RadioGroup onChange={newValue => props.setSharedKitchen(newValue)} value={props.sharedKitchen}>
             <Stack marginTop={1}>
               <HStack>
-                <Radio value={true}>Yes</Radio>
+                <Radio value={"true"}>Yes</Radio>
                 <Input marginLeft={2} variant='filled' placeholder='Please share the name of the kitchen' />
               </HStack>
-              <Radio value={false}>No</Radio>
+              <Radio value={"false"}>No</Radio>
             </Stack>
           </RadioGroup>
           <Text as='div' textStyle='bodyMain' fontWeight={500}>
             Do you use a co-packer?
           </Text>
-          <RadioGroup onChange={newValue => props.setCopackerValue(newValue)} value={props.copackerKitchenValue}>
+          <RadioGroup onChange={newValue => props.setCopacker(newValue)} value={props.copackerKitchen}>
             <Stack marginTop={1}>
               <HStack>
-                <Radio value={true}>Yes</Radio>
+                <Radio value={"true"}>Yes</Radio>
                 <Input marginLeft={2} variant='filled' placeholder='Please share the name of the co-packer' />
               </HStack>
-              <Radio value={false}>No</Radio>
+              <Radio value={"false"}>No</Radio>
             </Stack>
           </RadioGroup>
           <Flex align='center' justify='flex-start' marginTop={8}>
@@ -522,7 +650,56 @@ const Steps = (props) => {
           <Text as='div' textStyle='bodyMain' marginTop={4}>
             Add all the members of your staff that will be manning your booth(s); these contacts will be visible to managers of the markets you participate in.
           </Text>
-          <Button marginTop={4}>Add contact</Button>
+          <Button onClick={onOpen} marginTop={4} rightIcon={<ArrowForwardIcon />} >
+            Add a contact
+          </Button>
+          <Modal isOpen={isOpen} onClose={onClose} size={"xl"}>
+            <ModalOverlay />
+            <ModalContent background={'gray.600'} color={'gray.50'}>
+              <ModalHeader>
+                <Stack textAlign={"center"} spacing={1}>
+                  <Heading marginBottom={0}>
+                    Add a contact
+                  </Heading>
+                  <Text>
+                    Please fill in requested information to create a new contact
+                  </Text>
+                </Stack>
+              </ModalHeader>
+              <ModalCloseButton />
+              <ModalBody>
+                <FormControl marginBottom={4}>
+                  <FormLabel>Contact name (required)</FormLabel>
+                  <Input />
+                </FormControl>
+                <FormControl marginBottom={4}>
+                  <FormLabel>Contact email address (required)</FormLabel>
+                  <Input type='email' />
+                </FormControl>
+                <FormControl marginBottom={6}>
+                  <FormLabel>Contact phone number (required)</FormLabel>
+                  <Input type='number' />
+                </FormControl>
+                <FormControl marginBottom={4}>
+                  <FormLabel>Type of contact</FormLabel>
+                  <FormHelperText color={'gray.50'} marginBottom={2}>Select the type(s) that best describes this contact’s responsibility for the business</FormHelperText>
+                  <CheckboxGroup colorScheme='brown' defaultValue={[]}>
+                    <Stack spacing={[1, 5]} direction={['column', 'row']}>
+                      <Checkbox value='primary'>Primary</Checkbox>
+                      <Checkbox value='billing'>Billing/financial</Checkbox>
+                      <Checkbox value='market'>At-market</Checkbox>
+                    </Stack>
+                  </CheckboxGroup>
+                </FormControl>
+              </ModalBody>
+              <ModalFooter>
+                <Button colorScheme='brown' variant='solid' mr={3}>Save</Button>
+                <Button color={'gray.50'} colorScheme='brown' variant={"outline"} onClick={onClose}>
+                  Cancel
+                </Button>
+              </ModalFooter>
+            </ModalContent>
+          </Modal>
           <Flex align='center' justify='flex-start' marginTop={8}>
             <Heading as='h2' fontFamily={'font.body'} textStyle='h4' size='md' width={'36%'}>
               Paper work
@@ -555,50 +732,50 @@ const Steps = (props) => {
           <Text as='div' textStyle='bodyMain' fontWeight={500} marginTop={8}>
             Is the business owner a first generation farmer?
           </Text>
-          <RadioGroup onChange={newValue => props.setfirstGen(newValue)} marginTop={2} >
+          <RadioGroup onChange={newValue => props.setfirstGeneration(newValue)} marginTop={2} >
             <HStack spacing={4}>
-              <Radio value={true}>Yes</Radio>
-              <Radio value={false}>No</Radio>
+              <Radio value={"true"}>Yes</Radio>
+              <Radio value={"false"}>No</Radio>
               <Radio value='NA'>Prefer not to answer</Radio>
             </HStack>
           </RadioGroup>
           <Text as='div' textStyle='bodyMain' fontWeight={500} marginTop={8}>
             Is this a veteran-owned busines?
           </Text>
-          <RadioGroup onChange={newValue => props.setVeteran(newValue)} marginTop={2} >
+          <RadioGroup onChange={newValue => props.setVeteranOwned(newValue)} marginTop={2} >
             <HStack spacing={4}>
-              <Radio value={true}>Yes</Radio>
-              <Radio value={false}>No</Radio>
+              <Radio value={"true"}>Yes</Radio>
+              <Radio value={"false"}>No</Radio>
               <Radio value='NA'>Prefer not to answer</Radio>
             </HStack>
           </RadioGroup>
           <Text as='div' textStyle='bodyMain' fontWeight={500} marginTop={8}>
             Do any of the business owners identify as Black, Indigenous, and/or a Person of Color?
           </Text>
-          <RadioGroup onChange={newValue => props.setPrimaryContact(newValue)} marginTop={2} >
+          <RadioGroup onChange={newValue => props.setBipoc(newValue)} marginTop={2} >
             <HStack spacing={4}>
-              <Radio value={true}>Yes</Radio>
-              <Radio value={false}>No</Radio>
+              <Radio value={"true"}>Yes</Radio>
+              <Radio value={"false"}>No</Radio>
               <Radio value='NA'>Prefer not to answer</Radio>
             </HStack>
           </RadioGroup>
           <Text as='div' textStyle='bodyMain' fontWeight={500} marginTop={8}>
             Is this an immigrant or refugee-owned business?
           </Text>
-          <RadioGroup onChange={newValue => props.setPrimaryContact(newValue)} marginTop={2} >
+          <RadioGroup onChange={newValue => props.setImmigrantOrRefugee(newValue)} marginTop={2} >
             <HStack spacing={4}>
-              <Radio value={true}>Yes</Radio>
-              <Radio value={false}>No</Radio>
+              <Radio value={"true"}>Yes</Radio>
+              <Radio value={"false"}>No</Radio>
               <Radio value='NA'>Prefer not to answer</Radio>
             </HStack>
           </RadioGroup>
           <Text as='div' textStyle='bodyMain' fontWeight={500} marginTop={8}>
             Is this an LGBTQIA+ (lesbian, gay, bisexual, transgender, queer, intersex, asexual, plus) owned business?
           </Text>
-          <RadioGroup onChange={newValue => props.setPrimaryContact(newValue)} marginTop={2} >
+          <RadioGroup onChange={newValue => props.setLgbtqia(newValue)} marginTop={2} >
             <HStack spacing={4}>
-              <Radio value={true}>Yes</Radio>
-              <Radio value={false}>No</Radio>
+              <Radio value={"true"}>Yes</Radio>
+              <Radio value={"false"}>No</Radio>
               <Radio value='NA'>Prefer not to answer</Radio>
             </HStack>
           </RadioGroup>
@@ -619,31 +796,50 @@ const Steps = (props) => {
             <Text as='div' textStyle='bodyMain' fontWeight={500}>
               Website address
             </Text>
-            <Input placeholder='www.yourcompany.com' type='url' />
+            <Input
+              value={props.website}
+              onChange={event => props.setWebsite(event.target.value)}
+              placeholder='www.yourcompany.com' type='url' />
           </Stack>
           <Stack marginTop={4}>
             <Text as='div' textStyle='bodyMain' fontWeight={500}>
               Instagram handle
             </Text>
-            <Input placeholder='@yourcompany' />
+            <Input
+              value={props.instagram}
+              onChange={event => props.setInstagram(event.target.value)}
+              placeholder='@yourcompany'
+            />
           </Stack>
           <Stack marginTop={4}>
             <Text as='div' textStyle='bodyMain' fontWeight={500}>
               Twitter handle
             </Text>
-            <Input placeholder='@yourcompany' />
+            <Input
+              value={props.twitter}
+              onChange={event => props.setTwitter(event.target.value)}
+              placeholder='@yourcompany'
+            />
           </Stack>
           <Stack marginTop={4}>
             <Text as='div' textStyle='bodyMain' fontWeight={500}>
               Facebook page
             </Text>
-            <Input placeholder='facebook.com/yourcompany' />
+            <Input
+              value={props.facebook}
+              onChange={event => props.setFacebook(event.target.value)}
+              placeholder='facebook.com/yourcompany'
+            />
           </Stack>
           <Stack marginTop={4}>
             <Text as='div' textStyle='bodyMain' fontWeight={500}>
               Online store
             </Text>
-            <Input placeholder='shop.yourcompany.com' />
+            <Input
+              value={props.store}
+              onChange={event => props.setStore(event.target.value)}
+              placeholder='shop.yourcompany.com'
+            />
           </Stack>
           <Stack marginTop={4}>
             <Text as='div' textStyle='bodyMain' fontWeight={500}>
@@ -652,7 +848,10 @@ const Steps = (props) => {
             <Text as="div" color='gray.400' fontSize={14}>
               If you have a newsletter or other online marketing tools to share with us, please do so here
             </Text>
-            <Textarea placeholder='Start typing...' />
+            <Textarea
+              value={props.otherSocial}
+              onChange={event => props.setOtherSocial(event.target.value)}
+              placeholder='Start typing...' />
           </Stack>
           <Stack marginTop={4}>
             <Text as='div' textStyle='bodyMain' fontWeight={500}>
@@ -670,7 +869,7 @@ const Steps = (props) => {
             <Text as='div' textStyle='bodyMain' fontWeight={500}>
               Would you like to use a FreshFarm tent? If yes, choose a size.
             </Text>
-            <RadioGroup onChange={newValue => props.setTentSize(newValue)} value={props.tentSize}>
+            <RadioGroup onChange={newValue => props.setTent(newValue)} value={props.tent}>
               <HStack spacing={6}>
                 <Radio value='1'>Size 1</Radio>
                 <Radio value='2'>Size 2</Radio>
@@ -683,7 +882,7 @@ const Steps = (props) => {
             <Text as='div' textStyle='bodyMain' fontWeight={500}>
               Do you need access to a generator?
             </Text>
-            <RadioGroup onChange={newValue => props.setNeedGenerator(newValue)} value={props.needGenerator}>
+            <RadioGroup onChange={newValue => props.setGenerator(newValue)} value={props.generator}>
               <HStack spacing={6}>
                 <Radio value={true}>Yes</Radio>
                 <Radio value={false}>No</Radio>
@@ -694,7 +893,7 @@ const Steps = (props) => {
             <Text as='div' textStyle='bodyMain' fontWeight={500}>
               Will you need to bring a vehicle into the market?
             </Text>
-            <RadioGroup onChange={newValue => props.setNeedVehicle(newValue)} value={props.needVehicle}>
+            <RadioGroup onChange={newValue => props.setVehicle(newValue)} value={props.vehicle}>
               <HStack spacing={6}>
                 <Radio value={true}>Yes</Radio>
                 <Radio value={false}>No</Radio>
@@ -836,66 +1035,72 @@ const Steps = (props) => {
             <Text as="div" color='gray.400' fontSize={14}>
               List vendors outside of FreshFarm that you source ingredients from
             </Text>
-            <Textarea placeholder='Start typing...' />
+            <Textarea
+              value={props.outsideVendors}
+              onChange={event => props.setOutsideVendors(event.target.value)}
+              placeholder='Start typing...'
+            />
             <Text as="div" color='gray.400' fontSize={14}>
               List FreshFarm vendors you source ingredients from
             </Text>
-            <Textarea placeholder='Start typing...' />
+            <Textarea
+              value={props.freshfarmVendors}
+              onChange={event => props.setFreshfarmVendors(event.target.value)}
+              placeholder='Start typing...'
+            />
           </Stack>
         </>
       ) : props.index === 6 ? (
         <>
           <Flex align='center' justify='flex-start' marginTop={8}>
             <Heading as='h2' fontFamily={'font.body'} textStyle='h4' size='md' width={'100%'} >
-              Terms
+              Market rules and regulations
             </Heading>
             <Divider color='gray.700' borderBottomWidth={2} opacity={1} />
           </Flex>
           <Stack marginTop={4} spacing={4}>
             <Text as='div' textStyle='bodyMain' fontWeight={500} >
-              As a private nonprofit organization, FRESHFARM has the right to implement rules to ensure our farmers markets are safe and prosperous. Everyone who enters the market’s permitted space is required to comply with FRESHFARM’s market rules as outlined below. Anyone that demonstrates behavior considered threatening or disruptive to market operations will be asked to leave at the discretion of market management. Failure to comply with the rules will result in immediate suspension or expulsion from the market space.
+              Please read this document carefully to ensure that you fully understand and agree to FRESHFARM market rules regarding the following
             </Text>
             <OrderedList fontSize={'sm'} spacing={2}>
               <ListItem>
-                Customers, vendors, and market staff may not participate in activities within the market space that impedes or disrupts ongoing market operations.
+                Application procedures & fees
               </ListItem>
               <ListItem>
-                Disruptive behaviors, threats, or any acts of violence will not be tolerated.
+                Eligibility requirements
               </ListItem>
               <ListItem>
-                Language that disrupts market operations will not be tolerated. Examples include shouting, berating, cursing, etc.
+                Product guidelines
               </ListItem>
               <ListItem>
-                Signs and flyers are not permitted to be displayed or distributed within the market space unless approved by market management.
+                Market operations
               </ListItem>
               <ListItem>
-                While elected officials are permitted to engage with their constituents at markets, campaigning for political candidates is strictly prohibited due to our 501(c)(3) status.
+                Stall requirements
               </ListItem>
               <ListItem>
-                Harassment of any nature will not be tolerated.
+                Market conduct
               </ListItem>
               <ListItem>
-                Firearms and other weapons are not welcomed.
+                Rule violations
               </ListItem>
               <ListItem>
-                All customers, vendors, and staff must adhere to FRESHFARM’s COVID-19 safety policies.
-              </ListItem>
-              <ListItem>
-                Dogs must have the ability to walk through the market without lunging, barking excessively, or jumping on others.
+                Sales reporting, coupon acceptance, & market fees.
               </ListItem>
             </OrderedList>
-            <Heading as='h3' fontFamily={'font.body'} textStyle='h5' size='sm'>
-              Producer-only requirement
-            </Heading>
             <Text as='div' textStyle='bodyMain' fontWeight={500} >
-              All businesses selling at FRESHFARM Markets must exclusively sell products that they have grown or produced. Absolutely NO resales or third-party sales are allowed.
+              As a private nonprofit organization, FRESHFARM has the right to implement rules to ensure our farmers markets uphold our organization’s values, promote a thriving food economy, and prioritize public safety.
             </Text>
-            <Heading as='h3' fontFamily={'font.body'} textStyle='h5' size='sm'>
-              Commitment to equity
-            </Heading>
+            {/* <Document file="../../assets/documents/ff-rules.pdf" onLoadSuccess={onDocumentLoadSuccess}>
+              <Page pageNumber={pageNumber} />
+            </Document> */}
+
             <Text as='div' textStyle='bodyMain' fontWeight={500} >
-              FRESHFARM is committed to diversity and building an equitable and inclusive marketplace for people of all backgrounds and experiences. We encourage members of traditionally underrepresented groups to apply to sell at market, including people of color, LGBTQ+ people, veterans, and people with disabilities. We do not discriminate and will take affirmative action measures to prevent discrimination against any vendor or applicant on the basis of race, color, national origin, gender, gender identity, gender expression, sexual orientation, age, religion, creed, disability, or veteran status.
+              You must read through <Link isExternal href="https://docs.google.com/document/d/1uyRewIiHVbMDPRCNaLaralgs6pNlJqziqf2e9HbuBKY/edit#heading=h.uhb92m9qjumv">this document</Link> before continuing.
             </Text>
+            <Checkbox value={props.iAccept} onChange={event => props.setIAccept(event.target.value)}>
+              I have read, understand, and agree to comply with FRESHFARM Market Rules and Regulations.
+            </Checkbox>
           </Stack>
         </>
       ) : props.index === 7 ? (
@@ -904,10 +1109,7 @@ const Steps = (props) => {
             Thank you for applying to FreshFarm!
           </Heading>
           <Text as='div' textStyle='bodyMain' fontWeight={500} >
-            [ INSTRUCTIONS ABOUT MARKET APPLICATIONS] To sell at Fresh Farm Markets vendors must apply to each market. We accept applications annually from farmers and producers selling items that feature agricultural products grown within 200 miles of Washington, DC.
-          </Text>
-          <Text as='div' textStyle='bodyMain' fontWeight={500} >
-            Remember, a Jedi can feel the Force flowing through him. You are a part of the Rebel Alliance and a traitor! Take her away! I suggest you try it again, Luke. This time, let go your conscious self and act on instinct.
+            Your application for the 2024 market season is not yet complete. Please fill out an application for each individual market in which you would like to participate.
           </Text>
         </>
       ) : props.index === 8 ? (
