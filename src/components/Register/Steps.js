@@ -58,9 +58,7 @@ const Steps = (props) => {
     setNumPages(numPages);
   }
 
-  useEffect(() => {
-    console.log(props);
-  }, [props]);
+  useEffect(() => {}, [props]);
 
   return (
     <div key={props.index}>
@@ -458,7 +456,7 @@ const Steps = (props) => {
             <CheckboxGroup
               colorScheme='green'
               value={props.growingPractices}
-              onChange={event => props.setGrowingPractices(event.target.value)}
+              onChange={newValue => props.setGrowingPractices(newValue)}
             >
               <Stack>
                 <Checkbox value='organicManagement'>Organic Management</Checkbox>
@@ -625,10 +623,10 @@ const Steps = (props) => {
           <RadioGroup onChange={newValue => props.setSharedKitchen(newValue)} value={props.sharedKitchen}>
             <Stack marginTop={1}>
               <HStack>
-                <Radio value={true}>Yes</Radio>
+                <Radio value={"true"}>Yes</Radio>
                 <Input marginLeft={2} variant='filled' placeholder='Please share the name of the kitchen' />
               </HStack>
-              <Radio value={false}>No</Radio>
+              <Radio value={"false"}>No</Radio>
             </Stack>
           </RadioGroup>
           <Text as='div' textStyle='bodyMain' fontWeight={500}>
@@ -637,10 +635,10 @@ const Steps = (props) => {
           <RadioGroup onChange={newValue => props.setCopacker(newValue)} value={props.copackerKitchen}>
             <Stack marginTop={1}>
               <HStack>
-                <Radio value={true}>Yes</Radio>
+                <Radio value={"true"}>Yes</Radio>
                 <Input marginLeft={2} variant='filled' placeholder='Please share the name of the co-packer' />
               </HStack>
-              <Radio value={false}>No</Radio>
+              <Radio value={"false"}>No</Radio>
             </Stack>
           </RadioGroup>
           <Flex align='center' justify='flex-start' marginTop={8}>
@@ -736,8 +734,8 @@ const Steps = (props) => {
           </Text>
           <RadioGroup onChange={newValue => props.setfirstGeneration(newValue)} marginTop={2} >
             <HStack spacing={4}>
-              <Radio value={true}>Yes</Radio>
-              <Radio value={false}>No</Radio>
+              <Radio value={"true"}>Yes</Radio>
+              <Radio value={"false"}>No</Radio>
               <Radio value='NA'>Prefer not to answer</Radio>
             </HStack>
           </RadioGroup>
@@ -746,8 +744,8 @@ const Steps = (props) => {
           </Text>
           <RadioGroup onChange={newValue => props.setVeteranOwned(newValue)} marginTop={2} >
             <HStack spacing={4}>
-              <Radio value={true}>Yes</Radio>
-              <Radio value={false}>No</Radio>
+              <Radio value={"true"}>Yes</Radio>
+              <Radio value={"false"}>No</Radio>
               <Radio value='NA'>Prefer not to answer</Radio>
             </HStack>
           </RadioGroup>
@@ -756,8 +754,8 @@ const Steps = (props) => {
           </Text>
           <RadioGroup onChange={newValue => props.setBipoc(newValue)} marginTop={2} >
             <HStack spacing={4}>
-              <Radio value={true}>Yes</Radio>
-              <Radio value={false}>No</Radio>
+              <Radio value={"true"}>Yes</Radio>
+              <Radio value={"false"}>No</Radio>
               <Radio value='NA'>Prefer not to answer</Radio>
             </HStack>
           </RadioGroup>
@@ -766,8 +764,8 @@ const Steps = (props) => {
           </Text>
           <RadioGroup onChange={newValue => props.setImmigrantOrRefugee(newValue)} marginTop={2} >
             <HStack spacing={4}>
-              <Radio value={true}>Yes</Radio>
-              <Radio value={false}>No</Radio>
+              <Radio value={"true"}>Yes</Radio>
+              <Radio value={"false"}>No</Radio>
               <Radio value='NA'>Prefer not to answer</Radio>
             </HStack>
           </RadioGroup>
@@ -776,8 +774,8 @@ const Steps = (props) => {
           </Text>
           <RadioGroup onChange={newValue => props.setLgbtqia(newValue)} marginTop={2} >
             <HStack spacing={4}>
-              <Radio value={true}>Yes</Radio>
-              <Radio value={false}>No</Radio>
+              <Radio value={"true"}>Yes</Radio>
+              <Radio value={"false"}>No</Radio>
               <Radio value='NA'>Prefer not to answer</Radio>
             </HStack>
           </RadioGroup>

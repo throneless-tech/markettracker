@@ -124,6 +124,85 @@ const Register = () => {
       createVendor();
 
       setIndex(index + 1);
+    } else if (index === 6) {
+      const createVendor = async () => {
+        try {
+          const req = await fetch('/api/vendors', {
+            method: "POST",
+            credentials: "include",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              name: companyName,
+              user: vendor.id,
+              isPrimaryContact: primaryContact,
+              isBillingContact: billingContact,
+              address: {
+                street: street,
+                city: city,
+                state: state,
+                zipcode: zipcode,
+              },
+              phoneNumber: phoneNumber,
+              description: description,
+              yearEstablished: yearEstablished,
+              employees: {
+                fullTime: fullTime,
+                partTime: partTime,
+                interns: interns,
+                h2a: h2a,
+                volunteers: volunteers,
+              },
+              type: type,
+              structure: structure,
+              growingPractices: growingPractices,
+              sellingLocally: sellingLocally,
+              outletImportance: {
+                stores: storeRevenue,
+                markets: marketRevenue,
+                own: brickRevenue,
+                online: salesRevenue,
+              },
+              sharedKitchen: sharedKitchen,
+              copacker: copacker,
+              contacts: contacts,
+              licenses: licenses,
+              insurance: insurance,
+              demographics: {
+                firstGeneration: firstGeneration,
+                veteranOwned: veteranOwned,
+                bipoc: bipoc,
+                immigrantOrRefugee: immigrantOrRefugee,
+                lgbtqia: lgbtqia,
+                other: otherDemographics,
+              },
+              marketing: {
+                website: website,
+                instagram: instagram,
+                twitter: twitter,
+                facebook: facebook,
+                store: store,
+                other: otherSocial,
+              },
+              pictures: pictures,
+              setupNeeds: {
+                tent: tent,
+                generator: generator,
+                vehicle: vehicle
+              },
+              products: products
+            }),
+          })
+          const data = await req.json()
+        } catch (err) {
+          console.log(err)
+        }
+
+      }
+
+      createVendor();
+      setIndex(index + 1);
     } else {
       setIndex(index + 1);
     }
@@ -400,7 +479,7 @@ const Register = () => {
             ) : (
               <Center>
                 <HStack spacing={4}>
-                  <Link href='/dashboard'>
+                  <Link href='/admin'>
                     <Button
                       colorScheme='green'
                       marginTop={12}
