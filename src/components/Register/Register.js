@@ -35,6 +35,7 @@ const Register = () => {
   const [userName, setUserName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [passwordConfirm, setPasswordConfirm] = useState("");
   const [primaryContact, setPrimaryContact] = useState(true);
   const [billingContact, setBillingContact] = useState(true);
   const [street, setStreet] = useState("");
@@ -51,9 +52,12 @@ const Register = () => {
   const [volunteers, setVolunteers] = useState(null);
   const [type, setType] = useState("");
   const [structure, setStructure] = useState("");
-  const [growingPractices, setGrowingPractices] = useState("");
+  const [growingPractices, setGrowingPractices] = useState([]);
   const [sellingLocally, setSellingLocally] = useState("");
-  const [outletImportance, setOutletImportance] = useState("");
+  const [storeRevenue, setStoreRevenue] = useState("");
+  const [marketRevenue, setMarketRevenue] = useState("");
+  const [brickRevenue, setBrickRevenue] = useState("");
+  const [salesRevenue, setSalesRevenue] = useState("");
   const [sharedKitchen, setSharedKitchen] = useState(null);
   const [copacker, setCopacker] = useState(null);
   const [contacts, setContacts] = useState(null);
@@ -74,10 +78,16 @@ const Register = () => {
   const [tent, setTent] = useState("");
   const [generator, setGenerator] = useState("");
   const [vehicle, setVehicle] = useState("");
-  const [products, setProducts] = useState("");
+  const [products, setProducts] = useState([]);
   const [outsideVendors, setOutsideVendors] = useState("");
   const [freshfarmVendors, setFreshfarmVendors] = useState("");
+  const [iAccept, setIAccept] = useState(false);
   
+  const errorCompanyName = companyName === "";
+  const errorUserName = userName === "";
+  const errorEmail = email === "";
+  const errorPassword = password === "" && password.length < 8;
+  const errorPasswordConfirm = passwordConfirm != password;
 
   function handleBackClick() {
     setIndex(index - 1);
@@ -123,6 +133,7 @@ const Register = () => {
     index,
     billingContact,
     bipoc,
+    brickRevenue,
     businessCheck,
     city,
     companyName,
@@ -130,6 +141,11 @@ const Register = () => {
     copacker,
     description,
     email,
+    errorCompanyName,
+    errorEmail,
+    errorPassword,
+    errorPasswordConfirm,
+    errorUserName,
     facebook,
     firstGeneration,
     freshfarmVendors,
@@ -137,26 +153,30 @@ const Register = () => {
     generator,
     growingPractices,
     h2a,
+    iAccept,
     immigrantOrRefugee,
     instagram,
     insurance,
     interns,
     lgbtqia,
     licenses,
+    marketRevenue,
     otherDemographics,
     otherSocial,
-    outletImportance,
     outsideVendors,
     partTime,
     password,
+    passwordConfirm,
     phoneNumber,
     pictures,
     primaryContact,
     products,
+    salesRevenue,
     sellingLocally,
     sharedKitchen,
     state,
     store,
+    storeRevenue,
     street,
     structure,
     tent,
@@ -212,6 +232,7 @@ const Register = () => {
               index={index}
               billingContact={billingContact}
               bipoc={bipoc}
+              brickRevenue={brickRevenue}
               businessCheck={businessCheck}
               city={city}
               companyName={companyName}
@@ -219,6 +240,11 @@ const Register = () => {
               copacker={copacker}
               description={description}
               email={email}
+              errorCompanyName={errorCompanyName}
+              errorEmail={errorEmail}
+              errorPassword={errorPassword}
+              errorPasswordConfirm={errorPasswordConfirm}
+              errorUserName={errorUserName}
               facebook={facebook}
               firstGeneration={firstGeneration}
               freshfarmVendors={freshfarmVendors}
@@ -226,26 +252,30 @@ const Register = () => {
               generator={generator}
               growingPractices={growingPractices}
               h2a={h2a}
+              iAccept={iAccept}
               immigrantOrRefugee={immigrantOrRefugee}
               instagram={instagram}
               insurance={insurance}
               interns={interns}
               lgbtqia={lgbtqia}
               licenses={licenses}
+              marketRevenue={marketRevenue}
               otherDemographics={otherDemographics}
               otherSocial={otherSocial}
-              outletImportance={outletImportance}
               outsideVendors={outsideVendors}
               partTime={partTime}              
               password={password}
+              passwordConfirm={passwordConfirm}
               phoneNumber={phoneNumber}
               pictures={pictures}
               primaryContact={primaryContact}
               products={products}
+              salesRevenue={salesRevenue}
               sellingLocally={sellingLocally}
               sharedKitchen={sharedKitchen}
               state={state}
               store={store}
+              storeRevenue={storeRevenue}
               street={street}
               structure={structure}
               tent={tent}
@@ -260,6 +290,7 @@ const Register = () => {
               zipcode={zipcode}
               setBillingContact={setBillingContact}
               setBipoc={setBipoc}
+              setBrickRevenue={setBrickRevenue}
               setBusinessCheck={setBusinessCheck}
               setCity={setCity}
               setCompanyName={setCompanyName}
@@ -274,26 +305,30 @@ const Register = () => {
               setGenerator={setGenerator}
               setGrowingPractices={setGrowingPractices}
               setH2a={setH2a}
+              setIAccept={setIAccept}
               setImmigrantOrRefugee={setImmigrantOrRefugee}
               setInstagram={setInstagram}
               setInsurance={setInsurance}
               setInterns={setInterns}
               setLgbtqia={setLgbtqia}
               setLicenses={setLicenses}
+              setMarketRevenue={setMarketRevenue}
               setOtherDemographics={setOtherDemographics}
               setOtherSocial={setOtherSocial}
-              setOutletImportance={setOutletImportance}
               setOutsideVendors={setOutsideVendors}
               setPartTime={setPartTime}
               setPassword={setPassword}
+              setPasswordConfirm={setPasswordConfirm}
               setPhoneNumber={setPhoneNumber}
               setPictures={setPictures}
               setPrimaryContact={setPrimaryContact}
               setProducts={setProducts}
+              setSalesRevenue={setSalesRevenue}
               setSellingLocally={setSellingLocally}
               setSharedKitchen={setSharedKitchen}
               setState={setState}
               setStore={setStore}
+              setStoreRevenue={setStoreRevenue}
               setStreet={setStreet}
               setStructure={setStructure}
               setTent={setTent}
@@ -329,6 +364,7 @@ const Register = () => {
                     width={125}
                     onClick={handleNextClick}
                     rightIcon={<ArrowForwardIcon />}
+                    // isDisabled={ index > 0 && (errorCompanyName || errorEmail || errorPassword || errorPasswordConfirm || errorUserName)}
                   >
                     {index === 5 ? "Finish" : "Next"}
                   </Button>
@@ -342,7 +378,7 @@ const Register = () => {
                     marginTop={12}
                     variant='solid'
                     width={125}
-                    isDisabled={index === 0}
+                    isDisabled={index === 0 || !iAccept}
                     onClick={handleNextClick}
                   >
                     Accept
