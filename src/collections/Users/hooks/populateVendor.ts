@@ -3,6 +3,7 @@ import {
   CollectionAfterReadHook,
   CollectionBeforeValidateHook,
 } from "payload/types";
+import { Contact } from "payload/generated-types";
 
 export const afterReadVendor: CollectionAfterReadHook = async ({
   doc, // full document data
@@ -15,7 +16,23 @@ export const afterReadVendor: CollectionAfterReadHook = async ({
       id: doc.vendor,
       depth: 0,
     });
-    return { ...doc, vendor };
+    let contacts: any;
+    if (vendor.contacts && vendor.contacts.length) {
+      contacts = await payload.find({
+        collection: "contacts",
+        depth: 0,
+        where: { id: { in: vendor.contacts.join(",") } },
+      });
+    }
+    return {
+      ...doc,
+      vendor: {
+        ...vendor,
+        contacts: contacts && contacts.docs && contacts.docs.length
+          ? contacts.docs
+          : vendor.contacts,
+      },
+    };
   }
   return doc;
 };
@@ -26,23 +43,54 @@ export const beforeValidateVendor: CollectionBeforeValidateHook = async ({
   if (
     data.vendor && typeof data.vendor === "object"
   ) {
+    let id = data.vendor.id;
+    if (
+      data.vendor.contacts && typeof data.vendor.contacts.length &&
+      typeof data.vendor.contacts[0] === "object"
+    ) {
+      const flattened = await data.vendor.contacts.reduce(
+        async (acc: string[], contact: Contact) => {
+          const existing = await payload.findByID({
+            collection: "contacts",
+            id: contact.id,
+          });
+          if (existing) {
+            acc.push(contact.id);
+            await payload.update({
+              collection: "contacts",
+              id: contact.id,
+              data: contact,
+            });
+          } else {
+            await payload.create({
+              collection: "contacts",
+              data: contact,
+            });
+            acc.push(contact.id);
+          }
+        },
+        [],
+      );
+
+      data.vendor.contacts = flattened;
+    }
     const existing = await payload.findByID({
-      collection: "seasons",
-      id: data.vendor.id,
+      collection: "vendors",
+      id,
     });
     if (existing) {
       await payload.update({
-        collection: "seasons",
-        id: data.vendor.id,
+        collection: "vendors",
+        id,
         data: data.vendor,
       });
     } else {
-      await payload.create({
-        collection: "seasons",
+      ({ id } = await payload.create({
+        collection: "vendors",
         data: data.vendor,
-      });
+      }));
     }
-    return { ...data, vendor: data.vendor.id };
+    return { ...data, vendor: id };
   }
   return data;
 };

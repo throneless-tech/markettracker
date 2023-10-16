@@ -54,6 +54,7 @@ export const Users: CollectionConfig = {
       name: "vendor",
       type: "relationship",
       relationTo: "vendors",
+      index: true,
       admin: {
         condition: (_, siblingData) => siblingData.role === "vendor",
       },

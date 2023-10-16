@@ -1,14 +1,10 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
+import { useDebouncedCallback } from "use-debounce";
 
 import { useAuth } from "payload/components/utilities";
 
 // Payload imports
 import { useField, useForm } from "payload/components/forms";
-import {
-  getSiblingData,
-  reduceFieldsToValues,
-  useAllFormFields,
-} from "payload/components/forms";
 
 import {
   Box,
@@ -25,8 +21,6 @@ import {
   ModalBody,
   ModalCloseButton,
   ModalContent,
-  ModalFooter,
-  ModalHeader,
   ModalOverlay,
   Radio,
   RadioGroup,
@@ -67,28 +61,53 @@ import FooterAdmin from "./FooterAdmin";
 import EditIcon from "../assets/icons/edit.js";
 
 const CustomDashboard = () => {
-  const { user } = useAuth();
+  const { submit } = useForm();
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const [fields, dispatchFields] = useAllFormFields();
+  const [isLoaded, setIsLoaded] = useState(false);
   const { value: name, setValue: setName } =
     useField < string > ({ path: "name" });
   const { value: role, setValue: setRole } =
     useField < string > ({ path: "role" });
   const { value: email, setValue: setEmail } =
     useField < string > ({ path: "email" });
-  const { value: vendor, setValue: setVendor } =
+  const { value: realVendor, setValue: setRealVendor } =
     useField < string > ({ path: "vendor" });
+  const [vendor, setShadowVendor] = useState(vendor);
 
-  console.log("name:", name);
+  console.log("***Role:", role);
 
-  useEffect(() => {}, [fields]);
+  const debounceVendor = useDebouncedCallback((vendor) => {
+    setRealVendor(vendor);
+  }, 2000);
 
-  return (
+  const setVendor = (vendor) => {
+    setShadowVendor(vendor);
+    return debounceVendor(vendor);
+  };
+
+  useEffect(() => {
+    if (isLoaded) submit();
+  }, [realVendor]);
+
+  useEffect(() => {
+    if (role && role === "vendor") {
+      if (name && email && realVendor && !isLoaded) {
+        setShadowVendor(realVendor);
+        setIsLoaded(true);
+      }
+    } else if (role && role !== "vendor") {
+      if (name && email && !isLoaded) {
+        setIsLoaded(true);
+      }
+    }
+  }, [name, role, email, realVendor]);
+
+  return isLoaded && (
     <>
       <Tabs>
         <Box>
           <Tabs>
-            {role == "vendor"
+            {role === "vendor" && vendor
               ? (
                 <TabList bg={"gray.50"}>
                   <Tab
@@ -159,7 +178,7 @@ const CustomDashboard = () => {
                         </HStack>
                         <Spacer />
                         <HStack>
-                          {role == "vendor"
+                          {role === "vendor" && vendor
                             ? (
                               <Tag
                                 variant="solid"
@@ -183,715 +202,1046 @@ const CustomDashboard = () => {
                             fontSize="2xl"
                             fontWeight={700}
                           >
-                            Type
+                            {role === "vendor" && vendor && vendor.type
+                              ? `${vendor.type}`
+                              : null}
                           </Text>
                           <Text as={"span"} color={"gray.50"} fontSize="2xl">
-                            Address
+                            {role === "vendor" && vendor && vendor.address
+                              ? `${vendor.address.street} ${vendor.address.city} ${vendor.address.state} ${vendor.address.zipcode}`
+                              : null}
                           </Text>
                         </HStack>
                         <Spacer />
-                        <HStack>
-                          <Text as={"span"} color={"gray.50"} fontSize="2xl">
-                            Primary contact:
-                          </Text>
-                          <Text as={"span"} color={"gray.50"} fontSize="2xl">
-                            202-123-4567
-                          </Text>
-                        </HStack>
+                        {vendor && vendor.phoneNumber && (
+                          <HStack>
+                            <Text as={"span"} color={"gray.50"} fontSize="2xl">
+                              Primary contact:
+                            </Text>
+                            <Text as={"span"} color={"gray.50"} fontSize="2xl">
+                              {vendor.phoneNumber}
+                            </Text>
+                          </HStack>
+                        )}
                       </Flex>
                     </Box>
-                    <Box
-                      background={"teal.100"}
-                      borderBottomRadius="8px"
-                      padding={4}
-                    >
-                      <Text marginTop={4} fontSize={"xl"}>
-                        Unidentified vessel travelling at sub warp speed,
-                        bearing 235.7. Fluctuations in energy readings from it,
-                        Captain. All transporters off. A strange set-up, but I'd
-                        say the graviton generator is depolarized. The dark
-                        colourings of the scrapes are the leavings of natural
-                        rubber, a type of non-conductive sole used by
-                        researchers experimenting with electricity. The
-                        molecules must have been partly de-phased by the anyon
-                        beam.
-                      </Text>
-                    </Box>
-                  </Box>
-                  <Button
-                    onClick={onOpen}
-                    leftIcon={
-                      <EditIcon
-                        sx={{ fill: "none", height: 6, width: 6 }}
-                      />
-                    }
-                    variant={"unstyled"}
-                    sx={{
-                      display: "block",
-                      marginBottom: 4,
-                      marginLeft: "auto",
-                      marginRight: 0,
-                      marginTop: 4,
-                      "&:active, &:focus, &:hover": {
-                        textDecoration: "underline",
-                      },
-                    }}
-                  >
-                    Edit/update information
-                  </Button>
-                  <Modal isOpen={isOpen} onClose={onClose} size={"full"}>
-                    <ModalOverlay />
-                    <ModalContent>
-                      <ModalCloseButton />
-                      <ModalBody>
-                        <Heading
-                          as="h1"
-                          textStyle="h1"
-                          size="xl"
-                          noOfLines={2}
-                          marginTop={12}
-                          textAlign="center"
+                    {role === vendor && vendor && vendor.description
+                      ? (
+                        <Box
+                          background={"teal.100"}
+                          borderBottomRadius="8px"
+                          padding={4}
                         >
-                          Vendor Company Info
-                        </Heading>
-                        <HStack marginTop={12} spacing={4}>
-                          <Input placeholder="Company name" />
-                        </HStack>
-                        <Stack marginTop={4}>
-                          <Text as="div" textStyle="bodyMain" fontWeight={500}>
-                            Are you the primary contact for this business?
+                          <Text marginTop={4} fontSize={"xl"}>
+                            {vendor.description}
                           </Text>
-                          <RadioGroup>
-                            <Stack>
-                              <Radio value={true}>Yes</Radio>
-                              <Radio value={false}>No</Radio>
-                            </Stack>
-                          </RadioGroup>
-                          <Text as="div" textStyle="bodyMain" fontWeight={500}>
-                            Are you the billing contact for this business?
-                          </Text>
-                          <RadioGroup>
-                            <Stack>
-                              <Radio value={true}>Yes</Radio>
-                              <Radio value={false}>No</Radio>
-                            </Stack>
-                          </RadioGroup>
-                        </Stack>
-                        <Stack spacing={2} marginTop={4}>
-                          <Text as="div" textStyle="bodyMain" fontWeight={500}>
-                            Company address (required)
-                          </Text>
-                          <Input placeholder="Street" isRequired />
-                          <Flex gap={2}>
-                            <Input placeholder="City" flex={6} isRequired />
-                            <Select placeholder="State" flex={2} isRequired>
-                              <option value="AK">AK</option>
-                              <option value="AL">AL</option>
-                              <option value="AR">AR</option>
-                              <option value="AZ">AZ</option>
-                              <option value="CA">CA</option>
-                              <option value="CO">CO</option>
-                              <option value="CT">CT</option>
-                              <option value="DC">DC</option>
-                              <option value="DE">DE</option>
-                              <option value="FL">FL</option>
-                              <option value="GA">GA</option>
-                              <option value="HI">HI</option>
-                              <option value="IA">IA</option>
-                              <option value="ID">ID</option>
-                              <option value="IL">IL</option>
-                              <option value="IN">IN</option>
-                              <option value="KS">KS</option>
-                              <option value="KY">KY</option>
-                              <option value="LA">LA</option>
-                              <option value="MA">MA</option>
-                              <option value="MD">MD</option>
-                              <option value="ME">ME</option>
-                              <option value="MI">MI</option>
-                              <option value="MN">MN</option>
-                              <option value="MO">MO</option>
-                              <option value="MS">MS</option>
-                              <option value="MT">MT</option>
-                              <option value="NC">NC</option>
-                              <option value="ND">ND</option>
-                              <option value="NE">NE</option>
-                              <option value="NH">NH</option>
-                              <option value="NJ">NJ</option>
-                              <option value="NM">NM</option>
-                              <option value="NV">NV</option>
-                              <option value="NY">NY</option>
-                              <option value="OH">OH</option>
-                              <option value="OK">OK</option>
-                              <option value="OR">OR</option>
-                              <option value="PA">PA</option>
-                              <option value="RI">RI</option>
-                              <option value="SC">SC</option>
-                              <option value="SD">SD</option>
-                              <option value="TN">TN</option>
-                              <option value="TX">TX</option>
-                              <option value="UT">UT</option>
-                              <option value="VA">VA</option>
-                              <option value="VT">VT</option>
-                              <option value="WA">WA</option>
-                              <option value="WI">WI</option>
-                              <option value="WV">WV</option>
-                              <option value="WY">WY</option>
-                            </Select>
-                            <Input
-                              placeholder="Zipcode"
-                              flex={3}
-                              type="number"
-                              isRequired
-                            />
-                          </Flex>
-                        </Stack>
-                        <Stack spacing={2} marginTop={4}>
-                          <Text as="div" textStyle="bodyMain" fontWeight={500}>
-                            Company phone number (required)
-                          </Text>
-                          <Input
-                            placeholder="xxx-xxx-xxxx"
-                            type="tel"
-                            isRequired
+                        </Box>
+                      )
+                      : null}
+                  </Box>
+                  {role === "vendor" && vendor
+                    ? (
+                      <Button
+                        onClick={onOpen}
+                        leftIcon={
+                          <EditIcon
+                            sx={{ fill: "none", height: 6, width: 6 }}
                           />
-                        </Stack>
-                        <Stack spacing={2} marginTop={4}>
-                          <Text as="div" textStyle="bodyMain" fontWeight={500}>
-                            Brief company description (required)
-                          </Text>
-                          <Text as="div" color="gray.400" fontSize={14}>
-                            Add a statement of explanation.
-                          </Text>
-                          <Textarea placeholder="Start typing..." />
-                        </Stack>
-                        <Stack spacing={2} marginTop={4}>
-                          <Text as="div" textStyle="bodyMain" fontWeight={500}>
-                            Year company established
-                          </Text>
-                          <Input placeholder="eg. 2017" type="number" />
-                        </Stack>
-                        <Stack spacing={2} marginTop={4}>
-                          <Text as="div" textStyle="bodyMain" fontWeight={500}>
-                            Number of employees
-                          </Text>
-                          <Text as="div" color="gray.400" fontSize={14}>
-                            Including yourself how many people work for your
-                            company?
-                          </Text>
-                          <Wrap align="center" spacing={4}>
-                            <WrapItem alignItems="center">
+                        }
+                        variant={"unstyled"}
+                        sx={{
+                          display: "block",
+                          marginBottom: 4,
+                          marginLeft: "auto",
+                          marginRight: 0,
+                          marginTop: 4,
+                          "&:active, &:focus, &:hover": {
+                            textDecoration: "underline",
+                          },
+                        }}
+                      >
+                        Edit/update information
+                      </Button>
+                    )
+                    : null}
+                  {role === "vendor" && vendor
+                    ? (
+                      <Modal isOpen={isOpen} onClose={onClose} size={"full"}>
+                        <ModalOverlay />
+                        <ModalContent>
+                          <ModalCloseButton />
+                          <ModalBody>
+                            <Heading
+                              as="h1"
+                              textStyle="h1"
+                              size="xl"
+                              noOfLines={2}
+                              marginTop={12}
+                              textAlign="center"
+                            >
+                              Vendor Company Info
+                            </Heading>
+                            <HStack marginTop={12} spacing={4}>
+                              <Input
+                                placeholder="Company name"
+                                onChange={(e) =>
+                                  setVendor({
+                                    ...vendor,
+                                    name: e.target.value,
+                                  })}
+                                value={vendor.name}
+                              />
+                            </HStack>
+                            <Stack marginTop={4}>
                               <Text
-                                as="span"
-                                paddingRight={2}
+                                as="div"
                                 textStyle="bodyMain"
                                 fontWeight={500}
                               >
-                                Full time
+                                Are you the primary contact for this business?
+                              </Text>
+                              <RadioGroup
+                                onChange={(newValue) =>
+                                  setVendor({
+                                    ...vendor,
+                                    isPrimaryContact: newValue === "true",
+                                  })}
+                                value={typeof vendor.copacker ===
+                                    "boolean"
+                                  ? vendor.isPrimaryContact.toString()
+                                  : undefined}
+                              >
+                                <Stack>
+                                  <Radio value="true">Yes</Radio>
+                                  <Radio value="false">No</Radio>
+                                </Stack>
+                              </RadioGroup>
+                              <Text
+                                as="div"
+                                textStyle="bodyMain"
+                                fontWeight={500}
+                              >
+                                Are you the billing contact for this business?
+                              </Text>
+                              <RadioGroup
+                                onChange={(newValue) =>
+                                  setVendor({
+                                    ...vendor,
+                                    isBillingContact: newValue === "true",
+                                  })}
+                                value={typeof vendor.copacker ===
+                                    "boolean"
+                                  ? vendor.isBillingContact.toString()
+                                  : undefined}
+                              >
+                                <Stack>
+                                  <Radio value="true">Yes</Radio>
+                                  <Radio value="false">No</Radio>
+                                </Stack>
+                              </RadioGroup>
+                            </Stack>
+                            <Stack spacing={2} marginTop={4}>
+                              <Text
+                                as="div"
+                                textStyle="bodyMain"
+                                fontWeight={500}
+                              >
+                                Company address (required)
                               </Text>
                               <Input
-                                maxWidth={160}
-                                placeholder="# of full time staff"
+                                placeholder="Street"
+                                isRequired
+                                onChange={(e) =>
+                                  setVendor({
+                                    ...vendor,
+                                    address: {
+                                      ...vendor.address,
+                                      street: e.target.value,
+                                    },
+                                  })}
+                                value={vendor.address && vendor.address.street
+                                  ? vendor.address.street
+                                  : null}
                               />
-                            </WrapItem>
-                            <WrapItem alignItems="center">
+                              <Flex gap={2}>
+                                <Input
+                                  placeholder="City"
+                                  flex={6}
+                                  isRequired
+                                  onChange={(e) =>
+                                    setVendor({
+                                      ...vendor,
+                                      address: {
+                                        ...vendor.address,
+                                        city: e.target.value,
+                                      },
+                                    })}
+                                  value={vendor.address && vendor.address.city
+                                    ? vendor.address.city
+                                    : null}
+                                />
+                                <Select
+                                  placeholder="State"
+                                  flex={2}
+                                  isRequired
+                                  onChange={(e) =>
+                                    setVendor({
+                                      ...vendor,
+                                      address: {
+                                        ...vendor.address,
+                                        state: e.target.value,
+                                      },
+                                    })}
+                                  value={vendor.address && vendor.address.state
+                                    ? vendor.address.state
+                                    : null}
+                                >
+                                  <option value="AK">AK</option>
+                                  <option value="AL">AL</option>
+                                  <option value="AR">AR</option>
+                                  <option value="AZ">AZ</option>
+                                  <option value="CA">CA</option>
+                                  <option value="CO">CO</option>
+                                  <option value="CT">CT</option>
+                                  <option value="DC">DC</option>
+                                  <option value="DE">DE</option>
+                                  <option value="FL">FL</option>
+                                  <option value="GA">GA</option>
+                                  <option value="HI">HI</option>
+                                  <option value="IA">IA</option>
+                                  <option value="ID">ID</option>
+                                  <option value="IL">IL</option>
+                                  <option value="IN">IN</option>
+                                  <option value="KS">KS</option>
+                                  <option value="KY">KY</option>
+                                  <option value="LA">LA</option>
+                                  <option value="MA">MA</option>
+                                  <option value="MD">MD</option>
+                                  <option value="ME">ME</option>
+                                  <option value="MI">MI</option>
+                                  <option value="MN">MN</option>
+                                  <option value="MO">MO</option>
+                                  <option value="MS">MS</option>
+                                  <option value="MT">MT</option>
+                                  <option value="NC">NC</option>
+                                  <option value="ND">ND</option>
+                                  <option value="NE">NE</option>
+                                  <option value="NH">NH</option>
+                                  <option value="NJ">NJ</option>
+                                  <option value="NM">NM</option>
+                                  <option value="NV">NV</option>
+                                  <option value="NY">NY</option>
+                                  <option value="OH">OH</option>
+                                  <option value="OK">OK</option>
+                                  <option value="OR">OR</option>
+                                  <option value="PA">PA</option>
+                                  <option value="RI">RI</option>
+                                  <option value="SC">SC</option>
+                                  <option value="SD">SD</option>
+                                  <option value="TN">TN</option>
+                                  <option value="TX">TX</option>
+                                  <option value="UT">UT</option>
+                                  <option value="VA">VA</option>
+                                  <option value="VT">VT</option>
+                                  <option value="WA">WA</option>
+                                  <option value="WI">WI</option>
+                                  <option value="WV">WV</option>
+                                  <option value="WY">WY</option>
+                                </Select>
+                                <Input
+                                  placeholder="Zipcode"
+                                  flex={3}
+                                  type="number"
+                                  isRequired
+                                  onChange={(e) =>
+                                    setVendor({
+                                      ...vendor,
+                                      address: {
+                                        ...vendor.address,
+                                        zipcode: e.target.value,
+                                      },
+                                    })}
+                                  value={vendor.address &&
+                                      vendor.address.zipcode
+                                    ? vendor.address.zipcode
+                                    : null}
+                                />
+                              </Flex>
+                            </Stack>
+                            <Stack spacing={2} marginTop={4}>
                               <Text
-                                as="span"
-                                paddingRight={2}
+                                as="div"
                                 textStyle="bodyMain"
                                 fontWeight={500}
                               >
-                                Part time
+                                Company phone number (required)
                               </Text>
                               <Input
-                                maxWidth={160}
-                                placeholder="# of part time staff"
+                                placeholder="xxx-xxx-xxxx"
+                                type="tel"
+                                isRequired
+                                onChange={(e) =>
+                                  setVendor({
+                                    ...vendor,
+                                    phoneNumber: e.target.value,
+                                  })}
+                                value={vendor.phoneNumber}
                               />
-                            </WrapItem>
-                            <WrapItem alignItems="center">
+                            </Stack>
+                            <Stack spacing={2} marginTop={4}>
                               <Text
-                                as="span"
-                                paddingRight={2}
+                                as="div"
                                 textStyle="bodyMain"
                                 fontWeight={500}
                               >
-                                Interns
+                                Brief company description (required)
+                              </Text>
+                              <Text as="div" color="gray.400" fontSize={14}>
+                                Add a statement of explanation.
+                              </Text>
+                              <Textarea
+                                placeholder="Start typing..."
+                                onChange={(e) =>
+                                  setVendor({
+                                    ...vendor,
+                                    description: e.target.value,
+                                  })}
+                                value={vendor.description}
+                              />
+                            </Stack>
+                            <Stack spacing={2} marginTop={4}>
+                              <Text
+                                as="div"
+                                textStyle="bodyMain"
+                                fontWeight={500}
+                              >
+                                Year company established
                               </Text>
                               <Input
-                                maxWidth={160}
-                                placeholder="# of interns"
+                                placeholder="eg. 2017"
+                                type="number"
+                                onChange={(e) =>
+                                  setVendor({
+                                    ...vendor,
+                                    yearEstablished: e.target.value,
+                                  })}
+                                value={vendor.yearEstablished}
                               />
-                            </WrapItem>
-                            <WrapItem alignItems="center">
+                            </Stack>
+                            <Stack spacing={2} marginTop={4}>
                               <Text
-                                as="span"
-                                paddingRight={2}
+                                as="div"
                                 textStyle="bodyMain"
                                 fontWeight={500}
                               >
-                                H2A
+                                Number of employees
                               </Text>
-                              <Input maxWidth={160} placeholder="# of H2A" />
-                            </WrapItem>
-                            <WrapItem alignItems="center">
-                              <Text
-                                as="span"
-                                paddingRight={2}
-                                textStyle="bodyMain"
-                                fontWeight={500}
-                              >
-                                Volunteers
+                              <Text as="div" color="gray.400" fontSize={14}>
+                                Including yourself how many people work for your
+                                company?
                               </Text>
-                              <Input
-                                maxWidth={160}
-                                placeholder="# of volunteers"
-                              />
-                            </WrapItem>
-                          </Wrap>
-                        </Stack>
-                      </ModalBody>
-                    </ModalContent>
-                  </Modal>
+                              <Wrap align="center" spacing={4}>
+                                <WrapItem alignItems="center">
+                                  <Text
+                                    as="span"
+                                    paddingRight={2}
+                                    textStyle="bodyMain"
+                                    fontWeight={500}
+                                  >
+                                    Full time
+                                  </Text>
+                                  <Input
+                                    maxWidth={160}
+                                    placeholder="# of full time staff"
+                                    onChange={(e) =>
+                                      setVendor({
+                                        ...vendor,
+                                        employees: {
+                                          ...vendor.employees,
+                                          fullTime: e.target.value,
+                                        },
+                                      })}
+                                    value={vendor.employees
+                                      ? vendor.employees.fullTime
+                                      : null}
+                                  />
+                                </WrapItem>
+                                <WrapItem alignItems="center">
+                                  <Text
+                                    as="span"
+                                    paddingRight={2}
+                                    textStyle="bodyMain"
+                                    fontWeight={500}
+                                  >
+                                    Part time
+                                  </Text>
+                                  <Input
+                                    maxWidth={160}
+                                    placeholder="# of part time staff"
+                                    onChange={(e) =>
+                                      setVendor({
+                                        ...vendor,
+                                        employees: {
+                                          ...vendor.employees,
+                                          partTime: e.target.value,
+                                        },
+                                      })}
+                                    value={vendor.employees
+                                      ? vendor.employees.partTime
+                                      : null}
+                                  />
+                                </WrapItem>
+                                <WrapItem alignItems="center">
+                                  <Text
+                                    as="span"
+                                    paddingRight={2}
+                                    textStyle="bodyMain"
+                                    fontWeight={500}
+                                  >
+                                    Interns
+                                  </Text>
+                                  <Input
+                                    maxWidth={160}
+                                    placeholder="# of interns"
+                                    onChange={(e) =>
+                                      setVendor({
+                                        ...vendor,
+                                        employees: {
+                                          ...vendor.employees,
+                                          interns: e.target.value,
+                                        },
+                                      })}
+                                    value={vendor.employees
+                                      ? vendor.employees.interns
+                                      : null}
+                                  />
+                                </WrapItem>
+                                <WrapItem alignItems="center">
+                                  <Text
+                                    as="span"
+                                    paddingRight={2}
+                                    textStyle="bodyMain"
+                                    fontWeight={500}
+                                  >
+                                    H2A
+                                  </Text>
+                                  <Input
+                                    maxWidth={160}
+                                    placeholder="# of H2A"
+                                    onChange={(e) =>
+                                      setVendor({
+                                        ...vendor,
+                                        employees: {
+                                          ...vendor.employees,
+                                          h2a: e.target.value,
+                                        },
+                                      })}
+                                    value={vendor.employees
+                                      ? vendor.employees.h2a
+                                      : null}
+                                  />
+                                </WrapItem>
+                                <WrapItem alignItems="center">
+                                  <Text
+                                    as="span"
+                                    paddingRight={2}
+                                    textStyle="bodyMain"
+                                    fontWeight={500}
+                                  >
+                                    Volunteers
+                                  </Text>
+                                  <Input
+                                    maxWidth={160}
+                                    placeholder="# of volunteers"
+                                    onChange={(e) =>
+                                      setVendor({
+                                        ...vendor,
+                                        employees: {
+                                          ...vendor.employees,
+                                          volunteers: e.target.value,
+                                        },
+                                      })}
+                                    value={vendor.employees
+                                      ? vendor.employees.volunteers
+                                      : null}
+                                  />
+                                </WrapItem>
+                              </Wrap>
+                            </Stack>
+                          </ModalBody>
+                        </ModalContent>
+                      </Modal>
+                    )
+                    : null}
                 </Container>
               </TabPanel>
-              <TabPanel>
-                <TableContainer>
-                  <TableContainer>
-                    <Table>
-                      <Thead>
-                        <Tr>
-                          <Th>Name</Th>
-                          <Th>Contact type</Th>
-                          <Th>Email</Th>
-                          <Th>Phone</Th>
-                          <Th>
-                            <VisuallyHidden>Edit/delete</VisuallyHidden>
-                          </Th>
-                        </Tr>
-                      </Thead>
-                      <Tbody>
-                        {vendor && vendor.contacts &&
-                            vendor.contacts.length
-                          ? vendor.contacts.map((contact) => (
-                            <Tr key={contact.id}>
-                              <Td>{contact.name}</Td>
-                              <Td>
-                                {contact.type.map((type) => (
-                                  <Tag key={type}>{type}</Tag>
-                                ))}
-                              </Td>
-                              <Td>{contact.email}</Td>
-                              <Td>{contact.phone}</Td>
-                              <Td>
-                                <Button>
-                                  Edit/delete
-                                </Button>
-                              </Td>
+              {role === "vendor" && vendor
+                ? (
+                  <TabPanel>
+                    <TableContainer>
+                      <TableContainer>
+                        <Table>
+                          <Thead>
+                            <Tr>
+                              <Th>Name</Th>
+                              <Th>Contact type</Th>
+                              <Th>Email</Th>
+                              <Th>Phone</Th>
+                              <Th>
+                                <VisuallyHidden>Edit/delete</VisuallyHidden>
+                              </Th>
                             </Tr>
-                          ))
-                          : null}
-                      </Tbody>
-                    </Table>
-                  </TableContainer>
-                </TableContainer>
-              </TabPanel>
-              <TabPanel>
-                <Stack marginTop={4}>
-                  <Text as="div" textStyle="bodyMain" fontWeight={500}>
-                    What type of vendor are you? (required)
-                  </Text>
-                  <Select placeholder="Farm, Non Farm" flex={2} isRequired>
-                    <option value="farm">Farm</option>
-                    <option value="nonFarm">Non Farm</option>
-                  </Select>
-                  <Text as="div" color="gray.500">
-                    Select the category that describes the majority of what you
-                    sell
-                  </Text>
-                </Stack>
-                <Stack marginTop={4}>
-                  <Text as="div" textStyle="bodyMain" fontWeight={500}>
-                    What is the structure of your business? (required)
-                  </Text>
-                  <Select
-                    placeholder="LLC, sole proprietor, nonprofit, etc"
-                    flex={2}
-                    isRequired
-                  >
-                    <option value="farm">LLC</option>
-                    <option value="soleProprietor">Sole proprietor</option>
-                    <option value="nonprofit">Nonprofit</option>
-                  </Select>
-                  <Text as="div" color="gray.500">
-                    Select which type of legal entity your business is
-                    registered as in your state
-                  </Text>
-                </Stack>
-                <Stack marginTop={4}>
-                  <Text as="div" textStyle="bodyMain" fontWeight={500}>
-                    Do you use any of the following growing practices?
-                  </Text>
-                  <Text as="div" color="gray.500">
-                    Check all that apply
-                  </Text>
-                  <CheckboxGroup colorScheme="green">
-                    <Stack>
-                      <Checkbox value="organicManagement">
-                        Organic Management
-                      </Checkbox>
-                      <Checkbox value="certifiedNaturallyGrown">
-                        Certified Naturally Grown
-                      </Checkbox>
-                      <Checkbox value="IntegratedPestManagement">
-                        Integrated Pest Management (IPM)
-                      </Checkbox>
-                      <Checkbox value="certifiedOrganic">
-                        Certified Organic
-                      </Checkbox>
-                      <Checkbox value="gmoUse">GMO Use</Checkbox>
-                      <Checkbox value="growthHormoneUse">
-                        Growth Hormone Use
-                      </Checkbox>
+                          </Thead>
+                          <Tbody>
+                            {vendor && vendor.contacts &&
+                                vendor.contacts.length
+                              ? vendor.contacts.map((contact) => (
+                                <Tr key={contact.id}>
+                                  <Td>{contact.name}</Td>
+                                  <Td>
+                                    {contact.type.map((type) => (
+                                      <Tag key={type}>{type}</Tag>
+                                    ))}
+                                  </Td>
+                                  <Td>{contact.email}</Td>
+                                  <Td>{contact.phone}</Td>
+                                  <Td>
+                                    <Button>
+                                      Edit/delete
+                                    </Button>
+                                  </Td>
+                                </Tr>
+                              ))
+                              : null}
+                          </Tbody>
+                        </Table>
+                      </TableContainer>
+                    </TableContainer>
+                  </TabPanel>
+                )
+                : null}
+              {role === "vendor" && vendor
+                ? (
+                  <TabPanel>
+                    <Stack marginTop={4}>
+                      <Text as="div" textStyle="bodyMain" fontWeight={500}>
+                        What type of vendor are you? (required)
+                      </Text>
+                      <Select
+                        placeholder="Farm, Non Farm"
+                        flex={2}
+                        isRequired
+                        onChange={(e) =>
+                          setVendor({ ...vendor, type: e.target.value })}
+                        value={vendor.type}
+                      >
+                        <option value="farmer">Farmer</option>
+                        <option value="producer">Producer</option>
+                      </Select>
+                      <Text as="div" color="gray.500">
+                        Select the category that describes the majority of what
+                        you sell
+                      </Text>
                     </Stack>
-                  </CheckboxGroup>
-                </Stack>
-                <Stack marginTop={4}>
-                  <Text as="div" textStyle="bodyMain" fontWeight={500}>
-                    Where are you selling products locally (required)
-                  </Text>
-                  <Text as="div" color="gray.500">
-                    Check all that apply
-                  </Text>
-                  <CheckboxGroup colorScheme="green">
-                    <Stack>
-                      <Checkbox value="nowhere">Nowhere yet</Checkbox>
-                      <Checkbox value="freshfarm">
-                        At FreshFarm markets
-                      </Checkbox>
-                      <Checkbox value="other">
-                        At other non-FreshFarm markets or in stores
-                      </Checkbox>
-                      <Input
-                        marginLeft={6}
-                        variant="filled"
-                        placeholder="Please list other locations you sell products"
-                      />
+                    <Stack marginTop={4}>
+                      <Text as="div" textStyle="bodyMain" fontWeight={500}>
+                        What is the structure of your business? (required)
+                      </Text>
+                      <Select
+                        placeholder="LLC, sole proprietor, nonprofit, etc"
+                        flex={2}
+                        isRequired
+                        onChange={(e) =>
+                          setVendor({
+                            ...vendor,
+                            structure: e.target.value,
+                          })}
+                        value={vendor.structure}
+                      >
+                        <option value="llc">LLC</option>
+                        <option value="sole_proprietor">Sole proprietor</option>
+                        <option value="nonprofit">Nonprofit</option>
+                        <option value="other">Other</option>
+                      </Select>
+                      <Text as="div" color="gray.500">
+                        Select which type of legal entity your business is
+                        registered as in your state
+                      </Text>
                     </Stack>
-                  </CheckboxGroup>
-                </Stack>
-                <Stack marginTop={4}>
-                  <Text as="div" textStyle="bodyMain" fontWeight={500}>
-                    Rank the following revenue outlets in order of importance to
-                    your sales: (required)
-                  </Text>
-                  <Wrap justify="space-between" spacing={8}>
-                    <WrapItem sx={{ flexDirection: "column" }}>
-                      <Text as="div" color="gray.600">
-                        Stores
+                    <Stack marginTop={4}>
+                      <Text as="div" textStyle="bodyMain" fontWeight={500}>
+                        Do you use any of the following growing practices?
                       </Text>
-                      <RadioGroup>
-                        <Stack
-                          align="flex-start"
-                          color="gray.500"
-                          spacing={6}
-                          direction="row"
-                          textAlign="center"
-                        >
-                          <Radio value="1" variant="scale">
-                            <Text
-                              as="span"
-                              fontSize={"xs"}
-                              sx={{
-                                display: "block",
-                                marginTop: 1,
-                                width: "100%",
-                              }}
-                            >
-                              1
-                            </Text>
-                            <Text
-                              as="span"
-                              fontSize={"xs"}
-                              sx={{ display: "block", width: 14 }}
-                            >
-                              Not at all important
-                            </Text>
-                          </Radio>
-                          <Radio value="2" variant="scale" width={6}>
-                            <Text as="span" fontSize={"xs"}>2</Text>
-                          </Radio>
-                          <Radio value="3" variant="scale" width={6}>
-                            <Text as="span" fontSize={"xs"}>3</Text>
-                          </Radio>
-                          <Radio value="4" variant="scale" width={6}>
-                            <Text as="span" fontSize={"xs"}>4</Text>
-                          </Radio>
-                          <Radio value="5" variant="scale">
-                            <Text
-                              as="span"
-                              fontSize={"xs"}
-                              sx={{
-                                display: "block",
-                                marginTop: 1,
-                                width: "100%",
-                              }}
-                            >
-                              5
-                            </Text>
-                            <Text
-                              as="span"
-                              fontSize={"xs"}
-                              sx={{ display: "block", width: 14 }}
-                            >
-                              Very Important
-                            </Text>
-                          </Radio>
-                        </Stack>
-                      </RadioGroup>
-                    </WrapItem>
-                    <WrapItem sx={{ flexDirection: "column" }}>
-                      <Text as="div" color="gray.600">
-                        Farmers markets
+                      <Text as="div" color="gray.500">
+                        Check all that apply
                       </Text>
-                      <RadioGroup>
-                        <Stack
-                          align="flex-start"
-                          color="gray.500"
-                          spacing={6}
-                          direction="row"
-                          textAlign="center"
-                        >
-                          <Radio value="1" variant="scale">
-                            <Text
-                              as="span"
-                              fontSize={"xs"}
-                              sx={{
-                                display: "block",
-                                marginTop: 1,
-                                width: "100%",
-                              }}
-                            >
-                              1
-                            </Text>
-                            <Text
-                              as="span"
-                              fontSize={"xs"}
-                              sx={{ display: "block", width: 14 }}
-                            >
-                              Not at all important
-                            </Text>
-                          </Radio>
-                          <Radio value="2" variant="scale" width={6}>
-                            <Text as="span" fontSize={"xs"}>2</Text>
-                          </Radio>
-                          <Radio value="3" variant="scale" width={6}>
-                            <Text as="span" fontSize={"xs"}>3</Text>
-                          </Radio>
-                          <Radio value="4" variant="scale" width={6}>
-                            <Text as="span" fontSize={"xs"}>4</Text>
-                          </Radio>
-                          <Radio value="5" variant="scale">
-                            <Text
-                              as="span"
-                              fontSize={"xs"}
-                              sx={{
-                                display: "block",
-                                marginTop: 1,
-                                width: "100%",
-                              }}
-                            >
-                              5
-                            </Text>
-                            <Text
-                              as="span"
-                              fontSize={"xs"}
-                              sx={{ display: "block", width: 14 }}
-                            >
-                              Very Important
-                            </Text>
-                          </Radio>
+                      <CheckboxGroup
+                        colorScheme="green"
+                        onChange={(newValue) =>
+                          setVendor({
+                            ...vendor,
+                            growingPractices: newValue,
+                          })}
+                        value={vendor.growingPractices}
+                      >
+                        <Stack>
+                          <Checkbox value="organic_management">
+                            Organic Management
+                          </Checkbox>
+                          <Checkbox value="certified_naturally_grown">
+                            Certified Naturally Grown
+                          </Checkbox>
+                          <Checkbox value="ipm">
+                            Integrated Pest Management (IPM)
+                          </Checkbox>
+                          <Checkbox value="certified_organic">
+                            Certified Organic
+                          </Checkbox>
+                          <Checkbox value="gmo_use">GMO Use</Checkbox>
+                          <Checkbox value="growth_hormone_use">
+                            Growth Hormone Use
+                          </Checkbox>
                         </Stack>
-                      </RadioGroup>
-                    </WrapItem>
-                    <WrapItem sx={{ flexDirection: "column" }}>
-                      <Text as="div" color="gray.600">
-                        Own brick & mortar
+                      </CheckboxGroup>
+                    </Stack>
+                    <Stack marginTop={4}>
+                      <Text as="div" textStyle="bodyMain" fontWeight={500}>
+                        Where are you selling products locally (required)
                       </Text>
-                      <RadioGroup>
-                        <Stack
-                          align="flex-start"
-                          color="gray.500"
-                          spacing={6}
-                          direction="row"
-                          textAlign="center"
-                        >
-                          <Radio value="1" variant="scale">
-                            <Text
-                              as="span"
-                              fontSize={"xs"}
-                              sx={{
-                                display: "block",
-                                marginTop: 1,
-                                width: "100%",
-                              }}
-                            >
-                              1
-                            </Text>
-                            <Text
-                              as="span"
-                              fontSize={"xs"}
-                              sx={{ display: "block", width: 14 }}
-                            >
-                              Not at all important
-                            </Text>
-                          </Radio>
-                          <Radio value="2" variant="scale" width={6}>
-                            <Text as="span" fontSize={"xs"}>2</Text>
-                          </Radio>
-                          <Radio value="3" variant="scale" width={6}>
-                            <Text as="span" fontSize={"xs"}>3</Text>
-                          </Radio>
-                          <Radio value="4" variant="scale" width={6}>
-                            <Text as="span" fontSize={"xs"}>4</Text>
-                          </Radio>
-                          <Radio value="5" variant="scale">
-                            <Text
-                              as="span"
-                              fontSize={"xs"}
-                              sx={{
-                                display: "block",
-                                marginTop: 1,
-                                width: "100%",
-                              }}
-                            >
-                              5
-                            </Text>
-                            <Text
-                              as="span"
-                              fontSize={"xs"}
-                              sx={{ display: "block", width: 14 }}
-                            >
-                              Very Important
-                            </Text>
-                          </Radio>
-                        </Stack>
-                      </RadioGroup>
-                    </WrapItem>
-                    <WrapItem sx={{ flexDirection: "column" }}>
-                      <Text as="div" color="gray.600">
-                        Online sales
+                      <Text as="div" color="gray.500">
+                        Check all that apply
                       </Text>
-                      <RadioGroup>
-                        <Stack
-                          align="flex-start"
-                          color="gray.500"
-                          spacing={6}
-                          direction="row"
-                          textAlign="center"
-                        >
-                          <Radio value="1" variant="scale">
-                            <Text
-                              as="span"
-                              fontSize={"xs"}
-                              sx={{
-                                display: "block",
-                                marginTop: 1,
-                                width: "100%",
-                              }}
-                            >
-                              1
-                            </Text>
-                            <Text
-                              as="span"
-                              fontSize={"xs"}
-                              sx={{ display: "block", width: 14 }}
-                            >
-                              Not at all important
-                            </Text>
-                          </Radio>
-                          <Radio value="2" variant="scale" width={6}>
-                            <Text as="span" fontSize={"xs"}>2</Text>
-                          </Radio>
-                          <Radio value="3" variant="scale" width={6}>
-                            <Text as="span" fontSize={"xs"}>3</Text>
-                          </Radio>
-                          <Radio value="4" variant="scale" width={6}>
-                            <Text as="span" fontSize={"xs"}>4</Text>
-                          </Radio>
-                          <Radio value="5" variant="scale">
-                            <Text
-                              as="span"
-                              fontSize={"xs"}
-                              sx={{
-                                display: "block",
-                                marginTop: 1,
-                                width: "100%",
-                              }}
-                            >
-                              5
-                            </Text>
-                            <Text
-                              as="span"
-                              fontSize={"xs"}
-                              sx={{ display: "block", width: 14 }}
-                            >
-                              Very Important
-                            </Text>
-                          </Radio>
+                      <CheckboxGroup
+                        colorScheme="green"
+                        onChange={(newValue) =>
+                          setVendor({
+                            ...vendor,
+                            sellingLocally: newValue,
+                          })}
+                        value={vendor.sellingLocally}
+                      >
+                        <Stack>
+                          <Checkbox value="nowhere">Nowhere yet</Checkbox>
+                          <Checkbox value="freshfarm">
+                            At FreshFarm markets
+                          </Checkbox>
+                          <Checkbox value="other">
+                            At other non-FreshFarm markets or in stores
+                          </Checkbox>
+                          <Input
+                            marginLeft={6}
+                            variant="filled"
+                            placeholder="Please list other locations you sell products"
+                            onChange={(e) =>
+                              setVendor({
+                                ...vendor,
+                                otherLocations: e.target.value,
+                              })}
+                            value={vendor.otherLocations}
+                          />
                         </Stack>
-                      </RadioGroup>
-                    </WrapItem>
-                  </Wrap>
-                </Stack>
-                <Flex align="center" justify="flex-start" marginTop={8}>
-                  <Heading
-                    as="h2"
-                    fontFamily={"font.body"}
-                    textStyle="h4"
-                    size="md"
-                    width={"90%"}
-                  >
-                    Production practices
-                  </Heading>
-                  <Divider
-                    color="gray.700"
-                    borderBottomWidth={2}
-                    opacity={1}
-                    flexGrow={1}
-                  />
-                </Flex>
-                <Text as="div" textStyle="bodyMain" fontWeight={500}>
-                  Do you work out of a shared kitchen?
-                </Text>
-                <RadioGroup>
-                  <Stack marginTop={1}>
-                    <HStack>
-                      <Radio value={true}>Yes</Radio>
-                      <Input
-                        marginLeft={2}
-                        variant="filled"
-                        placeholder="Please share the name of the kitchen"
+                      </CheckboxGroup>
+                    </Stack>
+                    <Stack marginTop={4}>
+                      <Text as="div" textStyle="bodyMain" fontWeight={500}>
+                        Rank the following revenue outlets in order of
+                        importance to your sales: (required)
+                      </Text>
+                      <Wrap justify="space-between" spacing={8}>
+                        <WrapItem sx={{ flexDirection: "column" }}>
+                          <Text as="div" color="gray.600">
+                            Stores
+                          </Text>
+                          <RadioGroup
+                            onChange={(newValue) =>
+                              setVendor({
+                                ...vendor,
+                                outletImportance: {
+                                  ...vendor.outletImportance,
+                                  stores: newValue,
+                                },
+                              })}
+                            value={vendor.outletImportance &&
+                                vendor.outletImportance.stores
+                              ? vendor.outletImportance.stores
+                              : undefined}
+                          >
+                            <Stack
+                              align="flex-start"
+                              color="gray.500"
+                              spacing={6}
+                              direction="row"
+                              textAlign="center"
+                            >
+                              <Radio value="1" variant="scale">
+                                <Text
+                                  as="span"
+                                  fontSize={"xs"}
+                                  sx={{
+                                    display: "block",
+                                    marginTop: 1,
+                                    width: "100%",
+                                  }}
+                                >
+                                  1
+                                </Text>
+                                <Text
+                                  as="span"
+                                  fontSize={"xs"}
+                                  sx={{ display: "block", width: 14 }}
+                                >
+                                  Not at all important
+                                </Text>
+                              </Radio>
+                              <Radio value="2" variant="scale" width={6}>
+                                <Text as="span" fontSize={"xs"}>2</Text>
+                              </Radio>
+                              <Radio value="3" variant="scale" width={6}>
+                                <Text as="span" fontSize={"xs"}>3</Text>
+                              </Radio>
+                              <Radio value="4" variant="scale" width={6}>
+                                <Text as="span" fontSize={"xs"}>4</Text>
+                              </Radio>
+                              <Radio value="5" variant="scale">
+                                <Text
+                                  as="span"
+                                  fontSize={"xs"}
+                                  sx={{
+                                    display: "block",
+                                    marginTop: 1,
+                                    width: "100%",
+                                  }}
+                                >
+                                  5
+                                </Text>
+                                <Text
+                                  as="span"
+                                  fontSize={"xs"}
+                                  sx={{ display: "block", width: 14 }}
+                                >
+                                  Very Important
+                                </Text>
+                              </Radio>
+                            </Stack>
+                          </RadioGroup>
+                        </WrapItem>
+                        <WrapItem sx={{ flexDirection: "column" }}>
+                          <Text as="div" color="gray.600">
+                            Farmers markets
+                          </Text>
+                          <RadioGroup
+                            onChange={(newValue) =>
+                              setVendor({
+                                ...vendor,
+                                outletImportance: {
+                                  ...vendor.outletImportance,
+                                  markets: newValue,
+                                },
+                              })}
+                            value={vendor.outletImportance &&
+                                vendor.outletImportance.markets
+                              ? vendor.outletImportance.markets
+                              : undefined}
+                          >
+                            <Stack
+                              align="flex-start"
+                              color="gray.500"
+                              spacing={6}
+                              direction="row"
+                              textAlign="center"
+                            >
+                              <Radio value="1" variant="scale">
+                                <Text
+                                  as="span"
+                                  fontSize={"xs"}
+                                  sx={{
+                                    display: "block",
+                                    marginTop: 1,
+                                    width: "100%",
+                                  }}
+                                >
+                                  1
+                                </Text>
+                                <Text
+                                  as="span"
+                                  fontSize={"xs"}
+                                  sx={{ display: "block", width: 14 }}
+                                >
+                                  Not at all important
+                                </Text>
+                              </Radio>
+                              <Radio value="2" variant="scale" width={6}>
+                                <Text as="span" fontSize={"xs"}>2</Text>
+                              </Radio>
+                              <Radio value="3" variant="scale" width={6}>
+                                <Text as="span" fontSize={"xs"}>3</Text>
+                              </Radio>
+                              <Radio value="4" variant="scale" width={6}>
+                                <Text as="span" fontSize={"xs"}>4</Text>
+                              </Radio>
+                              <Radio value="5" variant="scale">
+                                <Text
+                                  as="span"
+                                  fontSize={"xs"}
+                                  sx={{
+                                    display: "block",
+                                    marginTop: 1,
+                                    width: "100%",
+                                  }}
+                                >
+                                  5
+                                </Text>
+                                <Text
+                                  as="span"
+                                  fontSize={"xs"}
+                                  sx={{ display: "block", width: 14 }}
+                                >
+                                  Very Important
+                                </Text>
+                              </Radio>
+                            </Stack>
+                          </RadioGroup>
+                        </WrapItem>
+                        <WrapItem sx={{ flexDirection: "column" }}>
+                          <Text as="div" color="gray.600">
+                            Own brick & mortar
+                          </Text>
+                          <RadioGroup
+                            onChange={(newValue) =>
+                              setVendor({
+                                ...vendor,
+                                outletImportance: {
+                                  ...vendor.outletImportance,
+                                  own: newValue,
+                                },
+                              })}
+                            value={vendor.outletImportance &&
+                                vendor.outletImportance.own
+                              ? vendor.outletImportance.own
+                              : undefined}
+                          >
+                            <Stack
+                              align="flex-start"
+                              color="gray.500"
+                              spacing={6}
+                              direction="row"
+                              textAlign="center"
+                            >
+                              <Radio value="1" variant="scale">
+                                <Text
+                                  as="span"
+                                  fontSize={"xs"}
+                                  sx={{
+                                    display: "block",
+                                    marginTop: 1,
+                                    width: "100%",
+                                  }}
+                                >
+                                  1
+                                </Text>
+                                <Text
+                                  as="span"
+                                  fontSize={"xs"}
+                                  sx={{ display: "block", width: 14 }}
+                                >
+                                  Not at all important
+                                </Text>
+                              </Radio>
+                              <Radio value="2" variant="scale" width={6}>
+                                <Text as="span" fontSize={"xs"}>2</Text>
+                              </Radio>
+                              <Radio value="3" variant="scale" width={6}>
+                                <Text as="span" fontSize={"xs"}>3</Text>
+                              </Radio>
+                              <Radio value="4" variant="scale" width={6}>
+                                <Text as="span" fontSize={"xs"}>4</Text>
+                              </Radio>
+                              <Radio value="5" variant="scale">
+                                <Text
+                                  as="span"
+                                  fontSize={"xs"}
+                                  sx={{
+                                    display: "block",
+                                    marginTop: 1,
+                                    width: "100%",
+                                  }}
+                                >
+                                  5
+                                </Text>
+                                <Text
+                                  as="span"
+                                  fontSize={"xs"}
+                                  sx={{ display: "block", width: 14 }}
+                                >
+                                  Very Important
+                                </Text>
+                              </Radio>
+                            </Stack>
+                          </RadioGroup>
+                        </WrapItem>
+                        <WrapItem sx={{ flexDirection: "column" }}>
+                          <Text as="div" color="gray.600">
+                            Online sales
+                          </Text>
+                          <RadioGroup
+                            onChange={(newValue) =>
+                              setVendor({
+                                ...vendor,
+                                outletImportance: {
+                                  ...vendor.outletImportance,
+                                  online: newValue,
+                                },
+                              })}
+                            value={vendor.outletImportance &&
+                                vendor.outletImportance.online
+                              ? vendor.outletImportance.online
+                              : undefined}
+                          >
+                            <Stack
+                              align="flex-start"
+                              color="gray.500"
+                              spacing={6}
+                              direction="row"
+                              textAlign="center"
+                            >
+                              <Radio value="1" variant="scale">
+                                <Text
+                                  as="span"
+                                  fontSize={"xs"}
+                                  sx={{
+                                    display: "block",
+                                    marginTop: 1,
+                                    width: "100%",
+                                  }}
+                                >
+                                  1
+                                </Text>
+                                <Text
+                                  as="span"
+                                  fontSize={"xs"}
+                                  sx={{ display: "block", width: 14 }}
+                                >
+                                  Not at all important
+                                </Text>
+                              </Radio>
+                              <Radio value="2" variant="scale" width={6}>
+                                <Text as="span" fontSize={"xs"}>2</Text>
+                              </Radio>
+                              <Radio value="3" variant="scale" width={6}>
+                                <Text as="span" fontSize={"xs"}>3</Text>
+                              </Radio>
+                              <Radio value="4" variant="scale" width={6}>
+                                <Text as="span" fontSize={"xs"}>4</Text>
+                              </Radio>
+                              <Radio value="5" variant="scale">
+                                <Text
+                                  as="span"
+                                  fontSize={"xs"}
+                                  sx={{
+                                    display: "block",
+                                    marginTop: 1,
+                                    width: "100%",
+                                  }}
+                                >
+                                  5
+                                </Text>
+                                <Text
+                                  as="span"
+                                  fontSize={"xs"}
+                                  sx={{ display: "block", width: 14 }}
+                                >
+                                  Very Important
+                                </Text>
+                              </Radio>
+                            </Stack>
+                          </RadioGroup>
+                        </WrapItem>
+                      </Wrap>
+                    </Stack>
+                    <Flex align="center" justify="flex-start" marginTop={8}>
+                      <Heading
+                        as="h2"
+                        fontFamily={"font.body"}
+                        textStyle="h4"
+                        size="md"
+                        width={"90%"}
+                      >
+                        Production practices
+                      </Heading>
+                      <Divider
+                        color="gray.700"
+                        borderBottomWidth={2}
+                        opacity={1}
+                        flexGrow={1}
                       />
-                    </HStack>
-                    <Radio value={false}>No</Radio>
-                  </Stack>
-                </RadioGroup>
-                <Text as="div" textStyle="bodyMain" fontWeight={500}>
-                  Do you use a co-packer?
-                </Text>
-                <RadioGroup>
-                  <Stack marginTop={1}>
-                    <HStack>
-                      <Radio value={true}>Yes</Radio>
-                      <Input
-                        marginLeft={2}
-                        variant="filled"
-                        placeholder="Please share the name of the co-packer"
-                      />
-                    </HStack>
-                    <Radio value={false}>No</Radio>
-                  </Stack>
-                </RadioGroup>
-              </TabPanel>
+                    </Flex>
+                    <Text as="div" textStyle="bodyMain" fontWeight={500}>
+                      Do you work out of a shared kitchen?
+                    </Text>
+                    <RadioGroup
+                      onChange={(newValue) =>
+                        setVendor({
+                          ...vendor,
+                          sharedKitchen: newValue === "true",
+                        })}
+                      value={typeof vendor.sharedKitchen ===
+                          "boolean"
+                        ? vendor.sharedKitchen.toString()
+                        : undefined}
+                    >
+                      <Stack marginTop={1}>
+                        <HStack>
+                          <Radio value="true">Yes</Radio>
+                          <Input
+                            marginLeft={2}
+                            variant="filled"
+                            placeholder="Please share the name of the kitchen"
+                            onChange={(e) =>
+                              setVendor({
+                                ...vendor,
+                                sharedKitchenName: e.target.value,
+                              })}
+                            value={vendor.sharedKitchenName}
+                          />
+                        </HStack>
+                        <Radio value="false">No</Radio>
+                      </Stack>
+                    </RadioGroup>
+                    <Text as="div" textStyle="bodyMain" fontWeight={500}>
+                      Do you use a co-packer?
+                    </Text>
+                    <RadioGroup
+                      onChange={(newValue) =>
+                        setVendor({
+                          ...vendor,
+                          copacker: newValue === "true",
+                        })}
+                      value={typeof vendor.copacker ===
+                          "boolean"
+                        ? vendor.copacker.toString()
+                        : undefined}
+                    >
+                      <Stack marginTop={1}>
+                        <HStack>
+                          <Radio value="true">Yes</Radio>
+                          <Input
+                            marginLeft={2}
+                            variant="filled"
+                            placeholder="Please share the name of the co-packer"
+                            onChange={(e) =>
+                              setVendor({
+                                ...vendor,
+                                copackerName: e.target.value,
+                              })}
+                            value={vendor.copackerName}
+                          />
+                        </HStack>
+                        <Radio value="false">No</Radio>
+                      </Stack>
+                    </RadioGroup>
+                  </TabPanel>
+                )
+                : null}
             </TabPanels>
           </Tabs>
         </Box>

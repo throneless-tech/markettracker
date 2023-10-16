@@ -1,7 +1,7 @@
 import { CollectionConfig } from "payload/types";
 import CustomVendorsEdit from "../../components/Vendors/CustomVendorsEdit";
 import CustomVendorsList from "../../components/Vendors/CustomVendorsList";
-import { beforeReadHook } from "./hooks/beforeReadHook";
+//import { beforeReadHook } from "./hooks/beforeReadHook";
 import { createFieldContacts } from "./hooks/createFieldContacts";
 
 export const Vendors: CollectionConfig = {
@@ -18,14 +18,15 @@ export const Vendors: CollectionConfig = {
     },
     useAsTitle: "name",
   },
-  hooks: {
-    beforeRead: [beforeReadHook],
-  },
+  // hooks: {
+  //   beforeRead: [beforeReadHook],
+  // },
   fields: [
     {
       name: "name",
       label: "Company Name",
       type: "text",
+      index: true,
       required: true,
     },
     {
@@ -307,10 +308,17 @@ export const Vendors: CollectionConfig = {
           value: "freshfarm",
         },
         {
-          label: "At other, non Frsh Farm, markets or in stores",
+          label: "At other, non Fresh Farm, markets or in stores",
           value: "other",
         },
       ],
+    },
+    {
+      name: "otherLocations",
+      type: "text",
+      admin: {
+        placeholder: "Please list other locations you sell products",
+      },
     },
     {
       name: "outletImportance",
@@ -363,12 +371,26 @@ export const Vendors: CollectionConfig = {
     {
       name: "sharedKitchen",
       label: "Do you work out of a Shared Kitchen?",
+      type: "checkbox",
+    },
+    {
+      name: "sharedKitchenName",
       type: "text",
+      admin: {
+        placeholder: "Please share the name of the kitchen",
+      },
     },
     {
       name: "copacker",
       label: "Do you use a Co-Packer?",
       type: "text",
+    },
+    {
+      name: "copackerName",
+      type: "text",
+      admin: {
+        placeholder: "Please share the name of the co-packer",
+      },
     },
     {
       name: "contacts",
