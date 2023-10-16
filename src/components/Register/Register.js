@@ -288,9 +288,9 @@ const Register = () => {
             backgroundRepeat: 'no-repeat',
             mixBlendMode: 'multiply',
             maxHeight: "100%",
-            maxWidth: "unset",
             objectFit: 'cover',
             opacity: '80%',
+            width: "100%",
           }}
         />
       </Box>
