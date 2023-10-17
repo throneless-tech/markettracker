@@ -4,7 +4,7 @@ import { useHistory } from "react-router-dom";
 import DatePicker from "react-datepicker";
 
 // Payload imports
-import { useDocumentInfo } from "payload/components/utilities";
+import { useAuth, useDocumentInfo } from "payload/components/utilities";
 import { useField, useForm } from "payload/components/forms";
 
 // Chakra imports
@@ -80,12 +80,10 @@ const dayNames = [
 ];
 
 function CustomApplicationsEdit(props) {
-  console.log("***application props***:", props);
+  const { user } = useAuth();
   const history = useHistory();
-  console.log("***history***:", history);
   const { submit } = useForm();
   const { id } = useDocumentInfo();
-  const { user } = props;
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [name, setName] = useState("");
   const [market, setMarket] = useState(null);
@@ -102,6 +100,9 @@ function CustomApplicationsEdit(props) {
   });
   const { value: dates, setValue: setDates } = useField<string[]>({
     path: "dates",
+  });
+  const { value: contacts, setValue: setContacts } = useField<string[]>({
+    path: "contacts",
   });
 
   const submitForm = async () => {
@@ -175,10 +176,6 @@ function CustomApplicationsEdit(props) {
   }, [history, user]);
 
   useEffect(() => {
-    console.log(selectedDates);
-  }, [endDate, marketDates, numMonths, selectedDates, startDate]);
-
-  useEffect(() => {
     if (id) {
       const getApplication = async () => {
         const response = await fetch(`/api/applications/${id}?depth=2`);
@@ -195,10 +192,6 @@ function CustomApplicationsEdit(props) {
       }
     }
   }, []);
-
-  useEffect(() => {
-    console.log(selectAllDates);
-  }, [data, name, application]);
 
   // id will be undefined on the create form
   if (!id && market) {
@@ -597,13 +590,31 @@ function CustomApplicationsEdit(props) {
               {" "}
               this season.
             </Text>
-            <Button
+            <CheckboxGroup
+              onChange={(newValue) => setContacts(newValue)}
+              value={contacts}
+            >
+              <HStack spacing={4}>
+                {user.vendor.contacts.map((contact) => (
+                  <Checkbox key={contact.id} value={contact.id}>
+                    {contact.name}
+                    <Tag bg={"gray.50"} fontWeight={700}>
+                      {contact.type}
+                    </Tag>
+                  </Checkbox>
+                ))}
+              </HStack>
+            </CheckboxGroup>
+
+            {
+              /*<Button
               onClick={onOpen}
               marginTop={4}
               rightIcon={<ArrowForwardIcon />}
             >
               Add a contact
-            </Button>
+            </Button>*/
+            }
             <Modal isOpen={isOpen} onClose={onClose} size={"xl"}>
               <ModalOverlay />
               <ModalContent background={"gray.600"} color={"gray.50"}>
