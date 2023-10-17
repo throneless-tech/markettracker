@@ -5,7 +5,7 @@ import DatePicker from "react-datepicker";
 
 // Payload imports
 import { useDocumentInfo } from 'payload/components/utilities';
-import { useField } from "payload/components/forms";
+import { useField, useForm } from "payload/components/forms";
 
 // Chakra imports
 import {
@@ -68,6 +68,7 @@ import stats3 from '../../assets/images/FF-sample-stats-3.jpg'
 import stats4 from '../../assets/images/FF-sample-stats-4.jpg'
 
 function CustomApplicationsEdit(props) {
+  const { submit } = useForm();
   const history = useHistory();
   const { id } = useDocumentInfo();
   const { user } = props;
@@ -82,6 +83,10 @@ function CustomApplicationsEdit(props) {
   const { data } = props;
   const [application, setApplication] = useState(null);
   const [selectAllDates, setSelectAllDates] = useState(false);
+
+  const submitForm = async () => {
+    submit();
+  };
 
   const monthDiff = (d1, d2) => {
     let months;
@@ -557,8 +562,14 @@ function CustomApplicationsEdit(props) {
             </Text>
             <Center marginY={8}>
               <HStack spacing={4}>
-                <Button colorScheme='teal' variant={"solid"}>Submit application now</Button>
-                <Button variant={"outline"}>Cancel</Button>
+                <Button
+                  colorScheme='teal'
+                  variant={"solid"}
+                  onClick={submitForm}
+                >
+                    Submit application now
+                    </Button>
+                <Button onClick={onClose} variant={"outline"} >Cancel</Button>
               </HStack>
             </Center>
 
