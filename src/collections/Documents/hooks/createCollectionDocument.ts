@@ -265,6 +265,7 @@ export const createCollectionDocument: CollectionAfterChangeHook = async (
             const seasonData: Omit<Season, "id" | "createdAt" | "updatedAt"> = {
               name: "Winter 2024",
               market: market.id,
+              isAccepting: true,
             };
             let season: Season;
             try {

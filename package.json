@@ -33,6 +33,7 @@
     "payload": "^1.11.7",
     "react": "^18.2.0",
     "react-datepicker": "^4.18.0",
+    "use-debounce": "^9.0.4",
     "react-pdf": "^7.5.0"
   },
   "devDependencies": {
