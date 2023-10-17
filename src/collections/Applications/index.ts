@@ -1,5 +1,7 @@
 import { CollectionConfig } from "payload/types";
 import { createFieldVendor } from "./hooks/createFieldVendor";
+import { afterReadMarket, beforeValidateMarket } from "./hooks/populateMarket";
+import { afterReadVendor, beforeValidateVendor } from "./hooks/populateVendor";
 import CustomApplicationsEdit from "../../components/Applications/CustomApplicationsEdit";
 import CustomApplicationsList from "../../components/Applications/CustomApplicationsList";
 import { withFormContext } from "../../utils/withFormContext";
@@ -34,9 +36,9 @@ export const Applications: CollectionConfig = {
       type: "relationship",
       relationTo: "seasons",
       //required: true,
-      access: {
-        update: ({ req }) => req.user.role !== "vendor",
-      },
+      // access: {
+      //   update: ({ req }) => req.user.role !== "vendor",
+      // },
     },
     {
       name: "reviews",
@@ -108,4 +110,8 @@ export const Applications: CollectionConfig = {
       hasMany: true,
     },
   ],
+  hooks: {
+    afterRead: [afterReadMarket, afterReadVendor],
+    beforeValidate: [beforeValidateMarket, beforeValidateVendor],
+  },
 };

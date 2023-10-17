@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react'
-import { useHistory } from 'react-router-dom'
+import React, { useEffect, useState } from "react";
+import { useHistory } from "react-router-dom";
 
 // Chakra imports
 import {
@@ -10,141 +10,229 @@ import {
   HStack,
   Link,
   Spacer,
-  Tag,
   Table,
-  Thead,
-  Tbody,
-  Tfoot,
-  Tr,
-  Th,
-  Td,
   TableContainer,
+  Tag,
+  Tbody,
+  Td,
   Text,
-} from '@chakra-ui/react';
+  Tfoot,
+  Th,
+  Thead,
+  Tr,
+} from "@chakra-ui/react";
 
 // icons
-import StarIcon from '../../assets/icons/star.js'
+import StarIcon from "../../assets/icons/star.js";
 
-function CustomApplications() {
+function CustomApplications(props) {
   const history = useHistory();
-  const marketId = history.location.pathname.split('/').pop();
+  const marketId = history.location.pathname.split("/").pop();
   const [applications, setApplications] = useState([]);
   const [market, setMarket] = useState(null);
+  console.log("***applist props***:", props);
 
   useEffect(() => {
     const getApps = async () => {
       const response = await fetch(`/api/applications?depth=2`);
       let apps = await response.json();
-      apps = apps.docs.filter(app => app.season.market.id == marketId)
+      apps = apps.docs.filter((app) => app.season.market.id == marketId);
       console.log(apps);
-      setApplications(apps)
-    }
+      setApplications(apps);
+    };
 
     const getMarket = async () => {
       const response = await fetch(`/api/markets/${marketId}?depth=2`);
       const thisMarket = await response.json();
-      setMarket(thisMarket)
-    }
+      setMarket(thisMarket);
+    };
 
     getApps();
-    getMarket()
-  }, [])
+    getMarket();
+  }, []);
 
-  useEffect(() => { }, [applications, market])
+  useEffect(() => {}, [applications, market]);
   if (applications && market) {
     return (
       <>
-        <Container maxW='container.xl'>
+        <Container maxW="container.xl">
           <Flex>
-            <Heading as="h2" sx={{ textTransform: "uppercase" }} marginTop={4} >
-              <Text as={'span'}>Review</Text>{' '}
-              <Text as={'span'} sx={{ fontWeight: 700 }}>{market.name}</Text>{' '}
-              <Text as={'span'}>applications</Text>
+            <Heading as="h2" sx={{ textTransform: "uppercase" }} marginTop={4}>
+              <Text as={"span"}>Review</Text>{" "}
+              <Text as={"span"} sx={{ fontWeight: 700 }}>{market.name}</Text>
+              {" "}
+              <Text as={"span"}>applications</Text>
             </Heading>
-            {market.acceptingApplications ? (
-              <>
-                <Spacer />
-                <HStack>
-                  <Text color={"gray.700"} fontSize="sm" fontWeight={700} textAlign={"right"} textTransform={"uppercase"} width={28}>
-                    Accepting applications
-                  </Text>
-                  <StarIcon height={8} width={8} />
-                </HStack>
-              </>
-            ) : null}
+            {market.acceptingApplications
+              ? (
+                <>
+                  <Spacer />
+                  <HStack>
+                    <Text
+                      color={"gray.700"}
+                      fontSize="sm"
+                      fontWeight={700}
+                      textAlign={"right"}
+                      textTransform={"uppercase"}
+                      width={28}
+                    >
+                      Accepting applications
+                    </Text>
+                    <StarIcon height={8} width={8} />
+                  </HStack>
+                </>
+              )
+              : null}
           </Flex>
           <Text>
             {market.description}
           </Text>
-          <Divider color='gray.900' borderBottomWidth={2} opacity={1} />
+          <Divider color="gray.900" borderBottomWidth={2} opacity={1} />
         </Container>
-        <Container maxW='container.xl'>
+        <Container maxW="container.xl">
           <TableContainer>
-            <Table variant='simple'>
+            <Table variant="simple">
               <Thead>
-                <Tr background={'gray.100'}>
-                  <Th>{' '}</Th>
-                  <Th sx={{ color: 'gray.900', fontFamily: "Outfit, sans-serif" }}>Vendor type</Th>
-                  <Th sx={{ color: 'gray.900', fontFamily: "Outfit, sans-serif" }}>Meet product gap</Th>
-                  <Th sx={{ color: 'gray.900', fontFamily: "Outfit, sans-serif" }}>Number of markets</Th>
-                  <Th sx={{ color: 'gray.900', fontFamily: "Outfit, sans-serif" }}>Priority group</Th>
-                  <Th sx={{ color: 'gray.900', fontFamily: "Outfit, sans-serif" }}>Standing</Th>
-                  <Th sx={{ color: 'gray.900', fontFamily: "Outfit, sans-serif" }}>Reviewers</Th>
-                  <Th sx={{ color: 'gray.900', fontFamily: "Outfit, sans-serif" }}>Grade (avg)</Th>
-                  <Th sx={{ color: 'gray.900', fontFamily: "Outfit, sans-serif" }}>Application status</Th>
+                <Tr background={"gray.100"}>
+                  <Th>{" "}</Th>
+                  <Th
+                    sx={{ color: "gray.900", fontFamily: "Outfit, sans-serif" }}
+                  >
+                    Vendor type
+                  </Th>
+                  <Th
+                    sx={{ color: "gray.900", fontFamily: "Outfit, sans-serif" }}
+                  >
+                    Meet product gap
+                  </Th>
+                  <Th
+                    sx={{ color: "gray.900", fontFamily: "Outfit, sans-serif" }}
+                  >
+                    Number of markets
+                  </Th>
+                  <Th
+                    sx={{ color: "gray.900", fontFamily: "Outfit, sans-serif" }}
+                  >
+                    Priority group
+                  </Th>
+                  <Th
+                    sx={{ color: "gray.900", fontFamily: "Outfit, sans-serif" }}
+                  >
+                    Standing
+                  </Th>
+                  <Th
+                    sx={{ color: "gray.900", fontFamily: "Outfit, sans-serif" }}
+                  >
+                    Reviewers
+                  </Th>
+                  <Th
+                    sx={{ color: "gray.900", fontFamily: "Outfit, sans-serif" }}
+                  >
+                    Grade (avg)
+                  </Th>
+                  <Th
+                    sx={{ color: "gray.900", fontFamily: "Outfit, sans-serif" }}
+                  >
+                    Application status
+                  </Th>
                 </Tr>
               </Thead>
               <Tbody>
-                {applications && applications.length ? applications.map(app => (
-                  <Tr key={app.id}>
-                    <Td>
-                      <Link href={`/admin/collections/applications/${app.id}`}>
-                        {app.vendor.name}
-                      </Link>
-                    </Td>
-                    <Td>{app.vendor.type}</Td>
-                    <Td>
-                      {app.vendor.products && app.vendor.products.length ? app.vendor.products.map(product => (
-                        <Tag>{product.name}</Tag>
-                      )) : ""}
-                    </Td>
-                    <Td>{app.vendor.applications && app.vendor.applications.length ? app.vendor.applications.length : '1'}{' '}applications</Td>
-                    <Td>
-                      {app.vendor.demographics && app.vendor.demographics.length ? app.vendor.demographics.map(demo => (
-                        <Tag>{demo.name}</Tag>
-                      )) : ""}
-                    </Td>
-                    <Td>
-                      <Tag>{app.vendor.standing}</Tag>
-                    </Td>
-                    <Td>0/2 reviewers</Td>
-                    <Td>0</Td>
-                    <Td>
-                      <Tag variant={'outline'}>Received</Tag>
-                    </Td>
-                  </Tr>
-                )) : null}
+                {applications && applications.length
+                  ? applications.map((app) => (
+                    <Tr key={app.id}>
+                      <Td>
+                        <Link
+                          href={`/admin/collections/applications/${app.id}`}
+                        >
+                          {app.vendor.name}
+                        </Link>
+                      </Td>
+                      <Td>{app.vendor.type}</Td>
+                      <Td>
+                        {app.vendor.products && app.vendor.products.length
+                          ? app.vendor.products.map((product) => (
+                            <Tag>{product.name}</Tag>
+                          ))
+                          : ""}
+                      </Td>
+                      <Td>
+                        {app.vendor.applications &&
+                            app.vendor.applications.length
+                          ? app.vendor.applications.length
+                          : "1"} applications
+                      </Td>
+                      <Td>
+                        {app.vendor.demographics &&
+                            app.vendor.demographics.length
+                          ? app.vendor.demographics.map((demo) => (
+                            <Tag>{demo.name}</Tag>
+                          ))
+                          : ""}
+                      </Td>
+                      <Td>
+                        <Tag>{app.vendor.standing}</Tag>
+                      </Td>
+                      <Td>0/2 reviewers</Td>
+                      <Td>0</Td>
+                      <Td>
+                        <Tag variant={"outline"}>Received</Tag>
+                      </Td>
+                    </Tr>
+                  ))
+                  : null}
               </Tbody>
               <Tfoot>
-                <Tr background={'gray.100'}>
-                  <Th>{' '}</Th>
-                  <Th sx={{ color: 'gray.900', fontFamily: "Outfit, sans-serif" }}>Vendor type</Th>
-                  <Th sx={{ color: 'gray.900', fontFamily: "Outfit, sans-serif" }}>Meet product gap</Th>
-                  <Th sx={{ color: 'gray.900', fontFamily: "Outfit, sans-serif" }}>Number of markets</Th>
-                  <Th sx={{ color: 'gray.900', fontFamily: "Outfit, sans-serif" }}>Priority group</Th>
-                  <Th sx={{ color: 'gray.900', fontFamily: "Outfit, sans-serif" }}>Standing</Th>
-                  <Th sx={{ color: 'gray.900', fontFamily: "Outfit, sans-serif" }}>Reviewers</Th>
-                  <Th sx={{ color: 'gray.900', fontFamily: "Outfit, sans-serif" }}>Grade (avg)</Th>
-                  <Th sx={{ color: 'gray.900', fontFamily: "Outfit, sans-serif" }}>Application status</Th>
+                <Tr background={"gray.100"}>
+                  <Th>{" "}</Th>
+                  <Th
+                    sx={{ color: "gray.900", fontFamily: "Outfit, sans-serif" }}
+                  >
+                    Vendor type
+                  </Th>
+                  <Th
+                    sx={{ color: "gray.900", fontFamily: "Outfit, sans-serif" }}
+                  >
+                    Meet product gap
+                  </Th>
+                  <Th
+                    sx={{ color: "gray.900", fontFamily: "Outfit, sans-serif" }}
+                  >
+                    Number of markets
+                  </Th>
+                  <Th
+                    sx={{ color: "gray.900", fontFamily: "Outfit, sans-serif" }}
+                  >
+                    Priority group
+                  </Th>
+                  <Th
+                    sx={{ color: "gray.900", fontFamily: "Outfit, sans-serif" }}
+                  >
+                    Standing
+                  </Th>
+                  <Th
+                    sx={{ color: "gray.900", fontFamily: "Outfit, sans-serif" }}
+                  >
+                    Reviewers
+                  </Th>
+                  <Th
+                    sx={{ color: "gray.900", fontFamily: "Outfit, sans-serif" }}
+                  >
+                    Grade (avg)
+                  </Th>
+                  <Th
+                    sx={{ color: "gray.900", fontFamily: "Outfit, sans-serif" }}
+                  >
+                    Application status
+                  </Th>
                 </Tr>
               </Tfoot>
             </Table>
           </TableContainer>
         </Container>
       </>
-    )
+    );
   }
-
 }
 
 export default CustomApplications;

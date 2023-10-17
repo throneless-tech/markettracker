@@ -6,7 +6,7 @@ import DatePicker from "react-datepicker";
 // Payload imports
 import { useAuth, useDocumentInfo } from "payload/components/utilities";
 import { useField, useForm } from "payload/components/forms";
-import type { Vendor } from "payload/generated-types";
+import type { Contact, Market, Season, Vendor } from "payload/generated-types";
 
 // Chakra imports
 import {
@@ -86,16 +86,16 @@ function CustomApplicationsEdit(props) {
   const { submit } = useForm();
   const { id } = useDocumentInfo();
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const [name, setName] = useState("");
   const [market, setMarket] = useState(null);
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
   const [numMonths, setNumMonths] = useState(1);
   const [marketDates, setMarketDates] = useState([]);
   const [selectedDates, setSelectedDates] = useState([]);
-  const { data } = props;
   const [application, setApplication] = useState(null);
   const [selectAllDates, setSelectAllDates] = useState(false);
+  const [doSubmit, setDoSubmit] = useState(false);
+
   const { value: isCSA, setValue: setIsCSA } = useField<boolean>({
     path: "isCSA",
   });
@@ -107,13 +107,38 @@ function CustomApplicationsEdit(props) {
   const { value: contacts, setValue: setContacts } = useField<string[]>({
     path: "contacts",
   });
-  const { value: season, setValue: setSeason } = useField<string>({
+  const { value: season, setValue: setSeason } = useField<Season>({
     path: "season",
   });
+  const { value: vendor, setValue: setVendor } = useField<Vendor>({
+    path: "vendor",
+  });
+  const { value: products, setValue: setProducts } = useField<string>({
+    path: "products",
+  });
 
-  const submitForm = async () => {
-    submit();
+  const [shadowSeason, setShadowSeason] = useState<Season>();
+
+  console.log("***isCSA***:", isCSA);
+  console.log("***dates***:", dates);
+  console.log("***contacts***:", contacts);
+  console.log("***season***:", season);
+  console.log("***vendor***:", vendor);
+  console.log("***products***:", products);
+
+  const submitForm = () => {
+    if (!id && shadowSeason && shadowSeason.id) {
+      setSeason(shadowSeason);
+    }
+    setDoSubmit(true);
   };
+
+  useEffect(() => {
+    if (doSubmit) {
+      submit();
+    }
+  }, [doSubmit]);
+
   const monthDiff = (d1, d2) => {
     let months;
     months = (d2.getFullYear() - d1.getFullYear()) * 12;
@@ -149,62 +174,89 @@ function CustomApplicationsEdit(props) {
   }, [selectAllDates]);
 
   useEffect(() => {
-    if (
-      history
-    ) {
-      setSeason(history.location.state.seasons[0].id);
-
-      let firstDate = new Date(
-        history.location.state.seasons[0].marketDates.startDate,
-      );
-      let lastDate = new Date(
-        history.location.state.seasons[0].marketDates.endDate,
-      );
-
+    if (!id && history.location.state) {
       setMarket(history.location.state);
-      setStartDate(
-        new Date(history.location.state.seasons[0].marketDates.startDate),
-      );
-      setEndDate(
-        new Date(history.location.state.seasons[0].marketDates.endDate),
-      );
 
-      let calLength = monthDiff(firstDate, lastDate);
-      setNumMonths(calLength);
+      if (
+        history.location.state.seasons && history.location.state.seasons.length
+      ) {
+        if (history.location.state.seasons[0].id) {
+          console.log(
+            "***Setting Season***",
+            history.location.state.seasons[0],
+          );
+          setShadowSeason(history.location.state.seasons[0]);
+        }
 
-      let days = [];
+        if (
+          history.location.state.seasons[0].marketDates.startDate &&
+          history.location.state.seasons[0].marketDates.startDate
+        ) {
+          let firstDate = new Date(
+            history.location.state.seasons[0].marketDates.startDate,
+          );
+          let lastDate = new Date(
+            history.location.state.seasons[0].marketDates.endDate,
+          );
+          setStartDate(
+            new Date(history.location.state.seasons[0].marketDates.startDate),
+          );
+          setEndDate(
+            new Date(history.location.state.seasons[0].marketDates.endDate),
+          );
 
-      for (var d = firstDate; d <= lastDate; d.setDate(d.getDate() + 1)) {
-        if (history.location.state.days.includes(dayNames[d.getDay()])) {
-          days.push(new Date(d));
+          let calLength = monthDiff(firstDate, lastDate);
+          setNumMonths(calLength);
+
+          let days = [];
+
+          for (var d = firstDate; d <= lastDate; d.setDate(d.getDate() + 1)) {
+            if (history.location.state.days.includes(dayNames[d.getDay()])) {
+              days.push(new Date(d));
+            }
+          }
+
+          setMarketDates(days);
         }
       }
-
-      setMarketDates(days);
     }
-  }, [history, user]);
+  }, [history]);
 
   useEffect(() => {
-    if (id) {
-      const getApplication = async () => {
-        const response = await fetch(`/api/applications/${id}?depth=2`);
-        const thisApplication = await response.json();
-        console.log(thisApplication);
-        setApplication(thisApplication);
-      };
-
-      getApplication();
-
-      if (data) {
-        setName(data.name);
-        setApplication(data);
-      }
+    if (!id && (user.vendor as Vendor)) {
+      setVendor(user.vendor as Vendor);
     }
-    setDates([]);
-  }, []);
+  }, [user]);
+
+  // useEffect(() => {
+  //   if (id) {
+  //     const getApplication = async () => {
+  //       const response = await fetch(`/api/applications/${id}?depth=2`);
+  //       const thisApplication = await response.json();
+  //       console.log(thisApplication);
+  //       setApplication(thisApplication);
+  //     };
+
+  //     getApplication();
+
+  //     if (data) {
+  //       setName(data.name);
+  //       setApplication(data);
+  //     }
+  //   }
+  // }, []);
+
+  // const isPopulated = (
+  //   season: { market: string | Market },
+  // ): season is Market => {
+  //   return typeof season.market === "object";
+  // };
 
   // id will be undefined on the create form
-  if (!id && market) {
+  if (
+    !id && shadowSeason && shadowSeason.market &&
+    typeof shadowSeason.market === "object"
+  ) {
     return (
       <>
         <Box>
@@ -224,10 +276,10 @@ function CustomApplicationsEdit(props) {
                       fontWeight={700}
                       textTransform={"uppercase"}
                     >
-                      {market.name}
+                      {shadowSeason.market.name}
                     </Text>
                   </HStack>
-                  {market.seasons[0].isAccepting
+                  {shadowSeason.isAccepting
                     ? (
                       <>
                         <Spacer />
@@ -251,7 +303,7 @@ function CustomApplicationsEdit(props) {
                 </Flex>
                 <Flex marginTop={4}>
                   <HStack>
-                    {market.seasons[0].marketTime
+                    {shadowSeason.marketTime
                       ? (
                         <Text
                           as={"span"}
@@ -261,16 +313,18 @@ function CustomApplicationsEdit(props) {
                           textStyle="bodyMain"
                           sx={{ textTransform: "capitalize" }}
                         >
-                          {market.days.map((day, index) => {
-                            if (index == market.days.length - 1) {
-                              return day;
-                            } else {
-                              return `${day}, `;
-                            }
-                          })} {formatTime(
-                            market.seasons[0].marketTime.startTime,
+                          {shadowSeason.market.days.map(
+                            (day, index) => {
+                              if (index == market.days.length - 1) {
+                                return day;
+                              } else {
+                                return `${day}, `;
+                              }
+                            },
+                          )} {formatTime(
+                            shadowSeason.marketTime.startTime,
                           )}-{formatTime(
-                            market.seasons[0].marketTime.endTime,
+                            shadowSeason.marketTime.endTime,
                           )}
                         </Text>
                       )
@@ -281,16 +335,16 @@ function CustomApplicationsEdit(props) {
                       color={"gray.50"}
                       fontSize="2xl"
                     >
-                      {market.address.street}
+                      {shadowSeason.market.address.street}
                       {", "}
-                      {market.address.city}
+                      {shadowSeason.market.address.city}
                       {", "}
-                      {market.address.state}
+                      {shadowSeason.market.address.state}
                       {", "}
-                      {market.address.zipcode}
+                      {shadowSeason.market.address.zipcode}
                     </Text>
                   </HStack>
-                  {market.contact
+                  {shadowSeason.market.contact
                     ? (
                       <>
                         <Spacer />
@@ -310,7 +364,7 @@ function CustomApplicationsEdit(props) {
                             color={"gray.50"}
                             fontSize="2xl"
                           >
-                            {market.contact.name}
+                            {(shadowSeason.market.contact as Contact).name}
                           </Text>
                           <Text
                             textStyle="bodyMain"
@@ -318,7 +372,7 @@ function CustomApplicationsEdit(props) {
                             color={"gray.50"}
                             fontSize="2xl"
                           >
-                            {market.contact.phone}
+                            {(shadowSeason.market.contact as Contact).phone}
                           </Text>
                         </HStack>
                       </>
@@ -328,7 +382,9 @@ function CustomApplicationsEdit(props) {
               </Box>
               <Box background={"#90B132"} borderBottomRadius="8px" padding={4}>
                 <Text marginTop={4} fontSize={"xl"}>
-                  {market.description ? market.description : ""}
+                  {shadowSeason.market.description
+                    ? shadowSeason.market.description
+                    : ""}
                 </Text>
                 <HStack>
                   <Text
@@ -339,9 +395,11 @@ function CustomApplicationsEdit(props) {
                   >
                     Market needs:
                   </Text>
-                  {market.seasons[0].productGaps &&
-                      market.seasons[0].productGaps.length
-                    ? market.seasons[0].productGaps.map((product) => (
+                  {shadowSeason.productGaps &&
+                      shadowSeason.productGaps.length
+                    ? shadowSeason.productGaps.map((
+                      product,
+                    ) => (
                       <Tag bg={"gray.50"} fontWeight={700}>
                         {product.product}
                       </Tag>
@@ -369,20 +427,20 @@ function CustomApplicationsEdit(props) {
                 fontWeight={700}
                 textTransform={"uppercase"}
               >
-                {market.size}
+                {shadowSeason.market.size}
               </Text>
               <Divider
                 sx={{ borderColor: "gray.600", borderBottomWidth: 2 }}
               />
             </HStack>
             <Text color={"gray.600"} marginTop={4} fontSize={"md"}>
-              {market.size == "flagship"
+              {shadowSeason.market.size == "flagship"
                 ? "Daily sales for the entire market are upwards of $150,000. This market can support upwards of 20 produce vendors, 14 prepared food vendors, 9 baked goods vendors, 6 alcohol vendors, 5 dairy vendors, and 2 to 4 vendors from each additional category."
-                : market.size == "large"
+                : shadowSeason.market.size == "large"
                 ? "Daily sales for large markets range from $20,000 to $70,000. They can support average numbers of 8 produce vendors, 8 prepared food vendors, 5 baked goods vendors, 3 alcohol vendors, and 1 to 2 vendors from each additional category."
-                : market.size == "medium"
+                : shadowSeason.market.size == "medium"
                 ? "Daily sales for medium markets range from $10,000 to $19,000. They can support average numbers of 5 prepared food vendors, 4 produce vendors, and 1 to 2 vendors from each additional category."
-                : market.size == "small"
+                : shadowSeason.market.size == "small"
                 ? "Daily sales for small markets range from $1,500 to $9,000. They can support average numbers of 4 produce vendors, 4 prepared food vendors, and 1 to 2 vendors from each additional category with some product category gaps."
                 : "These markets are limited to one produce vendor for retail and wholesale sales."}
             </Text>
@@ -446,8 +504,8 @@ function CustomApplicationsEdit(props) {
             />
             <Box background="green.600" padding={2} margin={4}>
               <Text color="gray.50">
-                Fill out the information below to apply to {market.name}{" "}
-                ({market.days[0]})
+                Fill out the information below to apply to{" "}
+                {shadowSeason.market.name} ({shadowSeason.market.days[0]})
               </Text>
             </Box>
             <HStack marginTop={4}>
@@ -465,8 +523,8 @@ function CustomApplicationsEdit(props) {
               />
             </HStack>
             <Text color={"gray.600"} marginTop={4} fontSize={"md"}>
-              Select all the dates you would like to apply to {market.name}{" "}
-              this season
+              Select all the dates you would like to apply to{" "}
+              {shadowSeason.market.name} this season
             </Text>
             <Wrap spacing={8} marginY={8}>
               <Checkbox
@@ -552,8 +610,8 @@ function CustomApplicationsEdit(props) {
               />
             </HStack>
             <Text color={"gray.600"} marginTop={4} fontSize={"md"}>
-              Select the products you would like to sell at {market.name}{" "}
-              this season
+              Select the products you would like to sell at{" "}
+              {shadowSeason.market.name} this season
             </Text>
             <ProductsField path="products" />
             <Text marginTop={4}>
@@ -588,9 +646,8 @@ function CustomApplicationsEdit(props) {
               />
             </HStack>
             <Text color={"gray.600"} marginTop={4} fontSize={"md"}>
-              Select anyone who will be staffing your booth at {market.name}
-              {" "}
-              this season.
+              Select anyone who will be staffing your booth at{" "}
+              {shadowSeason.market.name} this season.
             </Text>
             <CheckboxGroup
               onChange={(newValue) => setContacts(newValue)}
@@ -698,14 +755,16 @@ function CustomApplicationsEdit(props) {
         </Box>
       </>
     );
-  } else if (data && application) {
+  } else if (
+    id && season && season.market && typeof season.market === "object"
+  ) {
     return (
       <Box>
         <Container maxW="container.xl">
           <Heading as="h2" sx={{ textTransform: "uppercase" }} marginTop={4}>
             <Text as={"span"}>Review</Text>{" "}
             <Text as={"span"} sx={{ fontWeight: 700 }}>
-              {application.season.market.name}
+              {season.market.name}
             </Text>{" "}
             <Text as={"span"}>applications</Text>
           </Heading>
@@ -721,7 +780,7 @@ function CustomApplicationsEdit(props) {
                     fontWeight={700}
                     textTransform={"uppercase"}
                   >
-                    {application.vendor.name || application.vendor.email}
+                    {vendor.name}
                   </Text>
                 </HStack>
                 <Spacer />
@@ -744,22 +803,22 @@ function CustomApplicationsEdit(props) {
                     fontWeight={700}
                     sx={{ textTransform: "capitalize" }}
                   >
-                    {application.vendor.type}
+                    {vendor.type}
                   </Text>
                   <Text as={"span"} color={"gray.50"} fontSize="2xl">
-                    {application.vendor.address.street}
+                    {vendor.address.street}
                     {", "}
-                    {application.vendor.address.city}
+                    {vendor.address.city}
                     {", "}
-                    {application.vendor.address.state}
+                    {vendor.address.state}
                     {", "}
-                    {application.vendor.address.zipcode}
+                    {vendor.address.zipcode}
                   </Text>
                 </HStack>
                 <Spacer />
-                {application.vendor.contacts &&
-                    application.vendor.contacts.length
-                  ? application.vendor.contacts.map((contact) => {
+                {vendor.contacts &&
+                    vendor.contacts.length
+                  ? vendor.contacts.map((contact) => {
                     if (contact.type && contact.type.length) {
                       const type = contact.type.find((type) =>
                         type == "primary"
@@ -791,7 +850,7 @@ function CustomApplicationsEdit(props) {
             </Box>
             <Box background={"#90B132"} borderBottomRadius="8px" padding={4}>
               <Text marginTop={4} fontSize={"xl"}>
-                {application.vendor.description}
+                {vendor.description}
               </Text>
             </Box>
             <Text fontSize={18} marginY={4}>
@@ -810,7 +869,7 @@ function CustomApplicationsEdit(props) {
                 >
                   Vendor type
                 </FormLabel>
-                <Text>{application.vendor.type}</Text>
+                <Text>{vendor.type}</Text>
               </HStack>
             </FormControl>
             <FormControl marginBottom={8}>
@@ -826,9 +885,9 @@ function CustomApplicationsEdit(props) {
                   >
                     Products
                   </FormLabel>
-                  {application.vendor.products &&
-                      application.vendor.products.length
-                    ? application.vendor.products.map((product) => (
+                  {vendor.products &&
+                      vendor.products.length
+                    ? vendor.products.map((product) => (
                       <Tag>{product.name}</Tag>
                     ))
                     : null}
@@ -848,11 +907,9 @@ function CustomApplicationsEdit(props) {
                   >
                     Demographic data
                   </FormLabel>
-                  {application.vendor.demographics &&
-                      application.vendor.demographics.length
-                    ? application.vendor.demographics.map((demo) => (
-                      <Tag>{demo.name}</Tag>
-                    ))
+                  {vendor.demographics &&
+                      vendor.demographics.length
+                    ? vendor.demographics.map((demo) => <Tag>{demo.name}</Tag>)
                     : null}
                 </Stack>
               </HStack>
@@ -871,8 +928,7 @@ function CustomApplicationsEdit(props) {
                     Saturation/Opportunity
                   </FormLabel>
                   <FormHelperText>
-                    {application.vendor.name}{" "}
-                    is approved for 0/0 FRESHFARM markets
+                    {vendor.name} is approved for 0/0 FRESHFARM markets
                   </FormHelperText>
                 </Stack>
               </HStack>
@@ -890,11 +946,9 @@ function CustomApplicationsEdit(props) {
                   >
                     Set up needs
                   </FormLabel>
-                  {application.vendor.demographics &&
-                      application.vendor.demographics.length
-                    ? application.vendor.demographics.map((demo) => (
-                      <Tag>{demo.name}</Tag>
-                    ))
+                  {vendor.demographics &&
+                      vendor.demographics.length
+                    ? vendor.demographics.map((demo) => <Tag>{demo.name}</Tag>)
                     : null}
                 </Stack>
               </HStack>
@@ -913,7 +967,7 @@ function CustomApplicationsEdit(props) {
                     Attendance
                   </FormLabel>
                   <FormHelperText>
-                    {application.vendor.name} plans to attend 16/16 market days
+                    {vendor.name} plans to attend 16/16 market days
                   </FormHelperText>
                 </Stack>
               </HStack>

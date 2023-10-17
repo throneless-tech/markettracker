@@ -68,30 +68,30 @@ export const Reviews: CollectionConfig = {
         readOnly: true,
       },
     },
-    {
-      name: "reviews",
-      type: "relationship",
-      relationTo: "markets",
-      hasMany: true,
-    },
-    {
-      name: "status",
-      type: "select",
-      defaultValue: "pending",
-      options: [
-        {
-          label: "Approved",
-          value: "approved",
-        },
-        {
-          label: "Rejected",
-          value: "rejected",
-        },
-        {
-          label: "Pending",
-          value: "pending",
-        },
-      ],
-    },
+    // {
+    //   name: "reviews",
+    //   type: "relationship",
+    //   relationTo: "markets",
+    //   hasMany: true,
+    // },
+    // {
+    //   name: "status",
+    //   type: "select",
+    //   defaultValue: "pending",
+    //   options: [
+    //     {
+    //       label: "Approved",
+    //       value: "approved",
+    //     },
+    //     {
+    //       label: "Rejected",
+    //       value: "rejected",
+    //     },
+    //     {
+    //       label: "Pending",
+    //       value: "pending",
+    //     },
+    //   ],
+    // },
   ],
 };

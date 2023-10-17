@@ -8,9 +8,7 @@ import { Contact } from "payload/generated-types";
 export const afterReadVendor: CollectionAfterReadHook = async ({
   doc, // full document data
 }) => {
-  console.log("doc:", doc);
   if (typeof doc.vendor === "string") {
-    console.log("Fetching vendor");
     const vendor = await payload.findByID({
       collection: "vendors",
       id: doc.vendor,

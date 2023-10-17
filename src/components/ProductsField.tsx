@@ -113,7 +113,7 @@ export const ProductsField: FC<Props> = (
         <Wrap marginTop={4} spacing={8}>
           {Object.entries(allProducts).map(([category, products]) => {
             return (
-              <Stack spacing={4}>
+              <Stack spacing={4} key={category}>
                 <Heading
                   as="h2"
                   fontFamily={"font.body"}
