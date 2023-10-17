@@ -6,6 +6,7 @@ import DatePicker from "react-datepicker";
 // Payload imports
 import { useAuth, useDocumentInfo } from "payload/components/utilities";
 import { useField, useForm } from "payload/components/forms";
+import { ArrayField } from "payload/types";
 
 // Chakra imports
 import {
@@ -98,14 +99,21 @@ function CustomApplicationsEdit(props) {
   const { value: isCSA, setValue: setIsCSA } = useField<boolean>({
     path: "isCSA",
   });
-  const { value: dates, setValue: setDates } = useField<string[]>({
+  const { value: dates, setValue: setDates } = useField<
+    { date?: string; id?: string }[]
+  >({
     path: "dates",
   });
   const { value: contacts, setValue: setContacts } = useField<string[]>({
     path: "contacts",
   });
+  const { value: season, setValue: setSeason } = useField<string>({
+    path: "season",
+  });
 
+  console.log("***id***:", id);
   const submitForm = async () => {
+    console.log("***dates***:", dates);
     submit();
   };
   const monthDiff = (d1, d2) => {
@@ -124,14 +132,13 @@ function CustomApplicationsEdit(props) {
     let datesArray = dates ? dates : [];
     const dateString = date.toISOString();
 
-    let dateFound = datesArray.find((item) => item === dateString);
+    let dateFound = datesArray.find((item) => item.date === dateString);
 
     if (dateFound) {
-      datesArray = datesArray.filter((item) => item !== dateString);
+      datesArray = datesArray.filter((item) => item.date !== dateString);
     } else {
-      datesArray.push(dateString);
+      datesArray.push({ date: dateString });
     }
-    console.log("***datesArray***", datesArray);
     setDates(datesArray);
   };
 
@@ -144,7 +151,11 @@ function CustomApplicationsEdit(props) {
   }, [selectAllDates]);
 
   useEffect(() => {
-    if (history) {
+    if (
+      history
+    ) {
+      setSeason(history.location.state.seasons[0].id);
+
       let firstDate = new Date(
         history.location.state.seasons[0].marketDates.startDate,
       );
@@ -191,6 +202,7 @@ function CustomApplicationsEdit(props) {
         setApplication(data);
       }
     }
+    setDates([]);
   }, []);
 
   // id will be undefined on the create form
@@ -517,7 +529,7 @@ function CustomApplicationsEdit(props) {
                   let dateFound = null;
                   if (dates) {
                     dateFound = dates.find((item) => {
-                      return item === date.toISOString();
+                      return item.date === date.toISOString();
                     });
                   }
 

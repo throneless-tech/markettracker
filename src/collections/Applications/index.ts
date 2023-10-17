@@ -20,7 +20,7 @@ export const Applications: CollectionConfig = {
       name: "vendor",
       type: "relationship",
       relationTo: "vendors",
-      required: true,
+      //required: true,
       access: {
         create: ({ req }) => req.user.role !== "vendor",
         update: ({ req }) => req.user.role !== "vendor",
@@ -33,7 +33,7 @@ export const Applications: CollectionConfig = {
       name: "season",
       type: "relationship",
       relationTo: "seasons",
-      required: true,
+      //required: true,
       access: {
         update: ({ req }) => req.user.role !== "vendor",
       },
@@ -77,7 +77,6 @@ export const Applications: CollectionConfig = {
       label: "Market Dates",
       type: "array",
       required: true,
-      minRows: 1,
       fields: [
         {
           name: "date",

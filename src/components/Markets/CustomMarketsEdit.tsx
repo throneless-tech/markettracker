@@ -714,9 +714,11 @@ function CustomMarketsEdit(props, { path }) {
                                     </Text>
                                     <DatePicker
                                       inline
-                                      selected={new Date(
-                                        seasons[0].marketDates.startDate,
-                                      )}
+                                      selected={seasons[0].marketDates.startDate
+                                        ? new Date(
+                                          seasons[0].marketDates.startDate,
+                                        )
+                                        : null}
                                       onChange={(date) =>
                                         setSeasons([{
                                           ...seasons[0],
@@ -741,9 +743,11 @@ function CustomMarketsEdit(props, { path }) {
                                     </Text>
                                     <DatePicker
                                       inline
-                                      selected={new Date(
-                                        seasons[0].marketDates.endDate,
-                                      )}
+                                      selected={seasons[0].marketDates.endDate
+                                        ? new Date(
+                                          seasons[0].marketDates.endDate,
+                                        )
+                                        : null}
                                       onChange={(date) =>
                                         setSeasons([{
                                           ...seasons[0],
