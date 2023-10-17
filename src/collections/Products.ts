@@ -1,5 +1,5 @@
 import { CollectionConfig } from "payload/types";
-import CustomProductsList from "../components/Products/CustomProductsList";
+import { ProductsList } from "../components/Products/List";
 
 export const Products: CollectionConfig = {
   slug: "products",
@@ -7,7 +7,7 @@ export const Products: CollectionConfig = {
     components: {
       views: {
         // Edit: CustomProductsEdit,
-        List: CustomProductsList,
+        List: ProductsList,
       },
     },
     useAsTitle: "name",
@@ -20,7 +20,50 @@ export const Products: CollectionConfig = {
     },
     {
       name: "category",
-      type: "text",
+      type: "select",
+      required: true,
+      options: [
+        {
+          value: "meat",
+          label: "Meat",
+        },
+        {
+          value: "dairy",
+          label: "Dairy",
+        },
+        {
+          value: "produce",
+          label: "Produce",
+        },
+        {
+          value: "plants",
+          label: "Plants",
+        },
+        {
+          value: "dried_goods",
+          label: "Dried Goods",
+        },
+        {
+          value: "value_added_products",
+          label: "Value-Added Products",
+        },
+        {
+          value: "baked_goods",
+          label: "Baked Goods",
+        },
+        {
+          value: "prepared_food",
+          label: "Prepared Food",
+        },
+        {
+          value: "beverages",
+          label: "Beverages",
+        },
+        {
+          value: "non_food",
+          label: "Non-Food",
+        },
+      ],
     },
   ],
 };

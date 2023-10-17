@@ -23,8 +23,7 @@ import { ArrowForwardIcon } from "@chakra-ui/icons";
 import { CalendarIcon } from "../../assets/icons/calendar";
 import { MarketIcon } from "../../assets/icons/market";
 import { ProfileIcon } from "../../assets/icons/profile";
-import StarIcon from '../../assets/icons/star.js'
-
+import StarIcon from "../../assets/icons/star.js";
 
 const MarketCard = (props) => {
   const { user } = useAuth();
@@ -64,20 +63,27 @@ const MarketCard = (props) => {
       borderStyle={"solid"}
       borderWidth={2}
       maxWidth={348}
-      sx={{position: "relative"}}
+      sx={{ position: "relative" }}
     >
-      {market.seasons && market.seasons[0].isAccepting ? (
-        <Box
-          sx={{
-            position: "absolute",
-            right: "-10px",
-            top: "-10px"
-          }}
-        >
-          <StarIcon height={8} width={8} />
-        </Box>
-      ) : null}
-      <Box backgroundColor={market.seasons && market.seasons[0].isAccepting ? "green.600" : "gray.700"} padding={4}>
+      {market.seasons && market.seasons[0].isAccepting
+        ? (
+          <Box
+            sx={{
+              position: "absolute",
+              right: "-10px",
+              top: "-10px",
+            }}
+          >
+            <StarIcon height={8} width={8} />
+          </Box>
+        )
+        : null}
+      <Box
+        backgroundColor={market.seasons && market.seasons[0].isAccepting
+          ? "green.600"
+          : "gray.700"}
+        padding={4}
+      >
         <HStack align={"flex-start"}>
           <MarketIcon
             sx={{
@@ -121,8 +127,8 @@ const MarketCard = (props) => {
                     return `${day}, `;
                   }
                 })} {market.seasons && market.seasons.length &&
-                  market.seasons[0].marketTime.startTime &&
-                  market.seasons[0].marketTime.endTime
+                    market.seasons[0].marketTime.startTime &&
+                    market.seasons[0].marketTime.endTime
                   ? (
                     <>
                       {formatTime(
@@ -141,7 +147,7 @@ const MarketCard = (props) => {
         </Stack>
         <Stack marginTop={4} fontSize={18}>
           {market.seasons && market.seasons.length &&
-            market.seasons[0].marketDates
+              market.seasons[0].marketDates
             ? (
               <>
                 <HStack>
@@ -202,7 +208,7 @@ const MarketCard = (props) => {
         </Stack>
       </Box>
       {market.seasons && market.seasons.length &&
-        market.seasons[0].isAccepting == true
+          market.seasons[0].isAccepting == true
         ? (
           <Box margin={4}>
             <Center>
@@ -217,16 +223,17 @@ const MarketCard = (props) => {
                 wrap={"wrap"}
                 maxWidth={212}
               >
-                {marketNeeds && marketNeeds.length
-                  ? marketNeeds.map((need) => (
+                {market.seasons[0].productGaps &&
+                    market.seasons[0].productGaps.length
+                  ? market.seasons[0].productGaps.map((need) => (
                     <Tag
-                      key={need}
+                      key={need.id}
                       colorScheme="green"
                       fontWeight={500}
                       textTransform={"capitalize"}
                       variant={"solid"}
                     >
-                      {need}
+                      {need.product}
                     </Tag>
                   ))
                   : "none"}
@@ -245,28 +252,29 @@ const MarketCard = (props) => {
         <Center>
           <Text textStyle={"h4"} marginBottom={4}>
             {market.seasons && market.seasons.length &&
-              market.seasons[0].isAccepting == true
+                market.seasons[0].isAccepting == true
               ? ""
               : "Not "}Accepting applications
           </Text>
         </Center>
         {market.seasons && market.seasons.length &&
-          market.seasons[0].isAccepting == true
-          ? user.role == "vendor" ? (
-            <Center marginBottom={2}>
-              <Button
-                rightIcon={<ArrowForwardIcon />}
-                variant={"solid"}
-                onClick={(e) => {
-                  e.preventDefault;
-                  applyToMarket(market);
-                }}
-              >
-                Apply
-              </Button>
-            </Center>
-          )
-          : (
+            market.seasons[0].isAccepting == true
+          ? user.role == "vendor"
+            ? (
+              <Center marginBottom={2}>
+                <Button
+                  rightIcon={<ArrowForwardIcon />}
+                  variant={"solid"}
+                  onClick={(e) => {
+                    e.preventDefault;
+                    applyToMarket(market);
+                  }}
+                >
+                  Apply
+                </Button>
+              </Center>
+            )
+            : (
               <Center marginBottom={2}>
                 <Button
                   rightIcon={<ArrowForwardIcon />}
@@ -279,7 +287,8 @@ const MarketCard = (props) => {
                   View applications
                 </Button>
               </Center>
-          ) : null}
+            )
+          : null}
         <Center>
           <Button
             rightIcon={<ArrowForwardIcon />}

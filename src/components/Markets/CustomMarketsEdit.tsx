@@ -52,6 +52,8 @@ import {
 
 // components
 //import Calendar from "../Calendar.js";
+import type { Product } from "payload/generated-types";
+import { ProductsField } from "../ProductsField";
 
 // utils
 import formatTime from "../../utils/formatTime";
@@ -98,6 +100,8 @@ function CustomMarketsEdit(props, { path }) {
   const { value: seasons, setValue: setSeasons } = useField<Season[]>({
     path: "seasons",
   });
+
+  console.log("***seasons***:", seasons);
 
   const submitForm = async () => {
     submit();
@@ -327,7 +331,9 @@ function CustomMarketsEdit(props, { path }) {
                           </Text>
                           {seasons && seasons[0].productGaps
                             ? seasons[0].productGaps.map((need) => (
-                              <Tag bg={"gray.50"} fontWeight={700}>{need}</Tag>
+                              <Tag bg={"gray.50"} fontWeight={700}>
+                                {need.product}
+                              </Tag>
                             ))
                             : <Tag bg={"gray.50"} fontWeight={700}>TBA</Tag>}
                         </HStack>
@@ -753,6 +759,38 @@ function CustomMarketsEdit(props, { path }) {
                                     />
                                   </Stack>
                                 </HStack>
+                                <Flex
+                                  align="center"
+                                  justify="space-between"
+                                  marginTop={8}
+                                >
+                                  <Heading
+                                    as="h2"
+                                    textStyle="h4"
+                                    size="md"
+                                    width={"70%"}
+                                  >
+                                    Market needs
+                                  </Heading>
+                                  <Divider
+                                    color="gray.700"
+                                    borderBottomWidth={2}
+                                    opacity={1}
+                                  />
+                                </Flex>
+                                <ProductsField
+                                  path="seasons.productGaps"
+                                  onChange={(newValue) =>
+                                    setSeasons([{
+                                      ...seasons[0],
+                                      productGaps: newValue,
+                                    }])}
+                                  value={seasons[0].productGaps &&
+                                      seasons[0].productGaps.length
+                                    ? seasons[0].productGaps as string[] // we know it will be string[] here unless we specifically fetch it
+                                    : []}
+                                  useObjects={true}
+                                />
                               </Container>
                             </ModalBody>
                             <ModalFooter>

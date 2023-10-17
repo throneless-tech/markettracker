@@ -2,13 +2,14 @@ import { CollectionConfig } from "payload/types";
 import { createFieldVendor } from "./hooks/createFieldVendor";
 import CustomApplicationsEdit from "../../components/Applications/CustomApplicationsEdit";
 import CustomApplicationsList from "../../components/Applications/CustomApplicationsList";
+import { withFormContext } from "../../utils/withFormContext";
 
 export const Applications: CollectionConfig = {
   slug: "applications",
   admin: {
     components: {
       views: {
-        Edit: CustomApplicationsEdit,
+        Edit: withFormContext(CustomApplicationsEdit),
         List: CustomApplicationsList,
       },
     },

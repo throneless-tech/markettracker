@@ -3,7 +3,7 @@ import {
   CollectionAfterReadHook,
   CollectionBeforeValidateHook,
 } from "payload/types";
-import type { Season } from "payload/generated-types";
+import type { Product, Season } from "payload/generated-types";
 
 export const afterReadSeasons: CollectionAfterReadHook = async ({
   doc, // full document data
@@ -14,6 +14,17 @@ export const afterReadSeasons: CollectionAfterReadHook = async ({
       depth: 0,
       where: { id: { in: doc.seasons.join(",") } },
     });
+    if (
+      seasons.docs.length && seasons.docs[0].productGaps &&
+      seasons.docs[0].productGaps.length
+    ) {
+      const productGaps = await payload.find({
+        collection: "products",
+        depth: 0,
+        where: { id: { in: seasons.docs[0].productGaps.join(",") } },
+      });
+      seasons.docs[0].productGaps = productGaps.docs;
+    }
     return { ...doc, seasons: seasons.docs };
   }
   return doc;
@@ -27,6 +38,15 @@ export const beforeValidateSeasons: CollectionBeforeValidateHook = async ({
   ) {
     const flattened = await data.seasons.reduce(
       async (acc: string[], season: Season) => {
+        if (
+          season.productGaps && season.productGaps.length &&
+          typeof season.productGaps[0] !== "string"
+        ) {
+          const flatProducts = season.productGaps.map((product: any) =>
+            product.id
+          );
+          season.productGaps = flatProducts;
+        }
         const existing = await payload.findByID({
           collection: "seasons",
           id: season.id,

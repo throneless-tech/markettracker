@@ -56,6 +56,7 @@ import { StyledTable } from "./Table";
 
 // components
 import FooterAdmin from "./FooterAdmin";
+import { ProductsField } from "./ProductsField";
 
 // icons
 import EditIcon from "../assets/icons/edit.js";
@@ -74,7 +75,9 @@ const CustomDashboard = () => {
     useField < string > ({ path: "vendor" });
   const [vendor, setShadowVendor] = useState(vendor);
 
+  console.log("***isLoaded:", isLoaded);
   console.log("***Role:", role);
+  console.log("***Vendor:", vendor);
 
   const debounceVendor = useDebouncedCallback((vendor) => {
     setRealVendor(vendor);
@@ -1239,6 +1242,17 @@ const CustomDashboard = () => {
                         <Radio value="false">No</Radio>
                       </Stack>
                     </RadioGroup>
+                  </TabPanel>
+                )
+                : null}
+              {role === "vendor" && vendor
+                ? (
+                  <TabPanel>
+                    <ProductsField
+                      onChange={(newValue) =>
+                        setVendor({ ...vendor, products: newValue })}
+                      value={vendor.products}
+                    />
                   </TabPanel>
                 )
                 : null}
