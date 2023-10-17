@@ -82,7 +82,6 @@ const dayNames = [
 
 function CustomApplicationsEdit(props) {
   const { user } = useAuth();
-  const { submit } = useForm();
   const history = useHistory();
   const { submit } = useForm();
   const { id } = useDocumentInfo();
