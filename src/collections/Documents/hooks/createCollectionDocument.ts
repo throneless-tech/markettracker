@@ -37,8 +37,18 @@ type MarketSource = {
 };
 
 type ProductSource = {
-  category: string;
   product: string;
+  category:
+    | "meat"
+    | "dairy"
+    | "produce"
+    | "plants"
+    | "dried_goods"
+    | "value_added_products"
+    | "baked_goods"
+    | "prepared_food"
+    | "beverages"
+    | "non_food";
 };
 
 export const createCollectionDocument: CollectionAfterChangeHook = async (

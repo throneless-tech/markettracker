@@ -6,7 +6,7 @@ import DatePicker from "react-datepicker";
 // Payload imports
 import { useAuth, useDocumentInfo } from "payload/components/utilities";
 import { useField, useForm } from "payload/components/forms";
-import { ArrayField } from "payload/types";
+import type { Vendor } from "payload/generated-types";
 
 // Chakra imports
 import {
@@ -212,15 +212,7 @@ function CustomApplicationsEdit(props) {
             <Heading as="h2" sx={{ textTransform: "uppercase" }} marginTop={4}>
               Market application
             </Heading>
-            <Box
-              direction="row"
-              justify="flex-start"
-              align="stretch"
-              spacing="24px"
-              borderBottomRadius="8px"
-              borderTop="2px solid #6D635B"
-              marginTop={8}
-            >
+            <Box>
               <Box background="green.600" padding={6}>
                 <Flex borderBottom={"2px solid #F6F5F4"} paddingBottom={6}>
                   <HStack>
@@ -605,7 +597,7 @@ function CustomApplicationsEdit(props) {
               value={contacts}
             >
               <HStack spacing={4}>
-                {user.vendor.contacts.map((contact) => (
+                {(user.vendor as Vendor).contacts.map((contact) => (
                   <Checkbox key={contact.id} value={contact.id}>
                     {contact.name}
                     <Tag bg={"gray.50"} fontWeight={700}>
@@ -717,15 +709,7 @@ function CustomApplicationsEdit(props) {
             </Text>{" "}
             <Text as={"span"}>applications</Text>
           </Heading>
-          <Box
-            direction="row"
-            justify="flex-start"
-            align="stretch"
-            spacing="24px"
-            borderBottomRadius="8px"
-            borderTop="2px solid #6D635B"
-            marginTop={8}
-          >
+          <Box>
             <Box background="green.600" padding={6}>
               <Flex borderBottom={"2px solid #F6F5F4"} paddingBottom={6}>
                 <HStack>
