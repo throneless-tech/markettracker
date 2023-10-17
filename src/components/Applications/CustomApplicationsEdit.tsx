@@ -82,6 +82,7 @@ const dayNames = [
 
 function CustomApplicationsEdit(props) {
   const { user } = useAuth();
+  const { submit } = useForm();
   const history = useHistory();
   const { submit } = useForm();
   const { id } = useDocumentInfo();
@@ -111,9 +112,7 @@ function CustomApplicationsEdit(props) {
     path: "season",
   });
 
-  console.log("***id***:", id);
   const submitForm = async () => {
-    console.log("***dates***:", dates);
     submit();
   };
   const monthDiff = (d1, d2) => {

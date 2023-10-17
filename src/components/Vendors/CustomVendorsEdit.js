@@ -19,7 +19,12 @@ import {
   Flex,
   Heading,
   HStack,
+  Input,
+  Radio,
+  RadioGroup,
+  Select,
   Spacer,
+  Stack,
   Tab,
   Tabs,
   TabList,
@@ -32,9 +37,11 @@ import {
   Th,
   Thead,
   Tr,
+  Textarea,
   Tag,
   Text,
   Wrap,
+  WrapItem,
   VisuallyHidden,
 } from '@chakra-ui/react';
 
@@ -253,7 +260,7 @@ function CustomVendorsEdit(props) {
                         </h2>
                         <AccordionPanel>
                           <HStack marginTop={12} spacing={4}>
-                            <Input placeholder='Company name' />
+                            <Input value={vendor.name} placeholder='Company name' />
                           </HStack>
                           <Stack marginTop={4}>
                             <Text as='div' textStyle='bodyMain' fontWeight={500}>
@@ -261,14 +268,16 @@ function CustomVendorsEdit(props) {
                             </Text>
                             <RadioGroup >
                               <Stack>
+                                <RadioGroup defaultValue={vendor.isPrimaryContact}>
                                 <Radio value={true}>Yes</Radio>
                                 <Radio value={false}>No</Radio>
+                                </RadioGroup>
                               </Stack>
                             </RadioGroup>
                             <Text as='div' textStyle='bodyMain' fontWeight={500}>
                               Are you the billing contact for this business?
                             </Text>
-                            <RadioGroup>
+                            <RadioGroup value={vendor.isBillingContact}>
                               <Stack>
                                 <Radio value={true}>Yes</Radio>
                                 <Radio value={false}>No</Radio>
@@ -279,10 +288,10 @@ function CustomVendorsEdit(props) {
                             <Text as='div' textStyle='bodyMain' fontWeight={500}>
                               Company address (required)
                             </Text>
-                            <Input placeholder='Street' isRequired />
+                            <Input value={vendor.address.street} placeholder='Street' isRequired />
                             <Flex gap={2}>
-                              <Input placeholder='City' flex={6} isRequired />
-                              <Select placeholder='State' flex={2} isRequired>
+                              <Input value={vendor.address.city} placeholder='City' flex={6} isRequired />
+                              <Select value={vendor.address.state} placeholder='State' flex={2} isRequired>
                                 <option value="AK">AK</option>
                                 <option value="AL">AL</option>
                                 <option value="AR">AR</option>
@@ -335,14 +344,14 @@ function CustomVendorsEdit(props) {
                                 <option value="WV">WV</option>
                                 <option value="WY">WY</option>
                               </Select>
-                              <Input placeholder='Zipcode' flex={3} type='number' isRequired />
+                              <Input value={vendor.address.zipcode} placeholder='Zipcode' flex={3} type='number' isRequired />
                             </Flex>
                           </Stack>
                           <Stack spacing={2} marginTop={4}>
                             <Text as='div' textStyle='bodyMain' fontWeight={500}>
                               Company phone number (required)
                             </Text>
-                            <Input placeholder='xxx-xxx-xxxx' type='tel' isRequired />
+                            <Input value={vendor.phoneNumber}  placeholder='xxx-xxx-xxxx' type='tel' isRequired />
                           </Stack>
                           <Stack spacing={2} marginTop={4}>
                             <Text as='div' textStyle='bodyMain' fontWeight={500}>
@@ -351,13 +360,13 @@ function CustomVendorsEdit(props) {
                             <Text as="div" color='gray.400' fontSize={14}>
                               Add a statement of explanation.
                             </Text>
-                            <Textarea placeholder='Start typing...' />
+                            <Textarea value={vendor.description} placeholder='Start typing...' />
                           </Stack>
                           <Stack spacing={2} marginTop={4}>
                             <Text as='div' textStyle='bodyMain' fontWeight={500}>
                               Year company established
                             </Text>
-                            <Input placeholder='eg. 2017' type='number' />
+                            <Input value={vendor.yearEstablished} placeholder='eg. 2017' type='number' />
                           </Stack>
                           <Stack spacing={2} marginTop={4}>
                             <Text as='div' textStyle='bodyMain' fontWeight={500}>
@@ -371,31 +380,31 @@ function CustomVendorsEdit(props) {
                                 <Text as='span' paddingRight={2} textStyle='bodyMain' fontWeight={500}>
                                   Full time
                                 </Text>
-                                <Input maxWidth={160} placeholder='# of full time staff' />
+                                <Input value={vendor.employees.fullTime} maxWidth={160} placeholder='# of full time staff' />
                               </WrapItem>
                               <WrapItem alignItems='center' >
                                 <Text as='span' paddingRight={2} textStyle='bodyMain' fontWeight={500}>
                                   Part time
                                 </Text>
-                                <Input maxWidth={160} placeholder='# of part time staff' />
+                                <Input value={vendor.employees.partTime} maxWidth={160} placeholder='# of part time staff' />
                               </WrapItem>
                               <WrapItem alignItems='center' >
                                 <Text as='span' paddingRight={2} textStyle='bodyMain' fontWeight={500}>
                                   Interns
                                 </Text>
-                                <Input maxWidth={160} placeholder='# of interns' />
+                                <Input value={vendor.employees.interns} maxWidth={160} placeholder='# of interns' />
                               </WrapItem>
                               <WrapItem alignItems='center' >
                                 <Text as='span' paddingRight={2} textStyle='bodyMain' fontWeight={500}>
                                   H2A
                                 </Text>
-                                <Input maxWidth={160} placeholder='# of H2A' />
+                                <Input value={vendor.employees.h2a} maxWidth={160} placeholder='# of H2A' />
                               </WrapItem>
                               <WrapItem alignItems='center' >
                                 <Text as='span' paddingRight={2} textStyle='bodyMain' fontWeight={500}>
                                   Volunteers
                                 </Text>
-                                <Input maxWidth={160} placeholder='# of volunteers' />
+                                <Input value={vendor.employees.volunteers} maxWidth={160} placeholder='# of volunteers' />
                               </WrapItem>
                             </Wrap>
                           </Stack>
@@ -425,9 +434,9 @@ function CustomVendorsEdit(props) {
                             <Text as='div' textStyle='bodyMain' fontWeight={500}>
                               What type of vendor are you? (required)
                             </Text>
-                            <Select placeholder='Farm, Non Farm' flex={2} isRequired>
+                            <Select value={vendor.type} placeholder='Farm, Producer' flex={2} isRequired>
                               <option value="farm">Farm</option>
-                              <option value="nonFarm">Non Farm</option>
+                              <option value="producer">Producer</option>
                             </Select>
                             <Text as='div' color='gray.500'>
                               Select the category that describes the majority of what you sell
@@ -437,7 +446,7 @@ function CustomVendorsEdit(props) {
                             <Text as='div' textStyle='bodyMain' fontWeight={500}>
                               What is the structure of your business? (required)
                             </Text>
-                            <Select placeholder='LLC, sole proprietor, nonprofit, etc' flex={2} isRequired>
+                            <Select value={vendor.structure} placeholder='LLC, sole proprietor, nonprofit, etc' flex={2} isRequired>
                               <option value="farm">LLC</option>
                               <option value="soleProprietor">Sole proprietor</option>
                               <option value="nonprofit">Nonprofit</option>
@@ -453,7 +462,7 @@ function CustomVendorsEdit(props) {
                             <Text as='div' color='gray.500'>
                               Check all that apply
                             </Text>
-                            <CheckboxGroup colorScheme='green'>
+                            <CheckboxGroup value={vendor.growingPractices} colorScheme='green'>
                               <Stack>
                                 <Checkbox value='organicManagement'>Organic Management</Checkbox>
                                 <Checkbox value='certifiedNaturallyGrown'>Certified Naturally Grown</Checkbox>
@@ -471,7 +480,7 @@ function CustomVendorsEdit(props) {
                             <Text as='div' color='gray.500'>
                               Check all that apply
                             </Text>
-                            <CheckboxGroup colorScheme='green'>
+                            <CheckboxGroup value={vendor.sellingLocally} colorScheme='green'>
                               <Stack>
                                 <Checkbox value='nowhere'>Nowhere yet</Checkbox>
                                 <Checkbox value='freshfarm'>At FreshFarm markets</Checkbox>
@@ -489,7 +498,7 @@ function CustomVendorsEdit(props) {
                                 <Text as='div' color='gray.600'>
                                   Stores
                                 </Text>
-                                <RadioGroup>
+                                <RadioGroup value={vendor.outletImportance.stores}>
                                   <Stack
                                     align='flex-start'
                                     color='gray.500'
@@ -518,7 +527,7 @@ function CustomVendorsEdit(props) {
                                 <Text as='div' color='gray.600'>
                                   Farmers markets
                                 </Text>
-                                <RadioGroup>
+                                <RadioGroup value={vendor.outletImportance.markets}>
                                   <Stack
                                     align='flex-start'
                                     color='gray.500'
@@ -547,7 +556,7 @@ function CustomVendorsEdit(props) {
                                 <Text as='div' color='gray.600'>
                                   Own brick & mortar
                                 </Text>
-                                <RadioGroup>
+                                <RadioGroup value={vendor.outletImportance.own}>
                                   <Stack
                                     align='flex-start'
                                     color='gray.500'
@@ -576,7 +585,7 @@ function CustomVendorsEdit(props) {
                                 <Text as='div' color='gray.600'>
                                   Online sales
                                 </Text>
-                                <RadioGroup>
+                                <RadioGroup value={vendor.outletImportance.online}>
                                   <Stack
                                     align='flex-start'
                                     color='gray.500'
@@ -612,7 +621,7 @@ function CustomVendorsEdit(props) {
                           <Text as='div' textStyle='bodyMain' fontWeight={500}>
                             Do you work out of a shared kitchen?
                           </Text>
-                          <RadioGroup>
+                          <RadioGroup value={vendor.sharedKitchen}>
                             <Stack marginTop={1}>
                               <HStack>
                                 <Radio value={true}>Yes</Radio>
@@ -624,7 +633,7 @@ function CustomVendorsEdit(props) {
                           <Text as='div' textStyle='bodyMain' fontWeight={500}>
                             Do you use a co-packer?
                           </Text>
-                          <RadioGroup>
+                          <RadioGroup value={vendor.copacker}>
                             <Stack marginTop={1}>
                               <HStack>
                                 <Radio value={true}>Yes</Radio>
@@ -655,10 +664,7 @@ function CustomVendorsEdit(props) {
                           </AccordionButton>
                         </h2>
                         <AccordionPanel>
-                          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-                          eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad
-                          minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-                          aliquip ex ea commodo consequat.
+                          <Checkbox>Meat</Checkbox>
                         </AccordionPanel>
                       </>
                     )}
