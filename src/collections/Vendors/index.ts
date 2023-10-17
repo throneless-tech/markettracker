@@ -19,7 +19,7 @@ export const Vendors: CollectionConfig = {
     useAsTitle: "name",
   },
   hooks: {
-    beforeRead: [beforeReadHook],
+    // beforeRead: [beforeReadHook],
   },
   fields: [
     {
