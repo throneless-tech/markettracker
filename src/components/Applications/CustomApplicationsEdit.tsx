@@ -10,6 +10,7 @@ import type { Contact, Product, Season, Vendor } from "payload/generated-types";
 
 // Chakra imports
 import {
+  AbsoluteCenter,
   Box,
   Button,
   Center,
@@ -167,11 +168,11 @@ function CustomApplicationsEdit(props) {
 
   useEffect(() => {
     if (selectAllDates) {
-      setDates(marketDatesObjects);
-      setSelectedDates(marketDates);
+      setDates(marketDates.map((date) => {
+        return { date: date.toISOString() };
+      }));
     } else {
       setDates([]);
-      setSelectedDates([]);
     }
   }, [selectAllDates]);
 
