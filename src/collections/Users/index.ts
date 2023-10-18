@@ -32,7 +32,9 @@ export const Users: CollectionConfig = {
     //   },
     // },
   },
-  auth: true,
+  auth: {
+    useAPIKey: true,
+  },
   access: {
     // Anyone can create a user
     create: () => true,
