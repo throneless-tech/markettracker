@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useAuth } from "payload/components/utilities";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
@@ -56,9 +56,11 @@ import type { Product } from "payload/generated-types";
 import { ProductsField } from "../ProductsField";
 
 // utils
+import formatDate from "../../utils/formatDate";
 import formatTime from "../../utils/formatTime";
 
 // icons
+import { ArrowForwardIcon } from "@chakra-ui/icons";
 import EditIcon from "../../assets/icons/edit.js";
 import StarIcon from "../../assets/icons/star.js";
 
@@ -67,6 +69,83 @@ import stats1 from "../../assets/images/FF-sample-stats-1.jpg";
 import stats2 from "../../assets/images/FF-sample-stats-2.jpg";
 import stats3 from "../../assets/images/FF-sample-stats-3.jpg";
 import stats4 from "../../assets/images/FF-sample-stats-4.jpg";
+
+function ContactModal(props) {
+  const {
+    operators,
+    setOperators
+  } = props;
+
+  const { onOpen, isOpen, onClose } = useDisclosure();
+  const [contact, setContact] = useState({
+    name: "",
+    email: "",
+    phone: "",
+    type: "",
+  });
+
+  useEffect(() => {
+    if (operators) {
+      setOperators([contact, ...operators]);
+    }
+  }, [contact]);
+
+  return (
+    <>
+      <Button
+        onClick={onOpen}
+        marginTop={4}
+        rightIcon={<ArrowForwardIcon />}
+      >
+        Add a manager
+      </Button>
+      <Modal isOpen={isOpen} onClose={onClose} size={"xl"}>
+        <ModalOverlay />
+        <ModalContent background={"gray.600"} color={"gray.50"}>
+          <ModalHeader>
+            <Stack textAlign={"center"} spacing={1}>
+              <Heading marginBottom={0}>
+                Add a contact
+              </Heading>
+              <Text>
+                Please fill in requested information to create a new
+                contact
+              </Text>
+            </Stack>
+          </ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>
+            <FormControl marginBottom={4}>
+              <FormLabel>Manager name (required)</FormLabel>
+              <Input color={'gray.700'} value={contact.name} onChange={e => setContact({...contact, name: e.target.value})} />
+            </FormControl>
+            <FormControl marginBottom={4}>
+              <FormLabel>Manager email address (required)</FormLabel>
+              <Input color={'gray.700'} value={contact.email} onChange={e => setContact({ ...contact, email: e.target.value })} />
+            </FormControl>
+            <FormControl marginBottom={6}>
+              <FormLabel>Manager phone number (required)</FormLabel>
+              <Input color={'gray.700'} value={contact.phone} onChange={e => setContact({ ...contact, phone: e.target.value })} />
+            </FormControl>            
+          </ModalBody>
+          <ModalFooter>
+            <Button onClick={onClose} colorScheme="brown" variant="solid" mr={3}>
+              Save
+            </Button>
+            <Button
+              color={"gray.50"}
+              colorScheme="brown"
+              variant={"outline"}
+              onClick={onClose}
+            >
+              Cancel
+            </Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
+    </>
+  )
+}
 
 function CustomMarketsEdit(props, { path }) {
   const { submit } = useForm();
@@ -91,6 +170,7 @@ function CustomMarketsEdit(props, { path }) {
     path: "days",
   });
   const { value: size, setValue: setSize } = useField<string>({ path: "size" });
+  const { value: visitors, setValue: setVisitors } = useField<string>({ path: "visitors" });
   const { value: focus, setValue: setFocus } = useField<Array<string>>({
     path: "focus",
   });
@@ -100,6 +180,9 @@ function CustomMarketsEdit(props, { path }) {
   const { value: seasons, setValue: setSeasons } = useField<Season[]>({
     path: "seasons",
   });
+  const { value: operators, setValue: setOperators } = useField<string[]>({ path: "operators" });
+
+  const [contact, setContact] = useState(null);
 
   const submitForm = async () => {
     submit();
@@ -109,6 +192,19 @@ function CustomMarketsEdit(props, { path }) {
   if (!id) {
     return null;
   }
+
+  useEffect(() => {
+    if (contact) {
+      console.log('contact found...');
+      
+      let contacts = [];
+      contacts.push(contact);
+      setOperators(contacts);
+    }
+  }, [contact])
+
+  useEffect(() => {console.log(contact);
+  }, [operators])
 
   if (name) {
     return (
@@ -211,7 +307,10 @@ function CustomMarketsEdit(props, { path }) {
                               textStyle="bodyMain"
                               textTransform={"uppercase"}
                             >
-                              Dates
+                              {formatDate(seasons[0].marketDates.startDate)}-
+                              {formatDate(seasons[0].marketDates.endDate)}{' '}
+                              {formatTime(seasons[0].marketTime.startTime)}-
+                              {formatTime(seasons[0].marketTime.endTime)}
                             </Text>
                           </HStack>
                           {data.acceptingApplications
@@ -338,7 +437,7 @@ function CustomMarketsEdit(props, { path }) {
                       </Box>
                     </Box>
                   </Container>
-                  <Container marginTop={8} maxW={"container.lg"}>
+                  <Container marginY={8} maxW={"container.lg"}>
                     {user.role == "vendor" ? null : (
                       <>
                         <Button
@@ -486,7 +585,7 @@ function CustomMarketsEdit(props, { path }) {
                                     />
                                   </Flex>
                                 </Stack>
-                                <FormControl>
+                                <FormControl marginTop={4}>
                                   <FormLabel
                                     as="div"
                                     textStyle="bodyMain"
@@ -535,7 +634,7 @@ function CustomMarketsEdit(props, { path }) {
                                     </HStack>
                                   </RadioGroup>
                                 </FormControl>
-                                <FormControl>
+                                <FormControl marginTop={4}>
                                   <FormLabel
                                     as="div"
                                     fontWeight={500}
@@ -569,7 +668,16 @@ function CustomMarketsEdit(props, { path }) {
                                     </HStack>
                                   </RadioGroup>
                                 </FormControl>
-                                <FormControl>
+                                <FormControl marginTop={4}>
+                                  <FormLabel>Average number of visitors per market</FormLabel>
+                                  <Input
+                                    type="number"
+                                    placeholder="Start typing..."
+                                    value={visitors}
+                                    onChange={(e) => setVisitors(e.target.value)}
+                                  />
+                                </FormControl>
+                                <FormControl marginTop={4}>
                                   <FormLabel
                                     as="div"
                                     fontWeight={500}
@@ -601,7 +709,7 @@ function CustomMarketsEdit(props, { path }) {
                                     </HStack>
                                   </CheckboxGroup>
                                 </FormControl>
-                                <FormControl>
+                                <FormControl marginTop={4}>
                                   <FormLabel
                                     as="div"
                                     textStyle="bodyMain"
@@ -656,7 +764,7 @@ function CustomMarketsEdit(props, { path }) {
                                         isAccepting: newValue === "true",
                                       }])}
                                     value={typeof seasons[0].isAccepting ===
-                                        "boolean"
+                                      "boolean"
                                       ? seasons[0].isAccepting.toString()
                                       : "false"}
                                   >
@@ -675,6 +783,49 @@ function CustomMarketsEdit(props, { path }) {
                                     opacity={1}
                                   />
                                 </Flex>
+                                <Stack
+                                  align="flex-start"
+                                  justify="space-between"
+                                  marginTop={8}
+                                >
+                                  <HStack marginTop={4}>
+                                    <Text
+                                      color={"gray.700"}
+                                      fontSize={"2xl"}
+                                      fontWeight={700}
+                                      textTransform={"uppercase"}
+                                      width={"160px"}
+                                    >
+                                      Managers
+                                    </Text>
+                                    <Divider
+                                      sx={{ borderColor: "gray.600", borderBottomWidth: 2 }}
+                                    />
+                                  </HStack>
+                                  <Text color={"gray.600"} marginTop={4} fontSize={"md"}>
+                                    Select anyone who will be a manager at{" "}
+                                    {data.name} this season.
+                                  </Text>
+                                  <CheckboxGroup
+                                    onChange={(newValue) => setOperators(newValue)}
+                                    defaultValue={operators}
+                                  >
+                                    <HStack spacing={4}>
+                                      {data.seasons[0].operators ? data.seasons[0].operators.map((contact) => (
+                                        <Checkbox key={contact.id} value={contact.id}>
+                                          {contact.name}
+                                          <Tag bg={"gray.50"} fontWeight={700}>
+                                            {contact.type}
+                                          </Tag>
+                                        </Checkbox>
+                                      )) : null}
+                                    </HStack>
+                                  </CheckboxGroup>
+                                  <ContactModal
+                                    operators={operators}
+                                    setOperators={setOperators}
+                                  />
+                                </Stack>
                                 <Flex
                                   align="center"
                                   justify="space-between"
@@ -761,6 +912,58 @@ function CustomMarketsEdit(props, { path }) {
                                     />
                                   </Stack>
                                 </HStack>
+                                <Text
+                                  textStyle="bodyMain"
+                                  as="div"
+                                  color="gray.500"
+                                  marginTop={6}
+                                >
+                                  Select a start and end time for the season
+                                </Text>
+                                <HStack spacing={2} marginTop={2}>
+                                  <Stack>
+                                    <Text
+                                      textStyle="bodyMain"
+                                      as="div"
+                                      fontWeight={700}
+                                    >
+                                      Start time
+                                    </Text>
+                                    <Input
+                                      value={seasons[0].marketTime.startTime}
+                                      type="time"
+                                      onChange={(time) =>
+                                      setSeasons([{
+                                        ...seasons[0],
+                                        marketTime: {
+                                          ...seasons[0].marketTime,
+                                          startTime: time,
+                                        }
+                                      }])}
+                                    />
+                                  </Stack>
+                                  <Stack>
+                                    <Text
+                                      textStyle="bodyMain"
+                                      as="div"
+                                      fontWeight={700}
+                                    >
+                                      End time
+                                    </Text>
+                                    <Input
+                                      value={seasons[0].marketTime.endTime}
+                                      type="time"
+                                      onChange={(time) =>
+                                        setSeasons([{
+                                          ...seasons[0],
+                                          marketTime: {
+                                            ...seasons[0].marketTime,
+                                            endTime: time,
+                                          }
+                                        }])}
+                                    />
+                                  </Stack>
+                                </HStack>                                
                                 <Flex
                                   align="center"
                                   justify="space-between"
@@ -788,7 +991,7 @@ function CustomMarketsEdit(props, { path }) {
                                       productGaps: newValue,
                                     }])}
                                   value={seasons[0].productGaps &&
-                                      seasons[0].productGaps.length
+                                    seasons[0].productGaps.length
                                     ? seasons[0].productGaps as string[] // we know it will be string[] here unless we specifically fetch it
                                     : []}
                                   useObjects={true}
@@ -844,16 +1047,16 @@ function CustomMarketsEdit(props, { path }) {
                       {data.size == "flagship"
                         ? "Daily sales for the entire market are upwards of $150,000. This market can support upwards of 20 produce vendors, 14 prepared food vendors, 9 baked goods vendors, 6 alcohol vendors, 5 dairy vendors, and 2 to 4 vendors from each additional category."
                         : data.size == "large"
-                        ? "Daily sales for large markets range from $20,000 to $70,000. They can support average numbers of 8 produce vendors, 8 prepared food vendors, 5 baked goods vendors, 3 alcohol vendors, and 1 to 2 vendors from each additional category."
-                        : data.size == "medium"
-                        ? "Daily sales for medium markets range from $10,000 to $19,000. They can support average numbers of 5 prepared food vendors, 4 produce vendors, and 1 to 2 vendors from each additional category."
-                        : data.size == "small"
-                        ? "Daily sales for small markets range from $1,500 to $9,000. They can support average numbers of 4 produce vendors, 4 prepared food vendors, and 1 to 2 vendors from each additional category with some product category gaps."
-                        : "These markets are limited to one produce vendor for retail and wholesale sales."}
+                          ? "Daily sales for large markets range from $20,000 to $70,000. They can support average numbers of 8 produce vendors, 8 prepared food vendors, 5 baked goods vendors, 3 alcohol vendors, and 1 to 2 vendors from each additional category."
+                          : data.size == "medium"
+                            ? "Daily sales for medium markets range from $10,000 to $19,000. They can support average numbers of 5 prepared food vendors, 4 produce vendors, and 1 to 2 vendors from each additional category."
+                            : data.size == "small"
+                              ? "Daily sales for small markets range from $1,500 to $9,000. They can support average numbers of 4 produce vendors, 4 prepared food vendors, and 1 to 2 vendors from each additional category with some product category gaps."
+                              : "These markets are limited to one produce vendor for retail and wholesale sales."}
                     </Text>
                     <HStack marginTop={4}>
                       <Text as={"span"} color={"blue.500"} fontWeight={700}>
-                        0
+                        {visitors}
                       </Text>
                       <Text as={"span"} color={"blue.500"}>
                         visitors per market
@@ -877,7 +1080,7 @@ function CustomMarketsEdit(props, { path }) {
                       />
                     </HStack>
                     <HStack marginTop={2}>
-                      <Tag bg={"gray.50"}>Manager 1</Tag>
+                      {/* <Tag bg={"gray.50"}>Manager 1</Tag> */}
                     </HStack>
                     <HStack marginTop={4}>
                       <Text
@@ -894,7 +1097,7 @@ function CustomMarketsEdit(props, { path }) {
                       />
                     </HStack>
                     <HStack marginTop={2}>
-                      <Tag bg={"gray.50"}>Vendor 1</Tag>
+                      {/* <Tag bg={"gray.50"}>Vendor 1</Tag> */}
                     </HStack>
                     <HStack marginTop={4}>
                       <Text
@@ -926,7 +1129,7 @@ function CustomMarketsEdit(props, { path }) {
                       src={stats4}
                       alt="A sample of a bar graph showing monthly sales by vendor, to be filled in with an interactive graph in the future."
                     />
-                    <HStack marginTop={4}>
+                    {/* <HStack marginTop={4}>
                       <Text
                         color={"gray.700"}
                         fontSize={"2xl"}
@@ -942,9 +1145,7 @@ function CustomMarketsEdit(props, { path }) {
                     </HStack>
                     <Text color={"gray.600"} marginTop={4} fontSize={"md"}>
                       Dates {data.name} is open this season
-                    </Text>
-                    <Wrap marginTop={4} spacing={3}>
-                    </Wrap>
+                    </Text> */}
                   </Container>
                 </TabPanel>
                 <TabPanel>
