@@ -206,7 +206,7 @@ function CustomVendorsList(props) {
                           <Td>
                             {app.vendor.products && app.vendor.products.length
                               ? app.vendor.products.map((product) => (
-                                <Tag>{product.name}</Tag>
+                                <Tag>{product.product}</Tag>
                               ))
                               : ""}
                           </Td>
@@ -225,7 +225,7 @@ function CustomVendorsList(props) {
                               : ""}
                           </Td>
                           <Td>
-                            <Tag>{app.vendor.standing}</Tag>
+                            <Tag>{app.vendor.standing ? app.vendor.standing "Good"}</Tag>
                           </Td>
                           <Td>0/2 reviewers</Td>
                           <Td>0</Td>
