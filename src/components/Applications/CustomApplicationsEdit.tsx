@@ -167,9 +167,11 @@ function CustomApplicationsEdit(props) {
 
   useEffect(() => {
     if (selectAllDates) {
-      setSelectedDates(marketDates);
+      setDates(marketDates.map((date) => {
+        return { date: date.toISOString() };
+      }));
     } else {
-      setSelectedDates([]);
+      setDates([]);
     }
   }, [selectAllDates]);
 
