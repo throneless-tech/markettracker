@@ -33,6 +33,11 @@ export const Users: CollectionConfig = {
     // },
   },
   auth: {
+    forgotPassword: {
+      generateEmailSubject: () => {
+        return "Market Tracker - Reset Your Password";
+      },
+    },
     useAPIKey: true,
   },
   access: {
