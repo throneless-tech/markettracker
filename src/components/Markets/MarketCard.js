@@ -29,11 +29,8 @@ const MarketCard = (props) => {
   const { user } = useAuth();
   const history = useHistory();
   const {
-    market,
-    marketNeeds,
+    market
   } = props;
-
-  console.log("***props.market***:", market);
 
   const viewMarket = (market) => {
     history.push({

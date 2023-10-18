@@ -121,6 +121,10 @@ function CustomApplicationsEdit(props) {
 
   const [shadowSeason, setShadowSeason] = useState<Season>();
 
+  const onCloseThankYou = () => {
+    history.push('/admin/collections/markets');
+  }
+
   const submitForm = () => {
     if (!id && shadowSeason && shadowSeason.id) {
       setSeason(shadowSeason);
@@ -759,6 +763,25 @@ function CustomApplicationsEdit(props) {
         </Box>
       </>
     );
+  } else {
+    return (
+      <Container>
+        <AbsoluteCenter>
+        <Text fontSize={"xl"} textAlign={"center"}>
+          Applications be reviewed until all spaces have been filled. You
+          will be notified by email once your application has been reviewed.
+        </Text>
+        <HStack marginTop={8} justify={'center'}>
+          <Button variant={'solid'} as={'a'} href="/admin/collections/markets?tab=2">
+            Apply to another market
+          </Button>
+          <Button as={'a'} href="/admin/collections/markets">
+            View my markets
+          </Button>
+        </HStack>
+        </AbsoluteCenter>
+      </Container>
+    )
   }
 }
 
