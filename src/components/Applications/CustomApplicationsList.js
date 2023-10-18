@@ -44,7 +44,8 @@ function CustomApplications(props) {
     let query;
     if (history.location.state) {
       query = {
-        market: history.location.state.id
+        season: history.location.state.id,
+        depth: 2,
       }
     }
 
@@ -56,8 +57,9 @@ function CustomApplications(props) {
         { addQueryPrefix: true },
       )
       
-      const response = await fetch(`/api/applications?depth=2${stringifiedQuery}`);
+      const response = await fetch(`/api/applications${stringifiedQuery}`);
       let apps = await response.json();
+      console.log(apps);
       apps = apps.docs;
       setApplications(apps);
     };

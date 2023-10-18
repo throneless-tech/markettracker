@@ -391,7 +391,7 @@ function CustomApplicationsEdit(props) {
                     ? shadowSeason.market.description
                     : ""}
                 </Text>
-                <HStack>
+                <HStack sx={{ flexWrap: 'wrap' }}>
                   <Text
                     fontSize={"sm"}
                     textTransform={"uppercase"}
