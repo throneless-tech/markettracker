@@ -41,7 +41,12 @@ function CustomVendorsList(props) {
   const { data } = props;
   const [applications, setApplications] = useState([]);
 
-  console.log(props);
+  const reviewApplication = (app) => {
+    history.push({
+      pathname: `/admin/collections/reviews/create`,
+      state: app
+    })
+  }
 
   useEffect(() => { }, [data])
 
