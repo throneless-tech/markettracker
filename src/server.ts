@@ -22,10 +22,6 @@ payload.init({
   onInit: () => {
     payload.logger.info(`Payload Admin URL: ${payload.getAdminURL()}`);
   },
-  email: {
-    fromName: "FreshFarm Market Tracker",
-    fromAddress: "cms@markettracker.payloadcms.app",
-  },
 });
 
 // Add your own express routes here
