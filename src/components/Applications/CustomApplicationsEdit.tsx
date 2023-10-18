@@ -168,7 +168,7 @@ function CustomApplicationsEdit(props) {
     setSelectedDates(selectedDatesArray);
   };
 
-  useEffect(() => {console.log('selected dates: ', selectedDates);}, [dates, selectedDates])
+  useEffect(() => {}, [dates, selectedDates])
 
   useEffect(() => {
     if (selectAllDates) {

@@ -1,14 +1,17 @@
 "use client";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 
 // Payload imports
 import { useField, useForm } from "payload/components/forms";
-import type { Application } from "payload/generated-types";
+import type { Application, User } from "payload/generated-types";
+import { useAuth, useDocumentInfo } from "payload/components/utilities";
 
 // Chakra imports
 import {
   Box,
+  Button,
+  Center,
   Container,
   Flex,
   FormControl,
@@ -17,6 +20,8 @@ import {
   Heading,
   HStack,
   Input,
+  NumberInput,
+  NumberInputField,
   Spacer,
   Stack,
   Tag,
@@ -33,11 +38,18 @@ import {
 // images
 
 function ReviewEdit(props) {
+  const { user } = useAuth();
   const history = useHistory();
   const { submit } = useForm();
+  const { id } = useDocumentInfo();
 
   const { value: application, setValue: setApplication } = useField<
     Application
+  >({
+    path: "applications",
+  });
+  const { value: reviewer, setValue: setReviewer } = useField<
+    User
   >({
     path: "applications",
   });
@@ -51,7 +63,7 @@ function ReviewEdit(props) {
   const { value: demoScore, setValue: setDemoScore } = useField<
     number
   >({
-    path: "demographicsScore",
+    path: "demographicScore",
   });
   const { value: satScore, setValue: setSatScore } = useField<
     number
@@ -73,26 +85,60 @@ function ReviewEdit(props) {
   >({
     path: "notes",
   });
+
+  const [shadowApp, setShadowApp] = useState<Application>();
+  const [shadowReviewer, setShadowReviewer] = useState(null);
+  const [doSubmit, setDoSubmit] = useState(false);
+
   const submitForm = () => {
-    submit();
+    if (!id && shadowApp && shadowApp.id) {
+      setApplication(shadowApp);
+      setReviewer(shadowReviewer)
+    }
+    setDoSubmit(true);
   };
 
   useEffect(() => {
+    if (doSubmit) {
+      submit();
+    }
+  }, [doSubmit]);
+
+  useEffect(() => {
+    if (history.location.state) {
+      setShadowApp(history.location.state);
+    }
+
+    if (user) {
+      setShadowReviewer(user);
+    }
   }, [history]);
 
+  useEffect(() => {}, [
+    application,
+    attendScore,
+    demoScore,
+    notes,
+    productScore,
+    reviewer,
+    satScore,
+    setupScore,
+    vendorScore,
+  ])
+
   if (
-    application && application.season &&
-    typeof application.season === "object" &&
-    typeof application.season.market === "object" &&
-    typeof application.vendor === "object"
+    shadowApp && shadowApp.season &&
+    typeof shadowApp.season === "object" &&
+    typeof shadowApp.season.market === "object" &&
+    typeof shadowApp.vendor === "object"
   ) {
     return (
       <Box>
-        <Container maxW="container.xl">
+        <Container maxW="container.xl" marginY={12}>
           <Heading as="h2" sx={{ textTransform: "uppercase" }} marginTop={4}>
             <Text as={"span"}>Review</Text>{" "}
             <Text as={"span"} sx={{ fontWeight: 700 }}>
-              {application.season.market.name}
+              {shadowApp.season.market.name}
             </Text>{" "}
             <Text as={"span"}>applications</Text>
           </Heading>
@@ -108,7 +154,7 @@ function ReviewEdit(props) {
                     fontWeight={700}
                     textTransform={"uppercase"}
                   >
-                    {application.vendor.name}
+                    {shadowApp.vendor.name}
                   </Text>
                 </HStack>
                 <Spacer />
@@ -131,29 +177,29 @@ function ReviewEdit(props) {
                     fontWeight={700}
                     sx={{ textTransform: "capitalize" }}
                   >
-                    {application.vendor.type}
+                    {shadowApp.vendor.type}
                   </Text>
                   <Text as={"span"} color={"gray.50"} fontSize="2xl">
-                    {application.vendor.address.street}
+                    {shadowApp.vendor.address.street}
                     {", "}
-                    {application.vendor.address.city}
+                    {shadowApp.vendor.address.city}
                     {", "}
-                    {application.vendor.address.state}
+                    {shadowApp.vendor.address.state}
                     {", "}
-                    {application.vendor.address.zipcode}
+                    {shadowApp.vendor.address.zipcode}
                   </Text>
                 </HStack>
                 <Spacer />
-                {application.vendor.contacts &&
-                    application.vendor.contacts.length
-                  ? application.vendor.contacts.map((contact) => {
+                {shadowApp.vendor.contacts &&
+                  shadowApp.vendor.contacts.length
+                  ? shadowApp.vendor.contacts.map((contact) => {
                     if (contact.type && contact.type.length) {
                       const type = contact.type.find((type) =>
                         type == "primary"
                       );
                       if (type) {
                         return (
-                          <HStack>
+                          <HStack key={contact.id}>
                             <Text
                               as={"span"}
                               color={"gray.50"}
@@ -178,7 +224,7 @@ function ReviewEdit(props) {
             </Box>
             <Box background={"#90B132"} borderBottomRadius="8px" padding={4}>
               <Text marginTop={4} fontSize={"xl"}>
-                {application.vendor.description}
+                {shadowApp.vendor.description}
               </Text>
             </Box>
             <Text fontSize={18} marginY={4}>
@@ -187,12 +233,16 @@ function ReviewEdit(props) {
             </Text>
             <FormControl marginBottom={8}>
               <HStack alignItems={"center"} spacing={3}>
-                <Input
-                  type="number"
-                  width={4}
+                <NumberInput
+                  colorScheme="green"
+                  min={1}
+                  max={5}
+                  sx={{width: 16}}
                   value={vendorScore}
-                  onChange={(e) => setVendorScore(e.target.value)}
-                />
+                  onChange={(newValue) => setVendorScore(Number(newValue))}
+                >
+                  <NumberInputField />
+                </NumberInput>                
                 <FormLabel
                   sx={{
                     fontSize: 18,
@@ -202,17 +252,21 @@ function ReviewEdit(props) {
                 >
                   Vendor type
                 </FormLabel>
-                <Text>{application.vendor.type}</Text>
+                <Text>{shadowApp.vendor.type}</Text>
               </HStack>
             </FormControl>
             <FormControl marginBottom={8}>
               <HStack alignItems={"center"} spacing={3}>
-                <Input
-                  type="number"
-                  width={4}
+                <NumberInput
+                  colorScheme="green"
+                  min={1}
+                  max={5}
+                  sx={{width: 16}}
                   value={productScore}
-                  onChange={(e) => setProductScore(e.target.value)}
-                />
+                  onChange={(newValue) => setProductScore(Number(newValue))}
+                >
+                  <NumberInputField />
+                </NumberInput>                
                 <Stack>
                   <FormLabel
                     sx={{
@@ -223,10 +277,10 @@ function ReviewEdit(props) {
                   >
                     Products
                   </FormLabel>
-                  {application.vendor.products &&
-                      application.vendor.products.length
-                    ? application.vendor.products.map((product) => (
-                      <Tag>{product.name}</Tag>
+                  {shadowApp.vendor.products &&
+                    shadowApp.vendor.products.length
+                    ? shadowApp.vendor.products.map((product) => (
+                      <Tag key={product.id}>{product.product}</Tag>
                     ))
                     : null}
                 </Stack>
@@ -234,12 +288,16 @@ function ReviewEdit(props) {
             </FormControl>
             <FormControl marginBottom={8}>
               <HStack alignItems={"center"} spacing={3}>
-                <Input
-                  type="number"
-                  width={4}
+                <NumberInput
+                  colorScheme="green"
+                  min={1}
+                  max={5}
+                  sx={{width: 16}}
                   value={demoScore}
-                  onChange={(e) => setDemoScore(e.target.value)}
-                />
+                  onChange={(newValue) => setDemoScore(Number(newValue))}
+                    >
+                      <NumberInputField />
+                    </NumberInput>                
                 <Stack>
                   <FormLabel
                     sx={{
@@ -250,23 +308,43 @@ function ReviewEdit(props) {
                   >
                     Demographic data
                   </FormLabel>
-                  {application.vendor.demographics &&
-                      typeof application.vendor.demographics === "object"
-                    ? Object.entries(application.vendor.demographics).map((
+                  {shadowApp.vendor.demographics &&
+                    typeof shadowApp.vendor.demographics === "object"
+                    ? Object.entries(shadowApp.vendor.demographics).map((
                       key,
                       value,
-                    ) => <Tag>`{key}: {value}``</Tag>)
+                    ) => {
+                      if (key[1] == "yes") {
+                        if (key[0] == 'firstGeneration') {
+                          return <Tag>First generation farmer</Tag>
+                        }
+                        if (key[0] == 'veteranOwned') {
+                          return <Tag>Veteran-owned</Tag>
+                        }
+                        if (key[0] == 'bipoc') {
+                          return <Tag>BIPOC</Tag>
+                        }
+                        if (key[0] == 'immigrantOrRefugee') {
+                          return <Tag>Immigrant or refugee</Tag>
+                        }
+                        if (key[0] == 'lgbtqia') {
+                          return <Tag>LGBTQIA</Tag>
+                        }
+                      }
+                    })
                     : null}
                 </Stack>
               </HStack>
             </FormControl>
             <FormControl marginBottom={8}>
               <HStack alignItems={"center"} spacing={3}>
-                <Input
-                  type="number"
-                  width={4}
+                <NumberInput
+                variant={"filled"}
+                  min={1}
+                  max={5}
+                  sx={{width: 16}}
                   value={satScore}
-                  onChange={(e) => setSatScore(e.target.value)}
+                  onChange={(newValue) => setSatScore(Number(newValue))}
                 />
                 <Stack>
                   <FormLabel
@@ -279,20 +357,24 @@ function ReviewEdit(props) {
                     Saturation/Opportunity
                   </FormLabel>
                   <FormHelperText>
-                    {application.vendor.name}{" "}
-                    is approved for 0/0 FRESHFARM markets
+                    {shadowApp.vendor.name}{" "}
+                    is approved for 0/12 FRESHFARM markets
                   </FormHelperText>
                 </Stack>
               </HStack>
             </FormControl>
             <FormControl marginBottom={8}>
               <HStack alignItems={"center"} spacing={3}>
-                <Input
-                  type="number"
-                  width={4}
+                <NumberInput
+                  colorScheme="green"
+                  min={1}
+                  max={5}
+                  sx={{width: 16}}
                   value={setupScore}
-                  onChange={(e) => setSetupScore(e.target.value)}
-                />
+                  onChange={(newValue) => setSetupScore(Number(newValue))}
+                  >
+                    <NumberInputField />
+                  </NumberInput>                
                 <Stack>
                   <FormLabel
                     sx={{
@@ -303,24 +385,34 @@ function ReviewEdit(props) {
                   >
                     Set up needs
                   </FormLabel>
-                  {application.vendor.setupNeeds &&
-                      typeof application.vendor.setupNeeds === "object"
-                    ? Object.entries(application.vendor.setupNeeds).map((
+                  {shadowApp.vendor.setupNeeds &&
+                    typeof shadowApp.vendor.setupNeeds === "object"
+                    ? Object.entries(shadowApp.vendor.setupNeeds).map((
                       key,
                       value,
-                    ) => <Tag>`{key}: {value}``</Tag>)
+                    ) => {
+                      if (key[1] == true) {
+                        return <Tag>{key[0]}</Tag>
+                      } else {
+                        return <Tag>{`${key[1]} tent`}</Tag>
+                      }
+                    })
                     : null}
                 </Stack>
               </HStack>
             </FormControl>
             <FormControl marginBottom={8}>
               <HStack alignItems={"center"} spacing={3}>
-                <Input
-                  type="number"
-                  width={4}
+                <NumberInput
+                  colorScheme="green"
+                  min={1}
+                  max={5}
+                  sx={{width: 16}}
                   value={attendScore}
-                  onChange={(e) => setAttendScore(e.target.value)}
-                />
+                  onChange={(newValue) => setAttendScore(Number(newValue))}
+                  >
+                    <NumberInputField />
+                  </NumberInput>                
                 <Stack>
                   <FormLabel
                     sx={{
@@ -332,7 +424,7 @@ function ReviewEdit(props) {
                     Attendance
                   </FormLabel>
                   <FormHelperText>
-                    {application.vendor.name} plans to attend 16/16 market days
+                    {shadowApp.vendor.name} plans to attend {shadowApp.dates.length}/16 market days
                   </FormHelperText>
                 </Stack>
               </HStack>
@@ -348,6 +440,16 @@ function ReviewEdit(props) {
                 onChange={(e) => setNotes(e.target.value)}
               />
             </FormControl>
+            <Center>
+              <Button
+                colorScheme="teal"
+                variant={"solid"}
+                onClick={submitForm}
+                marginTop={8}
+              >
+                Submit review now
+              </Button>
+            </Center>
           </Box>
         </Container>
       </Box>

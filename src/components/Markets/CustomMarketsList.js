@@ -50,6 +50,13 @@ function CustomMarketsList(props) {
   const handleTabsChange = (index) => {
     setTabIndex(index)
   }
+  
+  const reviewApplication = (app) => {
+    history.push({
+      pathname: `/admin/collections/reviews/create`,
+      state: app
+    })
+  }
 
   useEffect(() => {
     const getApps = async () => {
@@ -305,11 +312,14 @@ function CustomMarketsList(props) {
                         ? applications.map((app) => (
                           <Tr key={app.id}>
                             <Td>
-                              <Link
-                                href={`/admin/collections/applications/${app.id}`}
+                              <Button variant={"link"}
+                                onClick={(e) => {
+                                  e.preventDefault();
+                                  reviewApplication(app);
+                                }}
                               >
                                 {app.vendor.name}
-                              </Link>
+                              </Button>
                             </Td>
                             <Td>{app.vendor.type}</Td>
                             <Td>

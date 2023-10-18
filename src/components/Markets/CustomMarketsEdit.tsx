@@ -101,8 +101,6 @@ function CustomMarketsEdit(props, { path }) {
     path: "seasons",
   });
 
-  console.log("***seasons***:", seasons);
-
   const submitForm = async () => {
     submit();
   };
