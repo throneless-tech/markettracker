@@ -60,20 +60,6 @@ export const Reviews: CollectionConfig = {
         readOnly: true,
       },
     },
-    {
-      name: "reviewedAt",
-      type: "date",
-      required: true,
-      admin: {
-        readOnly: true,
-      },
-    },
-    // {
-    //   name: "reviews",
-    //   type: "relationship",
-    //   relationTo: "markets",
-    //   hasMany: true,
-    // },
     // {
     //   name: "status",
     //   type: "select",
