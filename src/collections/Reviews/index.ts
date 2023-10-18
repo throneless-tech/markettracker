@@ -1,11 +1,26 @@
 import { CollectionConfig } from "payload/types";
-import { createReviewedAt } from "./hooks/createReviewedAt";
+//import { createReviewedAt } from "./hooks/createReviewedAt";
 import { createReviewer } from "./hooks/createReviewer";
+import { withFormContext } from "../../utils/withFormContext";
+import {
+  afterReadApplication,
+  beforeValidateApplication,
+} from "./hooks/populateApplication";
+import ReviewEdit from "../../components/Reviews/ReviewEdit";
 
 export const Reviews: CollectionConfig = {
   slug: "reviews",
   hooks: {
-    beforeChange: [createReviewedAt, createReviewer],
+    afterRead: [afterReadApplication],
+    beforeChange: [createReviewer],
+    beforeValidate: [beforeValidateApplication],
+  },
+  admin: {
+    components: {
+      views: {
+        Edit: withFormContext(ReviewEdit),
+      },
+    },
   },
   fields: [
     {
@@ -17,31 +32,37 @@ export const Reviews: CollectionConfig = {
     {
       name: "vendorScore",
       type: "number",
+      defaultValue: 0,
       required: true,
     },
     {
       name: "productScore",
       type: "number",
+      defaultValue: 0,
       required: true,
     },
     {
       name: "demographicScore",
       type: "number",
+      defaultValue: 0,
       required: true,
     },
     {
       name: "saturationScore",
       type: "number",
+      defaultValue: 0,
       required: true,
     },
     {
       name: "setupScore",
       type: "number",
+      defaultValue: 0,
       required: true,
     },
     {
       name: "attendanceScore",
       type: "number",
+      defaultValue: 0,
       required: true,
     },
     {
