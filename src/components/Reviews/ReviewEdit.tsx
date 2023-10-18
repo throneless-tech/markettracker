@@ -1,10 +1,8 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { useHistory } from "react-router-dom";
-import DatePicker from "react-datepicker";
 
 // Payload imports
-import { useAuth, useDocumentInfo } from "payload/components/utilities";
 import { useField, useForm } from "payload/components/forms";
 import type { Application } from "payload/generated-types";
 
@@ -37,7 +35,6 @@ import {
 function ReviewEdit(props) {
   const history = useHistory();
   const { submit } = useForm();
-  const { id } = useDocumentInfo();
 
   const { value: application, setValue: setApplication } = useField<
     Application
@@ -55,6 +52,11 @@ function ReviewEdit(props) {
     number
   >({
     path: "demographicsScore",
+  });
+  const { value: satScore, setValue: setSatScore } = useField<
+    number
+  >({
+    path: "saturationScore",
   });
   const { value: setupScore, setValue: setSetupScore } = useField<
     number
@@ -76,12 +78,13 @@ function ReviewEdit(props) {
   };
 
   useEffect(() => {
-    if (!id && history.location.state) {
-    }
   }, [history]);
 
   if (
-    id && season && season.market && typeof season.market === "object"
+    application && application.season &&
+    typeof application.season === "object" &&
+    typeof application.season.market === "object" &&
+    typeof application.vendor === "object"
   ) {
     return (
       <Box>
@@ -89,7 +92,7 @@ function ReviewEdit(props) {
           <Heading as="h2" sx={{ textTransform: "uppercase" }} marginTop={4}>
             <Text as={"span"}>Review</Text>{" "}
             <Text as={"span"} sx={{ fontWeight: 700 }}>
-              {season.market.name}
+              {application.season.market.name}
             </Text>{" "}
             <Text as={"span"}>applications</Text>
           </Heading>
@@ -105,7 +108,7 @@ function ReviewEdit(props) {
                     fontWeight={700}
                     textTransform={"uppercase"}
                   >
-                    {vendor.name}
+                    {application.vendor.name}
                   </Text>
                 </HStack>
                 <Spacer />
@@ -128,22 +131,22 @@ function ReviewEdit(props) {
                     fontWeight={700}
                     sx={{ textTransform: "capitalize" }}
                   >
-                    {vendor.type}
+                    {application.vendor.type}
                   </Text>
                   <Text as={"span"} color={"gray.50"} fontSize="2xl">
-                    {vendor.address.street}
+                    {application.vendor.address.street}
                     {", "}
-                    {vendor.address.city}
+                    {application.vendor.address.city}
                     {", "}
-                    {vendor.address.state}
+                    {application.vendor.address.state}
                     {", "}
-                    {vendor.address.zipcode}
+                    {application.vendor.address.zipcode}
                   </Text>
                 </HStack>
                 <Spacer />
-                {vendor.contacts &&
-                    vendor.contacts.length
-                  ? vendor.contacts.map((contact) => {
+                {application.vendor.contacts &&
+                    application.vendor.contacts.length
+                  ? application.vendor.contacts.map((contact) => {
                     if (contact.type && contact.type.length) {
                       const type = contact.type.find((type) =>
                         type == "primary"
@@ -175,7 +178,7 @@ function ReviewEdit(props) {
             </Box>
             <Box background={"#90B132"} borderBottomRadius="8px" padding={4}>
               <Text marginTop={4} fontSize={"xl"}>
-                {vendor.description}
+                {application.vendor.description}
               </Text>
             </Box>
             <Text fontSize={18} marginY={4}>
@@ -184,7 +187,12 @@ function ReviewEdit(props) {
             </Text>
             <FormControl marginBottom={8}>
               <HStack alignItems={"center"} spacing={3}>
-                <Input type="number" width={4} />
+                <Input
+                  type="number"
+                  width={4}
+                  value={vendorScore}
+                  onChange={(e) => setVendorScore(e.target.value)}
+                />
                 <FormLabel
                   sx={{
                     fontSize: 18,
@@ -194,12 +202,17 @@ function ReviewEdit(props) {
                 >
                   Vendor type
                 </FormLabel>
-                <Text>{vendor.type}</Text>
+                <Text>{application.vendor.type}</Text>
               </HStack>
             </FormControl>
             <FormControl marginBottom={8}>
               <HStack alignItems={"center"} spacing={3}>
-                <Input type="number" width={4} />
+                <Input
+                  type="number"
+                  width={4}
+                  value={productScore}
+                  onChange={(e) => setProductScore(e.target.value)}
+                />
                 <Stack>
                   <FormLabel
                     sx={{
@@ -210,9 +223,9 @@ function ReviewEdit(props) {
                   >
                     Products
                   </FormLabel>
-                  {vendor.products &&
-                      vendor.products.length
-                    ? vendor.products.map((product) => (
+                  {application.vendor.products &&
+                      application.vendor.products.length
+                    ? application.vendor.products.map((product) => (
                       <Tag>{product.name}</Tag>
                     ))
                     : null}
@@ -221,7 +234,12 @@ function ReviewEdit(props) {
             </FormControl>
             <FormControl marginBottom={8}>
               <HStack alignItems={"center"} spacing={3}>
-                <Input type="number" width={4} />
+                <Input
+                  type="number"
+                  width={4}
+                  value={demoScore}
+                  onChange={(e) => setDemoScore(e.target.value)}
+                />
                 <Stack>
                   <FormLabel
                     sx={{
@@ -232,16 +250,24 @@ function ReviewEdit(props) {
                   >
                     Demographic data
                   </FormLabel>
-                  {vendor.demographics &&
-                      vendor.demographics.length
-                    ? vendor.demographics.map((demo) => <Tag>{demo.name}</Tag>)
+                  {application.vendor.demographics &&
+                      typeof application.vendor.demographics === "object"
+                    ? Object.entries(application.vendor.demographics).map((
+                      key,
+                      value,
+                    ) => <Tag>`{key}: {value}``</Tag>)
                     : null}
                 </Stack>
               </HStack>
             </FormControl>
             <FormControl marginBottom={8}>
               <HStack alignItems={"center"} spacing={3}>
-                <Input type="number" width={4} />
+                <Input
+                  type="number"
+                  width={4}
+                  value={satScore}
+                  onChange={(e) => setSatScore(e.target.value)}
+                />
                 <Stack>
                   <FormLabel
                     sx={{
@@ -253,14 +279,20 @@ function ReviewEdit(props) {
                     Saturation/Opportunity
                   </FormLabel>
                   <FormHelperText>
-                    {vendor.name} is approved for 0/0 FRESHFARM markets
+                    {application.vendor.name}{" "}
+                    is approved for 0/0 FRESHFARM markets
                   </FormHelperText>
                 </Stack>
               </HStack>
             </FormControl>
             <FormControl marginBottom={8}>
               <HStack alignItems={"center"} spacing={3}>
-                <Input type="number" width={4} />
+                <Input
+                  type="number"
+                  width={4}
+                  value={setupScore}
+                  onChange={(e) => setSetupScore(e.target.value)}
+                />
                 <Stack>
                   <FormLabel
                     sx={{
@@ -271,16 +303,24 @@ function ReviewEdit(props) {
                   >
                     Set up needs
                   </FormLabel>
-                  {vendor.demographics &&
-                      vendor.demographics.length
-                    ? vendor.demographics.map((demo) => <Tag>{demo.name}</Tag>)
+                  {application.vendor.setupNeeds &&
+                      typeof application.vendor.setupNeeds === "object"
+                    ? Object.entries(application.vendor.setupNeeds).map((
+                      key,
+                      value,
+                    ) => <Tag>`{key}: {value}``</Tag>)
                     : null}
                 </Stack>
               </HStack>
             </FormControl>
             <FormControl marginBottom={8}>
               <HStack alignItems={"center"} spacing={3}>
-                <Input type="number" width={4} />
+                <Input
+                  type="number"
+                  width={4}
+                  value={attendScore}
+                  onChange={(e) => setAttendScore(e.target.value)}
+                />
                 <Stack>
                   <FormLabel
                     sx={{
@@ -292,17 +332,21 @@ function ReviewEdit(props) {
                     Attendance
                   </FormLabel>
                   <FormHelperText>
-                    {vendor.name} plans to attend 16/16 market days
+                    {application.vendor.name} plans to attend 16/16 market days
                   </FormHelperText>
                 </Stack>
               </HStack>
             </FormControl>
             <Text as={"div"} textStyle={"bodyMain"} fontSize={18}>
-              00 total score
+              {vendorScore + productScore + demoScore + satScore + setupScore +
+                attendScore} total score
             </Text>
             <FormControl marginTop={8}>
               <FormLabel>Notes</FormLabel>
-              <Textarea />
+              <Textarea
+                value={notes}
+                onChange={(e) => setNotes(e.target.value)}
+              />
             </FormControl>
           </Box>
         </Container>
