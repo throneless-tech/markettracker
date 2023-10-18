@@ -36,6 +36,33 @@ export const Vendors: CollectionConfig = {
       required: true,
     },
     {
+      name: "standing",
+      label: "What is this vendor's standing?",
+      type: "select",
+      // defaultValue: {
+      //   label: 'Good',
+      //   value: 'good',
+      // },
+      options: [
+        {
+          label: 'Good',
+          value: 'good',
+        },
+        {
+          label: 'Conditional',
+          value: 'conditional',
+        },
+        {
+          label: 'Bad',
+          value: 'bad',
+        },
+        {
+          label: 'Under review',
+          value: 'underReview',
+        },
+      ],
+    },
+    {
       name: "isPrimaryContact",
       label: "Are you the primary contact for the business?",
       type: "checkbox",

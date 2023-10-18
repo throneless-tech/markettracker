@@ -408,7 +408,7 @@ function CustomMarketsList(props) {
             <FooterAdmin />
           </TabPanel>
           <TabPanel>
-            <TableContainer>
+            {/* <TableContainer>
               <Table variant="simple">
                 <Thead>
                   <Tr background={"gray.100"}>
@@ -471,7 +471,7 @@ function CustomMarketsList(props) {
                 </Tbody>
               </Table>
             </TableContainer>
-            <FooterAdmin />
+            <FooterAdmin /> */}
           </TabPanel>
         </TabPanels>
       </Tabs>

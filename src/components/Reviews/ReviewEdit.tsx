@@ -86,7 +86,7 @@ function ReviewEdit(props) {
     path: "notes",
   });
 
-  const [shadowApp, setShadowApp] = useState<Application>();
+  const [shadowApp, setShadowApp] = useState(null);
   const [shadowReviewer, setShadowReviewer] = useState(null);
   const [doSubmit, setDoSubmit] = useState(false);
 

@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
+import qs from 'qs';
 
 // Chakra imports
 import {
+  Button,
   Container,
   Divider,
   Flex,
@@ -30,14 +32,33 @@ function CustomApplications(props) {
   const marketId = history.location.pathname.split("/").pop();
   const [applications, setApplications] = useState([]);
   const [market, setMarket] = useState(null);
-  console.log("***applist props***:", props);
+
+  const reviewApplication = (app) => {
+    history.push({
+      pathname: `/admin/collections/reviews/create`,
+      state: app
+    })
+  }
 
   useEffect(() => {
+    let query;
+    if (history.location.state) {
+      query = {
+        market: history.location.state.id
+      }
+    }
+
     const getApps = async () => {
-      const response = await fetch(`/api/applications?depth=2`);
+      const stringifiedQuery = qs.stringify(
+        {
+          where: query, // ensure that `qs` adds the `where` property, too!
+        },
+        { addQueryPrefix: true },
+      )
+      
+      const response = await fetch(`/api/applications?depth=2${stringifiedQuery}`);
       let apps = await response.json();
-      apps = apps.docs.filter((app) => app.season.market.id == marketId);
-      console.log(apps);
+      apps = apps.docs;
       setApplications(apps);
     };
 
@@ -142,17 +163,20 @@ function CustomApplications(props) {
                   ? applications.map((app) => (
                     <Tr key={app.id}>
                       <Td>
-                        <Link
-                          href={`/admin/collections/applications/${app.id}`}
+                        <Button variant={"link"}
+                          onClick={(e) => {
+                            e.preventDefault();
+                            reviewApplication(app);
+                          }}
                         >
                           {app.vendor.name}
-                        </Link>
+                        </Button>
                       </Td>
                       <Td>{app.vendor.type}</Td>
                       <Td>
                         {app.vendor.products && app.vendor.products.length
                           ? app.vendor.products.map((product) => (
-                            <Tag>{product.name}</Tag>
+                            <Tag marginRight={1} key={product.id}>{product.product}</Tag>
                           ))
                           : ""}
                       </Td>
@@ -164,14 +188,33 @@ function CustomApplications(props) {
                       </Td>
                       <Td>
                         {app.vendor.demographics &&
-                            app.vendor.demographics.length
-                          ? app.vendor.demographics.map((demo) => (
-                            <Tag>{demo.name}</Tag>
-                          ))
-                          : ""}
+                          typeof app.vendor.demographics === "object"
+                          ? Object.entries(app.vendor.demographics).map((
+                            key,
+                            value,
+                          ) => {
+                            if (key[1] == "yes") {
+                              if (key[0] == 'firstGeneration') {
+                                return <Tag>First generation farmer</Tag>
+                              }
+                              if (key[0] == 'veteranOwned') {
+                                return <Tag>Veteran-owned</Tag>
+                              }
+                              if (key[0] == 'bipoc') {
+                                return <Tag>BIPOC</Tag>
+                              }
+                              if (key[0] == 'immigrantOrRefugee') {
+                                return <Tag>Immigrant or refugee</Tag>
+                              }
+                              if (key[0] == 'lgbtqia') {
+                                return <Tag>LGBTQIA</Tag>
+                              }
+                            }
+                          })
+                          : null}
                       </Td>
                       <Td>
-                        <Tag>{app.vendor.standing}</Tag>
+                        <Tag>{app.vendor.standing ? app.vendor.standing : "Good"}</Tag>
                       </Td>
                       <Td>0/2 reviewers</Td>
                       <Td>0</Td>
