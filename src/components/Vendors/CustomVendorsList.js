@@ -225,7 +225,7 @@ function CustomVendorsList(props) {
                               : ""}
                           </Td>
                           <Td>
-                            <Tag>{app.vendor.standing ? app.vendor.standing "Good"}</Tag>
+                            <Tag>{app.vendor.standing ? app.vendor.standing : "Good"}</Tag>
                           </Td>
                           <Td>0/2 reviewers</Td>
                           <Td>0</Td>
