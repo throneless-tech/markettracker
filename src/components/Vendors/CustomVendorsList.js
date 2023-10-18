@@ -1,6 +1,7 @@
 "use client"
 
 import React, { useEffect, useState } from 'react'
+import { useHistory } from "react-router-dom";
 
 import {
   Box,
@@ -40,6 +41,7 @@ import { RedXIcon } from '../../assets/icons/red-x';
 function CustomVendorsList(props) {
   const { data } = props;
   const [applications, setApplications] = useState([]);
+  const history = useHistory();
 
   const reviewApplication = (app) => {
     history.push({
