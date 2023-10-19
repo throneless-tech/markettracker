@@ -3,6 +3,10 @@ import CustomVendorsEdit from "../../components/Vendors/CustomVendorsEdit";
 import CustomVendorsList from "../../components/Vendors/CustomVendorsList";
 //import { beforeReadHook } from "./hooks/beforeReadHook";
 import { createFieldContacts } from "./hooks/createFieldContacts";
+import {
+  afterReadContacts,
+  beforeValidateContacts,
+} from "./hooks/populateContacts";
 
 export const Vendors: CollectionConfig = {
   slug: "vendors",
@@ -34,6 +38,33 @@ export const Vendors: CollectionConfig = {
       type: "relationship",
       relationTo: "users",
       required: true,
+    },
+    {
+      name: "standing",
+      label: "What is this vendor's standing?",
+      type: "select",
+      // defaultValue: {
+      //   label: 'Good',
+      //   value: 'good',
+      // },
+      options: [
+        {
+          label: "Good",
+          value: "good",
+        },
+        {
+          label: "Conditional",
+          value: "conditional",
+        },
+        {
+          label: "Bad",
+          value: "bad",
+        },
+        {
+          label: "Under review",
+          value: "underReview",
+        },
+      ],
     },
     {
       name: "isPrimaryContact",
@@ -692,4 +723,8 @@ export const Vendors: CollectionConfig = {
       ],
     },
   ],
+  hooks: {
+    afterRead: [afterReadContacts],
+    beforeValidate: [beforeValidateContacts],
+  },
 };
