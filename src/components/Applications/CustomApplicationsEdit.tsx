@@ -10,6 +10,7 @@ import type { Contact, Product, Season, Vendor } from "payload/generated-types";
 
 // Chakra imports
 import {
+  AbsoluteCenter,
   Box,
   Button,
   Center,
@@ -82,7 +83,7 @@ const dayNames = [
 
 function CustomApplicationsEdit(props) {
   const { user } = useAuth();
-  const history = useHistory();
+  const history: any = useHistory();
   const { submit } = useForm();
   const { id } = useDocumentInfo();
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -92,6 +93,7 @@ function CustomApplicationsEdit(props) {
   const [numMonths, setNumMonths] = useState(1);
   const [marketDates, setMarketDates] = useState([]);
   const [selectedDates, setSelectedDates] = useState([]);
+  const [marketDatesObjects, setMarketDatesObjects] = useState([]);
   const [application, setApplication] = useState(null);
   const [selectAllDates, setSelectAllDates] = useState(false);
   const [doSubmit, setDoSubmit] = useState(false);
@@ -119,12 +121,9 @@ function CustomApplicationsEdit(props) {
 
   const [shadowSeason, setShadowSeason] = useState<Season>();
 
-  console.log("***isCSA***:", isCSA);
-  console.log("***dates***:", dates);
-  console.log("***contacts***:", contacts);
-  console.log("***season***:", season);
-  console.log("***vendor***:", vendor);
-  console.log("***products***:", products);
+  const onCloseThankYou = () => {
+    history.push('/admin/collections/markets');
+  }
 
   const submitForm = () => {
     if (!id && shadowSeason && shadowSeason.id) {
@@ -153,17 +152,23 @@ function CustomApplicationsEdit(props) {
 
   const updateSelectedDates = (date) => {
     let datesArray = dates ? dates : [];
+    let selectedDatesArray = selectedDates ? selectedDates : [];
     const dateString = date.toISOString();
 
     let dateFound = datesArray.find((item) => item.date === dateString);
-
-    if (dateFound) {
+    let selectedDateFound = !!selectedDatesArray.find(item => item.getTime() == date.getTime());
+    if (dateFound && selectedDateFound) {
       datesArray = datesArray.filter((item) => item.date !== dateString);
+      selectedDatesArray = selectedDatesArray.filter(item => item.getTime() != date.getTime())
     } else {
       datesArray.push({ date: dateString });
+      selectedDatesArray = [date, ...selectedDates];
     }
     setDates(datesArray);
+    setSelectedDates(selectedDatesArray);
   };
+
+  useEffect(() => {}, [dates, selectedDates])
 
   useEffect(() => {
     if (selectAllDates) {
@@ -183,10 +188,6 @@ function CustomApplicationsEdit(props) {
         history.location.state.seasons && history.location.state.seasons.length
       ) {
         if (history.location.state.seasons[0].id) {
-          console.log(
-            "***Setting Season***",
-            history.location.state.seasons[0],
-          );
           setShadowSeason(history.location.state.seasons[0]);
         }
 
@@ -211,13 +212,15 @@ function CustomApplicationsEdit(props) {
           setNumMonths(calLength);
 
           let days = [];
+          let objectDaysArray = [];
 
           for (var d = firstDate; d <= lastDate; d.setDate(d.getDate() + 1)) {
             if (history.location.state.days.includes(dayNames[d.getDay()])) {
               days.push(new Date(d));
+              objectDaysArray.push({ date: new Date(d) })
             }
           }
-
+          setMarketDatesObjects(objectDaysArray);
           setMarketDates(days);
         }
       }
@@ -388,7 +391,7 @@ function CustomApplicationsEdit(props) {
                     ? shadowSeason.market.description
                     : ""}
                 </Text>
-                <HStack>
+                <HStack sx={{ flexWrap: 'wrap' }}>
                   <Text
                     fontSize={"sm"}
                     textTransform={"uppercase"}
@@ -531,7 +534,7 @@ function CustomApplicationsEdit(props) {
             <Wrap spacing={8} marginY={8}>
               <Checkbox
                 colorScheme={"green"}
-                onChange={(event) => updateSelectAll(event)}
+                onChange={updateSelectAll}
                 isChecked={selectAllDates}
               >
                 Select all available
@@ -760,6 +763,25 @@ function CustomApplicationsEdit(props) {
         </Box>
       </>
     );
+  } else {
+    return (
+      <Container>
+        <AbsoluteCenter>
+        <Text fontSize={"xl"} textAlign={"center"}>
+          Applications be reviewed until all spaces have been filled. You
+          will be notified by email once your application has been reviewed.
+        </Text>
+        <HStack marginTop={8} justify={'center'}>
+          <Button variant={'solid'} as={'a'} href="/admin/collections/markets?tab=2">
+            Apply to another market
+          </Button>
+          <Button as={'a'} href="/admin/collections/markets">
+            View my markets
+          </Button>
+        </HStack>
+        </AbsoluteCenter>
+      </Container>
+    )
   }
 }
 

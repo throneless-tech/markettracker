@@ -18,6 +18,7 @@ import {
   Spacer,
   Tab,
   TabIndicator,
+  Tag,
   Table,
   TableContainer,
   TabList,
@@ -41,27 +42,56 @@ function CustomMarketsList(props) {
   const { data } = props;
   const { user } = useAuth();
   const history = useHistory();
+  const [tabIndex, setTabIndex] = useState(0);
   const [markets, setMarkets] = useState([]);
   const [viewMarkets, setViewMarkets] = useState(false);
+  const [applications, setApplications] = useState([]);
+
+  const handleTabsChange = (index) => {
+    setTabIndex(index)
+  }
+  
+  const reviewApplication = (app) => {
+    history.push({
+      pathname: `/admin/collections/reviews/create`,
+      state: app
+    })
+  }
 
   useEffect(() => {
+    const getApps = async () => {
+      const response = await fetch(`/api/applications?depth=2`);
+      let apps = await response.json();
+      apps = apps.docs
+      setApplications(apps);
+    };
+
+    getApps();
+  }, []);
+
+  useEffect(() => {
+    if (history.location.search.indexOf('tab') > -1) {
+      let index = history.location.search.indexOf('tab') + 4
+      index = history.location.search.charAt(index);
+      index = Number(index) - 1
+      setTabIndex(index);
+    }
+    
     const getMarkets = async () => {
       const response = await fetch("/api/markets?depth=2");
       const theseMarkets = await response.json();
-      // console.log("***theseMarkets***:", theseMarkets);
       setMarkets(theseMarkets);
     };
 
     getMarkets();
   }, []);
 
-  //useEffect(() => { }, [data, markets, viewMarkets]);
+  useEffect(() => { }, [applications, tabIndex]);
 
   return (
     <>
-      <Tabs position="relative" variant="unstyled" colorScheme="teal">
+      <Tabs defaultIndex={tabIndex} index={tabIndex} onChange={handleTabsChange} position="relative" variant="unstyled" colorScheme="teal">
         <TabList bg={"gray.50"}>
-          {user.role == "vendor" ? null : (
             <>
               <Tab
                 _selected={{ color: "#000", fontWeight: "700" }}
@@ -69,20 +99,21 @@ function CustomMarketsList(props) {
               >
                 Markets
               </Tab>
+            <Tab
+                _selected={{ color: "#000", fontWeight: "700" }}
+                sx={{ fontSize: 16 }}
+              >
+                Market Applications
+              </Tab>
+            {user.role == "vendor" ? null : (
               <Tab
                 _selected={{ color: "#000", fontWeight: "700" }}
                 sx={{ fontSize: 16 }}
               >
                 Market Reports
               </Tab>
-              <Tab
-                _selected={{ color: "#000", fontWeight: "700" }}
-                sx={{ fontSize: 16 }}
-              >
-                Market Applications
-              </Tab>
+            )}
             </>
-          )}
         </TabList>
         <TabIndicator
           mt="-1.5px"
@@ -107,7 +138,7 @@ function CustomMarketsList(props) {
                       <Button
                         // as="a"
                         // href="/admin/collections/applications"
-                        onClick={() => setViewMarkets(true)}
+                        onClick={() => setTabIndex(1)}
                       >
                         Apply to markets
                       </Button>
@@ -206,11 +237,178 @@ function CustomMarketsList(props) {
             <FooterAdmin />
           </TabPanel>
           <TabPanel>
-            Coming soon.
+            {user.role == 'vendor' ? (
+              <Container sx={{ maxWidth: "unset" }}>
+                <HStack align={"flex-start"} marginTop={8} spacing={8}>
+                  {
+                    /* <Stack backgroundColor={'gray.50'} padding={4} width={230}>
+          <Text>
+            Filter
+          </Text>
+        </Stack> */
+                  }
+                  <HStack align={"flex-start"} wrap={"wrap"} spacing={6}>
+                    {markets.docs && markets.docs.length &&
+                      markets.docs.map((market) => (
+                        <MarketCard
+                          key={market.id}
+                          market={market}
+                        />
+                      ))}
+                  </HStack>
+                </HStack>
+              </Container>
+            ) : (
+              <Container maxW = "container.xl" marginY = { 12 }>
+                <TableContainer>
+                  <Table variant="simple">
+                    <Thead>
+                      <Tr background={"gray.100"}>
+                        <Th>{" "}</Th>
+                        <Th
+                          sx={{ color: "gray.900", fontFamily: "Outfit, sans-serif" }}
+                        >
+                          Vendor type
+                        </Th>
+                        <Th
+                          sx={{ color: "gray.900", fontFamily: "Outfit, sans-serif" }}
+                        >
+                          Meet product gap
+                        </Th>
+                        <Th
+                          sx={{ color: "gray.900", fontFamily: "Outfit, sans-serif" }}
+                        >
+                          Number of markets
+                        </Th>
+                        <Th
+                          sx={{ color: "gray.900", fontFamily: "Outfit, sans-serif" }}
+                        >
+                          Priority group
+                        </Th>
+                        <Th
+                          sx={{ color: "gray.900", fontFamily: "Outfit, sans-serif" }}
+                        >
+                          Standing
+                        </Th>
+                        <Th
+                          sx={{ color: "gray.900", fontFamily: "Outfit, sans-serif" }}
+                        >
+                          Reviewers
+                        </Th>
+                        <Th
+                          sx={{ color: "gray.900", fontFamily: "Outfit, sans-serif" }}
+                        >
+                          Grade (avg)
+                        </Th>
+                        <Th
+                          sx={{ color: "gray.900", fontFamily: "Outfit, sans-serif" }}
+                        >
+                          Application status
+                        </Th>
+                      </Tr>
+                    </Thead>
+                    <Tbody>
+                      {applications && applications.length
+                        ? applications.map((app) => (
+                          <Tr key={app.id}>
+                            <Td>
+                              <Button variant={"link"}
+                                onClick={(e) => {
+                                  e.preventDefault();
+                                  reviewApplication(app);
+                                }}
+                              >
+                                {app.vendor.name}
+                              </Button>
+                            </Td>
+                            <Td>{app.vendor.type}</Td>
+                            <Td>
+                              {app.vendor.products && app.vendor.products.length
+                                ? app.vendor.products.map((product) => (
+                                  <Tag>{product.product}</Tag>
+                                ))
+                                : ""}
+                            </Td>
+                            <Td>
+                              {app.vendor.applications &&
+                                app.vendor.applications.length
+                                ? app.vendor.applications.length
+                                : "1"} applications
+                            </Td>
+                            <Td>
+                              {app.vendor.demographics &&
+                                app.vendor.demographics.length
+                                ? app.vendor.demographics.map((demo) => (
+                                  <Tag>{demo.name}</Tag>
+                                ))
+                                : ""}
+                            </Td>
+                            <Td>
+                              <Tag>{app.vendor.standing ? app.vendor.standing : "Good"}</Tag>
+                            </Td>
+                            <Td>0/2 reviewers</Td>
+                            <Td>0</Td>
+                            <Td>
+                              <Tag variant={"outline"}>Received</Tag>
+                            </Td>
+                          </Tr>
+                        ))
+                        : null}
+                    </Tbody>
+                    <Tfoot>
+                      <Tr background={"gray.100"}>
+                        <Th>{" "}</Th>
+                        <Th
+                          sx={{ color: "gray.900", fontFamily: "Outfit, sans-serif" }}
+                        >
+                          Vendor type
+                        </Th>
+                        <Th
+                          sx={{ color: "gray.900", fontFamily: "Outfit, sans-serif" }}
+                        >
+                          Meet product gap
+                        </Th>
+                        <Th
+                          sx={{ color: "gray.900", fontFamily: "Outfit, sans-serif" }}
+                        >
+                          Number of markets
+                        </Th>
+                        <Th
+                          sx={{ color: "gray.900", fontFamily: "Outfit, sans-serif" }}
+                        >
+                          Priority group
+                        </Th>
+                        <Th
+                          sx={{ color: "gray.900", fontFamily: "Outfit, sans-serif" }}
+                        >
+                          Standing
+                        </Th>
+                        <Th
+                          sx={{ color: "gray.900", fontFamily: "Outfit, sans-serif" }}
+                        >
+                          Reviewers
+                        </Th>
+                        <Th
+                          sx={{ color: "gray.900", fontFamily: "Outfit, sans-serif" }}
+                        >
+                          Grade (avg)
+                        </Th>
+                        <Th
+                          sx={{ color: "gray.900", fontFamily: "Outfit, sans-serif" }}
+                        >
+                          Application status
+                        </Th>
+                      </Tr>
+                    </Tfoot>
+                  </Table>
+                </TableContainer>
+              </Container>
+            )}
+            
             <FooterAdmin />
           </TabPanel>
           <TabPanel>
-            <TableContainer>
+            {/* <TableContainer>
               <Table variant="simple">
                 <Thead>
                   <Tr background={"gray.100"}>
@@ -273,7 +471,7 @@ function CustomMarketsList(props) {
                 </Tbody>
               </Table>
             </TableContainer>
-            <FooterAdmin />
+            <FooterAdmin /> */}
           </TabPanel>
         </TabPanels>
       </Tabs>

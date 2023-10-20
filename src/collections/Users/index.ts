@@ -32,7 +32,14 @@ export const Users: CollectionConfig = {
     //   },
     // },
   },
-  auth: true,
+  auth: {
+    forgotPassword: {
+      generateEmailSubject: () => {
+        return "Market Tracker - Reset Your Password";
+      },
+    },
+    useAPIKey: true,
+  },
   access: {
     // Anyone can create a user
     create: () => true,

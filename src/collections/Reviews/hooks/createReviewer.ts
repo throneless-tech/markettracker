@@ -10,6 +10,7 @@ export const createReviewer: CollectionBeforeChangeHook = async (
       id: req.user.id,
     });
     data.reviewer = user;
+    return { ...data, reviewer: user.id };
   }
   return data;
 };

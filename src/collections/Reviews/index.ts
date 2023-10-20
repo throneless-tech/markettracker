@@ -32,37 +32,37 @@ export const Reviews: CollectionConfig = {
     {
       name: "vendorScore",
       type: "number",
-      defaultValue: 0,
+      defaultValue: 1,
       required: true,
     },
     {
       name: "productScore",
       type: "number",
-      defaultValue: 0,
+      defaultValue: 1,
       required: true,
     },
     {
       name: "demographicScore",
       type: "number",
-      defaultValue: 0,
+      defaultValue: 1,
       required: true,
     },
     {
       name: "saturationScore",
       type: "number",
-      defaultValue: 0,
+      defaultValue: 1,
       required: true,
     },
     {
       name: "setupScore",
       type: "number",
-      defaultValue: 0,
+      defaultValue: 1,
       required: true,
     },
     {
       name: "attendanceScore",
       type: "number",
-      defaultValue: 0,
+      defaultValue: 1,
       required: true,
     },
     {
@@ -77,9 +77,9 @@ export const Reviews: CollectionConfig = {
       type: "relationship",
       relationTo: "users",
       required: true,
-      admin: {
-        readOnly: true,
-      },
+      // admin: {
+      //   readOnly: true,
+      // },
     },
     // {
     //   name: "status",

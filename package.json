@@ -31,6 +31,7 @@
     "humanparser": "^2.7.0",
     "node-xlsx": "^0.23.0",
     "payload": "^1.11.7",
+    "qs": "^6.11.2",
     "react": "^18.2.0",
     "react-datepicker": "^4.18.0",
     "react-pdf": "^7.5.0",

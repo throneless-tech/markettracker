@@ -139,6 +139,11 @@ export const Markets: CollectionConfig = {
       ],
     },
     {
+      name: "visitors",
+      label: "Visitors",
+      type: "number",
+    },
+    {
       name: "focus",
       label: "Market Focus",
       type: "select",
