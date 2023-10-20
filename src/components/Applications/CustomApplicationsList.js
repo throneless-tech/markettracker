@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useHistory, useLocation } from "react-router-dom";
 
 // Chakra imports
 import {
@@ -27,6 +27,7 @@ import {
 import StarIcon from "../../assets/icons/star.js";
 
 const CustomApplications = ({ data }) => {
+  const history = useHistory();
   const location = useLocation();
   const [applications, setApplications] = useState([]);
   const [season, setSeason] = useState();
