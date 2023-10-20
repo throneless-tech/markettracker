@@ -49,7 +49,6 @@ export const Vendors: CollectionConfig = {
       // },
       options: [
         {
-<<<<<<< HEAD
           label: "Good",
           value: "good",
         },
@@ -64,22 +63,6 @@ export const Vendors: CollectionConfig = {
         {
           label: "Under review",
           value: "underReview",
-=======
-          label: 'Good',
-          value: 'good',
-        },
-        {
-          label: 'Conditional',
-          value: 'conditional',
-        },
-        {
-          label: 'Bad',
-          value: 'bad',
-        },
-        {
-          label: 'Under review',
-          value: 'underReview',
->>>>>>> main
         },
       ],
     },
