@@ -8,13 +8,12 @@ export const afterReadVendor: CollectionAfterReadHook = async ({
   doc, // full document data
 }) => {
   if (doc.vendor && typeof doc.vendor === "string") {
-    const vendor = await payload.find({
+    const vendor = await payload.findByID({
+      id: doc.vendor,
       collection: "vendors",
       depth: 1,
-      limit: 1,
-      where: { id: { equals: doc.vendor } },
     });
-    return { ...doc, vendor: vendor.docs[0] };
+    return { ...doc, vendor: vendor };
   }
   return doc;
 };
@@ -22,9 +21,7 @@ export const afterReadVendor: CollectionAfterReadHook = async ({
 export const beforeValidateVendor: CollectionBeforeValidateHook = async ({
   data,
 }) => {
-  if (
-    data.vendor && typeof data.vendor === "object"
-  ) {
+  if (data.vendor && typeof data.vendor === "object") {
     return { ...data, vendor: data.vendor.id };
   }
   return data;
