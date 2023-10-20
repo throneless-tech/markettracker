@@ -122,8 +122,8 @@ function CustomApplicationsEdit(props) {
   const [shadowSeason, setShadowSeason] = useState<Season>();
 
   const onCloseThankYou = () => {
-    history.push('/admin/collections/markets');
-  }
+    history.push("/admin/collections/markets");
+  };
 
   const submitForm = () => {
     if (!id && shadowSeason && shadowSeason.id) {
@@ -156,10 +156,14 @@ function CustomApplicationsEdit(props) {
     const dateString = date.toISOString();
 
     let dateFound = datesArray.find((item) => item.date === dateString);
-    let selectedDateFound = !!selectedDatesArray.find(item => item.getTime() == date.getTime());
+    let selectedDateFound = !!selectedDatesArray.find(
+      (item) => item.getTime() == date.getTime(),
+    );
     if (dateFound && selectedDateFound) {
       datesArray = datesArray.filter((item) => item.date !== dateString);
-      selectedDatesArray = selectedDatesArray.filter(item => item.getTime() != date.getTime())
+      selectedDatesArray = selectedDatesArray.filter(
+        (item) => item.getTime() != date.getTime(),
+      );
     } else {
       datesArray.push({ date: dateString });
       selectedDatesArray = [date, ...selectedDates];
@@ -168,13 +172,15 @@ function CustomApplicationsEdit(props) {
     setSelectedDates(selectedDatesArray);
   };
 
-  useEffect(() => {}, [dates, selectedDates])
+  useEffect(() => {}, [dates, selectedDates]);
 
   useEffect(() => {
     if (selectAllDates) {
-      setDates(marketDates.map((date) => {
-        return { date: date.toISOString() };
-      }));
+      setDates(
+        marketDates.map((date) => {
+          return { date: date.toISOString() };
+        }),
+      );
     } else {
       setDates([]);
     }
@@ -185,7 +191,8 @@ function CustomApplicationsEdit(props) {
       setMarket(history.location.state);
 
       if (
-        history.location.state.seasons && history.location.state.seasons.length
+        history.location.state.seasons &&
+        history.location.state.seasons.length
       ) {
         if (history.location.state.seasons[0].id) {
           setShadowSeason(history.location.state.seasons[0]);
@@ -217,7 +224,7 @@ function CustomApplicationsEdit(props) {
           for (var d = firstDate; d <= lastDate; d.setDate(d.getDate() + 1)) {
             if (history.location.state.days.includes(dayNames[d.getDay()])) {
               days.push(new Date(d));
-              objectDaysArray.push({ date: new Date(d) })
+              objectDaysArray.push({ date: new Date(d) });
             }
           }
           setMarketDatesObjects(objectDaysArray);
@@ -259,7 +266,9 @@ function CustomApplicationsEdit(props) {
 
   // id will be undefined on the create form
   if (
-    !id && shadowSeason && shadowSeason.market &&
+    !id &&
+    shadowSeason &&
+    shadowSeason.market &&
     typeof shadowSeason.market === "object"
   ) {
     return (
@@ -284,56 +293,48 @@ function CustomApplicationsEdit(props) {
                       {shadowSeason.market.name}
                     </Text>
                   </HStack>
-                  {shadowSeason.isAccepting
-                    ? (
-                      <>
-                        <Spacer />
-                        <HStack>
-                          <Text
-                            color={"gray.50"}
-                            fontSize="sm"
-                            fontWeight={700}
-                            textAlign={"right"}
-                            textStyle="bodyMain"
-                            textTransform={"uppercase"}
-                            width={28}
-                          >
-                            Accepting applications
-                          </Text>
-                          <StarIcon height={8} width={8} />
-                        </HStack>
-                      </>
-                    )
-                    : null}
+                  {shadowSeason.isAccepting ? (
+                    <>
+                      <Spacer />
+                      <HStack>
+                        <Text
+                          color={"gray.50"}
+                          fontSize="sm"
+                          fontWeight={700}
+                          textAlign={"right"}
+                          textStyle="bodyMain"
+                          textTransform={"uppercase"}
+                          width={28}
+                        >
+                          Accepting applications
+                        </Text>
+                        <StarIcon height={8} width={8} />
+                      </HStack>
+                    </>
+                  ) : null}
                 </Flex>
                 <Flex marginTop={4}>
                   <HStack>
-                    {shadowSeason.marketTime
-                      ? (
-                        <Text
-                          as={"span"}
-                          color={"gray.50"}
-                          fontSize="2xl"
-                          fontWeight={700}
-                          textStyle="bodyMain"
-                          sx={{ textTransform: "capitalize" }}
-                        >
-                          {shadowSeason.market.days.map(
-                            (day, index) => {
-                              if (index == market.days.length - 1) {
-                                return day;
-                              } else {
-                                return `${day}, `;
-                              }
-                            },
-                          )} {formatTime(
-                            shadowSeason.marketTime.startTime,
-                          )}-{formatTime(
-                            shadowSeason.marketTime.endTime,
-                          )}
-                        </Text>
-                      )
-                      : null}
+                    {shadowSeason.marketTime ? (
+                      <Text
+                        as={"span"}
+                        color={"gray.50"}
+                        fontSize="2xl"
+                        fontWeight={700}
+                        textStyle="bodyMain"
+                        sx={{ textTransform: "capitalize" }}
+                      >
+                        {shadowSeason.market.days.map((day, index) => {
+                          if (index == market.days.length - 1) {
+                            return day;
+                          } else {
+                            return `${day}, `;
+                          }
+                        })}{" "}
+                        {formatTime(shadowSeason.marketTime.startTime)}-
+                        {formatTime(shadowSeason.marketTime.endTime)}
+                      </Text>
+                    ) : null}
                     <Text
                       textStyle="bodyMain"
                       as={"span"}
@@ -349,40 +350,38 @@ function CustomApplicationsEdit(props) {
                       {shadowSeason.market.address.zipcode}
                     </Text>
                   </HStack>
-                  {shadowSeason.market.contact
-                    ? (
-                      <>
-                        <Spacer />
-                        <HStack>
-                          <Text
-                            as={"span"}
-                            color={"gray.50"}
-                            fontSize="2xl"
-                            fontWeight={700}
-                            textStyle="bodyMain"
-                          >
-                            Manager:
-                          </Text>
-                          <Text
-                            textStyle="bodyMain"
-                            as={"span"}
-                            color={"gray.50"}
-                            fontSize="2xl"
-                          >
-                            {(shadowSeason.market.contact as Contact).name}
-                          </Text>
-                          <Text
-                            textStyle="bodyMain"
-                            as={"span"}
-                            color={"gray.50"}
-                            fontSize="2xl"
-                          >
-                            {(shadowSeason.market.contact as Contact).phone}
-                          </Text>
-                        </HStack>
-                      </>
-                    )
-                    : null}
+                  {shadowSeason.market.contact ? (
+                    <>
+                      <Spacer />
+                      <HStack>
+                        <Text
+                          as={"span"}
+                          color={"gray.50"}
+                          fontSize="2xl"
+                          fontWeight={700}
+                          textStyle="bodyMain"
+                        >
+                          Manager:
+                        </Text>
+                        <Text
+                          textStyle="bodyMain"
+                          as={"span"}
+                          color={"gray.50"}
+                          fontSize="2xl"
+                        >
+                          {(shadowSeason.market.contact as Contact).name}
+                        </Text>
+                        <Text
+                          textStyle="bodyMain"
+                          as={"span"}
+                          color={"gray.50"}
+                          fontSize="2xl"
+                        >
+                          {(shadowSeason.market.contact as Contact).phone}
+                        </Text>
+                      </HStack>
+                    </>
+                  ) : null}
                 </Flex>
               </Box>
               <Box background={"#90B132"} borderBottomRadius="8px" padding={4}>
@@ -391,7 +390,7 @@ function CustomApplicationsEdit(props) {
                     ? shadowSeason.market.description
                     : ""}
                 </Text>
-                <HStack sx={{ flexWrap: 'wrap' }}>
+                <HStack sx={{ flexWrap: "wrap" }}>
                   <Text
                     fontSize={"sm"}
                     textTransform={"uppercase"}
@@ -401,15 +400,17 @@ function CustomApplicationsEdit(props) {
                     Market needs:
                   </Text>
                   {shadowSeason.productGaps &&
-                      shadowSeason.productGaps.length
-                    ? shadowSeason.productGaps.map((
-                      product,
-                    ) => (
+                  shadowSeason.productGaps.length ? (
+                    shadowSeason.productGaps.map((product) => (
                       <Tag bg={"gray.50"} fontWeight={700}>
                         {product.product}
                       </Tag>
                     ))
-                    : <Tag bg={"gray.50"} fontWeight={700}>TBA</Tag>}
+                  ) : (
+                    <Tag bg={"gray.50"} fontWeight={700}>
+                      TBA
+                    </Tag>
+                  )}
                 </HStack>
               </Box>
             </Box>
@@ -434,9 +435,7 @@ function CustomApplicationsEdit(props) {
               >
                 {shadowSeason.market.size}
               </Text>
-              <Divider
-                sx={{ borderColor: "gray.600", borderBottomWidth: 2 }}
-              />
+              <Divider sx={{ borderColor: "gray.600", borderBottomWidth: 2 }} />
             </HStack>
             <Text color={"gray.600"} marginTop={4} fontSize={"md"}>
               {shadowSeason.market.size == "flagship"
@@ -470,9 +469,7 @@ function CustomApplicationsEdit(props) {
               >
                 Vendors scheduled for this market
               </Text>
-              <Divider
-                sx={{ borderColor: "gray.600", borderBottomWidth: 2 }}
-              />
+              <Divider sx={{ borderColor: "gray.600", borderBottomWidth: 2 }} />
             </HStack>
             <HStack marginTop={2}>
               {/* <Tag bg={"gray.50"}>Vendor 1</Tag> */}
@@ -487,9 +484,7 @@ function CustomApplicationsEdit(props) {
               >
                 Stats & info
               </Text>
-              <Divider
-                sx={{ borderColor: "gray.600", borderBottomWidth: 2 }}
-              />
+              <Divider sx={{ borderColor: "gray.600", borderBottomWidth: 2 }} />
             </HStack>
             <Image
               src={stats1}
@@ -523,9 +518,7 @@ function CustomApplicationsEdit(props) {
               >
                 Market dates
               </Text>
-              <Divider
-                sx={{ borderColor: "gray.600", borderBottomWidth: 2 }}
-              />
+              <Divider sx={{ borderColor: "gray.600", borderBottomWidth: 2 }} />
             </HStack>
             <Text color={"gray.600"} marginTop={4} fontSize={"md"}>
               Select all the dates you would like to apply to{" "}
@@ -543,7 +536,9 @@ function CustomApplicationsEdit(props) {
                 Legend:
               </Text>
               <HStack>
-                <Text color={"gray.600"} fontSize={"xl"}>1</Text>
+                <Text color={"gray.600"} fontSize={"xl"}>
+                  1
+                </Text>
                 <Text>Not available</Text>
               </HStack>
               <HStack>
@@ -610,9 +605,7 @@ function CustomApplicationsEdit(props) {
               >
                 Products
               </Text>
-              <Divider
-                sx={{ borderColor: "gray.600", borderBottomWidth: 2 }}
-              />
+              <Divider sx={{ borderColor: "gray.600", borderBottomWidth: 2 }} />
             </HStack>
             <Text color={"gray.600"} marginTop={4} fontSize={"md"}>
               Select the products you would like to sell at{" "}
@@ -629,10 +622,7 @@ function CustomApplicationsEdit(props) {
             <RadioGroup
               marginTop={2}
               onChange={(newValue) => setIsCSA(newValue === "true")}
-              value={typeof isCSA ===
-                  "boolean"
-                ? isCSA.toString()
-                : undefined}
+              value={typeof isCSA === "boolean" ? isCSA.toString() : undefined}
             >
               <Stack spacing={2}>
                 <Radio value="true">Yes</Radio>
@@ -649,9 +639,7 @@ function CustomApplicationsEdit(props) {
               >
                 Staff
               </Text>
-              <Divider
-                sx={{ borderColor: "gray.600", borderBottomWidth: 2 }}
-              />
+              <Divider sx={{ borderColor: "gray.600", borderBottomWidth: 2 }} />
             </HStack>
             <Text color={"gray.600"} marginTop={4} fontSize={"md"}>
               Select anyone who will be staffing your booth at{" "}
@@ -673,23 +661,19 @@ function CustomApplicationsEdit(props) {
               </HStack>
             </CheckboxGroup>
 
-            {
-              /*<Button
+            {/*<Button
               onClick={onOpen}
               marginTop={4}
               rightIcon={<ArrowForwardIcon />}
             >
               Add a contact
-            </Button>*/
-            }
+            </Button>*/}
             <Modal isOpen={isOpen} onClose={onClose} size={"xl"}>
               <ModalOverlay />
               <ModalContent background={"gray.600"} color={"gray.50"}>
                 <ModalHeader>
                   <Stack textAlign={"center"} spacing={1}>
-                    <Heading marginBottom={0}>
-                      Add a contact
-                    </Heading>
+                    <Heading marginBottom={0}>Add a contact</Heading>
                     <Text>
                       Please fill in requested information to create a new
                       contact
@@ -744,8 +728,9 @@ function CustomApplicationsEdit(props) {
               sx={{ borderColor: "gray.600", borderBottomWidth: 2, marginY: 8 }}
             />
             <Text fontSize={"xl"} textAlign={"center"}>
-              Applications be reviewed until all spaces have been filled. You
-              will be notified by email once your application has been reviewed.
+              Applications will be reviewed until all spaces have been filled.
+              You will be notified by email once your application has been
+              reviewed.
             </Text>
             <Center marginY={8}>
               <HStack spacing={4}>
@@ -767,21 +752,25 @@ function CustomApplicationsEdit(props) {
     return (
       <Container>
         <AbsoluteCenter>
-        <Text fontSize={"xl"} textAlign={"center"}>
-          Applications be reviewed until all spaces have been filled. You
-          will be notified by email once your application has been reviewed.
-        </Text>
-        <HStack marginTop={8} justify={'center'}>
-          <Button variant={'solid'} as={'a'} href="/admin/collections/markets?tab=2">
-            Apply to another market
-          </Button>
-          <Button as={'a'} href="/admin/collections/markets">
-            View my markets
-          </Button>
-        </HStack>
+          <Text fontSize={"xl"} textAlign={"center"}>
+            Applications will be reviewed until all spaces have been filled. You
+            will be notified by email once your application has been reviewed.
+          </Text>
+          <HStack marginTop={8} justify={"center"}>
+            <Button
+              variant={"solid"}
+              as={"a"}
+              href="/admin/collections/markets?tab=2"
+            >
+              Apply to another market
+            </Button>
+            <Button as={"a"} href="/admin/collections/markets">
+              View my markets
+            </Button>
+          </HStack>
         </AbsoluteCenter>
       </Container>
-    )
+    );
   }
 }
 

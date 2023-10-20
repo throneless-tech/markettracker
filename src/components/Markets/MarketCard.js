@@ -28,9 +28,7 @@ import StarIcon from "../../assets/icons/star.js";
 const MarketCard = (props) => {
   const { user } = useAuth();
   const history = useHistory();
-  const {
-    market
-  } = props;
+  const { market } = props;
 
   const viewMarket = (market) => {
     history.push({
@@ -49,6 +47,7 @@ const MarketCard = (props) => {
   const viewMarketApplications = (market) => {
     history.push({
       pathname: `/admin/collections/applications`,
+      search: `?season=${market.seasons[0].id}`,
       state: market,
     });
   };
@@ -62,23 +61,23 @@ const MarketCard = (props) => {
       maxWidth={348}
       sx={{ position: "relative" }}
     >
-      {market.seasons && market.seasons[0].isAccepting
-        ? (
-          <Box
-            sx={{
-              position: "absolute",
-              right: "-10px",
-              top: "-10px",
-            }}
-          >
-            <StarIcon height={8} width={8} />
-          </Box>
-        )
-        : null}
+      {market.seasons && market.seasons[0].isAccepting ? (
+        <Box
+          sx={{
+            position: "absolute",
+            right: "-10px",
+            top: "-10px",
+          }}
+        >
+          <StarIcon height={8} width={8} />
+        </Box>
+      ) : null}
       <Box
-        backgroundColor={market.seasons && market.seasons[0].isAccepting
-          ? "green.600"
-          : "gray.700"}
+        backgroundColor={
+          market.seasons && market.seasons[0].isAccepting
+            ? "green.600"
+            : "gray.700"
+        }
         padding={4}
       >
         <HStack align={"flex-start"}>
@@ -110,80 +109,40 @@ const MarketCard = (props) => {
       </Box>
       <Box margin={4}>
         <Stack marginTop={4} spacing={4}>
-          {market.days && market.days.length
-            ? (
-              <Text
-                fontSize={18}
-                fontWeight={500}
-                sx={{ textTransform: "capitalize" }}
-              >
-                {market.days.map((day, index) => {
-                  if (index == market.days.length - 1) {
-                    return day;
-                  } else {
-                    return `${day}, `;
-                  }
-                })} {market.seasons && market.seasons.length &&
-                    market.seasons[0].marketTime.startTime &&
-                    market.seasons[0].marketTime.endTime
-                  ? (
-                    <>
-                      {formatTime(
-                        market.seasons[0].marketTime.startTime,
-                      )}-{formatTime(market.seasons[0].marketTime.endTime)}
-                    </>
-                  )
-                  : null}
-              </Text>
-            )
-            : null}
-          <Text>
-            {market.description}
-          </Text>
+          {market.days && market.days.length ? (
+            <Text
+              fontSize={18}
+              fontWeight={500}
+              sx={{ textTransform: "capitalize" }}
+            >
+              {market.days.map((day, index) => {
+                if (index == market.days.length - 1) {
+                  return day;
+                } else {
+                  return `${day}, `;
+                }
+              })}{" "}
+              {market.seasons &&
+              market.seasons.length &&
+              market.seasons[0].marketTime.startTime &&
+              market.seasons[0].marketTime.endTime ? (
+                <>
+                  {formatTime(market.seasons[0].marketTime.startTime)}-
+                  {formatTime(market.seasons[0].marketTime.endTime)}
+                </>
+              ) : null}
+            </Text>
+          ) : null}
+          <Text>{market.description}</Text>
           <Divider color="green.600" borderBottomWidth={2} opacity={1} />
         </Stack>
         <Stack marginTop={4} fontSize={18}>
-          {market.seasons && market.seasons.length &&
-              market.seasons[0].marketDates
-            ? (
-              <>
-                <HStack>
-                  <CalendarIcon
-                    sx={{
-                      fill: "#fff",
-                      height: "24px",
-                      width: "24px",
-                      "& path": {
-                        stroke: "green.600",
-                      },
-                    }}
-                  />
-                  <Text fontWeight={500}>
-                    Opens:
-                  </Text>
-                  <Text>
-                    {market.seasons[0].marketDates.startDate
-                      ? formatDate(market.seasons[0].marketDates.startDate)
-                      : "No opening date set"}
-                  </Text>
-                </HStack>
-                <HStack marginLeft={8}>
-                  <Text fontWeight={500}>
-                    Closes:
-                  </Text>
-                  <Text>
-                    {market.seasons[0].marketDates.endDate
-                      ? formatDate(market.seasons[0].marketDates.endDate)
-                      : "No closing date set"}
-                  </Text>
-                </HStack>
-              </>
-            )
-            : null}
-          {market.contact
-            ? (
+          {market.seasons &&
+          market.seasons.length &&
+          market.seasons[0].marketDates ? (
+            <>
               <HStack>
-                <ProfileIcon
+                <CalendarIcon
                   sx={{
                     fill: "#fff",
                     height: "24px",
@@ -193,36 +152,62 @@ const MarketCard = (props) => {
                     },
                   }}
                 />
-                <Text fontWeight={500}>
-                  Manager:
-                </Text>
+                <Text fontWeight={500}>Opens:</Text>
                 <Text>
-                  {market.contact.name} {market.contact.phone}
+                  {market.seasons[0].marketDates.startDate
+                    ? formatDate(market.seasons[0].marketDates.startDate)
+                    : "No opening date set"}
                 </Text>
               </HStack>
-            )
-            : null}
+              <HStack marginLeft={8}>
+                <Text fontWeight={500}>Closes:</Text>
+                <Text>
+                  {market.seasons[0].marketDates.endDate
+                    ? formatDate(market.seasons[0].marketDates.endDate)
+                    : "No closing date set"}
+                </Text>
+              </HStack>
+            </>
+          ) : null}
+          {market.contact ? (
+            <HStack>
+              <ProfileIcon
+                sx={{
+                  fill: "#fff",
+                  height: "24px",
+                  width: "24px",
+                  "& path": {
+                    stroke: "green.600",
+                  },
+                }}
+              />
+              <Text fontWeight={500}>Manager:</Text>
+              <Text>
+                {market.contact.name} {market.contact.phone}
+              </Text>
+            </HStack>
+          ) : null}
         </Stack>
       </Box>
-      {market.seasons && market.seasons.length &&
-          market.seasons[0].isAccepting == true
-        ? (
-          <Box margin={4}>
-            <Center>
-              <Text as={"div"} textStyle={"h4"}>
-                Market needs:
-              </Text>
-            </Center>
-            <Center>
-              <HStack
-                align={"center"}
-                justify={"center"}
-                wrap={"wrap"}
-                maxWidth={212}
-              >
-                {market.seasons[0].productGaps &&
-                    market.seasons[0].productGaps.length
-                  ? market.seasons[0].productGaps.map((need) => (
+      {market.seasons &&
+      market.seasons.length &&
+      market.seasons[0].isAccepting == true ? (
+        <Box margin={4}>
+          <Center>
+            <Text as={"div"} textStyle={"h4"}>
+              Market needs:
+            </Text>
+          </Center>
+          <Center>
+            <HStack
+              align={"center"}
+              justify={"center"}
+              wrap={"wrap"}
+              maxWidth={212}
+            >
+              {market.seasons[0].productGaps &&
+              market.seasons[0].productGaps.length
+                ? market.seasons[0].productGaps.map((need) => (
                     <Tag
                       key={need.id}
                       colorScheme="green"
@@ -233,12 +218,11 @@ const MarketCard = (props) => {
                       {need.product}
                     </Tag>
                   ))
-                  : "none"}
-              </HStack>
-            </Center>
-          </Box>
-        )
-        : null}
+                : "none"}
+            </HStack>
+          </Center>
+        </Box>
+      ) : null}
       <Box margin={4}>
         <Divider
           color="green.600"
@@ -248,44 +232,45 @@ const MarketCard = (props) => {
         />
         <Center>
           <Text textStyle={"h4"} marginBottom={4}>
-            {market.seasons && market.seasons.length &&
-                market.seasons[0].isAccepting == true
+            {market.seasons &&
+            market.seasons.length &&
+            market.seasons[0].isAccepting == true
               ? ""
-              : "Not "}Accepting applications
+              : "Not "}
+            Accepting applications
           </Text>
         </Center>
-        {market.seasons && market.seasons.length &&
-            market.seasons[0].isAccepting == true
-          ? user.role == "vendor"
-            ? (
-              <Center marginBottom={2}>
-                <Button
-                  rightIcon={<ArrowForwardIcon />}
-                  variant={"solid"}
-                  onClick={(e) => {
-                    e.preventDefault;
-                    applyToMarket(market);
-                  }}
-                >
-                  Apply
-                </Button>
-              </Center>
-            )
-            : (
-              <Center marginBottom={2}>
-                <Button
-                  rightIcon={<ArrowForwardIcon />}
-                  variant={"solid"}
-                  onClick={(e) => {
-                    e.preventDefault;
-                    viewMarketApplications(market);
-                  }}
-                >
-                  View applications
-                </Button>
-              </Center>
-            )
-          : null}
+        {market.seasons &&
+        market.seasons.length &&
+        market.seasons[0].isAccepting == true ? (
+          user.role == "vendor" ? (
+            <Center marginBottom={2}>
+              <Button
+                rightIcon={<ArrowForwardIcon />}
+                variant={"solid"}
+                onClick={(e) => {
+                  e.preventDefault;
+                  applyToMarket(market);
+                }}
+              >
+                Apply
+              </Button>
+            </Center>
+          ) : (
+            <Center marginBottom={2}>
+              <Button
+                rightIcon={<ArrowForwardIcon />}
+                variant={"solid"}
+                onClick={(e) => {
+                  e.preventDefault;
+                  viewMarketApplications(market);
+                }}
+              >
+                View applications
+              </Button>
+            </Center>
+          )
+        ) : null}
         <Center>
           <Button
             rightIcon={<ArrowForwardIcon />}

@@ -15,6 +15,9 @@ export const Applications: CollectionConfig = {
         List: CustomApplicationsList,
       },
     },
+    pagination: {
+      defaultLimit: 9999,
+    },
     useAsTitle: "name",
   },
   fields: [
