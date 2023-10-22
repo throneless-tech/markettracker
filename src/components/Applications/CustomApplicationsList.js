@@ -174,12 +174,17 @@ const CustomApplications = ({ data }) => {
                         </Td>
                         <Td>{app.vendor.type}</Td>
                         <Td>
-                          {app.vendor.products && app.vendor.products.length
-                            ? app.vendor.products.map((product) => (
-                                <Tag marginRight={1} key={product.id}>
-                                  {product.product}
-                                </Tag>
-                              ))
+                          {app.products && app.products.length
+                            ? app.products.reduce((acc, product) => {
+                                if (season.productGaps.includes(product.id)) {
+                                  acc.push(
+                                    <Tag marginRight={1} key={product.id}>
+                                      {product.product}
+                                    </Tag>,
+                                  );
+                                }
+                                return acc;
+                              }, [])
                             : ""}
                         </Td>
                         <Td>
