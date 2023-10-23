@@ -25,7 +25,7 @@ import { MarketIcon } from "../../assets/icons/market";
 import { ProfileIcon } from "../../assets/icons/profile";
 import StarIcon from "../../assets/icons/star.js";
 
-const MarketCard = (props) => {
+const MarketCard: React.FC<any> = (props) => {
   const { user } = useAuth();
   const history = useHistory();
   const { market } = props;

@@ -1,7 +1,7 @@
-import React from 'react'
-import { Box, Flex, Stack, Text } from '@chakra-ui/react'
+import React from "react";
+import { Box, Flex, Stack, Text } from "@chakra-ui/react";
 
-const Stats = () => (
+const Stats: React.FC<any> = () => (
   <Stack
     justify="flex-start"
     align="flex-start"
@@ -39,7 +39,7 @@ const Stats = () => (
         padding={1}
         justify="flex-start"
         align="center"
-        w={{base: "100%", md: "unset"}}
+        w={{ base: "100%", md: "unset" }}
       >
         <Text
           lineHeight="1"
@@ -62,8 +62,16 @@ const Stats = () => (
           Total sales
         </Text>
       </Stack>
-      <Box h={{base: 2, md: "103px"}} w="2px" bg={{ base: "transparent", md: "gray.600" }} />
-      <Box h="2px" w={{ base: "100%", md: 0 }} bg={{ base: "gray.600", md: "transparent" }} />
+      <Box
+        h={{ base: 2, md: "103px" }}
+        w="2px"
+        bg={{ base: "transparent", md: "gray.600" }}
+      />
+      <Box
+        h="2px"
+        w={{ base: "100%", md: 0 }}
+        bg={{ base: "gray.600", md: "transparent" }}
+      />
       <Stack
         padding={1}
         justify="flex-start"
@@ -91,8 +99,16 @@ const Stats = () => (
           Days at Markets
         </Text>
       </Stack>
-      <Box h={{ base: 2, md: "103px" }} w="2px" bg={{ base: "transparent", md: "gray.600" }} />
-      <Box h="2px" w={{ base: "100%", md: 0 }} bg={{ base: "gray.600", md: "transparent" }} />
+      <Box
+        h={{ base: 2, md: "103px" }}
+        w="2px"
+        bg={{ base: "transparent", md: "gray.600" }}
+      />
+      <Box
+        h="2px"
+        w={{ base: "100%", md: 0 }}
+        bg={{ base: "gray.600", md: "transparent" }}
+      />
       <Stack
         padding={1}
         justify="flex-start"
@@ -120,8 +136,16 @@ const Stats = () => (
           unjustified absences
         </Text>
       </Stack>
-      <Box h={{ base: 2, md: "103px" }} w="2px" bg={{ base: "transparent", md: "gray.600" }} />
-      <Box h="2px" w={{base: "100%", md: 0}} bg={{ base: "gray.600", md: "transparent" }} />
+      <Box
+        h={{ base: 2, md: "103px" }}
+        w="2px"
+        bg={{ base: "transparent", md: "gray.600" }}
+      />
+      <Box
+        h="2px"
+        w={{ base: "100%", md: 0 }}
+        bg={{ base: "gray.600", md: "transparent" }}
+      />
       <Stack
         padding={1}
         justify="flex-start"
@@ -151,6 +175,6 @@ const Stats = () => (
       </Stack>
     </Stack>
   </Stack>
-)
+);
 
 export { Stats };

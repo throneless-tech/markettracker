@@ -26,11 +26,14 @@ import {
 // icons
 import StarIcon from "../../assets/icons/star.js";
 
-const CustomApplications = ({ data }) => {
+// types
+import type { Application, Season } from "payload/generated-types";
+
+const CustomApplications: React.FC<any> = ({ data }) => {
   const history = useHistory();
   const location = useLocation();
-  const [applications, setApplications] = useState([]);
-  const [season, setSeason] = useState();
+  const [applications, setApplications] = useState<Application[]>([]);
+  const [season, setSeason] = useState<Season>();
 
   const reviewApplication = (app) => {
     history.push({
@@ -50,7 +53,7 @@ const CustomApplications = ({ data }) => {
       }
     };
 
-    let seasonId;
+    let seasonId: string;
     if (location.search && typeof location.search === "string") {
       const params = new URLSearchParams(location.search);
       seasonId = params.get("season");
@@ -75,7 +78,7 @@ const CustomApplications = ({ data }) => {
     }
   }, [data, season]);
 
-  if (applications && season) {
+  if (applications && season && typeof season.market === "object") {
     return (
       <>
         <Container maxW="container.xl">
@@ -87,7 +90,7 @@ const CustomApplications = ({ data }) => {
               </Text>{" "}
               <Text as={"span"}>applications</Text>
             </Heading>
-            {season.acceptingApplications ? (
+            {season.isAccepting ? (
               <>
                 <Spacer />
                 <HStack>
@@ -159,79 +162,95 @@ const CustomApplications = ({ data }) => {
               </Thead>
               <Tbody>
                 {applications && applications.length
-                  ? applications.map((app) => (
-                      <Tr key={app.id}>
-                        <Td>
-                          <Button
-                            variant={"link"}
-                            onClick={(e) => {
-                              e.preventDefault();
-                              reviewApplication(app);
-                            }}
-                          >
-                            {app.vendor.name}
-                          </Button>
-                        </Td>
-                        <Td>{app.vendor.type}</Td>
-                        <Td>
-                          {app.products && app.products.length
-                            ? app.products.reduce((acc, product) => {
-                                if (season.productGaps.includes(product.id)) {
-                                  acc.push(
-                                    <Tag marginRight={1} key={product.id}>
-                                      {product.product}
-                                    </Tag>,
-                                  );
-                                }
-                                return acc;
-                              }, [])
-                            : ""}
-                        </Td>
-                        <Td>
-                          {app.vendor.applications &&
-                          app.vendor.applications.length
-                            ? app.vendor.applications.length
-                            : "1"}{" "}
-                          applications
-                        </Td>
-                        <Td>
-                          {app.vendor.demographics &&
-                          typeof app.vendor.demographics === "object"
-                            ? Object.entries(app.vendor.demographics).map(
-                                (key, value) => {
-                                  if (key[1] == "yes") {
-                                    if (key[0] == "firstGeneration") {
-                                      return <Tag>First generation farmer</Tag>;
+                  ? applications.reduce((acc, app) => {
+                      if (typeof app.vendor === "object") {
+                        acc.push(
+                          <Tr key={app.id}>
+                            <Td>
+                              <Button
+                                variant={"link"}
+                                onClick={(e) => {
+                                  e.preventDefault();
+                                  reviewApplication(app);
+                                }}
+                              >
+                                {app.vendor.name}
+                              </Button>
+                            </Td>
+                            <Td>{app.vendor.type}</Td>
+                            <Td>
+                              {app.products && app.products.length
+                                ? app.products.reduce((acc, product) => {
+                                    if (
+                                      typeof product === "object" &&
+                                      (season.productGaps as string[]).includes(
+                                        product.id,
+                                      )
+                                    ) {
+                                      acc.push(
+                                        <Tag marginRight={1} key={product.id}>
+                                          {product.product}
+                                        </Tag>,
+                                      );
                                     }
-                                    if (key[0] == "veteranOwned") {
-                                      return <Tag>Veteran-owned</Tag>;
-                                    }
-                                    if (key[0] == "bipoc") {
-                                      return <Tag>BIPOC</Tag>;
-                                    }
-                                    if (key[0] == "immigrantOrRefugee") {
-                                      return <Tag>Immigrant or refugee</Tag>;
-                                    }
-                                    if (key[0] == "lgbtqia") {
-                                      return <Tag>LGBTQIA</Tag>;
-                                    }
-                                  }
-                                },
-                              )
-                            : null}
-                        </Td>
-                        <Td>
-                          <Tag>
-                            {app.vendor.standing ? app.vendor.standing : "Good"}
-                          </Tag>
-                        </Td>
-                        <Td>0/2 reviewers</Td>
-                        <Td>0</Td>
-                        <Td>
-                          <Tag variant={"outline"}>Received</Tag>
-                        </Td>
-                      </Tr>
-                    ))
+                                    return acc;
+                                  }, [])
+                                : ""}
+                            </Td>
+                            <Td>
+                              {app.vendor.applications &&
+                              app.vendor.applications.length
+                                ? app.vendor.applications.length
+                                : "1"}{" "}
+                              applications
+                            </Td>
+                            <Td>
+                              {app.vendor.demographics &&
+                              typeof app.vendor.demographics === "object"
+                                ? Object.entries(app.vendor.demographics).map(
+                                    (key, value) => {
+                                      if (key[1] == "yes") {
+                                        if (key[0] == "firstGeneration") {
+                                          return (
+                                            <Tag>First generation farmer</Tag>
+                                          );
+                                        }
+                                        if (key[0] == "veteranOwned") {
+                                          return <Tag>Veteran-owned</Tag>;
+                                        }
+                                        if (key[0] == "bipoc") {
+                                          return <Tag>BIPOC</Tag>;
+                                        }
+                                        if (key[0] == "immigrantOrRefugee") {
+                                          return (
+                                            <Tag>Immigrant or refugee</Tag>
+                                          );
+                                        }
+                                        if (key[0] == "lgbtqia") {
+                                          return <Tag>LGBTQIA</Tag>;
+                                        }
+                                      }
+                                    },
+                                  )
+                                : null}
+                            </Td>
+                            <Td>
+                              <Tag>
+                                {app.vendor.standing
+                                  ? app.vendor.standing
+                                  : "Good"}
+                              </Tag>
+                            </Td>
+                            <Td>0/2 reviewers</Td>
+                            <Td>0</Td>
+                            <Td>
+                              <Tag variant={"outline"}>Received</Tag>
+                            </Td>
+                          </Tr>,
+                        );
+                      }
+                      return acc;
+                    }, [])
                   : null}
               </Tbody>
               <Tfoot>

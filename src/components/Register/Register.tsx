@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState } from "react";
 
 // chakra UI imports
 import {
@@ -14,22 +14,22 @@ import {
   Link,
   Stack,
   Text,
-  others
-} from '@chakra-ui/react';
+  others,
+} from "@chakra-ui/react";
 
 // components + data
-import Footer from '../FooterAdmin';
-import Steps from './Steps'
+import Footer from "../FooterAdmin";
+import Steps from "./Steps";
 
 // icons + images
-import { ArrowBackIcon } from '@chakra-ui/icons'
-import { ArrowForwardIcon } from '@chakra-ui/icons'
+import { ArrowBackIcon } from "@chakra-ui/icons";
+import { ArrowForwardIcon } from "@chakra-ui/icons";
 
-import background from '../../assets/images/login-background.jpg'
+import background from "../../assets/images/login-background.jpg";
 
 const Register = () => {
-  const [businessCheck, setBusinessCheck] = useState('none');
-  const [index, setIndex] = useState(0);  
+  const [businessCheck, setBusinessCheck] = useState("none");
+  const [index, setIndex] = useState(0);
   const [vendor, setVendor] = useState(null);
   const [companyName, setCompanyName] = useState("");
   const [userName, setUserName] = useState("");
@@ -82,7 +82,7 @@ const Register = () => {
   const [outsideVendors, setOutsideVendors] = useState("");
   const [freshfarmVendors, setFreshfarmVendors] = useState("");
   const [iAccept, setIAccept] = useState(false);
-  
+
   const errorCompanyName = companyName === "";
   const errorUserName = userName === "";
   const errorEmail = email === "";
@@ -99,7 +99,7 @@ const Register = () => {
     } else if (index === 1) {
       const createVendor = async () => {
         try {
-          const req = await fetch('/api/users', {
+          const req = await fetch("/api/users", {
             method: "POST",
             credentials: "include",
             headers: {
@@ -111,15 +111,14 @@ const Register = () => {
               password: password,
               role: "vendor",
             }),
-          })
-          const data = await req.json()
+          });
+          const data = await req.json();
           setVendor(data.doc);
           console.log(data);
         } catch (err) {
-          console.log(err)
+          console.log(err);
         }
-
-      }
+      };
 
       createVendor();
 
@@ -127,7 +126,7 @@ const Register = () => {
     } else if (index === 6) {
       const createVendor = async () => {
         try {
-          const req = await fetch('/api/vendors', {
+          const req = await fetch("/api/vendors", {
             method: "POST",
             credentials: "include",
             headers: {
@@ -180,7 +179,7 @@ const Register = () => {
               marketing: {
                 website: website,
                 instagram: instagram,
-                twitter: twitter,
+                //twitter: twitter,
                 facebook: facebook,
                 store: store,
                 other: otherSocial,
@@ -189,17 +188,16 @@ const Register = () => {
               setupNeeds: {
                 tent: tent,
                 generator: generator,
-                vehicle: vehicle
+                vehicle: vehicle,
               },
-              products: products
+              products: products,
             }),
-          })
-          const data = await req.json()
+          });
+          const data = await req.json();
         } catch (err) {
-          console.log(err)
+          console.log(err);
         }
-
-      }
+      };
 
       createVendor();
       setIndex(index + 1);
@@ -208,7 +206,7 @@ const Register = () => {
     }
   }
 
-  useEffect(() => { }, [
+  useEffect(() => {}, [
     index,
     billingContact,
     bipoc,
@@ -285,18 +283,18 @@ const Register = () => {
           alt=""
           src={background}
           sx={{
-            backgroundRepeat: 'no-repeat',
-            mixBlendMode: 'multiply',
+            backgroundRepeat: "no-repeat",
+            mixBlendMode: "multiply",
             maxHeight: "100%",
-            objectFit: 'cover',
-            opacity: '80%',
+            objectFit: "cover",
+            opacity: "80%",
             width: "100%",
           }}
         />
       </Box>
       <Center>
         <Card
-          align='center'
+          align="center"
           bg="#FFF"
           variant="filled"
           sx={{
@@ -342,7 +340,7 @@ const Register = () => {
               otherDemographics={otherDemographics}
               otherSocial={otherSocial}
               outsideVendors={outsideVendors}
-              partTime={partTime}              
+              partTime={partTime}
               password={password}
               passwordConfirm={passwordConfirm}
               phoneNumber={phoneNumber}
@@ -425,21 +423,20 @@ const Register = () => {
               <Center>
                 <HStack spacing={4}>
                   <Button
-                    colorScheme='green'
+                    colorScheme="green"
                     marginTop={12}
-                    variant='solid'
+                    variant="solid"
                     width={125}
                     onClick={handleBackClick}
                     leftIcon={<ArrowBackIcon />}
                     isDisabled={index === 0}
-
                   >
                     Back
                   </Button>
                   <Button
-                    colorScheme='green'
+                    colorScheme="green"
                     marginTop={12}
-                    variant='solid'
+                    variant="solid"
                     width={125}
                     onClick={handleNextClick}
                     rightIcon={<ArrowForwardIcon />}
@@ -453,20 +450,20 @@ const Register = () => {
               <Center>
                 <HStack spacing={4}>
                   <Button
-                    colorScheme='green'
+                    colorScheme="green"
                     marginTop={12}
-                    variant='solid'
+                    variant="solid"
                     width={125}
-                    isDisabled={index === 0 || !iAccept}
+                    isDisabled={!iAccept}
                     onClick={handleNextClick}
                   >
                     Accept
                   </Button>
-                  <Link href='/'>
+                  <Link href="/">
                     <Button
-                      colorScheme='green'
+                      colorScheme="green"
                       marginTop={12}
-                      variant='outline'
+                      variant="outline"
                       width={125}
                     >
                       Cancel
@@ -474,26 +471,24 @@ const Register = () => {
                   </Link>
                 </HStack>
               </Center>
-            ) : index === 8 ? (
-              null
-            ) : (
+            ) : index === 8 ? null : (
               <Center>
                 <HStack spacing={4}>
-                  <Link href='/admin'>
+                  <Link href="/admin">
                     <Button
-                      colorScheme='green'
+                      colorScheme="green"
                       marginTop={12}
-                      variant='solid'
+                      variant="solid"
                       isDisabled={index === 0}
                     >
                       Apply to markets now
                     </Button>
                   </Link>
-                  <Link href='/'>
+                  <Link href="/">
                     <Button
-                      colorScheme='green'
+                      colorScheme="green"
                       marginTop={12}
-                      variant='outline'
+                      variant="outline"
                     >
                       Apply to markets later
                     </Button>
@@ -503,29 +498,26 @@ const Register = () => {
             )}
             {index === 0 || index === 1 ? (
               <Center>
-                <Stack direction={'row'} marginTop={12}>
-                  <Text as='div' color='gray.500'>
+                <Stack direction={"row"} marginTop={12}>
+                  <Text as="div" color="gray.500">
                     Already a member?
                   </Text>
-                  <Link href="/">
-                    Login here
-                  </Link>
+                  <Link href="/">Login here</Link>
                 </Stack>
               </Center>
             ) : index > 1 && index < 8 ? (
               <Center marginTop={12}>
-                <Text as='div' color='gray.500'>
+                <Text as="div" color="gray.500">
                   Progress: {index}/6
                 </Text>
               </Center>
             ) : null}
           </CardBody>
-
         </Card>
       </Center>
       <Footer />
     </Box>
-  )
-}
+  );
+};
 
 export default Register;

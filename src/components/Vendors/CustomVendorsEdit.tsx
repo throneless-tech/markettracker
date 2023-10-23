@@ -48,7 +48,7 @@ import {
 // components
 import { Card } from "../Card";
 
-function CustomVendorsEdit({ data: vendor }) {
+const CustomVendorsEdit: React.FC<any> = ({ data: vendor }) => {
   if (vendor) {
     return (
       <Box>
@@ -61,15 +61,7 @@ function CustomVendorsEdit({ data: vendor }) {
           >
             Vendors
           </Heading>
-          <Box
-            direction="row"
-            justify="flex-start"
-            align="stretch"
-            spacing="24px"
-            borderBottomRadius="8px"
-            borderTop="2px solid #6D635B"
-            marginTop={8}
-          >
+          <Box>
             <Box background="green.600" padding={6}>
               <Flex borderBottom={"2px solid #F6F5F4"} paddingBottom={6}>
                 <HStack>
@@ -316,8 +308,8 @@ function CustomVendorsEdit({ data: vendor }) {
                                 <RadioGroup
                                   defaultValue={vendor.isPrimaryContact}
                                 >
-                                  <Radio value={true}>Yes</Radio>
-                                  <Radio value={false}>No</Radio>
+                                  <Radio value="true">Yes</Radio>
+                                  <Radio value="false">No</Radio>
                                 </RadioGroup>
                               </Stack>
                             </RadioGroup>
@@ -330,8 +322,8 @@ function CustomVendorsEdit({ data: vendor }) {
                             </Text>
                             <RadioGroup value={vendor.isBillingContact}>
                               <Stack>
-                                <Radio value={true}>Yes</Radio>
-                                <Radio value={false}>No</Radio>
+                                <Radio value="true">Yes</Radio>
+                                <Radio value="false">No</Radio>
                               </Stack>
                             </RadioGroup>
                           </Stack>
@@ -1023,14 +1015,14 @@ function CustomVendorsEdit({ data: vendor }) {
                           <RadioGroup value={vendor.sharedKitchen}>
                             <Stack marginTop={1}>
                               <HStack>
-                                <Radio value={true}>Yes</Radio>
+                                <Radio value="true">Yes</Radio>
                                 <Input
                                   marginLeft={2}
                                   variant="filled"
                                   placeholder="Please share the name of the kitchen"
                                 />
                               </HStack>
-                              <Radio value={false}>No</Radio>
+                              <Radio value="false">No</Radio>
                             </Stack>
                           </RadioGroup>
                           <Text as="div" textStyle="bodyMain" fontWeight={500}>
@@ -1039,14 +1031,14 @@ function CustomVendorsEdit({ data: vendor }) {
                           <RadioGroup value={vendor.copacker}>
                             <Stack marginTop={1}>
                               <HStack>
-                                <Radio value={true}>Yes</Radio>
+                                <Radio value="true">Yes</Radio>
                                 <Input
                                   marginLeft={2}
                                   variant="filled"
                                   placeholder="Please share the name of the co-packer"
                                 />
                               </HStack>
-                              <Radio value={false}>No</Radio>
+                              <Radio value="false">No</Radio>
                             </Stack>
                           </RadioGroup>
                         </AccordionPanel>
@@ -1091,6 +1083,6 @@ function CustomVendorsEdit({ data: vendor }) {
       </Box>
     );
   }
-}
+};
 
 export default CustomVendorsEdit;

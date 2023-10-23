@@ -1,7 +1,7 @@
-import React from 'react'
-import { Stack, Box, Text } from '@chakra-ui/react'
+import React from "react";
+import { Stack, Box, Text } from "@chakra-ui/react";
 
-const Graph = () => (
+const Graph: React.FC<any> = () => (
   <Stack
     padding="32px"
     borderRadius="8px"
@@ -45,7 +45,7 @@ const Graph = () => (
               textTransform="capitalize"
               color="#6D635B"
             >
-              Current year to last year comparison{' '}
+              Current year to last year comparison{" "}
             </Text>
           </Box>
           <Stack
@@ -54,13 +54,7 @@ const Graph = () => (
             align="flex-start"
             spacing="24px"
           >
-            <Stack
-              text="View Reports"
-              property1="Default"
-              direction="row"
-              justify="flex-start"
-              align="flex-start"
-            >
+            <Stack direction="row" justify="flex-start" align="flex-start">
               <Text
                 fontFamily="Outfit"
                 lineHeight="1.2"
@@ -72,13 +66,7 @@ const Graph = () => (
                 Export Graph
               </Text>
             </Stack>
-            <Stack
-              text="View Reports"
-              property1="Default"
-              direction="row"
-              justify="flex-start"
-              align="flex-start"
-            >
+            <Stack direction="row" justify="flex-start" align="flex-start">
               <Text
                 fontFamily="Outfit"
                 lineHeight="1.2"
@@ -107,7 +95,7 @@ const Graph = () => (
             fontSize="18px"
             color="slate"
           >
-            Current Year (2022){' '}
+            Current Year (2022){" "}
           </Text>
         </Stack>
         <Stack direction="row" justify="flex-start" align="center">
@@ -346,6 +334,6 @@ const Graph = () => (
       </Text>
     </Box>
   </Stack>
-)
+);
 
 export { Graph };

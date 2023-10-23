@@ -1,7 +1,7 @@
-import React from 'react'
-import { HStack, Text, Tag } from '@chakra-ui/react'
+import React from "react";
+import { HStack, Text, Tag } from "@chakra-ui/react";
 
-const Standing = (props) => {
+const Standing: React.FC<any> = (props) => {
   const { user } = props;
   console.log(user);
   return (
@@ -28,13 +28,16 @@ const Standing = (props) => {
         flex="1"
         marginBottom={0}
       >
-        {user.name ? user.name : user.email} is in {user.vendor ? user.vendor.standing : 'good'} standing. Vendor standing is based on market attendance, sales report submissions, invoice payments, instances of rule violations, and site visit completion.
+        {user.name ? user.name : user.email} is in{" "}
+        {user.vendor ? user.vendor.standing : "good"} standing. Vendor standing
+        is based on market attendance, sales report submissions, invoice
+        payments, instances of rule violations, and site visit completion.
       </Text>
-      <Tag variant='solid' colorScheme='teal' marginTop={2}>
+      <Tag variant="solid" colorScheme="teal" marginTop={2}>
         Good
       </Tag>
     </HStack>
-)
-}
+  );
+};
 
 export { Standing };

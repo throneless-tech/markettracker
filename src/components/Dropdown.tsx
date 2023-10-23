@@ -1,8 +1,8 @@
-import React from 'react'
-import { FormControl, FormLabel, Text, Select, Stack } from '@chakra-ui/react'
+import React from "react";
+import { FormControl, FormLabel, Text, Select, Stack } from "@chakra-ui/react";
 
-const Dropdown = () => (
-  <FormControl sx={{ alignItems: 'center', display: 'flex', }} >
+const Dropdown: React.FC<any> = () => (
+  <FormControl sx={{ alignItems: "center", display: "flex" }}>
     <FormLabel>
       <Text
         fontFamily="Zilla Slab"
@@ -16,8 +16,8 @@ const Dropdown = () => (
         Choose a Market
       </Text>
     </FormLabel>
-    <Select maxWidth={'360px'} placeholder='Choose a market' />
+    <Select maxWidth={"360px"} placeholder="Choose a market" />
   </FormControl>
-)
+);
 
 export { Dropdown };

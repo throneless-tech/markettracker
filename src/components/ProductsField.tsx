@@ -29,18 +29,16 @@ type AllProducts = {
   [key: string]: Array<{ product: string; id: string | number }>;
 };
 
-export const ProductsField: FC<Props> = (
-  {
-    label,
-    path,
-    required,
-    admin: { description } = {},
-    products,
-    onChange,
-    value,
-    useObjects = false,
-  },
-) => {
+export const ProductsField: FC<Props> = ({
+  label,
+  path,
+  required,
+  admin: { description } = {},
+  products,
+  onChange,
+  value,
+  useObjects = false,
+}) => {
   const { value: current, setValue: setCurrent } = useField<any[]>({ path });
   const [allProducts, setAllProducts] = useState<AllProducts>({});
   const [index, setIndex] = useState<Map<string | number, Product>>(new Map());
@@ -81,7 +79,7 @@ export const ProductsField: FC<Props> = (
     if (value) {
       setCurrent(value);
     }
-  }, ["value"]);
+  }, [value]);
 
   const onChangeHandler = (newValue) => {
     if (onChange) {
@@ -94,43 +92,47 @@ export const ProductsField: FC<Props> = (
     return setCurrent(newValue);
   };
 
-  return allProducts && (
-    <FormControl>
-      {label
-        ? <FormLabel>{label + (required ? " (Required)" : "")}</FormLabel>
-        : null}
-      {description ? <FormHelperText>{description}</FormHelperText> : null}
-      <CheckboxGroup
-        colorScheme="green"
-        onChange={onChangeHandler}
-        value={current && current.length && typeof current[0] !== "string"
-          ? current.map((p) => p.id)
-          : current}
-      >
-        <Wrap marginTop={4} spacing={8}>
-          {Object.entries(allProducts).map(([category, products]) => {
-            return (
-              <Stack spacing={4} key={category}>
-                <Heading
-                  as="h2"
-                  fontFamily={"font.body"}
-                  textStyle="h4"
-                  size="xs"
-                >
-                  {category}
-                </Heading>
-                <Stack>
-                  {products.map((product) => (
-                    <Checkbox value={product.id} key={product.id}>
-                      {product.product}
-                    </Checkbox>
-                  ))}
+  return (
+    allProducts && (
+      <FormControl>
+        {label ? (
+          <FormLabel>{label + (required ? " (Required)" : "")}</FormLabel>
+        ) : null}
+        {description ? <FormHelperText>{description}</FormHelperText> : null}
+        <CheckboxGroup
+          colorScheme="green"
+          onChange={onChangeHandler}
+          value={
+            current && current.length && typeof current[0] !== "string"
+              ? current.map((p) => p.id)
+              : current
+          }
+        >
+          <Wrap marginTop={4} spacing={8}>
+            {Object.entries(allProducts).map(([category, products]) => {
+              return (
+                <Stack spacing={4} key={category}>
+                  <Heading
+                    as="h2"
+                    fontFamily={"font.body"}
+                    textStyle="h4"
+                    size="xs"
+                  >
+                    {category}
+                  </Heading>
+                  <Stack>
+                    {products.map((product) => (
+                      <Checkbox value={product.id} key={product.id}>
+                        {product.product}
+                      </Checkbox>
+                    ))}
+                  </Stack>
                 </Stack>
-              </Stack>
-            );
-          })}
-        </Wrap>
-      </CheckboxGroup>
-    </FormControl>
+              );
+            })}
+          </Wrap>
+        </CheckboxGroup>
+      </FormControl>
+    )
   );
 };

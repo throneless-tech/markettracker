@@ -1,4 +1,4 @@
-import React from 'react'
+import React from "react";
 import {
   Box,
   Stack,
@@ -11,50 +11,50 @@ import {
   Td,
   TableCaption,
   TableContainer,
-  Text
-} from '@chakra-ui/react'
+  Text,
+} from "@chakra-ui/react";
 
 const headings = [
-  'Market',
-  'Date',
-  'Penalties/Credits',
-  'Sales Total',
-  'Coupon Total',
-  'Review Status',
-  'Invoice Date'
-]
+  "Market",
+  "Date",
+  "Penalties/Credits",
+  "Sales Total",
+  "Coupon Total",
+  "Review Status",
+  "Invoice Date",
+];
 
 const data = [
   {
-    name: 'Columbia Heights',
-    day: 'Saturday',
+    name: "Columbia Heights",
+    day: "Saturday",
     penaltiesCredits: 200,
     salesTotal: 451.56,
     couponTotal: 145.12,
-    reviewStatus: 'approved',
-    invoiceDate: null
+    reviewStatus: "approved",
+    invoiceDate: null,
   },
   {
-    name: 'Monroe St',
+    name: "Monroe St",
     day: null,
     penaltiesCredits: -100,
     salesTotal: 4253.18,
-    couponTotal: 45.10,
-    reviewStatus: 'pending',
-    invoiceDate: null
+    couponTotal: 45.1,
+    reviewStatus: "pending",
+    invoiceDate: null,
   },
   {
-    name: 'Columbia Heights',
-    day: 'Wednesday',
+    name: "Columbia Heights",
+    day: "Wednesday",
     penaltiesCredits: 50,
     salesTotal: 354.23,
-    couponTotal: 45.00,
-    reviewStatus: 'denied',
-    invoiceDate: null
+    couponTotal: 45.0,
+    reviewStatus: "denied",
+    invoiceDate: null,
   },
-]
+];
 
-const StyledTable = () => (
+const StyledTable: React.FC<any> = () => (
   <Stack
     justify="flex-start"
     align="flex-start"
@@ -84,16 +84,16 @@ const StyledTable = () => (
       <Table>
         <Thead
           sx={{
-            backgroundColor: 'gray.100'
+            backgroundColor: "gray.100",
           }}
         >
           <Tr>
-            {headings.map(heading => (
+            {headings.map((heading) => (
               <Th
                 key={heading}
                 sx={{
                   color: "gray.700",
-                  fontFamily: "'Outfit', 'sans-serif'"
+                  fontFamily: "'Outfit', 'sans-serif'",
                 }}
               >
                 {heading}
@@ -104,6 +104,6 @@ const StyledTable = () => (
       </Table>
     </TableContainer>
   </Stack>
-)
+);
 
 export { StyledTable };

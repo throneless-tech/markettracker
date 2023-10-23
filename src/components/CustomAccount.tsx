@@ -5,6 +5,7 @@ import { useAuth } from "payload/components/utilities";
 
 // Payload imports
 import { useField, useForm } from "payload/components/forms";
+import type { Vendor } from "payload/generated-types";
 
 import {
   Box,
@@ -61,19 +62,19 @@ import { ProductsField } from "./ProductsField";
 // icons
 import EditIcon from "../assets/icons/edit.js";
 
-const CustomDashboard = () => {
+const CustomDashboard: React.FC<any> = () => {
   const { submit } = useForm();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [isLoaded, setIsLoaded] = useState(false);
-  const { value: name, setValue: setName } =
-    useField < string > ({ path: "name" });
-  const { value: role, setValue: setRole } =
-    useField < string > ({ path: "role" });
-  const { value: email, setValue: setEmail } =
-    useField < string > ({ path: "email" });
-  const { value: realVendor, setValue: setRealVendor } =
-    useField < string > ({ path: "vendor" });
-  const [vendor, setShadowVendor] = useState(vendor);
+  const { value: name, setValue: setName } = useField<string>({ path: "name" });
+  const { value: role, setValue: setRole } = useField<string>({ path: "role" });
+  const { value: email, setValue: setEmail } = useField<string>({
+    path: "email",
+  });
+  const { value: realVendor, setValue: setRealVendor } = useField<Vendor>({
+    path: "vendor",
+  });
+  const [vendor, setShadowVendor] = useState<Vendor>();
 
   console.log("***isLoaded:", isLoaded);
   console.log("***Role:", role);
@@ -95,7 +96,8 @@ const CustomDashboard = () => {
   useEffect(() => {
     if (role && role === "vendor") {
       if (name && email && realVendor && !isLoaded) {
-        setShadowVendor(realVendor);
+        const temp = realVendor;
+        setShadowVendor(temp);
         setIsLoaded(true);
       }
     } else if (role && role !== "vendor") {
@@ -105,13 +107,13 @@ const CustomDashboard = () => {
     }
   }, [name, role, email, realVendor]);
 
-  return isLoaded && (
-    <>
-      <Tabs>
-        <Box>
-          <Tabs>
-            {role === "vendor" && vendor
-              ? (
+  return (
+    isLoaded && (
+      <>
+        <Tabs>
+          <Box>
+            <Tabs>
+              {role === "vendor" && vendor ? (
                 <TabList bg={"gray.50"}>
                   <Tab
                     _selected={{ color: "#000", fontWeight: "700" }}
@@ -138,51 +140,41 @@ const CustomDashboard = () => {
                     My Products
                   </Tab>
                 </TabList>
-              )
-              : null}
-            <TabIndicator
-              mt="-1.5px"
-              height="2px"
-              bg="blue.400"
-              borderRadius="1px"
-              color={"gray.600"}
-            />
-            <TabPanels>
-              <TabPanel>
-                <Container maxW="container.xl" marginBottom={4}>
-                  <Heading
-                    as="h1"
-                    sx={{ marginY: 8, textTransform: "uppercase" }}
-                  >
-                    {role == "vendor" ? "My Company Info" : "My Profile"}
-                  </Heading>
-                  <Box
-                    direction="row"
-                    justify="flex-start"
-                    align="stretch"
-                    spacing="24px"
-                    borderBottomRadius="8px"
-                    borderTop="2px solid #6D635B"
-                    marginTop={8}
-                  >
-                    <Box background="teal.700" padding={6}>
-                      <Flex paddingBottom={6}>
-                        <HStack>
-                          <Text
-                            as={"span"}
-                            color={"gray.50"}
-                            fontFamily={"Zilla Slab"}
-                            fontSize="3xl"
-                            fontWeight={700}
-                            textTransform={"uppercase"}
-                          >
-                            {name || email}
-                          </Text>
-                        </HStack>
-                        <Spacer />
-                        <HStack>
-                          {role === "vendor" && vendor
-                            ? (
+              ) : null}
+              <TabIndicator
+                mt="-1.5px"
+                height="2px"
+                bg="blue.400"
+                borderRadius="1px"
+                color={"gray.600"}
+              />
+              <TabPanels>
+                <TabPanel>
+                  <Container maxW="container.xl" marginBottom={4}>
+                    <Heading
+                      as="h1"
+                      sx={{ marginY: 8, textTransform: "uppercase" }}
+                    >
+                      {role == "vendor" ? "My Company Info" : "My Profile"}
+                    </Heading>
+                    <Box>
+                      <Box background="teal.700" padding={6}>
+                        <Flex paddingBottom={6}>
+                          <HStack>
+                            <Text
+                              as={"span"}
+                              color={"gray.50"}
+                              fontFamily={"Zilla Slab"}
+                              fontSize="3xl"
+                              fontWeight={700}
+                              textTransform={"uppercase"}
+                            >
+                              {name || email}
+                            </Text>
+                          </HStack>
+                          <Spacer />
+                          <HStack>
+                            {role === "vendor" && vendor ? (
                               <Tag
                                 variant="solid"
                                 colorScheme="teal"
@@ -193,43 +185,49 @@ const CustomDashboard = () => {
                               >
                                 Good
                               </Tag>
-                            )
-                            : null}
-                        </HStack>
-                      </Flex>
-                      <Flex marginTop={4}>
-                        <HStack>
-                          <Text
-                            as={"span"}
-                            color={"gray.50"}
-                            fontSize="2xl"
-                            fontWeight={700}
-                          >
-                            {role === "vendor" && vendor && vendor.type
-                              ? `${vendor.type}`
-                              : null}
-                          </Text>
-                          <Text as={"span"} color={"gray.50"} fontSize="2xl">
-                            {role === "vendor" && vendor && vendor.address
-                              ? `${vendor.address.street} ${vendor.address.city} ${vendor.address.state} ${vendor.address.zipcode}`
-                              : null}
-                          </Text>
-                        </HStack>
-                        <Spacer />
-                        {vendor && vendor.phoneNumber && (
+                            ) : null}
+                          </HStack>
+                        </Flex>
+                        <Flex marginTop={4}>
                           <HStack>
-                            <Text as={"span"} color={"gray.50"} fontSize="2xl">
-                              Primary contact:
+                            <Text
+                              as={"span"}
+                              color={"gray.50"}
+                              fontSize="2xl"
+                              fontWeight={700}
+                            >
+                              {role === "vendor" && vendor && vendor.type
+                                ? `${vendor.type}`
+                                : null}
                             </Text>
                             <Text as={"span"} color={"gray.50"} fontSize="2xl">
-                              {vendor.phoneNumber}
+                              {role === "vendor" && vendor && vendor.address
+                                ? `${vendor.address.street} ${vendor.address.city} ${vendor.address.state} ${vendor.address.zipcode}`
+                                : null}
                             </Text>
                           </HStack>
-                        )}
-                      </Flex>
-                    </Box>
-                    {role === vendor && vendor && vendor.description
-                      ? (
+                          <Spacer />
+                          {vendor && vendor.phoneNumber && (
+                            <HStack>
+                              <Text
+                                as={"span"}
+                                color={"gray.50"}
+                                fontSize="2xl"
+                              >
+                                Primary contact:
+                              </Text>
+                              <Text
+                                as={"span"}
+                                color={"gray.50"}
+                                fontSize="2xl"
+                              >
+                                {vendor.phoneNumber}
+                              </Text>
+                            </HStack>
+                          )}
+                        </Flex>
+                      </Box>
+                      {role === "vendor" && vendor && vendor.description ? (
                         <Box
                           background={"teal.100"}
                           borderBottomRadius="8px"
@@ -239,11 +237,9 @@ const CustomDashboard = () => {
                             {vendor.description}
                           </Text>
                         </Box>
-                      )
-                      : null}
-                  </Box>
-                  {role === "vendor" && vendor
-                    ? (
+                      ) : null}
+                    </Box>
+                    {role === "vendor" && vendor ? (
                       <Button
                         onClick={onOpen}
                         leftIcon={
@@ -265,10 +261,8 @@ const CustomDashboard = () => {
                       >
                         Edit/update information
                       </Button>
-                    )
-                    : null}
-                  {role === "vendor" && vendor
-                    ? (
+                    ) : null}
+                    {role === "vendor" && vendor ? (
                       <Modal isOpen={isOpen} onClose={onClose} size={"full"}>
                         <ModalOverlay />
                         <ModalContent>
@@ -291,7 +285,8 @@ const CustomDashboard = () => {
                                   setVendor({
                                     ...vendor,
                                     name: e.target.value,
-                                  })}
+                                  })
+                                }
                                 value={vendor.name}
                               />
                             </HStack>
@@ -308,11 +303,13 @@ const CustomDashboard = () => {
                                   setVendor({
                                     ...vendor,
                                     isPrimaryContact: newValue === "true",
-                                  })}
-                                value={typeof vendor.copacker ===
-                                    "boolean"
-                                  ? vendor.isPrimaryContact.toString()
-                                  : undefined}
+                                  })
+                                }
+                                value={
+                                  typeof vendor.copacker === "boolean"
+                                    ? vendor.isPrimaryContact.toString()
+                                    : undefined
+                                }
                               >
                                 <Stack>
                                   <Radio value="true">Yes</Radio>
@@ -331,11 +328,13 @@ const CustomDashboard = () => {
                                   setVendor({
                                     ...vendor,
                                     isBillingContact: newValue === "true",
-                                  })}
-                                value={typeof vendor.copacker ===
-                                    "boolean"
-                                  ? vendor.isBillingContact.toString()
-                                  : undefined}
+                                  })
+                                }
+                                value={
+                                  typeof vendor.copacker === "boolean"
+                                    ? vendor.isBillingContact.toString()
+                                    : undefined
+                                }
                               >
                                 <Stack>
                                   <Radio value="true">Yes</Radio>
@@ -361,10 +360,13 @@ const CustomDashboard = () => {
                                       ...vendor.address,
                                       street: e.target.value,
                                     },
-                                  })}
-                                value={vendor.address && vendor.address.street
-                                  ? vendor.address.street
-                                  : null}
+                                  })
+                                }
+                                value={
+                                  vendor.address && vendor.address.street
+                                    ? vendor.address.street
+                                    : null
+                                }
                               />
                               <Flex gap={2}>
                                 <Input
@@ -378,10 +380,13 @@ const CustomDashboard = () => {
                                         ...vendor.address,
                                         city: e.target.value,
                                       },
-                                    })}
-                                  value={vendor.address && vendor.address.city
-                                    ? vendor.address.city
-                                    : null}
+                                    })
+                                  }
+                                  value={
+                                    vendor.address && vendor.address.city
+                                      ? vendor.address.city
+                                      : null
+                                  }
                                 />
                                 <Select
                                   placeholder="State"
@@ -394,10 +399,13 @@ const CustomDashboard = () => {
                                         ...vendor.address,
                                         state: e.target.value,
                                       },
-                                    })}
-                                  value={vendor.address && vendor.address.state
-                                    ? vendor.address.state
-                                    : null}
+                                    })
+                                  }
+                                  value={
+                                    vendor.address && vendor.address.state
+                                      ? vendor.address.state
+                                      : null
+                                  }
                                 >
                                   <option value="AK">AK</option>
                                   <option value="AL">AL</option>
@@ -463,11 +471,13 @@ const CustomDashboard = () => {
                                         ...vendor.address,
                                         zipcode: e.target.value,
                                       },
-                                    })}
-                                  value={vendor.address &&
-                                      vendor.address.zipcode
-                                    ? vendor.address.zipcode
-                                    : null}
+                                    })
+                                  }
+                                  value={
+                                    vendor.address && vendor.address.zipcode
+                                      ? vendor.address.zipcode
+                                      : null
+                                  }
                                 />
                               </Flex>
                             </Stack>
@@ -487,7 +497,8 @@ const CustomDashboard = () => {
                                   setVendor({
                                     ...vendor,
                                     phoneNumber: e.target.value,
-                                  })}
+                                  })
+                                }
                                 value={vendor.phoneNumber}
                               />
                             </Stack>
@@ -508,7 +519,8 @@ const CustomDashboard = () => {
                                   setVendor({
                                     ...vendor,
                                     description: e.target.value,
-                                  })}
+                                  })
+                                }
                                 value={vendor.description}
                               />
                             </Stack>
@@ -527,7 +539,8 @@ const CustomDashboard = () => {
                                   setVendor({
                                     ...vendor,
                                     yearEstablished: e.target.value,
-                                  })}
+                                  })
+                                }
                                 value={vendor.yearEstablished}
                               />
                             </Stack>
@@ -563,10 +576,13 @@ const CustomDashboard = () => {
                                           ...vendor.employees,
                                           fullTime: e.target.value,
                                         },
-                                      })}
-                                    value={vendor.employees
-                                      ? vendor.employees.fullTime
-                                      : null}
+                                      })
+                                    }
+                                    value={
+                                      vendor.employees
+                                        ? vendor.employees.fullTime
+                                        : null
+                                    }
                                   />
                                 </WrapItem>
                                 <WrapItem alignItems="center">
@@ -588,10 +604,13 @@ const CustomDashboard = () => {
                                           ...vendor.employees,
                                           partTime: e.target.value,
                                         },
-                                      })}
-                                    value={vendor.employees
-                                      ? vendor.employees.partTime
-                                      : null}
+                                      })
+                                    }
+                                    value={
+                                      vendor.employees
+                                        ? vendor.employees.partTime
+                                        : null
+                                    }
                                   />
                                 </WrapItem>
                                 <WrapItem alignItems="center">
@@ -613,10 +632,13 @@ const CustomDashboard = () => {
                                           ...vendor.employees,
                                           interns: e.target.value,
                                         },
-                                      })}
-                                    value={vendor.employees
-                                      ? vendor.employees.interns
-                                      : null}
+                                      })
+                                    }
+                                    value={
+                                      vendor.employees
+                                        ? vendor.employees.interns
+                                        : null
+                                    }
                                   />
                                 </WrapItem>
                                 <WrapItem alignItems="center">
@@ -638,10 +660,13 @@ const CustomDashboard = () => {
                                           ...vendor.employees,
                                           h2a: e.target.value,
                                         },
-                                      })}
-                                    value={vendor.employees
-                                      ? vendor.employees.h2a
-                                      : null}
+                                      })
+                                    }
+                                    value={
+                                      vendor.employees
+                                        ? vendor.employees.h2a
+                                        : null
+                                    }
                                   />
                                 </WrapItem>
                                 <WrapItem alignItems="center">
@@ -663,10 +688,13 @@ const CustomDashboard = () => {
                                           ...vendor.employees,
                                           volunteers: e.target.value,
                                         },
-                                      })}
-                                    value={vendor.employees
-                                      ? vendor.employees.volunteers
-                                      : null}
+                                      })
+                                    }
+                                    value={
+                                      vendor.employees
+                                        ? vendor.employees.volunteers
+                                        : null
+                                    }
                                   />
                                 </WrapItem>
                               </Wrap>
@@ -674,12 +702,10 @@ const CustomDashboard = () => {
                           </ModalBody>
                         </ModalContent>
                       </Modal>
-                    )
-                    : null}
-                </Container>
-              </TabPanel>
-              {role === "vendor" && vendor
-                ? (
+                    ) : null}
+                  </Container>
+                </TabPanel>
+                {role === "vendor" && vendor ? (
                   <TabPanel>
                     <TableContainer>
                       <TableContainer>
@@ -696,35 +722,30 @@ const CustomDashboard = () => {
                             </Tr>
                           </Thead>
                           <Tbody>
-                            {vendor && vendor.contacts &&
-                                vendor.contacts.length
+                            {vendor && vendor.contacts && vendor.contacts.length
                               ? vendor.contacts.map((contact) => (
-                                <Tr key={contact.id}>
-                                  <Td>{contact.name}</Td>
-                                  <Td>
-                                    {contact.type.map((type) => (
-                                      <Tag key={type}>{type}</Tag>
-                                    ))}
-                                  </Td>
-                                  <Td>{contact.email}</Td>
-                                  <Td>{contact.phone}</Td>
-                                  <Td>
-                                    <Button>
-                                      Edit/delete
-                                    </Button>
-                                  </Td>
-                                </Tr>
-                              ))
+                                  <Tr key={contact.id}>
+                                    <Td>{contact.name}</Td>
+                                    <Td>
+                                      {contact.type.map((type) => (
+                                        <Tag key={type}>{type}</Tag>
+                                      ))}
+                                    </Td>
+                                    <Td>{contact.email}</Td>
+                                    <Td>{contact.phone}</Td>
+                                    <Td>
+                                      <Button>Edit/delete</Button>
+                                    </Td>
+                                  </Tr>
+                                ))
                               : null}
                           </Tbody>
                         </Table>
                       </TableContainer>
                     </TableContainer>
                   </TabPanel>
-                )
-                : null}
-              {role === "vendor" && vendor
-                ? (
+                ) : null}
+                {role === "vendor" && vendor ? (
                   <TabPanel>
                     <Stack marginTop={4}>
                       <Text as="div" textStyle="bodyMain" fontWeight={500}>
@@ -735,7 +756,8 @@ const CustomDashboard = () => {
                         flex={2}
                         isRequired
                         onChange={(e) =>
-                          setVendor({ ...vendor, type: e.target.value })}
+                          setVendor({ ...vendor, type: e.target.value })
+                        }
                         value={vendor.type}
                       >
                         <option value="farmer">Farmer</option>
@@ -758,7 +780,8 @@ const CustomDashboard = () => {
                           setVendor({
                             ...vendor,
                             structure: e.target.value,
-                          })}
+                          })
+                        }
                         value={vendor.structure}
                       >
                         <option value="llc">LLC</option>
@@ -784,7 +807,8 @@ const CustomDashboard = () => {
                           setVendor({
                             ...vendor,
                             growingPractices: newValue,
-                          })}
+                          })
+                        }
                         value={vendor.growingPractices}
                       >
                         <Stack>
@@ -820,7 +844,8 @@ const CustomDashboard = () => {
                           setVendor({
                             ...vendor,
                             sellingLocally: newValue,
-                          })}
+                          })
+                        }
                         value={vendor.sellingLocally}
                       >
                         <Stack>
@@ -839,7 +864,8 @@ const CustomDashboard = () => {
                               setVendor({
                                 ...vendor,
                                 otherLocations: e.target.value,
-                              })}
+                              })
+                            }
                             value={vendor.otherLocations}
                           />
                         </Stack>
@@ -863,11 +889,14 @@ const CustomDashboard = () => {
                                   ...vendor.outletImportance,
                                   stores: newValue,
                                 },
-                              })}
-                            value={vendor.outletImportance &&
-                                vendor.outletImportance.stores
-                              ? vendor.outletImportance.stores
-                              : undefined}
+                              })
+                            }
+                            value={
+                              vendor.outletImportance &&
+                              vendor.outletImportance.stores
+                                ? vendor.outletImportance.stores
+                                : undefined
+                            }
                           >
                             <Stack
                               align="flex-start"
@@ -897,13 +926,19 @@ const CustomDashboard = () => {
                                 </Text>
                               </Radio>
                               <Radio value="2" variant="scale" width={6}>
-                                <Text as="span" fontSize={"xs"}>2</Text>
+                                <Text as="span" fontSize={"xs"}>
+                                  2
+                                </Text>
                               </Radio>
                               <Radio value="3" variant="scale" width={6}>
-                                <Text as="span" fontSize={"xs"}>3</Text>
+                                <Text as="span" fontSize={"xs"}>
+                                  3
+                                </Text>
                               </Radio>
                               <Radio value="4" variant="scale" width={6}>
-                                <Text as="span" fontSize={"xs"}>4</Text>
+                                <Text as="span" fontSize={"xs"}>
+                                  4
+                                </Text>
                               </Radio>
                               <Radio value="5" variant="scale">
                                 <Text
@@ -940,11 +975,14 @@ const CustomDashboard = () => {
                                   ...vendor.outletImportance,
                                   markets: newValue,
                                 },
-                              })}
-                            value={vendor.outletImportance &&
-                                vendor.outletImportance.markets
-                              ? vendor.outletImportance.markets
-                              : undefined}
+                              })
+                            }
+                            value={
+                              vendor.outletImportance &&
+                              vendor.outletImportance.markets
+                                ? vendor.outletImportance.markets
+                                : undefined
+                            }
                           >
                             <Stack
                               align="flex-start"
@@ -974,13 +1012,19 @@ const CustomDashboard = () => {
                                 </Text>
                               </Radio>
                               <Radio value="2" variant="scale" width={6}>
-                                <Text as="span" fontSize={"xs"}>2</Text>
+                                <Text as="span" fontSize={"xs"}>
+                                  2
+                                </Text>
                               </Radio>
                               <Radio value="3" variant="scale" width={6}>
-                                <Text as="span" fontSize={"xs"}>3</Text>
+                                <Text as="span" fontSize={"xs"}>
+                                  3
+                                </Text>
                               </Radio>
                               <Radio value="4" variant="scale" width={6}>
-                                <Text as="span" fontSize={"xs"}>4</Text>
+                                <Text as="span" fontSize={"xs"}>
+                                  4
+                                </Text>
                               </Radio>
                               <Radio value="5" variant="scale">
                                 <Text
@@ -1017,11 +1061,14 @@ const CustomDashboard = () => {
                                   ...vendor.outletImportance,
                                   own: newValue,
                                 },
-                              })}
-                            value={vendor.outletImportance &&
-                                vendor.outletImportance.own
-                              ? vendor.outletImportance.own
-                              : undefined}
+                              })
+                            }
+                            value={
+                              vendor.outletImportance &&
+                              vendor.outletImportance.own
+                                ? vendor.outletImportance.own
+                                : undefined
+                            }
                           >
                             <Stack
                               align="flex-start"
@@ -1051,13 +1098,19 @@ const CustomDashboard = () => {
                                 </Text>
                               </Radio>
                               <Radio value="2" variant="scale" width={6}>
-                                <Text as="span" fontSize={"xs"}>2</Text>
+                                <Text as="span" fontSize={"xs"}>
+                                  2
+                                </Text>
                               </Radio>
                               <Radio value="3" variant="scale" width={6}>
-                                <Text as="span" fontSize={"xs"}>3</Text>
+                                <Text as="span" fontSize={"xs"}>
+                                  3
+                                </Text>
                               </Radio>
                               <Radio value="4" variant="scale" width={6}>
-                                <Text as="span" fontSize={"xs"}>4</Text>
+                                <Text as="span" fontSize={"xs"}>
+                                  4
+                                </Text>
                               </Radio>
                               <Radio value="5" variant="scale">
                                 <Text
@@ -1094,11 +1147,14 @@ const CustomDashboard = () => {
                                   ...vendor.outletImportance,
                                   online: newValue,
                                 },
-                              })}
-                            value={vendor.outletImportance &&
-                                vendor.outletImportance.online
-                              ? vendor.outletImportance.online
-                              : undefined}
+                              })
+                            }
+                            value={
+                              vendor.outletImportance &&
+                              vendor.outletImportance.online
+                                ? vendor.outletImportance.online
+                                : undefined
+                            }
                           >
                             <Stack
                               align="flex-start"
@@ -1128,13 +1184,19 @@ const CustomDashboard = () => {
                                 </Text>
                               </Radio>
                               <Radio value="2" variant="scale" width={6}>
-                                <Text as="span" fontSize={"xs"}>2</Text>
+                                <Text as="span" fontSize={"xs"}>
+                                  2
+                                </Text>
                               </Radio>
                               <Radio value="3" variant="scale" width={6}>
-                                <Text as="span" fontSize={"xs"}>3</Text>
+                                <Text as="span" fontSize={"xs"}>
+                                  3
+                                </Text>
                               </Radio>
                               <Radio value="4" variant="scale" width={6}>
-                                <Text as="span" fontSize={"xs"}>4</Text>
+                                <Text as="span" fontSize={"xs"}>
+                                  4
+                                </Text>
                               </Radio>
                               <Radio value="5" variant="scale">
                                 <Text
@@ -1186,11 +1248,13 @@ const CustomDashboard = () => {
                         setVendor({
                           ...vendor,
                           sharedKitchen: newValue === "true",
-                        })}
-                      value={typeof vendor.sharedKitchen ===
-                          "boolean"
-                        ? vendor.sharedKitchen.toString()
-                        : undefined}
+                        })
+                      }
+                      value={
+                        typeof vendor.sharedKitchen === "boolean"
+                          ? vendor.sharedKitchen.toString()
+                          : undefined
+                      }
                     >
                       <Stack marginTop={1}>
                         <HStack>
@@ -1203,7 +1267,8 @@ const CustomDashboard = () => {
                               setVendor({
                                 ...vendor,
                                 sharedKitchenName: e.target.value,
-                              })}
+                              })
+                            }
                             value={vendor.sharedKitchenName}
                           />
                         </HStack>
@@ -1218,11 +1283,13 @@ const CustomDashboard = () => {
                         setVendor({
                           ...vendor,
                           copacker: newValue === "true",
-                        })}
-                      value={typeof vendor.copacker ===
-                          "boolean"
-                        ? vendor.copacker.toString()
-                        : undefined}
+                        })
+                      }
+                      value={
+                        typeof vendor.copacker === "boolean"
+                          ? vendor.copacker.toString()
+                          : undefined
+                      }
                     >
                       <Stack marginTop={1}>
                         <HStack>
@@ -1235,7 +1302,8 @@ const CustomDashboard = () => {
                               setVendor({
                                 ...vendor,
                                 copackerName: e.target.value,
-                              })}
+                              })
+                            }
                             value={vendor.copackerName}
                           />
                         </HStack>
@@ -1243,25 +1311,25 @@ const CustomDashboard = () => {
                       </Stack>
                     </RadioGroup>
                   </TabPanel>
-                )
-                : null}
-              {role === "vendor" && vendor
-                ? (
+                ) : null}
+                {role === "vendor" && vendor ? (
                   <TabPanel>
                     <ProductsField
                       onChange={(newValue) =>
-                        setVendor({ ...vendor, products: newValue })}
+                        setVendor({ ...vendor, products: newValue })
+                      }
                       value={vendor.products}
+                      path="vendor.products"
                     />
                   </TabPanel>
-                )
-                : null}
-            </TabPanels>
-          </Tabs>
-        </Box>
-      </Tabs>
-      <FooterAdmin />
-    </>
+                ) : null}
+              </TabPanels>
+            </Tabs>
+          </Box>
+        </Tabs>
+        <FooterAdmin />
+      </>
+    )
   );
 };
 

@@ -328,7 +328,7 @@ export const Vendors: CollectionConfig = {
       label: "Where are you selling your products locally?",
       type: "select",
       //required: true, //temporarily disabled for data import
-      hasMany: false,
+      hasMany: true,
       options: [
         {
           label: "Nowhere Yet",
@@ -414,7 +414,7 @@ export const Vendors: CollectionConfig = {
     {
       name: "copacker",
       label: "Do you use a Co-Packer?",
-      type: "text",
+      type: "checkbox",
     },
     {
       name: "copackerName",
@@ -721,6 +721,13 @@ export const Vendors: CollectionConfig = {
           type: "textarea",
         },
       ],
+    },
+    {
+      name: "applications",
+      label: "All applications submitted to markets",
+      type: "relationship",
+      hasMany: true,
+      relationTo: "applications",
     },
   ],
   hooks: {

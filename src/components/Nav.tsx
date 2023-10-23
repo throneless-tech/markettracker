@@ -1,4 +1,4 @@
-import React from 'react'
+import React from "react";
 import {
   Avatar,
   Center,
@@ -12,16 +12,16 @@ import {
   Spacer,
   Tab,
   TabList,
-  Text
-} from '@chakra-ui/react'
-import { HomeIcon } from '../assets/icons/home'
-import { LicenseIcon } from '../assets/icons/license'
-import { MarketIcon } from '../assets/icons/market'
-import { ProfileIcon } from '../assets/icons/profile'
-import { SalesIcon } from '../assets/icons/sales'
-import Logo from '../assets/icons/logo'
+  Text,
+} from "@chakra-ui/react";
+import { HomeIcon } from "../assets/icons/home";
+import { LicenseIcon } from "../assets/icons/license";
+import { MarketIcon } from "../assets/icons/market";
+import { ProfileIcon } from "../assets/icons/profile";
+import { SalesIcon } from "../assets/icons/sales";
+import Logo from "../assets/icons/logo";
 
-const Nav = () => (
+const Nav: React.FC<any> = () => (
   <Stack
     px={4}
     direction="row"
@@ -31,21 +31,21 @@ const Nav = () => (
     alignSelf="stretch"
     background="#534C46"
   >
-    <Flex gap='1'>
+    <Flex gap="1">
       <Center>
         <IconButton
-          as='a'
-          href='/'
-          aria-label='Market Tracker home'
+          as="a"
+          href="/"
+          aria-label="Market Tracker home"
           icon={<Logo sx={{ height: 10, width: 41 }} />}
-          sx={{ border: 'none', borderRadius: '0 !important', }}
+          sx={{ border: "none", borderRadius: "0 !important" }}
           _hover={{
             background: "transparent",
-            '& path': {
+            "& path": {
               fill: "teal.300",
               transitionProperty: "fill",
               transitionDuration: "250ms",
-            }
+            },
           }}
         />
       </Center>
@@ -53,21 +53,21 @@ const Nav = () => (
       <TabList>
         <Tab
           _selected={{
-            borderLeft: '2px solid white',
-            borderRight: '2px solid white',
-            color: 'gray.700',
-            bg: 'teal.300',
-            '& path': {
-              stroke: 'gray.700 !important'
-            }
+            borderLeft: "2px solid white",
+            borderRight: "2px solid white",
+            color: "gray.700",
+            bg: "teal.300",
+            "& path": {
+              stroke: "gray.700 !important",
+            },
           }}
           sx={{
-            color: 'gray.50',
-            paddingY: 6
+            color: "gray.50",
+            paddingY: 6,
           }}
         >
-          <Stack direction="row" justify="flex-start" align="center" >
-            <HomeIcon sx={{ fill: 'none', height: "24px", width: "24px" }} />
+          <Stack direction="row" justify="flex-start" align="center">
+            <HomeIcon sx={{ fill: "none", height: "24px", width: "24px" }} />
             <Text
               fontFamily="Outfit"
               lineHeight="1.33"
@@ -81,21 +81,21 @@ const Nav = () => (
         </Tab>
         <Tab
           _selected={{
-            borderLeft: '2px solid white',
-            borderRight: '2px solid white',
-            color: 'gray.700',
-            bg: 'teal.300',
-            '& path': {
-              stroke: 'gray.700 !important'
-            }
+            borderLeft: "2px solid white",
+            borderRight: "2px solid white",
+            color: "gray.700",
+            bg: "teal.300",
+            "& path": {
+              stroke: "gray.700 !important",
+            },
           }}
           sx={{
-            color: 'gray.50',
-            paddingY: 6
+            color: "gray.50",
+            paddingY: 6,
           }}
         >
           <Stack direction="row" justify="flex-start" align="center">
-            <MarketIcon sx={{ fill: 'none', height: "24px", width: "24px" }} />
+            <MarketIcon sx={{ fill: "none", height: "24px", width: "24px" }} />
             <Text
               fontFamily="Outfit"
               lineHeight="1.33"
@@ -109,21 +109,21 @@ const Nav = () => (
         </Tab>
         <Tab
           _selected={{
-            borderLeft: '2px solid white',
-            borderRight: '2px solid white',
-            color: 'gray.700',
-            bg: 'teal.300',
-            '& path': {
-              stroke: 'gray.700 !important'
-            }
+            borderLeft: "2px solid white",
+            borderRight: "2px solid white",
+            color: "gray.700",
+            bg: "teal.300",
+            "& path": {
+              stroke: "gray.700 !important",
+            },
           }}
           sx={{
-            color: 'gray.50',
-            paddingY: 6
+            color: "gray.50",
+            paddingY: 6,
           }}
         >
           <Stack direction="row" justify="flex-start" align="center">
-            <SalesIcon sx={{ fill: 'none', height: "24px", width: "24px" }} />
+            <SalesIcon sx={{ fill: "none", height: "24px", width: "24px" }} />
             <Text
               fontFamily="Outfit"
               lineHeight="1.33"
@@ -137,21 +137,21 @@ const Nav = () => (
         </Tab>
         <Tab
           _selected={{
-            borderLeft: '2px solid white',
-            borderRight: '2px solid white',
-            color: 'gray.700',
-            bg: 'teal.300',
-            '& path': {
-              stroke: 'gray.700 !important'
-            }
+            borderLeft: "2px solid white",
+            borderRight: "2px solid white",
+            color: "gray.700",
+            bg: "teal.300",
+            "& path": {
+              stroke: "gray.700 !important",
+            },
           }}
           sx={{
-            color: 'gray.50',
-            paddingY: 6
+            color: "gray.50",
+            paddingY: 6,
           }}
         >
           <Stack direction="row" justify="flex-start" align="center">
-            <LicenseIcon sx={{ fill: 'none', height: "24px", width: "24px" }} />
+            <LicenseIcon sx={{ fill: "none", height: "24px", width: "24px" }} />
             <Text
               fontFamily="Outfit"
               lineHeight="1.33"
@@ -165,21 +165,21 @@ const Nav = () => (
         </Tab>
         <Tab
           _selected={{
-            borderLeft: '2px solid white',
-            borderRight: '2px solid white',
-            color: 'gray.700',
-            bg: 'teal.300',
-            '& path': {
-              stroke: 'gray.700 !important'
-            }
+            borderLeft: "2px solid white",
+            borderRight: "2px solid white",
+            color: "gray.700",
+            bg: "teal.300",
+            "& path": {
+              stroke: "gray.700 !important",
+            },
           }}
           sx={{
-            color: 'gray.50',
-            paddingY: 6
+            color: "gray.50",
+            paddingY: 6,
           }}
         >
           <Stack direction="row" justify="flex-start" align="center">
-            <ProfileIcon sx={{ fill: 'none', height: "24px", width: "24px" }} />
+            <ProfileIcon sx={{ fill: "none", height: "24px", width: "24px" }} />
             <Text
               fontFamily="Outfit"
               lineHeight="1.33"
@@ -187,7 +187,7 @@ const Nav = () => (
               fontSize="18px"
               textTransform="capitalize"
             >
-              {' '}
+              {" "}
               My Profile
             </Text>
           </Stack>
@@ -195,9 +195,13 @@ const Nav = () => (
       </TabList>
     </Flex>
     <Menu>
-      <MenuButton sx={{ width: '146px' }}>
+      <MenuButton sx={{ width: "146px" }}>
         <Stack direction="row" justify="flex-end" align="center">
-          <Avatar width="32px" height="32px" sx={{ border: '1px solid var(--chakra-colors-teal-300)' }} />
+          <Avatar
+            width="32px"
+            height="32px"
+            sx={{ border: "1px solid var(--chakra-colors-teal-300)" }}
+          />
           <Text color="white">Astrid Pleitez</Text>
         </Stack>
       </MenuButton>
@@ -206,6 +210,6 @@ const Nav = () => (
       </MenuList>
     </Menu>
   </Stack>
-)
+);
 
 export default Nav;
