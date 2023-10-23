@@ -6,7 +6,7 @@ import {
   afterReadApplication,
   beforeValidateApplication,
 } from "./hooks/populateApplication";
-import ReviewEdit from "../../components/Reviews/ReviewEdit";
+import { ReviewsEdit } from "../../components/Reviews/ReviewsEdit";
 
 export const Reviews: CollectionConfig = {
   slug: "reviews",
@@ -18,7 +18,7 @@ export const Reviews: CollectionConfig = {
   admin: {
     components: {
       views: {
-        Edit: withFormContext(ReviewEdit),
+        Edit: withFormContext(ReviewsEdit),
       },
     },
   },

@@ -29,7 +29,7 @@ import StarIcon from "../../assets/icons/star.js";
 // types
 import type { Application, Season } from "payload/generated-types";
 
-const CustomApplications: React.FC<any> = ({ data }) => {
+export const ApplicationsList: React.FC<any> = ({ data }) => {
   const history = useHistory();
   const location = useLocation();
   const [applications, setApplications] = useState<Application[]>([]);
@@ -305,5 +305,3 @@ const CustomApplications: React.FC<any> = ({ data }) => {
     );
   }
 };
-
-export default CustomApplications;

@@ -9,7 +9,7 @@ import {
   Text,
 } from "@chakra-ui/react";
 
-const CustomLogoutButton: React.FC<any> = () => (
+export const LogoutButton: React.FC<any> = () => (
   <Menu>
     <MenuButton sx={{ width: "146px" }}>
       <Stack direction="row" justify="flex-end" align="center">
@@ -26,5 +26,3 @@ const CustomLogoutButton: React.FC<any> = () => (
     </MenuList>
   </Menu>
 );
-
-export default CustomLogoutButton;

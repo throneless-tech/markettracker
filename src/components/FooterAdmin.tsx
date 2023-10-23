@@ -1,7 +1,7 @@
 import React from "react";
 import { Box, Flex, Spacer, Text } from "@chakra-ui/react";
 
-const FooterAdmin: React.FC<any> = () => (
+export const FooterAdmin: React.FC<any> = () => (
   <Box
     bg="gray.600"
     borderColor="#F6F5F4"
@@ -21,5 +21,3 @@ const FooterAdmin: React.FC<any> = () => (
     </Flex>
   </Box>
 );
-
-export default FooterAdmin;

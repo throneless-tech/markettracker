@@ -1,7 +1,7 @@
 import React from "react";
 import { Box, Flex, Stack, Text } from "@chakra-ui/react";
 
-const Stats: React.FC<any> = () => (
+export const Stats: React.FC<any> = () => (
   <Stack
     justify="flex-start"
     align="flex-start"
@@ -176,5 +176,3 @@ const Stats: React.FC<any> = () => (
     </Stack>
   </Stack>
 );
-
-export { Stats };

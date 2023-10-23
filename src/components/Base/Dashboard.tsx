@@ -14,16 +14,14 @@ import {
   Stack,
   Wrap,
 } from "@chakra-ui/react";
-import { Card } from "./Card";
-import { Graph } from "./Graph";
-import { Standing } from "./Standing";
-import { Stats } from "./Stats";
-import { StyledTable } from "./Table";
+import { Card } from "../Card";
+import { Standing } from "../Standing";
+import { Stats } from "../Stats";
 
 // components
-import FooterAdmin from "./FooterAdmin";
+import { FooterAdmin } from "../FooterAdmin";
 
-const CustomDashboard: React.FC<any> = () => {
+export const Dashboard: React.FC<any> = () => {
   const { user } = useAuth();
 
   return (
@@ -101,5 +99,3 @@ const CustomDashboard: React.FC<any> = () => {
     </>
   );
 };
-
-export default CustomDashboard;

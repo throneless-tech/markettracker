@@ -6,8 +6,8 @@ import {
   afterReadProducts,
   beforeValidateProducts,
 } from "./hooks/populateProducts";
-import CustomApplicationsEdit from "../../components/Applications/CustomApplicationsEdit";
-import CustomApplicationsList from "../../components/Applications/CustomApplicationsList";
+import { ApplicationsEdit } from "../../components/Applications/ApplicationsEdit";
+import { ApplicationsList } from "../../components/Applications/ApplicationsList";
 import { withFormContext } from "../../utils/withFormContext";
 
 export const Applications: CollectionConfig = {
@@ -15,8 +15,8 @@ export const Applications: CollectionConfig = {
   admin: {
     components: {
       views: {
-        Edit: withFormContext(CustomApplicationsEdit),
-        List: CustomApplicationsList,
+        Edit: withFormContext(ApplicationsEdit),
+        List: ApplicationsList,
       },
     },
     pagination: {

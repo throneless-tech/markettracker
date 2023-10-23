@@ -45,9 +45,9 @@ import {
 
 // icons + images
 import { ArrowForwardIcon } from "@chakra-ui/icons";
-import LogoMarketTracker from "../../assets/icons/logoMarketTracker.js";
+import LogoMarketTracker from "../../../assets/icons/logoMarketTracker.js";
 
-const Steps: React.FC<any> = (props) => {
+export const Steps: React.FC<any> = (props) => {
   const [numPages, setNumPages] = useState();
   const [pageNumber, setPageNumber] = useState(1);
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -1720,5 +1720,3 @@ const Steps: React.FC<any> = (props) => {
     </div>
   );
 };
-
-export default Steps;

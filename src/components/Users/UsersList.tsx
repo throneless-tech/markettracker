@@ -1,7 +1,6 @@
 import React from "react";
 import { List, type Props } from "payload/components/views/List"; // Payload's default List view component and its props
 export const UsersList: React.FC<Props> = (props) => {
-  console.log("***props***:", props);
   return (
     <div>
       <p>

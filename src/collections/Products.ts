@@ -1,5 +1,5 @@
 import { CollectionConfig } from "payload/types";
-import { ProductsList } from "../components/Products/List";
+import { ProductsList } from "../components/Products/ProductsList";
 
 export const Products: CollectionConfig = {
   slug: "products",

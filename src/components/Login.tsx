@@ -17,7 +17,7 @@ import {
 import LogoMarketTracker from "../assets/icons/logoMarketTracker.js";
 import background from "../../../public/login-background.jpg";
 
-const Login: React.FC<any> = () => (
+export const Login: React.FC<any> = () => (
   <Box h="100vh">
     <Box
       bg="teal.500"
@@ -102,5 +102,3 @@ const Login: React.FC<any> = () => (
     </AbsoluteCenter>
   </Box>
 );
-
-export default Login;

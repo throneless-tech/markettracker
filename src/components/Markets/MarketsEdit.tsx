@@ -53,7 +53,7 @@ import {
 // components
 //import Calendar from "../Calendar.js";
 import type { Product } from "payload/generated-types";
-import { ProductsField } from "../ProductsField";
+import { ProductsField } from "../fields/ProductsField";
 
 // utils
 import formatDate from "../../utils/formatDate";
@@ -70,11 +70,8 @@ import stats2 from "../../assets/images/FF-sample-stats-2.jpg";
 import stats3 from "../../assets/images/FF-sample-stats-3.jpg";
 import stats4 from "../../assets/images/FF-sample-stats-4.jpg";
 
-function ContactModal(props) {
-  const {
-    operators,
-    setOperators
-  } = props;
+const ContactModal: React.FC<any> = (props) => {
+  const { operators, setOperators } = props;
 
   const { onOpen, isOpen, onClose } = useDisclosure();
   const [contact, setContact] = useState({
@@ -92,11 +89,7 @@ function ContactModal(props) {
 
   return (
     <>
-      <Button
-        onClick={onOpen}
-        marginTop={4}
-        rightIcon={<ArrowForwardIcon />}
-      >
+      <Button onClick={onOpen} marginTop={4} rightIcon={<ArrowForwardIcon />}>
         Add a manager
       </Button>
       <Modal isOpen={isOpen} onClose={onClose} size={"xl"}>
@@ -104,12 +97,9 @@ function ContactModal(props) {
         <ModalContent background={"gray.600"} color={"gray.50"}>
           <ModalHeader>
             <Stack textAlign={"center"} spacing={1}>
-              <Heading marginBottom={0}>
-                Add a contact
-              </Heading>
+              <Heading marginBottom={0}>Add a contact</Heading>
               <Text>
-                Please fill in requested information to create a new
-                contact
+                Please fill in requested information to create a new contact
               </Text>
             </Stack>
           </ModalHeader>
@@ -117,19 +107,42 @@ function ContactModal(props) {
           <ModalBody>
             <FormControl marginBottom={4}>
               <FormLabel>Manager name (required)</FormLabel>
-              <Input color={'gray.700'} value={contact.name} onChange={e => setContact({...contact, name: e.target.value})} />
+              <Input
+                color={"gray.700"}
+                value={contact.name}
+                onChange={(e) =>
+                  setContact({ ...contact, name: e.target.value })
+                }
+              />
             </FormControl>
             <FormControl marginBottom={4}>
               <FormLabel>Manager email address (required)</FormLabel>
-              <Input color={'gray.700'} value={contact.email} onChange={e => setContact({ ...contact, email: e.target.value })} />
+              <Input
+                color={"gray.700"}
+                value={contact.email}
+                onChange={(e) =>
+                  setContact({ ...contact, email: e.target.value })
+                }
+              />
             </FormControl>
             <FormControl marginBottom={6}>
               <FormLabel>Manager phone number (required)</FormLabel>
-              <Input color={'gray.700'} value={contact.phone} onChange={e => setContact({ ...contact, phone: e.target.value })} />
-            </FormControl>            
+              <Input
+                color={"gray.700"}
+                value={contact.phone}
+                onChange={(e) =>
+                  setContact({ ...contact, phone: e.target.value })
+                }
+              />
+            </FormControl>
           </ModalBody>
           <ModalFooter>
-            <Button onClick={onClose} colorScheme="brown" variant="solid" mr={3}>
+            <Button
+              onClick={onClose}
+              colorScheme="brown"
+              variant="solid"
+              mr={3}
+            >
               Save
             </Button>
             <Button
@@ -144,10 +157,10 @@ function ContactModal(props) {
         </ModalContent>
       </Modal>
     </>
-  )
-}
+  );
+};
 
-function CustomMarketsEdit(props, { path }) {
+export const MarketsEdit: React.FC<any> = (props, { path }) => {
   const { submit } = useForm();
   const { user } = useAuth();
   const { id } = useDocumentInfo();
@@ -170,7 +183,9 @@ function CustomMarketsEdit(props, { path }) {
     path: "days",
   });
   const { value: size, setValue: setSize } = useField<string>({ path: "size" });
-  const { value: visitors, setValue: setVisitors } = useField<string>({ path: "visitors" });
+  const { value: visitors, setValue: setVisitors } = useField<string>({
+    path: "visitors",
+  });
   const { value: focus, setValue: setFocus } = useField<Array<string>>({
     path: "focus",
   });
@@ -180,7 +195,9 @@ function CustomMarketsEdit(props, { path }) {
   const { value: seasons, setValue: setSeasons } = useField<Season[]>({
     path: "seasons",
   });
-  const { value: operators, setValue: setOperators } = useField<string[]>({ path: "operators" });
+  const { value: operators, setValue: setOperators } = useField<string[]>({
+    path: "operators",
+  });
 
   const [contact, setContact] = useState(null);
 
@@ -195,16 +212,17 @@ function CustomMarketsEdit(props, { path }) {
 
   useEffect(() => {
     if (contact) {
-      console.log('contact found...');
-      
+      console.log("contact found...");
+
       let contacts = [];
       contacts.push(contact);
       setOperators(contacts);
     }
-  }, [contact])
+  }, [contact]);
 
-  useEffect(() => {console.log(contact);
-  }, [operators])
+  useEffect(() => {
+    console.log(contact);
+  }, [operators]);
 
   if (name) {
     return (
@@ -308,58 +326,53 @@ function CustomMarketsEdit(props, { path }) {
                               textTransform={"uppercase"}
                             >
                               {formatDate(seasons[0].marketDates.startDate)}-
-                              {formatDate(seasons[0].marketDates.endDate)}{' '}
+                              {formatDate(seasons[0].marketDates.endDate)}{" "}
                               {formatTime(seasons[0].marketTime.startTime)}-
                               {formatTime(seasons[0].marketTime.endTime)}
                             </Text>
                           </HStack>
-                          {data.acceptingApplications
-                            ? (
-                              <>
-                                <Spacer />
-                                <HStack>
-                                  <Text
-                                    color={"gray.50"}
-                                    fontSize="sm"
-                                    fontWeight={700}
-                                    textAlign={"right"}
-                                    textStyle="bodyMain"
-                                    textTransform={"uppercase"}
-                                    width={28}
-                                  >
-                                    Accepting applications
-                                  </Text>
-                                  <StarIcon height={8} width={8} />
-                                </HStack>
-                              </>
-                            )
-                            : null}
+                          {data.acceptingApplications ? (
+                            <>
+                              <Spacer />
+                              <HStack>
+                                <Text
+                                  color={"gray.50"}
+                                  fontSize="sm"
+                                  fontWeight={700}
+                                  textAlign={"right"}
+                                  textStyle="bodyMain"
+                                  textTransform={"uppercase"}
+                                  width={28}
+                                >
+                                  Accepting applications
+                                </Text>
+                                <StarIcon height={8} width={8} />
+                              </HStack>
+                            </>
+                          ) : null}
                         </Flex>
                         <Flex marginTop={4}>
                           <HStack>
-                            {data.time
-                              ? (
-                                <Text
-                                  as={"span"}
-                                  color={"gray.50"}
-                                  fontSize="2xl"
-                                  fontWeight={700}
-                                  textStyle="bodyMain"
-                                  sx={{ textTransform: "capitalize" }}
-                                >
-                                  {data.days.map((day, index) => {
-                                    if (index == data.days.length - 1) {
-                                      return day;
-                                    } else {
-                                      return `${day}, `;
-                                    }
-                                  })}{" "}
-                                  {formatTime(data.time.startTime)}-{formatTime(
-                                    data.time.endTime,
-                                  )}
-                                </Text>
-                              )
-                              : null}
+                            {data.time ? (
+                              <Text
+                                as={"span"}
+                                color={"gray.50"}
+                                fontSize="2xl"
+                                fontWeight={700}
+                                textStyle="bodyMain"
+                                sx={{ textTransform: "capitalize" }}
+                              >
+                                {data.days.map((day, index) => {
+                                  if (index == data.days.length - 1) {
+                                    return day;
+                                  } else {
+                                    return `${day}, `;
+                                  }
+                                })}{" "}
+                                {formatTime(data.time.startTime)}-
+                                {formatTime(data.time.endTime)}
+                              </Text>
+                            ) : null}
                             <Text
                               textStyle="bodyMain"
                               as={"span"}
@@ -426,13 +439,17 @@ function CustomMarketsEdit(props, { path }) {
                           >
                             Market needs:
                           </Text>
-                          {seasons && seasons[0].productGaps
-                            ? seasons[0].productGaps.map((need) => (
+                          {seasons && seasons[0].productGaps ? (
+                            seasons[0].productGaps.map((need) => (
                               <Tag bg={"gray.50"} fontWeight={700}>
                                 {need.product}
                               </Tag>
                             ))
-                            : <Tag bg={"gray.50"} fontWeight={700}>TBA</Tag>}
+                          ) : (
+                            <Tag bg={"gray.50"} fontWeight={700}>
+                              TBA
+                            </Tag>
+                          )}
                         </HStack>
                       </Box>
                     </Box>
@@ -503,7 +520,8 @@ function CustomMarketsEdit(props, { path }) {
                                       placeholder="Street"
                                       value={street}
                                       onChange={(e) =>
-                                        setStreet(e.target.value)}
+                                        setStreet(e.target.value)
+                                      }
                                       isRequired
                                     />
                                   </FormControl>
@@ -580,7 +598,8 @@ function CustomMarketsEdit(props, { path }) {
                                       type="number"
                                       value={zipcode}
                                       onChange={(e) =>
-                                        setZipcode(e.target.value)}
+                                        setZipcode(e.target.value)
+                                      }
                                       isRequired
                                     />
                                   </Flex>
@@ -669,12 +688,16 @@ function CustomMarketsEdit(props, { path }) {
                                   </RadioGroup>
                                 </FormControl>
                                 <FormControl marginTop={4}>
-                                  <FormLabel>Average number of visitors per market</FormLabel>
+                                  <FormLabel>
+                                    Average number of visitors per market
+                                  </FormLabel>
                                   <Input
                                     type="number"
                                     placeholder="Start typing..."
                                     value={visitors}
-                                    onChange={(e) => setVisitors(e.target.value)}
+                                    onChange={(e) =>
+                                      setVisitors(e.target.value)
+                                    }
                                   />
                                 </FormControl>
                                 <FormControl marginTop={4}>
@@ -723,7 +746,8 @@ function CustomMarketsEdit(props, { path }) {
                                   <Textarea
                                     placeholder="Start typing..."
                                     onChange={(newValue) =>
-                                      setDescription(newValue)}
+                                      setDescription(newValue)
+                                    }
                                     value={description}
                                   />
                                 </FormControl>
@@ -759,14 +783,19 @@ function CustomMarketsEdit(props, { path }) {
                                   </Heading>
                                   <RadioGroup
                                     onChange={(newValue) =>
-                                      setSeasons([{
-                                        ...seasons[0],
-                                        isAccepting: newValue === "true",
-                                      }])}
-                                    value={typeof seasons[0].isAccepting ===
+                                      setSeasons([
+                                        {
+                                          ...seasons[0],
+                                          isAccepting: newValue === "true",
+                                        },
+                                      ])
+                                    }
+                                    value={
+                                      typeof seasons[0].isAccepting ===
                                       "boolean"
-                                      ? seasons[0].isAccepting.toString()
-                                      : "false"}
+                                        ? seasons[0].isAccepting.toString()
+                                        : "false"
+                                    }
                                   >
                                     <HStack marginRight={2}>
                                       <Radio colorScheme="green" value="true">
@@ -799,26 +828,45 @@ function CustomMarketsEdit(props, { path }) {
                                       Managers
                                     </Text>
                                     <Divider
-                                      sx={{ borderColor: "gray.600", borderBottomWidth: 2 }}
+                                      sx={{
+                                        borderColor: "gray.600",
+                                        borderBottomWidth: 2,
+                                      }}
                                     />
                                   </HStack>
-                                  <Text color={"gray.600"} marginTop={4} fontSize={"md"}>
+                                  <Text
+                                    color={"gray.600"}
+                                    marginTop={4}
+                                    fontSize={"md"}
+                                  >
                                     Select anyone who will be a manager at{" "}
                                     {data.name} this season.
                                   </Text>
                                   <CheckboxGroup
-                                    onChange={(newValue) => setOperators(newValue)}
+                                    onChange={(newValue) =>
+                                      setOperators(newValue)
+                                    }
                                     defaultValue={operators}
                                   >
                                     <HStack spacing={4}>
-                                      {data.seasons[0].operators ? data.seasons[0].operators.map((contact) => (
-                                        <Checkbox key={contact.id} value={contact.id}>
-                                          {contact.name}
-                                          <Tag bg={"gray.50"} fontWeight={700}>
-                                            {contact.type}
-                                          </Tag>
-                                        </Checkbox>
-                                      )) : null}
+                                      {data.seasons[0].operators
+                                        ? data.seasons[0].operators.map(
+                                            (contact) => (
+                                              <Checkbox
+                                                key={contact.id}
+                                                value={contact.id}
+                                              >
+                                                {contact.name}
+                                                <Tag
+                                                  bg={"gray.50"}
+                                                  fontWeight={700}
+                                                >
+                                                  {contact.type}
+                                                </Tag>
+                                              </Checkbox>
+                                            ),
+                                          )
+                                        : null}
                                     </HStack>
                                   </CheckboxGroup>
                                   <ContactModal
@@ -863,23 +911,29 @@ function CustomMarketsEdit(props, { path }) {
                                     </Text>
                                     <DatePicker
                                       inline
-                                      selected={seasons[0].marketDates.startDate
-                                        ? new Date(
-                                          seasons[0].marketDates.startDate,
-                                        )
-                                        : null}
+                                      selected={
+                                        seasons[0].marketDates.startDate
+                                          ? new Date(
+                                              seasons[0].marketDates.startDate,
+                                            )
+                                          : null
+                                      }
                                       onChange={(date) =>
-                                        setSeasons([{
-                                          ...seasons[0],
-                                          marketDates: {
-                                            ...seasons[0].marketDates,
-                                            startDate: date.toISOString(),
+                                        setSeasons([
+                                          {
+                                            ...seasons[0],
+                                            marketDates: {
+                                              ...seasons[0].marketDates,
+                                              startDate: date.toISOString(),
+                                            },
                                           },
-                                        }])}
+                                        ])
+                                      }
                                       dayClassName={(date) =>
                                         date.getDate() < Math.random() * 31
                                           ? "random"
-                                          : undefined}
+                                          : undefined
+                                      }
                                     />
                                   </Stack>
                                   <Stack>
@@ -892,23 +946,29 @@ function CustomMarketsEdit(props, { path }) {
                                     </Text>
                                     <DatePicker
                                       inline
-                                      selected={seasons[0].marketDates.endDate
-                                        ? new Date(
-                                          seasons[0].marketDates.endDate,
-                                        )
-                                        : null}
+                                      selected={
+                                        seasons[0].marketDates.endDate
+                                          ? new Date(
+                                              seasons[0].marketDates.endDate,
+                                            )
+                                          : null
+                                      }
                                       onChange={(date) =>
-                                        setSeasons([{
-                                          ...seasons[0],
-                                          marketDates: {
-                                            ...seasons[0].marketDates,
-                                            endDate: date.toISOString(),
+                                        setSeasons([
+                                          {
+                                            ...seasons[0],
+                                            marketDates: {
+                                              ...seasons[0].marketDates,
+                                              endDate: date.toISOString(),
+                                            },
                                           },
-                                        }])}
+                                        ])
+                                      }
                                       dayClassName={(date) =>
                                         date.getDate() < Math.random() * 31
                                           ? "random"
-                                          : undefined}
+                                          : undefined
+                                      }
                                     />
                                   </Stack>
                                 </HStack>
@@ -933,13 +993,16 @@ function CustomMarketsEdit(props, { path }) {
                                       value={seasons[0].marketTime.startTime}
                                       type="time"
                                       onChange={(time) =>
-                                      setSeasons([{
-                                        ...seasons[0],
-                                        marketTime: {
-                                          ...seasons[0].marketTime,
-                                          startTime: time,
-                                        }
-                                      }])}
+                                        setSeasons([
+                                          {
+                                            ...seasons[0],
+                                            marketTime: {
+                                              ...seasons[0].marketTime,
+                                              startTime: time,
+                                            },
+                                          },
+                                        ])
+                                      }
                                     />
                                   </Stack>
                                   <Stack>
@@ -954,16 +1017,19 @@ function CustomMarketsEdit(props, { path }) {
                                       value={seasons[0].marketTime.endTime}
                                       type="time"
                                       onChange={(time) =>
-                                        setSeasons([{
-                                          ...seasons[0],
-                                          marketTime: {
-                                            ...seasons[0].marketTime,
-                                            endTime: time,
-                                          }
-                                        }])}
+                                        setSeasons([
+                                          {
+                                            ...seasons[0],
+                                            marketTime: {
+                                              ...seasons[0].marketTime,
+                                              endTime: time,
+                                            },
+                                          },
+                                        ])
+                                      }
                                     />
                                   </Stack>
-                                </HStack>                                
+                                </HStack>
                                 <Flex
                                   align="center"
                                   justify="space-between"
@@ -986,14 +1052,19 @@ function CustomMarketsEdit(props, { path }) {
                                 <ProductsField
                                   path="seasons.productGaps"
                                   onChange={(newValue) =>
-                                    setSeasons([{
-                                      ...seasons[0],
-                                      productGaps: newValue,
-                                    }])}
-                                  value={seasons[0].productGaps &&
+                                    setSeasons([
+                                      {
+                                        ...seasons[0],
+                                        productGaps: newValue,
+                                      },
+                                    ])
+                                  }
+                                  value={
+                                    seasons[0].productGaps &&
                                     seasons[0].productGaps.length
-                                    ? seasons[0].productGaps as string[] // we know it will be string[] here unless we specifically fetch it
-                                    : []}
+                                      ? (seasons[0].productGaps as string[]) // we know it will be string[] here unless we specifically fetch it
+                                      : []
+                                  }
                                   useObjects={true}
                                 />
                               </Container>
@@ -1047,12 +1118,12 @@ function CustomMarketsEdit(props, { path }) {
                       {data.size == "flagship"
                         ? "Daily sales for the entire market are upwards of $150,000. This market can support upwards of 20 produce vendors, 14 prepared food vendors, 9 baked goods vendors, 6 alcohol vendors, 5 dairy vendors, and 2 to 4 vendors from each additional category."
                         : data.size == "large"
-                          ? "Daily sales for large markets range from $20,000 to $70,000. They can support average numbers of 8 produce vendors, 8 prepared food vendors, 5 baked goods vendors, 3 alcohol vendors, and 1 to 2 vendors from each additional category."
-                          : data.size == "medium"
-                            ? "Daily sales for medium markets range from $10,000 to $19,000. They can support average numbers of 5 prepared food vendors, 4 produce vendors, and 1 to 2 vendors from each additional category."
-                            : data.size == "small"
-                              ? "Daily sales for small markets range from $1,500 to $9,000. They can support average numbers of 4 produce vendors, 4 prepared food vendors, and 1 to 2 vendors from each additional category with some product category gaps."
-                              : "These markets are limited to one produce vendor for retail and wholesale sales."}
+                        ? "Daily sales for large markets range from $20,000 to $70,000. They can support average numbers of 8 produce vendors, 8 prepared food vendors, 5 baked goods vendors, 3 alcohol vendors, and 1 to 2 vendors from each additional category."
+                        : data.size == "medium"
+                        ? "Daily sales for medium markets range from $10,000 to $19,000. They can support average numbers of 5 prepared food vendors, 4 produce vendors, and 1 to 2 vendors from each additional category."
+                        : data.size == "small"
+                        ? "Daily sales for small markets range from $1,500 to $9,000. They can support average numbers of 4 produce vendors, 4 prepared food vendors, and 1 to 2 vendors from each additional category with some product category gaps."
+                        : "These markets are limited to one produce vendor for retail and wholesale sales."}
                     </Text>
                     <HStack marginTop={4}>
                       <Text as={"span"} color={"blue.500"} fontWeight={700}>
@@ -1161,6 +1232,4 @@ function CustomMarketsEdit(props, { path }) {
       </Box>
     );
   }
-}
-
-export default CustomMarketsEdit;
+};

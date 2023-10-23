@@ -14,20 +14,19 @@ import {
   Link,
   Stack,
   Text,
-  others,
 } from "@chakra-ui/react";
 
 // components + data
-import Footer from "../FooterAdmin";
-import Steps from "./Steps";
+import { FooterAdmin as Footer } from "../../FooterAdmin";
+import { Steps } from "./Steps";
 
 // icons + images
 import { ArrowBackIcon } from "@chakra-ui/icons";
 import { ArrowForwardIcon } from "@chakra-ui/icons";
 
-import background from "../../assets/images/login-background.jpg";
+import background from "../../../assets/images/login-background.jpg";
 
-const Register = () => {
+export const Register: React.FC<any> = () => {
   const [businessCheck, setBusinessCheck] = useState("none");
   const [index, setIndex] = useState(0);
   const [vendor, setVendor] = useState(null);
@@ -519,5 +518,3 @@ const Register = () => {
     </Box>
   );
 };
-
-export default Register;

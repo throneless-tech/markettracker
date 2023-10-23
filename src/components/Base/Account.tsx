@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useDebouncedCallback } from "use-debounce";
 
-import { useAuth } from "payload/components/utilities";
-
 // Payload imports
 import { useField, useForm } from "payload/components/forms";
 import type { Vendor } from "payload/generated-types";
@@ -49,26 +47,21 @@ import {
   Wrap,
   WrapItem,
 } from "@chakra-ui/react";
-import { Card } from "./Card";
-import { Graph } from "./Graph";
-import { Standing } from "./Standing";
-import { Stats } from "./Stats";
-import { StyledTable } from "./Table";
 
 // components
-import FooterAdmin from "./FooterAdmin";
-import { ProductsField } from "./ProductsField";
+import { FooterAdmin } from "../FooterAdmin";
+import { ProductsField } from "../fields/ProductsField";
 
 // icons
-import EditIcon from "../assets/icons/edit.js";
+import EditIcon from "../../assets/icons/edit.js";
 
-const CustomDashboard: React.FC<any> = () => {
+export const Account: React.FC<any> = () => {
   const { submit } = useForm();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [isLoaded, setIsLoaded] = useState(false);
-  const { value: name, setValue: setName } = useField<string>({ path: "name" });
-  const { value: role, setValue: setRole } = useField<string>({ path: "role" });
-  const { value: email, setValue: setEmail } = useField<string>({
+  const { value: name } = useField<string>({ path: "name" });
+  const { value: role } = useField<string>({ path: "role" });
+  const { value: email } = useField<string>({
     path: "email",
   });
   const { value: realVendor, setValue: setRealVendor } = useField<Vendor>({
@@ -84,7 +77,7 @@ const CustomDashboard: React.FC<any> = () => {
     setRealVendor(vendor);
   }, 2000);
 
-  const setVendor = (vendor) => {
+  const setVendor = (vendor: Vendor) => {
     setShadowVendor(vendor);
     return debounceVendor(vendor);
   };
@@ -538,7 +531,7 @@ const CustomDashboard: React.FC<any> = () => {
                                 onChange={(e) =>
                                   setVendor({
                                     ...vendor,
-                                    yearEstablished: e.target.value,
+                                    yearEstablished: Number(e.target.value),
                                   })
                                 }
                                 value={vendor.yearEstablished}
@@ -574,7 +567,7 @@ const CustomDashboard: React.FC<any> = () => {
                                         ...vendor,
                                         employees: {
                                           ...vendor.employees,
-                                          fullTime: e.target.value,
+                                          fullTime: Number(e.target.value),
                                         },
                                       })
                                     }
@@ -602,7 +595,7 @@ const CustomDashboard: React.FC<any> = () => {
                                         ...vendor,
                                         employees: {
                                           ...vendor.employees,
-                                          partTime: e.target.value,
+                                          partTime: Number(e.target.value),
                                         },
                                       })
                                     }
@@ -630,7 +623,7 @@ const CustomDashboard: React.FC<any> = () => {
                                         ...vendor,
                                         employees: {
                                           ...vendor.employees,
-                                          interns: e.target.value,
+                                          interns: Number(e.target.value),
                                         },
                                       })
                                     }
@@ -658,7 +651,7 @@ const CustomDashboard: React.FC<any> = () => {
                                         ...vendor,
                                         employees: {
                                           ...vendor.employees,
-                                          h2a: e.target.value,
+                                          h2a: Number(e.target.value),
                                         },
                                       })
                                     }
@@ -686,7 +679,7 @@ const CustomDashboard: React.FC<any> = () => {
                                         ...vendor,
                                         employees: {
                                           ...vendor.employees,
-                                          volunteers: e.target.value,
+                                          volunteers: Number(e.target.value),
                                         },
                                       })
                                     }
@@ -756,7 +749,10 @@ const CustomDashboard: React.FC<any> = () => {
                         flex={2}
                         isRequired
                         onChange={(e) =>
-                          setVendor({ ...vendor, type: e.target.value })
+                          setVendor({
+                            ...vendor,
+                            type: e.target.value as "farmer" | "producer",
+                          })
                         }
                         value={vendor.type}
                       >
@@ -779,7 +775,11 @@ const CustomDashboard: React.FC<any> = () => {
                         onChange={(e) =>
                           setVendor({
                             ...vendor,
-                            structure: e.target.value,
+                            structure: e.target.value as
+                              | "llc"
+                              | "sole_proprietor"
+                              | "nonprofit"
+                              | "other",
                           })
                         }
                         value={vendor.structure}
@@ -806,7 +806,13 @@ const CustomDashboard: React.FC<any> = () => {
                         onChange={(newValue) =>
                           setVendor({
                             ...vendor,
-                            growingPractices: newValue,
+                            growingPractices: newValue as (
+                              | "organic_management"
+                              | "certified_naturally_grown"
+                              | "ipm"
+                              | "gmo_use"
+                              | "growth_hormone_use"
+                            )[],
                           })
                         }
                         value={vendor.growingPractices}
@@ -843,7 +849,11 @@ const CustomDashboard: React.FC<any> = () => {
                         onChange={(newValue) =>
                           setVendor({
                             ...vendor,
-                            sellingLocally: newValue,
+                            sellingLocally: newValue as (
+                              | "nowhere"
+                              | "freshfarm"
+                              | "other"
+                            )[],
                           })
                         }
                         value={vendor.sellingLocally}
@@ -887,7 +897,12 @@ const CustomDashboard: React.FC<any> = () => {
                                 ...vendor,
                                 outletImportance: {
                                   ...vendor.outletImportance,
-                                  stores: newValue,
+                                  stores: newValue as
+                                    | "1"
+                                    | "2"
+                                    | "3"
+                                    | "4"
+                                    | "5",
                                 },
                               })
                             }
@@ -973,7 +988,12 @@ const CustomDashboard: React.FC<any> = () => {
                                 ...vendor,
                                 outletImportance: {
                                   ...vendor.outletImportance,
-                                  markets: newValue,
+                                  markets: newValue as
+                                    | "1"
+                                    | "2"
+                                    | "3"
+                                    | "4"
+                                    | "5",
                                 },
                               })
                             }
@@ -1059,7 +1079,7 @@ const CustomDashboard: React.FC<any> = () => {
                                 ...vendor,
                                 outletImportance: {
                                   ...vendor.outletImportance,
-                                  own: newValue,
+                                  own: newValue as "1" | "2" | "3" | "4" | "5",
                                 },
                               })
                             }
@@ -1145,7 +1165,12 @@ const CustomDashboard: React.FC<any> = () => {
                                 ...vendor,
                                 outletImportance: {
                                   ...vendor.outletImportance,
-                                  online: newValue,
+                                  online: newValue as
+                                    | "1"
+                                    | "2"
+                                    | "3"
+                                    | "4"
+                                    | "5",
                                 },
                               })
                             }
@@ -1332,5 +1357,3 @@ const CustomDashboard: React.FC<any> = () => {
     )
   );
 };
-
-export default CustomDashboard;

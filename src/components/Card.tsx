@@ -8,7 +8,7 @@ interface CardProps {
   icon?: string;
 }
 
-const Card: FC<CardProps> = ({ title, icon }) => {
+export const Card: FC<CardProps> = ({ title, icon }) => {
   return (
     <Box
       padding="16px"
@@ -20,38 +20,30 @@ const Card: FC<CardProps> = ({ title, icon }) => {
       borderBottomWidth="2px"
       background="#F6F5F4"
     >
-      <Stack
-        paddingBottom="8px"
-        maxWidth="100%"
-        direction="row"
-      >
-        {icon == "market"
-          ? (
-            <MarketIcon
-              sx={{
-                fill: "none",
-                height: "24px",
-                width: "24px",
-                "& path": {
-                  stroke: "teal.300 !important",
-                },
-              }}
-            />
-          )
-          : icon == "sales"
-          ? (
-            <SalesIcon
-              sx={{
-                fill: "none",
-                height: "24px",
-                width: "24px",
-                "& path": {
-                  stroke: "teal.300 !important",
-                },
-              }}
-            />
-          )
-          : null}
+      <Stack paddingBottom="8px" maxWidth="100%" direction="row">
+        {icon == "market" ? (
+          <MarketIcon
+            sx={{
+              fill: "none",
+              height: "24px",
+              width: "24px",
+              "& path": {
+                stroke: "teal.300 !important",
+              },
+            }}
+          />
+        ) : icon == "sales" ? (
+          <SalesIcon
+            sx={{
+              fill: "none",
+              height: "24px",
+              width: "24px",
+              "& path": {
+                stroke: "teal.300 !important",
+              },
+            }}
+          />
+        ) : null}
         <Heading
           as="h2"
           lineHeight="1"
@@ -76,9 +68,6 @@ const Card: FC<CardProps> = ({ title, icon }) => {
       >
         Market Date
       </Text>
-      
     </Box>
   );
 };
-
-export { Card };

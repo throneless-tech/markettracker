@@ -3,7 +3,7 @@ import { Box, Container, Flex, Heading, Spacer } from "@chakra-ui/react";
 
 import { Dropdown } from "./Dropdown";
 
-const SalesPanel: React.FC<any> = () => (
+export const SalesPanel: React.FC<any> = () => (
   <Container maxW="container.xl">
     <Flex my={8} justify="space-between" flexWrap={"wrap"}>
       <Box>
@@ -18,5 +18,3 @@ const SalesPanel: React.FC<any> = () => (
     </Flex>
   </Container>
 );
-
-export default SalesPanel;

@@ -1,86 +1,85 @@
-import { defineStyleConfig, extendTheme } from '@chakra-ui/react'
-import { inputTheme } from './themeComponents/input';
-import { selectTheme } from './themeComponents/select';
-import { textareaTheme } from './themeComponents/textarea';
+import { defineStyleConfig, extendTheme } from "@chakra-ui/react";
+import { inputTheme } from "./themeComponents/input";
+import { selectTheme } from "./themeComponents/select";
+import { textareaTheme } from "./themeComponents/textarea";
 
 const Button = defineStyleConfig({
   baseStyle: {
-    fontWeight: '600',
-    fontSize: '16px',
-    lineHeight: '1.11',
-    borderRadius: '2000px',
+    fontWeight: "600",
+    fontSize: "16px",
+    lineHeight: "1.11",
+    borderRadius: "2000px",
   },
   sizes: {
     sm: {
-      fontSize: 'sm',
+      fontSize: "sm",
       px: 4,
       py: 3,
     },
     md: {
-      fontSize: 'md',
+      fontSize: "md",
       px: 6,
       py: 4,
     },
   },
   variants: {
     outline: {
-      border: '2px solid',
-      borderColor: 'teal.700',
-      color: 'gray.700',
+      border: "2px solid",
+      borderColor: "teal.700",
+      color: "gray.700",
     },
     solid: {
-      bg: 'teal.700',
-      color: 'white',
+      bg: "teal.700",
+      color: "white",
     },
   },
   // The default size and variant values
   defaultProps: {
-    size: 'md',
-    variant: 'outline',
+    size: "md",
+    variant: "outline",
   },
-})
+});
 
 const Radio = defineStyleConfig({
-  parts: ['control', 'container', 'label'],
   variants: {
     scale: {
       container: {
-        alignItems: 'center',
-        display: 'flex',
-        flexDirection: 'column',
+        alignItems: "center",
+        display: "flex",
+        flexDirection: "column",
       },
       label: {
         marginInlineStart: 0,
         // marginLeft: 2,
-      }
-    }
-  }
-})
+      },
+    },
+  },
+});
 
 const Tag = defineStyleConfig({
   baseStyle: {
-    borderRadius: '8px',
-    fontFamily: 'Outfit',
-    fontStyle: 'normal',
+    borderRadius: "8px",
+    fontFamily: "Outfit",
+    fontStyle: "normal",
     fontWeight: 600,
     fontSize: 14,
     lineHeight: 16,
   },
   variants: {
     solid: {
-      border: '2px solid white',
-    }
-  }
-})
+      border: "2px solid white",
+    },
+  },
+});
 
-const theme = extendTheme({
+export const theme = extendTheme({
   sizes: {
     container: {
-      xl: '1440px'
-    }
+      xl: "1440px",
+    },
   },
   colors: {
-    "green": {
+    green: {
       "50": "#F6F8ED",
       "100": "#E6EBCC",
       "200": "#D5DDAB",
@@ -90,9 +89,9 @@ const theme = extendTheme({
       "600": "#83913A",
       "700": "#636D2C",
       "800": "#42491D",
-      "900": "#21240F"
+      "900": "#21240F",
     },
-    "red": {
+    red: {
       "50": "#FCEDE9",
       "100": "#F6CDC0",
       "200": "#F1AD98",
@@ -102,9 +101,9 @@ const theme = extendTheme({
       "600": "#B43D18",
       "700": "#872E12",
       "800": "#5A1F0C",
-      "900": "#2D0F06"
+      "900": "#2D0F06",
     },
-    "blue": {
+    blue: {
       "50": "#EDEFF7",
       "100": "#CDD2E9",
       "200": "#ADB5DB",
@@ -114,9 +113,9 @@ const theme = extendTheme({
       "600": "#3E4B8E",
       "700": "#2E396B",
       "800": "#1F2647",
-      "900": "#0F1324"
+      "900": "#0F1324",
     },
-    "yellow": {
+    yellow: {
       "50": "#FCF7E8",
       "100": "#F8E9BF",
       "200": "#F3DA96",
@@ -126,9 +125,9 @@ const theme = extendTheme({
       "600": "#B78C15",
       "700": "#896910",
       "800": "#5C460A",
-      "900": "#2E2305"
+      "900": "#2E2305",
     },
-    "teal": {
+    teal: {
       "50": "#EFF6F5",
       "100": "#D2E5E3",
       "200": "#B4D4D1",
@@ -138,9 +137,9 @@ const theme = extendTheme({
       "600": "#4A827B",
       "700": "#38615C",
       "800": "#25413E",
-      "900": "#13201F"
+      "900": "#13201F",
     },
-    "gray": {
+    gray: {
       "50": "#F6F5F4",
       "100": "#D1CCC7",
       "200": "#CAC4BF",
@@ -150,8 +149,8 @@ const theme = extendTheme({
       "600": "#6F655D",
       "700": "#534C46",
       "800": "#38322E",
-      "900": "#1C1917"
-    }
+      "900": "#1C1917",
+    },
   },
   components: {
     Button,
@@ -168,56 +167,54 @@ const theme = extendTheme({
   },
   styles: {
     global: {
-      'html, body': {
+      "html, body": {
         fontSize: 16,
-      }
-    }
+      },
+    },
   },
   textStyles: {
     bodyMain: {
-      color: 'gray.700',
+      color: "gray.700",
       fontFamily: "'Outfit', sans-serif",
-      fontWeight: '400',
-      fontSize: ['18px'],
-      lineHeight: '24px',
+      fontWeight: "400",
+      fontSize: ["18px"],
+      lineHeight: "24px",
     },
     bodyLarge: {
       fontFamily: "'Outfit', sans-serif",
-      fontWeight: '400',
-      fontSize: ['24px'],
-      lineHeight: '24px',
+      fontWeight: "400",
+      fontSize: ["24px"],
+      lineHeight: "24px",
     },
     h1: {
-      color: 'gray.700',
+      color: "gray.700",
       fontFamily: "'Zilla Slab', serif",
-      fontSize: ['42px'],
-      fontWeight: '700',
+      fontSize: ["42px"],
+      fontWeight: "700",
       letterSpacing: "0.02em",
-      lineHeight: '1.14',
-      textTransform: 'uppercase',
+      lineHeight: "1.14",
+      textTransform: "uppercase",
     },
     h2: {
       fontFamily: "'Zilla Slab', serif",
-      fontSize: ['24px'],
-      fontWeight: '700',
-      lineHeight: '24px',
-      textTransform: 'uppercase',
+      fontSize: ["24px"],
+      fontWeight: "700",
+      lineHeight: "24px",
+      textTransform: "uppercase",
     },
     h3: {
       fontFamily: "'Zilla Slab', serif",
-      fontSize: ['18px'],
-      fontWeight: '700',
-      lineHeight: '24px',
+      fontSize: ["18px"],
+      fontWeight: "700",
+      lineHeight: "24px",
     },
     h4: {
-      color: 'gray.700',
+      color: "gray.700",
       fontFamily: "'Outfit', sans-serif",
-      fontSize: ['10px'],
-      fontWeight: '900',
-      lineHeight: '24px',
-      textTransform: 'uppercase',
+      fontSize: ["10px"],
+      fontWeight: "900",
+      lineHeight: "24px",
+      textTransform: "uppercase",
     },
   },
-})
-
-export default theme
+});

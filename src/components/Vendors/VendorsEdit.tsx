@@ -48,7 +48,7 @@ import {
 // components
 import { Card } from "../Card";
 
-const CustomVendorsEdit: React.FC<any> = ({ data: vendor }) => {
+export const VendorsEdit: React.FC<any> = ({ data: vendor }) => {
   if (vendor) {
     return (
       <Box>
@@ -1084,5 +1084,3 @@ const CustomVendorsEdit: React.FC<any> = ({ data: vendor }) => {
     );
   }
 };
-
-export default CustomVendorsEdit;

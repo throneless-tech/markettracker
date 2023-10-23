@@ -53,8 +53,7 @@ import {
 } from "@chakra-ui/react";
 
 // components
-import Calendar from "../Calendar.js";
-import { ProductsField } from "../ProductsField";
+import { ProductsField } from "../fields/ProductsField";
 
 // utils
 import formatTime from "../../utils/formatTime.js";
@@ -81,7 +80,7 @@ const dayNames = [
   "sunday",
 ];
 
-function CustomApplicationsEdit(props) {
+export const ApplicationsEdit: React.FC<any> = (props) => {
   const { user } = useAuth();
   const history: any = useHistory();
   const { submit } = useForm();
@@ -772,6 +771,4 @@ function CustomApplicationsEdit(props) {
       </Container>
     );
   }
-}
-
-export default CustomApplicationsEdit;
+};

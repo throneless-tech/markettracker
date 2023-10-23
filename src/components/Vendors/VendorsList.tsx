@@ -4,16 +4,12 @@ import React, { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 
 import {
-  Box,
   Button,
   Container,
   Divider,
-  Flex,
   Heading,
   HStack,
   Link,
-  Spacer,
-  Stack,
   Tab,
   Tabs,
   TabIndicator,
@@ -27,18 +23,14 @@ import {
   Tr,
   Th,
   Td,
-  TableCaption,
   TableContainer,
   Tag,
-  Text,
 } from "@chakra-ui/react";
 
 // icons
 import { GrayCheckIcon } from "../../assets/icons/gray-check";
-import { GreenCheckIcon } from "../../assets/icons/green-check";
-import { RedXIcon } from "../../assets/icons/red-x";
 
-const CustomVendorsList: React.FC<any> = (props) => {
+export const VendorsList: React.FC<any> = (props) => {
   const { data } = props;
   const [applications, setApplications] = useState([]);
   const history = useHistory();
@@ -463,5 +455,3 @@ const CustomVendorsList: React.FC<any> = (props) => {
     </>
   );
 };
-
-export default CustomVendorsList;

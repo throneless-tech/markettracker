@@ -54,7 +54,7 @@ const data = [
   },
 ];
 
-const StyledTable: React.FC<any> = () => (
+export const StyledTable: React.FC<any> = () => (
   <Stack
     justify="flex-start"
     align="flex-start"
@@ -105,5 +105,3 @@ const StyledTable: React.FC<any> = () => (
     </TableContainer>
   </Stack>
 );
-
-export { StyledTable };

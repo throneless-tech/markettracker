@@ -48,7 +48,7 @@ const Months = [
   "DEC",
 ];
 
-const Calendar: React.FC<any> = ({ data, useShortMonth }) => {
+export const Calendar: React.FC<any> = ({ data, useShortMonth }) => {
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [tabIndex, setTabIndex] = useState(new Date().getMonth() + 1);
   const { colorMode } = useColorMode();
@@ -246,5 +246,3 @@ const Calendar: React.FC<any> = ({ data, useShortMonth }) => {
     </Box>
   );
 };
-
-export default Calendar;

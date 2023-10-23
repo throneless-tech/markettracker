@@ -1,7 +1,7 @@
 import React from "react";
 import { Stack, Box, Text } from "@chakra-ui/react";
 
-const Graph: React.FC<any> = () => (
+export const Graph: React.FC<any> = () => (
   <Stack
     padding="32px"
     borderRadius="8px"
@@ -335,5 +335,3 @@ const Graph: React.FC<any> = () => (
     </Box>
   </Stack>
 );
-
-export { Graph };

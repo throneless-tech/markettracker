@@ -1,6 +1,6 @@
 import { CollectionConfig } from "payload/types";
-import CustomVendorsEdit from "../../components/Vendors/CustomVendorsEdit";
-import CustomVendorsList from "../../components/Vendors/CustomVendorsList";
+import { VendorsEdit } from "../../components/Vendors/VendorsEdit";
+import { VendorsList } from "../../components/Vendors/VendorsList";
 //import { beforeReadHook } from "./hooks/beforeReadHook";
 import { createFieldContacts } from "./hooks/createFieldContacts";
 import {
@@ -13,8 +13,8 @@ export const Vendors: CollectionConfig = {
   admin: {
     components: {
       views: {
-        Edit: CustomVendorsEdit,
-        List: CustomVendorsList,
+        Edit: VendorsEdit,
+        List: VendorsList,
       },
     },
     pagination: {

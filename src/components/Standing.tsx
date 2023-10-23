@@ -1,7 +1,7 @@
 import React from "react";
 import { HStack, Text, Tag } from "@chakra-ui/react";
 
-const Standing: React.FC<any> = (props) => {
+export const Standing: React.FC<any> = (props) => {
   const { user } = props;
   console.log(user);
   return (
@@ -39,5 +39,3 @@ const Standing: React.FC<any> = (props) => {
     </HStack>
   );
 };
-
-export { Standing };

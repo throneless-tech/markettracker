@@ -4,8 +4,6 @@ import React, { useEffect, useState } from "react";
 import { useAuth } from "payload/components/utilities";
 import { useHistory } from "react-router-dom";
 
-import { List } from "payload/components/views/List"; // Payload's default List view component and its props
-
 import {
   Box,
   Button,
@@ -14,7 +12,6 @@ import {
   Flex,
   Heading,
   HStack,
-  Link,
   Spacer,
   Tab,
   TabIndicator,
@@ -35,11 +32,10 @@ import {
 } from "@chakra-ui/react";
 
 //components
-import MarketCard from "./MarketCard";
-import FooterAdmin from "../FooterAdmin";
+import { MarketCard } from "./MarketCard";
+import { FooterAdmin } from "../FooterAdmin";
 
-const CustomMarketsList: React.FC<any> = (props) => {
-  const { data } = props;
+export const MarketsList: React.FC<any> = (props) => {
   const { user } = useAuth();
   const history = useHistory();
   const [tabIndex, setTabIndex] = useState(0);
@@ -528,5 +524,3 @@ const CustomMarketsList: React.FC<any> = (props) => {
     </>
   );
 };
-
-export default CustomMarketsList;

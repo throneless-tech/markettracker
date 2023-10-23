@@ -1,6 +1,6 @@
 import React from "react";
 import { useLocation } from "react-router-dom";
-import { useAuth, useEditDepth } from "payload/components/utilities";
+import { useAuth } from "payload/components/utilities";
 
 import {
   ChakraProvider,
@@ -12,7 +12,6 @@ import {
   DrawerHeader,
   DrawerOverlay,
   Flex,
-  HStack,
   IconButton,
   Link,
   LinkBox,
@@ -29,17 +28,17 @@ import {
   useDisclosure,
 } from "@chakra-ui/react";
 import { HamburgerIcon } from "@chakra-ui/icons";
-import { HomeIcon } from "../assets/icons/home";
-import { LicenseIcon } from "../assets/icons/license";
-import { MarketIcon } from "../assets/icons/market";
-import { ProductsIcon } from "../assets/icons/products";
-import { ProfileIcon } from "../assets/icons/profile";
-import { SalesIcon } from "../assets/icons/sales";
-import { VendorsIcon } from "../assets/icons/vendors";
-import Logo from "../assets/icons/logo";
-import LogoMarketTracker from "../assets/icons/logoMarketTracker";
+import { HomeIcon } from "../../assets/icons/home";
+import { LicenseIcon } from "../../assets/icons/license";
+import { MarketIcon } from "../../assets/icons/market";
+import { ProductsIcon } from "../../assets/icons/products";
+import { ProfileIcon } from "../../assets/icons/profile";
+import { SalesIcon } from "../../assets/icons/sales";
+import { VendorsIcon } from "../../assets/icons/vendors";
+import Logo from "../../assets/icons/logo";
+import LogoMarketTracker from "../../assets/icons/logoMarketTracker";
 
-import theme from "../styles/theme.js";
+import { theme } from "../../styles/theme";
 
 // fonts
 import "@fontsource/inter/300.css";
@@ -52,7 +51,7 @@ import "@fontsource/outfit/800.css";
 import "@fontsource/zilla-slab/400.css";
 import "@fontsource/zilla-slab/700.css";
 
-const CustomNav: React.FC<any> = () => {
+export const Nav: React.FC<any> = () => {
   let location = useLocation();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { user } = useAuth();
@@ -777,5 +776,3 @@ const CustomNav: React.FC<any> = () => {
     </ChakraProvider>
   );
 };
-
-export default CustomNav;

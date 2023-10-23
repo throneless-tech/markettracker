@@ -19,21 +19,21 @@ import { Users } from "./collections/Users";
 import { Vendors } from "./collections/Vendors";
 
 // custom components
-import CustomAccount from "./components/CustomAccount";
-import CustomAfterLogin from "./components/CustomAfterLogin";
-import CustomBeforeLogin from "./components/CustomBeforeLogin";
-import CustomDashboard from "./components/CustomDashboard";
-import CustomLogo from "./components/CustomLogo";
-import CustomLogoutButton from "./components/CustomLogoutButton";
-import CustomProvider from "./styles/themeProvider";
-import CustomNav from "./components/CustomNav";
-import Register from "./components/Register/Register";
+import { Account } from "./components/Base/Account";
+import { AfterLogin } from "./components/Base/AfterLogin";
+import { BeforeLogin } from "./components/Base/BeforeLogin";
+import { Dashboard } from "./components/Base/Dashboard";
+import { Logo } from "./components/Base/Logo";
+import { LogoutButton } from "./components/Base/LogoutButton";
+import { Nav } from "./components/Base/Nav";
+import { ThemeProvider } from "./styles/ThemeProvider";
+import { Register } from "./components/Base/Register";
 
 // utils
 import { withAccountContext } from "./utils/withAccountContext";
 
 // icons
-import CustomIcon from "./assets/icons/logo";
+import Icon from "./assets/icons/logo";
 
 const createCollectionDocumentPath = path.resolve(
   __dirname,
@@ -48,17 +48,17 @@ export default buildConfig({
     user: Users.slug,
     css: path.resolve(__dirname, "styles/main.scss"),
     components: {
-      beforeLogin: [CustomBeforeLogin],
-      afterLogin: [CustomAfterLogin],
+      beforeLogin: [BeforeLogin],
+      afterLogin: [AfterLogin],
       graphics: {
-        Icon: CustomIcon,
-        Logo: CustomLogo,
+        Icon: Icon,
+        Logo: Logo,
       },
       logout: {
         // Button: CustomLogoutButton,
       },
-      Nav: CustomNav,
-      providers: [CustomProvider],
+      Nav: Nav,
+      providers: [ThemeProvider],
       routes: [
         {
           Component: Register,
@@ -66,8 +66,8 @@ export default buildConfig({
         },
       ],
       views: {
-        Account: withAccountContext(CustomAccount),
-        Dashboard: CustomDashboard,
+        Account: withAccountContext(Account),
+        Dashboard: Dashboard,
       },
     },
     meta: {

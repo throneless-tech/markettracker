@@ -1,15 +1,13 @@
 import React from "react";
 import {
-  Form,
   useAllFormFields,
   useField,
   useForm,
   useFormFields,
 } from "payload/components/forms";
-import { Edit } from "payload/components/views/Edit";
-import { TextField } from "../TextField";
+import { TextField } from "../fields/TextField";
 
-export const UsersEdit: React.FC<any> = (props) => {
+export const UsersEdit: React.FC<any> = () => {
   const { value, setValue } = useField<string>({ path: "email" });
   const email = useFormFields(([fields]) => fields.email);
   const fields = useAllFormFields();
@@ -22,9 +20,6 @@ export const UsersEdit: React.FC<any> = (props) => {
 
   return (
     <div>
-      <p>
-        SAMPLE TEXT
-      </p>
       <TextField label="Email" path="email" />
       <TextField label="Name" path="name" />
     </div>

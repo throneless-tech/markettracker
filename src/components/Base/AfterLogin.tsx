@@ -1,7 +1,7 @@
 import React from "react";
 import { Center, HStack, Link, Stack, Text } from "@chakra-ui/react";
 
-const CustomAfterLogin: React.FC<any> = () => (
+export const AfterLogin: React.FC<any> = () => (
   <Center>
     <Stack gap={2} sx={{ fontSize: 18, textAlign: "center" }}>
       <HStack>
@@ -23,5 +23,3 @@ const CustomAfterLogin: React.FC<any> = () => (
     </Stack>
   </Center>
 );
-
-export default CustomAfterLogin;
