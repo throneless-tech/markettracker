@@ -7,9 +7,11 @@ type ApplicationFieldHook = FieldHook<
   Application
 >;
 
-export const createFieldVendor: ApplicationFieldHook = (
-  { value, operation, req },
-) => {
+export const createFieldVendor: ApplicationFieldHook = ({
+  value,
+  operation,
+  req,
+}) => {
   if (["create", "update"].includes(operation)) {
     return req.user.vendor.id;
   }

@@ -56,9 +56,7 @@ export const createCollectionDocument: CollectionAfterChangeHook = async (
 ) => {
   const { doc, req, operation } = props;
 
-  if (
-    operation === "create" && req.files.file.mimetype === "text/csv"
-  ) {
+  if (operation === "create" && req.files.file.mimetype === "text/csv") {
     console.log("Found csv file!");
     let content: string;
     if (req.files.file.tempFilePath) {
@@ -282,7 +280,7 @@ export const createCollectionDocument: CollectionAfterChangeHook = async (
               const { docs } = await payload.find({
                 collection: "seasons",
                 where: {
-                  "market": {
+                  market: {
                     equals: market.id,
                   },
                 },

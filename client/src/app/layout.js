@@ -1,4 +1,4 @@
-import ThemeProvider from './themeProvider';
+import ThemeProvider from "./themeProvider";
 
 export default function RootLayout({ children }) {
   return (

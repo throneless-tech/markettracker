@@ -21,9 +21,7 @@ export const afterReadApplication: CollectionAfterReadHook = async ({
 export const beforeValidateApplication: CollectionBeforeValidateHook = async ({
   data,
 }) => {
-  if (
-    data.application && typeof data.application === "object"
-  ) {
+  if (data.application && typeof data.application === "object") {
     return { ...data, application: data.application.id };
   }
 };

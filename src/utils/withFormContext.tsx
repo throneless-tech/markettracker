@@ -21,28 +21,27 @@ export const withFormContext = (CustomEditView: React.FC<Props>) => {
       id,
     } = props;
 
-    const {
-      fields,
-      auth,
-    } = collection;
+    const { fields, auth } = collection;
 
-    const classes = [
-      baseClass,
-      isEditing && `${baseClass}--is-editing`,
-    ].filter(Boolean).join(" ");
+    const classes = [baseClass, isEditing && `${baseClass}--is-editing`]
+      .filter(Boolean)
+      .join(" ");
 
-    const onSave = useCallback(async (json: any) => {
-      if (auth && id === user.id) {
-        await refreshCookieAsync();
-      }
+    const onSave = useCallback(
+      async (json: any) => {
+        if (auth && id === user.id) {
+          await refreshCookieAsync();
+        }
 
-      if (typeof onSaveFromProps === "function") {
-        onSaveFromProps({
-          ...json,
-          operation: id ? "update" : "create",
-        });
-      }
-    }, [id, onSaveFromProps, auth, user, refreshCookieAsync]);
+        if (typeof onSaveFromProps === "function") {
+          onSaveFromProps({
+            ...json,
+            operation: id ? "update" : "create",
+          });
+        }
+      },
+      [id, onSaveFromProps, auth, user, refreshCookieAsync],
+    );
 
     const operation = isEditing ? "update" : "create";
 

@@ -15,7 +15,8 @@ export const afterReadSeasons: CollectionAfterReadHook = async ({
       where: { id: { in: doc.seasons.join(",") } },
     });
     if (
-      seasons.docs.length && seasons.docs[0].productGaps &&
+      seasons.docs.length &&
+      seasons.docs[0].productGaps &&
       seasons.docs[0].productGaps.length
     ) {
       const productGaps = await payload.find({
@@ -34,16 +35,19 @@ export const beforeValidateSeasons: CollectionBeforeValidateHook = async ({
   data,
 }) => {
   if (
-    data.seasons && data.seasons.length && typeof data.seasons[0] === "object"
+    data.seasons &&
+    data.seasons.length &&
+    typeof data.seasons[0] === "object"
   ) {
     const flattened = await data.seasons.reduce(
       async (acc: string[], season: Season) => {
         if (
-          season.productGaps && season.productGaps.length &&
+          season.productGaps &&
+          season.productGaps.length &&
           typeof season.productGaps[0] !== "string"
         ) {
-          const flatProducts = season.productGaps.map((product: any) =>
-            product.id
+          const flatProducts = season.productGaps.map(
+            (product: any) => product.id,
           );
           season.productGaps = flatProducts;
         }

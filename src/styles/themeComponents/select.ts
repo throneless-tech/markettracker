@@ -1,14 +1,14 @@
-import { inputAnatomy } from '@chakra-ui/anatomy'
-import { createMultiStyleConfigHelpers } from '@chakra-ui/react'
+import { inputAnatomy } from "@chakra-ui/anatomy";
+import { createMultiStyleConfigHelpers } from "@chakra-ui/react";
 
 const { definePartsStyle, defineMultiStyleConfig } =
-  createMultiStyleConfigHelpers(inputAnatomy.keys)
+  createMultiStyleConfigHelpers(inputAnatomy.keys);
 
 const baseStyle = definePartsStyle({
   field: {
-    backgroundColor: 'gray.50 !important',
-    color: 'gray.300 !important',
+    backgroundColor: "gray.50 !important",
+    color: "gray.300 !important",
   },
-})
+});
 
-export const selectTheme = defineMultiStyleConfig({ baseStyle })
+export const selectTheme = defineMultiStyleConfig({ baseStyle });

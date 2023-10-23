@@ -1,9 +1,11 @@
 import payload from "payload";
 import { CollectionBeforeChangeHook } from "payload/types";
 
-export const createReviewer: CollectionBeforeChangeHook = async (
-  { data, req, operation },
-) => {
+export const createReviewer: CollectionBeforeChangeHook = async ({
+  data,
+  req,
+  operation,
+}) => {
   if (operation === "create") {
     const user = await payload.findByID({
       collection: "users",

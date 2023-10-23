@@ -12,7 +12,12 @@
     "serve": "cross-env PAYLOAD_CONFIG_PATH=dist/payload.config.js NODE_ENV=production node dist/server.js",
     "copyfiles": "copyfiles -u 1 \"src/**/*.{html,css,scss,ttf,woff,woff2,eot,svg,jpg,png}\" dist/",
     "generate:types": "cross-env PAYLOAD_CONFIG_PATH=src/payload.config.ts payload generate:types",
-    "generate:graphQLSchema": "PAYLOAD_CONFIG_PATH=src/payload.config.ts payload generate:graphQLSchema"
+    "generate:graphQLSchema": "PAYLOAD_CONFIG_PATH=src/payload.config.ts payload generate:graphQLSchema",
+    "test": "true",
+    "prepare": "husky install"
+  },
+  "lint-staged": {
+    "**/*.+(js|jsx|css|less|scss|ts|tsx|md)": ["prettier --write"]
   },
   "dependencies": {
     "@chakra-ui/icons": "^2.1.0",
@@ -44,7 +49,10 @@
     "@types/react-router-dom": "^5.3.3",
     "copyfiles": "^2.4.1",
     "cross-env": "^7.0.3",
+    "husky": "^8.0.0",
+    "lint-staged": "^15.0.2",
     "nodemon": "^3.0.1",
+    "prettier": "^3.0.3",
     "ts-node": "^10.9.1",
     "typescript": "^5.1.6"
   }

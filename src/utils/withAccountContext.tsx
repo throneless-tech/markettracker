@@ -19,13 +19,9 @@ export const withAccountContext = (CustomAccount: React.FC<Props>) => {
       hasSavePermission,
     } = props;
 
-    const {
-      fields,
-    } = collection;
+    const { fields } = collection;
 
-    const classes = [
-      baseClass,
-    ].filter(Boolean).join(" ");
+    const classes = [baseClass].filter(Boolean).join(" ");
 
     const onSave = useCallback(async () => {
       await refreshCookieAsync();

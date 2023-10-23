@@ -17,9 +17,12 @@ type Props = {
   };
 };
 
-export const TextField: FC<Props> = (
-  { label, path, required, admin: { description, placeholder } = {} },
-) => {
+export const TextField: FC<Props> = ({
+  label,
+  path,
+  required,
+  admin: { description, placeholder } = {},
+}) => {
   const { value, setValue } = useField<string>({ path });
 
   return (
