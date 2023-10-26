@@ -885,7 +885,6 @@ export const SeasonsEdit: React.FC<any> = (props) => {
                                     onChange={(newValue) =>
                                       setOperators(newValue)
                                     }
-                                    defaultValue={operators}
                                   >
                                     <HStack spacing={4}>
                                       {operators

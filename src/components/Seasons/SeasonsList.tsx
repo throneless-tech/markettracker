@@ -234,7 +234,7 @@ export const SeasonsList: React.FC<any> = ({ data }) => {
                       {seasons &&
                         seasons.length &&
                         seasons.map((season) => (
-                          <MarketCard key={season.id} market={season} />
+                          <SeasonCard key={season.id} market={season} />
                         ))}
                     </HStack>
                   </HStack>
