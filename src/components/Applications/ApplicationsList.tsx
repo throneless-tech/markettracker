@@ -78,6 +78,9 @@ export const ApplicationsList: React.FC<any> = ({ data }) => {
     }
   }, [data, season]);
 
+  console.log("***applications***:", applications);
+  console.log("***season***:", season);
+
   if (applications && season && typeof season.market === "object") {
     return (
       <>

@@ -5,7 +5,7 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
 // Payload imports
-import type { Product, Season } from "payload/generated-types";
+import type { Contact, Product } from "payload/generated-types";
 import { useDocumentInfo } from "payload/components/utilities";
 import { useField, useForm } from "payload/components/forms";
 
@@ -52,6 +52,7 @@ import {
 // components
 //import Calendar from "../Calendar.js";
 import { ProductsField } from "../fields/ProductsField";
+import type { Market } from "payload/generated-types";
 
 // utils
 import formatDate from "../../utils/formatDate";
@@ -158,42 +159,35 @@ const ContactModal: React.FC<any> = (props) => {
   );
 };
 
-export const MarketsEdit: React.FC<any> = (props) => {
+export const SeasonsEdit: React.FC<any> = (props) => {
   const { submit } = useForm();
   const { user } = useAuth();
   const { id } = useDocumentInfo();
   const { data } = props;
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { value: name, setValue: setName } = useField<string>({ path: "name" });
-  const { value: street, setValue: setStreet } = useField<string>({
-    path: "address.street",
+  const { value: market, setValue: setMarket } = useField<Market>({
+    path: "market",
   });
-  const { value: city, setValue: setCity } = useField<string>({
-    path: "address.city",
+  const { value: startDate, setValue: setStartDate } = useField<string>({
+    path: "marketDates.startDate",
   });
-  const { value: state, setValue: setState } = useField<string>({
-    path: "address.state",
+  const { value: endDate, setValue: setEndDate } = useField<string>({
+    path: "marketDates.endDate",
   });
-  const { value: zipcode, setValue: setZipcode } = useField<string>({
-    path: "address.zipcode",
+  const { value: startTime, setValue: setStartTime } = useField<string>({
+    path: "marketTime.startTime",
   });
-  const { value: days, setValue: setDays } = useField<Array<string>>({
-    path: "days",
+  const { value: endTime, setValue: setEndTime } = useField<string>({
+    path: "marketTime.endTime",
   });
-  const { value: size, setValue: setSize } = useField<string>({ path: "size" });
-  const { value: visitors, setValue: setVisitors } = useField<string>({
-    path: "visitors",
+  const { value: productGaps, setValue: setProductGaps } = useField<Product[]>({
+    path: "productGaps",
   });
-  const { value: focus, setValue: setFocus } = useField<Array<string>>({
-    path: "focus",
+  const { value: isAccepting, setValue: setIsAccepting } = useField<boolean>({
+    path: "isAccepting",
   });
-  const { value: description, setValue: setDescription } = useField<string>({
-    path: "description",
-  });
-  const { value: seasons, setValue: setSeasons } = useField<Season[]>({
-    path: "seasons",
-  });
-  const { value: operators, setValue: setOperators } = useField<string[]>({
+  const { value: operators, setValue: setOperators } = useField<Contact[]>({
     path: "operators",
   });
 
@@ -219,10 +213,11 @@ export const MarketsEdit: React.FC<any> = (props) => {
   }, [contact]);
 
   useEffect(() => {
-    console.log("***seasons", seasons);
-  }, [seasons]);
+    console.log("***data:", data);
+    console.log("***market:", market);
+  }, [data, market]);
 
-  if (name && seasons && seasons.length && typeof seasons[0] === "object") {
+  if (name && market) {
     return (
       <Box>
         <Tabs position="relative" variant="unstyled" colorScheme="teal">
@@ -323,13 +318,11 @@ export const MarketsEdit: React.FC<any> = (props) => {
                               textStyle="bodyMain"
                               textTransform={"uppercase"}
                             >
-                              {formatDate(seasons[0].marketDates.startDate)}-
-                              {formatDate(seasons[0].marketDates.endDate)}{" "}
-                              {formatTime(seasons[0].marketTime.startTime)}-
-                              {formatTime(seasons[0].marketTime.endTime)}
+                              {formatDate(startDate)}-{formatDate(endDate)}{" "}
+                              {formatTime(startTime)}-{formatTime(endTime)}
                             </Text>
                           </HStack>
-                          {data.acceptingApplications ? (
+                          {isAccepting ? (
                             <>
                               <Spacer />
                               <HStack>
@@ -351,7 +344,7 @@ export const MarketsEdit: React.FC<any> = (props) => {
                         </Flex>
                         <Flex marginTop={4}>
                           <HStack>
-                            {data.time ? (
+                            {startTime ? (
                               <Text
                                 as={"span"}
                                 color={"gray.50"}
@@ -360,15 +353,14 @@ export const MarketsEdit: React.FC<any> = (props) => {
                                 textStyle="bodyMain"
                                 sx={{ textTransform: "capitalize" }}
                               >
-                                {data.days.map((day, index) => {
-                                  if (index == data.days.length - 1) {
+                                {data.market.days.map((day, index) => {
+                                  if (index == data.market.days.length - 1) {
                                     return day;
                                   } else {
                                     return `${day}, `;
                                   }
                                 })}{" "}
-                                {formatTime(data.time.startTime)}-
-                                {formatTime(data.time.endTime)}
+                                {formatTime(startTime)}-{formatTime(endTime)}
                               </Text>
                             ) : null}
                             <Text
@@ -377,13 +369,13 @@ export const MarketsEdit: React.FC<any> = (props) => {
                               color={"gray.50"}
                               fontSize="2xl"
                             >
-                              {street}
+                              {data.market.street}
                               {", "}
-                              {city}
+                              {data.market.city}
                               {", "}
-                              {state}
+                              {data.market.state}
                               {", "}
-                              {zipcode}
+                              {data.market.zipcode}
                             </Text>
                           </HStack>
                           <Spacer />
@@ -403,7 +395,9 @@ export const MarketsEdit: React.FC<any> = (props) => {
                               color={"gray.50"}
                               fontSize="2xl"
                             >
-                              {data.contact ? data.contact.name : ""}
+                              {data.market.contact
+                                ? data.market.contact.name
+                                : ""}
                             </Text>
                             <Text
                               textStyle="bodyMain"
@@ -411,7 +405,9 @@ export const MarketsEdit: React.FC<any> = (props) => {
                               color={"gray.50"}
                               fontSize="2xl"
                             >
-                              {data.contact ? data.contact.phone : ""}
+                              {data.market.contact
+                                ? data.market.contact.phone
+                                : ""}
                             </Text>
                           </HStack>
                         </Flex>
@@ -420,7 +416,7 @@ export const MarketsEdit: React.FC<any> = (props) => {
                           marginTop={4}
                           fontSize={"xl"}
                         >
-                          {description}
+                          {data.market.description}
                         </Text>
                       </Box>
                       <Box
@@ -437,8 +433,8 @@ export const MarketsEdit: React.FC<any> = (props) => {
                           >
                             Market needs:
                           </Text>
-                          {seasons && seasons[0].productGaps ? (
-                            seasons[0].productGaps.map((need) => (
+                          {data.productGaps && data.productGaps.length ? (
+                            data.productGaps.map((need: Product) => (
                               <Tag bg={"gray.50"} fontWeight={700}>
                                 {need.product}
                               </Tag>
@@ -505,103 +501,133 @@ export const MarketsEdit: React.FC<any> = (props) => {
                                     onChange={(e) => setName(e.target.value)}
                                   />
                                 </FormControl>
-                                <Stack spacing={2} marginTop={4}>
-                                  <FormControl>
-                                    <FormLabel
-                                      as="div"
-                                      textStyle="bodyMain"
-                                      fontWeight={500}
-                                    >
-                                      Market address (required)
-                                    </FormLabel>
-                                    <Input
-                                      placeholder="Street"
-                                      value={street}
-                                      onChange={(e) =>
-                                        setStreet(e.target.value)
-                                      }
-                                      isRequired
-                                    />
-                                  </FormControl>
-                                  <Flex gap={2}>
-                                    <Input
-                                      placeholder="City"
-                                      flex={6}
-                                      value={city}
-                                      onChange={(e) => setCity(e.target.value)}
-                                      isRequired
-                                    />
-                                    <Select
-                                      placeholder="State"
-                                      flex={2}
-                                      value={state}
-                                      onChange={(e) => setState(e.target.value)}
-                                      isRequired
-                                    >
-                                      <option value="AK">AK</option>
-                                      <option value="AL">AL</option>
-                                      <option value="AR">AR</option>
-                                      <option value="AZ">AZ</option>
-                                      <option value="CA">CA</option>
-                                      <option value="CO">CO</option>
-                                      <option value="CT">CT</option>
-                                      <option value="DC">DC</option>
-                                      <option value="DE">DE</option>
-                                      <option value="FL">FL</option>
-                                      <option value="GA">GA</option>
-                                      <option value="HI">HI</option>
-                                      <option value="IA">IA</option>
-                                      <option value="ID">ID</option>
-                                      <option value="IL">IL</option>
-                                      <option value="IN">IN</option>
-                                      <option value="KS">KS</option>
-                                      <option value="KY">KY</option>
-                                      <option value="LA">LA</option>
-                                      <option value="MA">MA</option>
-                                      <option value="MD">MD</option>
-                                      <option value="ME">ME</option>
-                                      <option value="MI">MI</option>
-                                      <option value="MN">MN</option>
-                                      <option value="MO">MO</option>
-                                      <option value="MS">MS</option>
-                                      <option value="MT">MT</option>
-                                      <option value="NC">NC</option>
-                                      <option value="ND">ND</option>
-                                      <option value="NE">NE</option>
-                                      <option value="NH">NH</option>
-                                      <option value="NJ">NJ</option>
-                                      <option value="NM">NM</option>
-                                      <option value="NV">NV</option>
-                                      <option value="NY">NY</option>
-                                      <option value="OH">OH</option>
-                                      <option value="OK">OK</option>
-                                      <option value="OR">OR</option>
-                                      <option value="PA">PA</option>
-                                      <option value="RI">RI</option>
-                                      <option value="SC">SC</option>
-                                      <option value="SD">SD</option>
-                                      <option value="TN">TN</option>
-                                      <option value="TX">TX</option>
-                                      <option value="UT">UT</option>
-                                      <option value="VA">VA</option>
-                                      <option value="VT">VT</option>
-                                      <option value="WA">WA</option>
-                                      <option value="WI">WI</option>
-                                      <option value="WV">WV</option>
-                                      <option value="WY">WY</option>
-                                    </Select>
-                                    <Input
-                                      placeholder="Zipcode"
-                                      flex={3}
-                                      type="number"
-                                      value={zipcode}
-                                      onChange={(e) =>
-                                        setZipcode(e.target.value)
-                                      }
-                                      isRequired
-                                    />
-                                  </Flex>
-                                </Stack>
+                                {market.address ? (
+                                  <Stack spacing={2} marginTop={4}>
+                                    <FormControl>
+                                      <FormLabel
+                                        as="div"
+                                        textStyle="bodyMain"
+                                        fontWeight={500}
+                                      >
+                                        Market address (required)
+                                      </FormLabel>
+                                      <Input
+                                        placeholder="Street"
+                                        value={market.address.street}
+                                        onChange={(e) =>
+                                          setMarket({
+                                            ...market,
+                                            address: {
+                                              ...market.address,
+                                              street: e.target.value,
+                                            },
+                                          })
+                                        }
+                                        isRequired
+                                      />
+                                    </FormControl>
+                                    <Flex gap={2}>
+                                      <Input
+                                        placeholder="City"
+                                        flex={6}
+                                        value={market.address.city}
+                                        onChange={(e) =>
+                                          setMarket({
+                                            ...market,
+                                            address: {
+                                              ...market.address,
+                                              city: e.target.value,
+                                            },
+                                          })
+                                        }
+                                        isRequired
+                                      />
+                                      <Select
+                                        placeholder="State"
+                                        flex={2}
+                                        value={market.address.state}
+                                        onChange={(e) =>
+                                          setMarket({
+                                            ...market,
+                                            address: {
+                                              ...market.address,
+                                              state: e.target.value,
+                                            },
+                                          })
+                                        }
+                                        isRequired
+                                      >
+                                        <option value="AK">AK</option>
+                                        <option value="AL">AL</option>
+                                        <option value="AR">AR</option>
+                                        <option value="AZ">AZ</option>
+                                        <option value="CA">CA</option>
+                                        <option value="CO">CO</option>
+                                        <option value="CT">CT</option>
+                                        <option value="DC">DC</option>
+                                        <option value="DE">DE</option>
+                                        <option value="FL">FL</option>
+                                        <option value="GA">GA</option>
+                                        <option value="HI">HI</option>
+                                        <option value="IA">IA</option>
+                                        <option value="ID">ID</option>
+                                        <option value="IL">IL</option>
+                                        <option value="IN">IN</option>
+                                        <option value="KS">KS</option>
+                                        <option value="KY">KY</option>
+                                        <option value="LA">LA</option>
+                                        <option value="MA">MA</option>
+                                        <option value="MD">MD</option>
+                                        <option value="ME">ME</option>
+                                        <option value="MI">MI</option>
+                                        <option value="MN">MN</option>
+                                        <option value="MO">MO</option>
+                                        <option value="MS">MS</option>
+                                        <option value="MT">MT</option>
+                                        <option value="NC">NC</option>
+                                        <option value="ND">ND</option>
+                                        <option value="NE">NE</option>
+                                        <option value="NH">NH</option>
+                                        <option value="NJ">NJ</option>
+                                        <option value="NM">NM</option>
+                                        <option value="NV">NV</option>
+                                        <option value="NY">NY</option>
+                                        <option value="OH">OH</option>
+                                        <option value="OK">OK</option>
+                                        <option value="OR">OR</option>
+                                        <option value="PA">PA</option>
+                                        <option value="RI">RI</option>
+                                        <option value="SC">SC</option>
+                                        <option value="SD">SD</option>
+                                        <option value="TN">TN</option>
+                                        <option value="TX">TX</option>
+                                        <option value="UT">UT</option>
+                                        <option value="VA">VA</option>
+                                        <option value="VT">VT</option>
+                                        <option value="WA">WA</option>
+                                        <option value="WI">WI</option>
+                                        <option value="WV">WV</option>
+                                        <option value="WY">WY</option>
+                                      </Select>
+                                      <Input
+                                        placeholder="Zipcode"
+                                        flex={3}
+                                        type="number"
+                                        value={market.address.zipcode}
+                                        onChange={(e) =>
+                                          setMarket({
+                                            ...market,
+                                            address: {
+                                              ...market.address,
+                                              zipcode: e.target.value,
+                                            },
+                                          })
+                                        }
+                                        isRequired
+                                      />
+                                    </Flex>
+                                  </Stack>
+                                ) : null}
                                 <FormControl marginTop={4}>
                                   <FormLabel
                                     as="div"
@@ -611,8 +637,17 @@ export const MarketsEdit: React.FC<any> = (props) => {
                                     Market day (required)
                                   </FormLabel>
                                   <RadioGroup
-                                    onChange={(newValue) => setDays([newValue])}
-                                    value={days[0]}
+                                    onChange={(newValue) =>
+                                      setMarket({
+                                        ...market,
+                                        days: newValue,
+                                      })
+                                    }
+                                    value={
+                                      market.days && market.days.length
+                                        ? market.days[0]
+                                        : null
+                                    }
                                   >
                                     <HStack>
                                       <Radio colorScheme="green" value="monday">
@@ -660,8 +695,13 @@ export const MarketsEdit: React.FC<any> = (props) => {
                                     Market size (required)
                                   </FormLabel>
                                   <RadioGroup
-                                    onChange={(newValue) => setSize(newValue)}
-                                    value={size}
+                                    onChange={(newValue) =>
+                                      setMarket({
+                                        ...market,
+                                        size: newValue,
+                                      })
+                                    }
+                                    value={market.size}
                                   >
                                     <HStack>
                                       <Radio
@@ -692,9 +732,12 @@ export const MarketsEdit: React.FC<any> = (props) => {
                                   <Input
                                     type="number"
                                     placeholder="Start typing..."
-                                    value={visitors}
+                                    value={market.visitors}
                                     onChange={(e) =>
-                                      setVisitors(e.target.value)
+                                      setMarket({
+                                        ...market,
+                                        size: e.target.value,
+                                      })
                                     }
                                   />
                                 </FormControl>
@@ -711,8 +754,13 @@ export const MarketsEdit: React.FC<any> = (props) => {
                                   </FormHelperText>
                                   <CheckboxGroup
                                     colorScheme="green"
-                                    defaultValue={focus}
-                                    onChange={(newValue) => setFocus(newValue)}
+                                    defaultValue={market.focus}
+                                    onChange={(newValue) =>
+                                      setMarket({
+                                        ...market,
+                                        focus: newValue,
+                                      })
+                                    }
                                   >
                                     <HStack>
                                       <Checkbox value="neighborhood">
@@ -744,9 +792,12 @@ export const MarketsEdit: React.FC<any> = (props) => {
                                   <Textarea
                                     placeholder="Start typing..."
                                     onChange={(newValue) =>
-                                      setDescription(newValue)
+                                      setMarket({
+                                        ...market,
+                                        description: newValue,
+                                      })
                                     }
-                                    value={description}
+                                    value={market.description}
                                   />
                                 </FormControl>
                               </Container>
@@ -781,19 +832,9 @@ export const MarketsEdit: React.FC<any> = (props) => {
                                   </Heading>
                                   <RadioGroup
                                     onChange={(newValue) =>
-                                      setSeasons([
-                                        {
-                                          ...seasons[0],
-                                          isAccepting: newValue === "true",
-                                        },
-                                      ])
+                                      setIsAccepting(newValue === "true")
                                     }
-                                    value={
-                                      typeof seasons[0].isAccepting ===
-                                      "boolean"
-                                        ? seasons[0].isAccepting.toString()
-                                        : "false"
-                                    }
+                                    value={isAccepting.toString()}
                                   >
                                     <HStack marginRight={2}>
                                       <Radio colorScheme="green" value="true">
@@ -847,23 +888,21 @@ export const MarketsEdit: React.FC<any> = (props) => {
                                     defaultValue={operators}
                                   >
                                     <HStack spacing={4}>
-                                      {data.seasons[0].operators
-                                        ? data.seasons[0].operators.map(
-                                            (contact) => (
-                                              <Checkbox
-                                                key={contact.id}
-                                                value={contact.id}
+                                      {operators
+                                        ? operators.map((contact) => (
+                                            <Checkbox
+                                              key={contact.id}
+                                              value={contact.id}
+                                            >
+                                              {contact.name}
+                                              <Tag
+                                                bg={"gray.50"}
+                                                fontWeight={700}
                                               >
-                                                {contact.name}
-                                                <Tag
-                                                  bg={"gray.50"}
-                                                  fontWeight={700}
-                                                >
-                                                  {contact.type}
-                                                </Tag>
-                                              </Checkbox>
-                                            ),
-                                          )
+                                                {contact.type}
+                                              </Tag>
+                                            </Checkbox>
+                                          ))
                                         : null}
                                     </HStack>
                                   </CheckboxGroup>
@@ -910,22 +949,10 @@ export const MarketsEdit: React.FC<any> = (props) => {
                                     <DatePicker
                                       inline
                                       selected={
-                                        seasons[0].marketDates.startDate
-                                          ? new Date(
-                                              seasons[0].marketDates.startDate,
-                                            )
-                                          : null
+                                        startDate ? new Date(startDate) : null
                                       }
                                       onChange={(date) =>
-                                        setSeasons([
-                                          {
-                                            ...seasons[0],
-                                            marketDates: {
-                                              ...seasons[0].marketDates,
-                                              startDate: date.toISOString(),
-                                            },
-                                          },
-                                        ])
+                                        setStartDate(date.toISOString())
                                       }
                                       dayClassName={(date) =>
                                         date.getDate() < Math.random() * 31
@@ -945,22 +972,10 @@ export const MarketsEdit: React.FC<any> = (props) => {
                                     <DatePicker
                                       inline
                                       selected={
-                                        seasons[0].marketDates.endDate
-                                          ? new Date(
-                                              seasons[0].marketDates.endDate,
-                                            )
-                                          : null
+                                        endDate ? new Date(endDate) : null
                                       }
                                       onChange={(date) =>
-                                        setSeasons([
-                                          {
-                                            ...seasons[0],
-                                            marketDates: {
-                                              ...seasons[0].marketDates,
-                                              endDate: date.toISOString(),
-                                            },
-                                          },
-                                        ])
+                                        setEndDate(date.toISOString())
                                       }
                                       dayClassName={(date) =>
                                         date.getDate() < Math.random() * 31
@@ -988,19 +1003,9 @@ export const MarketsEdit: React.FC<any> = (props) => {
                                       Start time
                                     </Text>
                                     <Input
-                                      value={seasons[0].marketTime.startTime}
+                                      value={startTime}
                                       type="time"
-                                      onChange={(time) =>
-                                        setSeasons([
-                                          {
-                                            ...seasons[0],
-                                            marketTime: {
-                                              ...seasons[0].marketTime,
-                                              startTime: time,
-                                            },
-                                          },
-                                        ])
-                                      }
+                                      onChange={(time) => setStartTime(time)}
                                     />
                                   </Stack>
                                   <Stack>
@@ -1012,19 +1017,9 @@ export const MarketsEdit: React.FC<any> = (props) => {
                                       End time
                                     </Text>
                                     <Input
-                                      value={seasons[0].marketTime.endTime}
+                                      value={endTime}
                                       type="time"
-                                      onChange={(time) =>
-                                        setSeasons([
-                                          {
-                                            ...seasons[0],
-                                            marketTime: {
-                                              ...seasons[0].marketTime,
-                                              endTime: time,
-                                            },
-                                          },
-                                        ])
-                                      }
+                                      onChange={(time) => setEndTime(endTime)}
                                     />
                                   </Stack>
                                 </HStack>
@@ -1048,21 +1043,7 @@ export const MarketsEdit: React.FC<any> = (props) => {
                                   />
                                 </Flex>
                                 <ProductsField
-                                  path="seasons.productGaps"
-                                  onChange={(newValue) =>
-                                    setSeasons([
-                                      {
-                                        ...seasons[0],
-                                        productGaps: newValue,
-                                      },
-                                    ])
-                                  }
-                                  value={
-                                    seasons[0].productGaps &&
-                                    seasons[0].productGaps.length
-                                      ? (seasons[0].productGaps as string[]) // we know it will be string[] here unless we specifically fetch it
-                                      : []
-                                  }
+                                  path="productGaps"
                                   useObjects={true}
                                 />
                               </Container>
@@ -1125,7 +1106,7 @@ export const MarketsEdit: React.FC<any> = (props) => {
                     </Text>
                     <HStack marginTop={4}>
                       <Text as={"span"} color={"blue.500"} fontWeight={700}>
-                        {visitors}
+                        {market.visitors}
                       </Text>
                       <Text as={"span"} color={"blue.500"}>
                         visitors per market

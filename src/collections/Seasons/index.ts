@@ -1,15 +1,39 @@
 import { CollectionConfig } from "payload/types";
+import { withFormContext } from "../../utils/withFormContext";
+import { SeasonsEdit } from "../../components/Seasons/SeasonsEdit";
+import { SeasonsList } from "../../components/Seasons/SeasonsList";
 import { createCollectionSeason } from "./hooks/createCollectionSeasons";
 import { createSlugField } from "./hooks/createSlugField";
+import { afterReadMarket, beforeValidateMarket } from "./hooks/populateMarket";
+import {
+  afterReadProductGaps,
+  beforeValidateProductGaps,
+} from "./hooks/populateProductGaps";
+import {
+  afterReadOperators,
+  beforeValidateOperators,
+} from "./hooks/populateOperators";
 
 export const Seasons: CollectionConfig = {
   slug: "seasons",
   admin: {
     useAsTitle: "name",
+    components: {
+      views: {
+        Edit: withFormContext(SeasonsEdit),
+        List: SeasonsList,
+      },
+    },
   },
   hooks: {
     beforeChange: [createSlugField],
     afterChange: [createCollectionSeason],
+    afterRead: [afterReadMarket, afterReadProductGaps, afterReadOperators],
+    beforeValidate: [
+      beforeValidateMarket,
+      beforeValidateProductGaps,
+      beforeValidateOperators,
+    ],
   },
   fields: [
     {

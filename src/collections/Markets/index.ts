@@ -188,7 +188,7 @@ export const Markets: CollectionConfig = {
     },
   ],
   hooks: {
-    afterRead: [afterReadSeasons],
-    beforeValidate: [beforeValidateSeasons],
+    //    afterRead: [afterReadSeasons],
+    //    beforeValidate: [beforeValidateSeasons],
   },
 };

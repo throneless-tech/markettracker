@@ -237,16 +237,18 @@ export const ReviewsEdit: React.FC<any> = () => {
                 >
                   <NumberInputField />
                 </NumberInput>
-                <FormLabel
-                  sx={{
-                    fontSize: 18,
-                    fontWeight: 700,
-                    textTransform: "uppercase",
-                  }}
-                >
-                  Vendor type
-                </FormLabel>
-                <Text>{shadowApp.vendor.type}</Text>
+                <Stack>
+                  <FormLabel
+                    sx={{
+                      fontSize: 18,
+                      fontWeight: 700,
+                      textTransform: "uppercase",
+                    }}
+                  >
+                    Vendor type
+                  </FormLabel>
+                  <Text>{shadowApp.vendor.type}</Text>
+                </Stack>
               </HStack>
             </FormControl>
             <FormControl marginBottom={8}>
@@ -331,13 +333,15 @@ export const ReviewsEdit: React.FC<any> = () => {
             <FormControl marginBottom={8}>
               <HStack alignItems={"center"} spacing={3}>
                 <NumberInput
-                  variant={"filled"}
+                  colorScheme="green"
                   min={1}
                   max={5}
                   sx={{ width: 16 }}
                   value={satScore}
                   onChange={(newValue) => setSatScore(Number(newValue))}
-                />
+                >
+                  <NumberInputField />
+                </NumberInput>
                 <Stack>
                   <FormLabel
                     sx={{
