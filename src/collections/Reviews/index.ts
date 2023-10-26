@@ -27,7 +27,7 @@ export const Reviews: CollectionConfig = {
       name: "application",
       type: "relationship",
       relationTo: "applications",
-      required: true,
+      //required: true,
     },
     {
       name: "vendorScore",
@@ -76,7 +76,7 @@ export const Reviews: CollectionConfig = {
       name: "reviewer",
       type: "relationship",
       relationTo: "users",
-      required: true,
+      //required: true,
       // admin: {
       //   readOnly: true,
       // },

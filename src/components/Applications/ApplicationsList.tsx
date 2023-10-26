@@ -27,9 +27,9 @@ import {
 import StarIcon from "../../assets/icons/star.js";
 
 // types
-import type { Application, Season } from "payload/generated-types";
+import type { Application, Product, Season } from "payload/generated-types";
 
-export const ApplicationsList: React.FC<any> = ({ data }) => {
+export const ApplicationsList: React.FC<any> = ({ data, isTab }) => {
   const history = useHistory();
   const location = useLocation();
   const [applications, setApplications] = useState<Application[]>([]);
@@ -65,7 +65,19 @@ export const ApplicationsList: React.FC<any> = ({ data }) => {
   }, [location]);
 
   useEffect(() => {
-    if (data.docs && data.docs.length) {
+    if (isTab) {
+      const getApplications = async (id = "") => {
+        try {
+          const res = await fetch(`/api/applications/${id}/?limit=9999`);
+          const applications = await res.json();
+          console.log("****Getting applications", applications);
+          setApplications(applications.docs);
+        } catch (err) {
+          console.error(err);
+        }
+      };
+      getApplications(season && season.id ? season.id : "");
+    } else if (data && data.docs && data.docs.length) {
       if (season) {
         setApplications(
           data.docs.filter(
@@ -76,45 +88,51 @@ export const ApplicationsList: React.FC<any> = ({ data }) => {
         setApplications(data.docs);
       }
     }
-  }, [data, season]);
+  }, [isTab, data, season]);
 
   console.log("***applications***:", applications);
   console.log("***season***:", season);
 
-  if (applications && season && typeof season.market === "object") {
+  if (applications) {
     return (
       <>
-        <Container maxW="container.xl">
-          <Flex>
-            <Heading as="h2" sx={{ textTransform: "uppercase" }} marginTop={4}>
-              <Text as={"span"}>Review</Text>{" "}
-              <Text as={"span"} sx={{ fontWeight: 700 }}>
-                {season.name}
-              </Text>{" "}
-              <Text as={"span"}>applications</Text>
-            </Heading>
-            {season.isAccepting ? (
-              <>
-                <Spacer />
-                <HStack>
-                  <Text
-                    color={"gray.700"}
-                    fontSize="sm"
-                    fontWeight={700}
-                    textAlign={"right"}
-                    textTransform={"uppercase"}
-                    width={28}
-                  >
-                    Accepting applications
-                  </Text>
-                  <StarIcon height={8} width={8} />
-                </HStack>
-              </>
-            ) : null}
-          </Flex>
-          <Text>{season.market.description}</Text>
-          <Divider color="gray.900" borderBottomWidth={2} opacity={1} />
-        </Container>
+        {season && season.market && typeof season.market === "object" ? (
+          <Container maxW="container.xl">
+            <Flex>
+              <Heading
+                as="h2"
+                sx={{ textTransform: "uppercase" }}
+                marginTop={4}
+              >
+                <Text as={"span"}>Review</Text>{" "}
+                <Text as={"span"} sx={{ fontWeight: 700 }}>
+                  {season.name}
+                </Text>{" "}
+                <Text as={"span"}>applications</Text>
+              </Heading>
+              {season.isAccepting ? (
+                <>
+                  <Spacer />
+                  <HStack>
+                    <Text
+                      color={"gray.700"}
+                      fontSize="sm"
+                      fontWeight={700}
+                      textAlign={"right"}
+                      textTransform={"uppercase"}
+                      width={28}
+                    >
+                      Accepting applications
+                    </Text>
+                    <StarIcon height={8} width={8} />
+                  </HStack>
+                </>
+              ) : null}
+            </Flex>
+            <Text>{season.market.description}</Text>
+            <Divider color="gray.900" borderBottomWidth={2} opacity={1} />
+          </Container>
+        ) : null}
         <Container maxW="container.xl">
           <TableContainer>
             <Table variant="simple">
@@ -186,9 +204,10 @@ export const ApplicationsList: React.FC<any> = ({ data }) => {
                                 ? app.products.reduce((acc, product) => {
                                     if (
                                       typeof product === "object" &&
-                                      (season.productGaps as string[]).includes(
-                                        product.id,
-                                      )
+                                      typeof app.season === "object" &&
+                                      app.season.productGaps
+                                        .map((product: any) => product.id)
+                                        .includes(product.id)
                                     ) {
                                       acc.push(
                                         <Tag marginRight={1} key={product.id}>
@@ -244,7 +263,12 @@ export const ApplicationsList: React.FC<any> = ({ data }) => {
                                   : "Good"}
                               </Tag>
                             </Td>
-                            <Td>0/2 reviewers</Td>
+                            <Td>
+                              {app.reviews && app.reviews.length
+                                ? app.reviews.length
+                                : 0}
+                              /2 reviewers
+                            </Td>
                             <Td>0</Td>
                             <Td>
                               <Tag variant={"outline"}>Received</Tag>

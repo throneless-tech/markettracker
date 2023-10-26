@@ -44,10 +44,10 @@ export const ReviewsEdit: React.FC<any> = () => {
 
   const { value: application, setValue: setApplication } =
     useField<Application>({
-      path: "applications",
+      path: "application",
     });
   const { value: reviewer, setValue: setReviewer } = useField<User>({
-    path: "applications",
+    path: "reviewer",
   });
   const { value: vendorScore, setValue: setVendorScore } = useField<number>({
     path: "vendorScore",
@@ -78,6 +78,7 @@ export const ReviewsEdit: React.FC<any> = () => {
 
   const submitForm = () => {
     if (!id && shadowApp && shadowApp.id) {
+      console.log("***Setting shadow app", shadowApp);
       setApplication(shadowApp);
       setReviewer(shadowReviewer);
     }

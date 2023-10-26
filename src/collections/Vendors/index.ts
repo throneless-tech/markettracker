@@ -7,6 +7,10 @@ import {
   afterReadContacts,
   beforeValidateContacts,
 } from "./hooks/populateContacts";
+import {
+  afterReadApplications,
+  beforeValidateApplications,
+} from "./hooks/populateApplications";
 
 export const Vendors: CollectionConfig = {
   slug: "vendors",

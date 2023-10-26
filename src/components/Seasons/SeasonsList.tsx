@@ -34,6 +34,7 @@ import {
 //components
 import { SeasonCard } from "./SeasonCard";
 import { FooterAdmin } from "../FooterAdmin";
+import { ApplicationsList } from "../Applications/ApplicationsList";
 
 export const SeasonsList: React.FC<any> = ({ data }) => {
   const { user } = useAuth();
@@ -45,6 +46,7 @@ export const SeasonsList: React.FC<any> = ({ data }) => {
   const [applications, setApplications] = useState([]);
 
   const handleTabsChange = (index) => {
+    console.log("***user:", user);
     setTabIndex(index);
   };
 
@@ -238,205 +240,7 @@ export const SeasonsList: React.FC<any> = ({ data }) => {
                   </HStack>
                 </Container>
               ) : (
-                <Container maxW="container.xl" marginY={12}>
-                  <TableContainer>
-                    <Table variant="simple">
-                      <Thead>
-                        <Tr background={"gray.100"}>
-                          <Th> </Th>
-                          <Th
-                            sx={{
-                              color: "gray.900",
-                              fontFamily: "Outfit, sans-serif",
-                            }}
-                          >
-                            Vendor type
-                          </Th>
-                          <Th
-                            sx={{
-                              color: "gray.900",
-                              fontFamily: "Outfit, sans-serif",
-                            }}
-                          >
-                            Meet product gap
-                          </Th>
-                          <Th
-                            sx={{
-                              color: "gray.900",
-                              fontFamily: "Outfit, sans-serif",
-                            }}
-                          >
-                            Number of markets
-                          </Th>
-                          <Th
-                            sx={{
-                              color: "gray.900",
-                              fontFamily: "Outfit, sans-serif",
-                            }}
-                          >
-                            Priority group
-                          </Th>
-                          <Th
-                            sx={{
-                              color: "gray.900",
-                              fontFamily: "Outfit, sans-serif",
-                            }}
-                          >
-                            Standing
-                          </Th>
-                          <Th
-                            sx={{
-                              color: "gray.900",
-                              fontFamily: "Outfit, sans-serif",
-                            }}
-                          >
-                            Reviewers
-                          </Th>
-                          <Th
-                            sx={{
-                              color: "gray.900",
-                              fontFamily: "Outfit, sans-serif",
-                            }}
-                          >
-                            Grade (avg)
-                          </Th>
-                          <Th
-                            sx={{
-                              color: "gray.900",
-                              fontFamily: "Outfit, sans-serif",
-                            }}
-                          >
-                            Application status
-                          </Th>
-                        </Tr>
-                      </Thead>
-                      <Tbody>
-                        {applications && applications.length
-                          ? applications.map((app) => (
-                              <Tr key={app.id}>
-                                <Td>
-                                  <Button
-                                    variant={"link"}
-                                    onClick={(e) => {
-                                      e.preventDefault();
-                                      reviewApplication(app);
-                                    }}
-                                  >
-                                    {app.vendor.name}
-                                  </Button>
-                                </Td>
-                                <Td>{app.vendor.type}</Td>
-                                <Td>
-                                  {app.vendor.products &&
-                                  app.vendor.products.length
-                                    ? app.vendor.products.map((product) => (
-                                        <Tag>{product.product}</Tag>
-                                      ))
-                                    : ""}
-                                </Td>
-                                <Td>
-                                  {app.vendor.applications &&
-                                  app.vendor.applications.length
-                                    ? app.vendor.applications.length
-                                    : "1"}{" "}
-                                  applications
-                                </Td>
-                                <Td>
-                                  {app.vendor.demographics &&
-                                  app.vendor.demographics.length
-                                    ? app.vendor.demographics.map((demo) => (
-                                        <Tag>{demo.name}</Tag>
-                                      ))
-                                    : ""}
-                                </Td>
-                                <Td>
-                                  <Tag>
-                                    {app.vendor.standing
-                                      ? app.vendor.standing
-                                      : "Good"}
-                                  </Tag>
-                                </Td>
-                                <Td>0/2 reviewers</Td>
-                                <Td>0</Td>
-                                <Td>
-                                  <Tag variant={"outline"}>Received</Tag>
-                                </Td>
-                              </Tr>
-                            ))
-                          : null}
-                      </Tbody>
-                      <Tfoot>
-                        <Tr background={"gray.100"}>
-                          <Th> </Th>
-                          <Th
-                            sx={{
-                              color: "gray.900",
-                              fontFamily: "Outfit, sans-serif",
-                            }}
-                          >
-                            Vendor type
-                          </Th>
-                          <Th
-                            sx={{
-                              color: "gray.900",
-                              fontFamily: "Outfit, sans-serif",
-                            }}
-                          >
-                            Meet product gap
-                          </Th>
-                          <Th
-                            sx={{
-                              color: "gray.900",
-                              fontFamily: "Outfit, sans-serif",
-                            }}
-                          >
-                            Number of markets
-                          </Th>
-                          <Th
-                            sx={{
-                              color: "gray.900",
-                              fontFamily: "Outfit, sans-serif",
-                            }}
-                          >
-                            Priority group
-                          </Th>
-                          <Th
-                            sx={{
-                              color: "gray.900",
-                              fontFamily: "Outfit, sans-serif",
-                            }}
-                          >
-                            Standing
-                          </Th>
-                          <Th
-                            sx={{
-                              color: "gray.900",
-                              fontFamily: "Outfit, sans-serif",
-                            }}
-                          >
-                            Reviewers
-                          </Th>
-                          <Th
-                            sx={{
-                              color: "gray.900",
-                              fontFamily: "Outfit, sans-serif",
-                            }}
-                          >
-                            Grade (avg)
-                          </Th>
-                          <Th
-                            sx={{
-                              color: "gray.900",
-                              fontFamily: "Outfit, sans-serif",
-                            }}
-                          >
-                            Application status
-                          </Th>
-                        </Tr>
-                      </Tfoot>
-                    </Table>
-                  </TableContainer>
-                </Container>
+                <ApplicationsList isTab={true} />
               )}
 
               <FooterAdmin />
