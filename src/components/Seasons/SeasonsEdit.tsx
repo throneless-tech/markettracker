@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { useAuth } from "payload/components/utilities";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import { useHistory } from "react-router-dom";
 
 // Payload imports
 import type { Contact, Product } from "payload/generated-types";
@@ -163,6 +164,7 @@ export const SeasonsEdit: React.FC<any> = (props) => {
   const { submit } = useForm();
   const { user } = useAuth();
   const { id } = useDocumentInfo();
+  const history = useHistory();
   const { data } = props;
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { value: name, setValue: setName } = useField<string>({ path: "name" });
@@ -266,7 +268,11 @@ export const SeasonsEdit: React.FC<any> = (props) => {
                           <HStack spacing={4}>
                             <Button
                               as="a"
-                              href="/admin/collections/applications"
+                              onClick={() =>
+                                history.push(
+                                  `/admin/collections/applications?season=${id}`,
+                                )
+                              }
                               size="md"
                               borderColor={"gray.700"}
                             >
