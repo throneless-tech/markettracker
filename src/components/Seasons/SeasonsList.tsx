@@ -44,8 +44,6 @@ export const SeasonsList: React.FC<any> = ({ data }) => {
   const [viewMarkets, setViewMarkets] = useState(false);
   const [applications, setApplications] = useState([]);
 
-  console.log("***props***:", data);
-
   const handleTabsChange = (index) => {
     setTabIndex(index);
   };
@@ -234,7 +232,7 @@ export const SeasonsList: React.FC<any> = ({ data }) => {
                       {seasons &&
                         seasons.length &&
                         seasons.map((season) => (
-                          <SeasonCard key={season.id} market={season} />
+                          <SeasonCard key={season.id} season={season} />
                         ))}
                     </HStack>
                   </HStack>

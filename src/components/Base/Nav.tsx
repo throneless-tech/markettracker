@@ -143,7 +143,7 @@ export const Nav: React.FC<any> = () => {
                     color: "gray.700",
                     "& path": {
                       stroke:
-                        location.pathname == "/admin/collections/markets"
+                        location.pathname == "/admin/collections/seasons"
                           ? "gray.700 !important"
                           : "",
                     },
@@ -151,7 +151,7 @@ export const Nav: React.FC<any> = () => {
                 >
                   <Stack direction="row" justify="flex-start" align="center">
                     <LinkOverlay
-                      href="/admin/collections/markets"
+                      href="/admin/collections/seasons"
                       fontFamily="Outfit"
                       fontWeight="semibold"
                       fontSize="2xl"
@@ -436,24 +436,24 @@ export const Nav: React.FC<any> = () => {
               paddingY={8}
               sx={{
                 borderLeft:
-                  location.pathname == "/admin/collections/markets"
+                  location.pathname == "/admin/collections/seasons"
                     ? "2px solid white"
                     : "",
                 borderRight:
-                  location.pathname == "/admin/collections/markets"
+                  location.pathname == "/admin/collections/seasons"
                     ? "2px solid white"
                     : "",
                 color:
-                  location.pathname == "/admin/collections/markets"
+                  location.pathname == "/admin/collections/seasons"
                     ? "gray.700"
                     : "gray.50",
                 bg:
-                  location.pathname == "/admin/collections/markets"
+                  location.pathname == "/admin/collections/seasons"
                     ? "teal.300"
                     : "gray.700",
                 "& path": {
                   stroke:
-                    location.pathname == "/admin/collections/markets"
+                    location.pathname == "/admin/collections/seasons"
                       ? "gray.700 !important"
                       : "",
                 },
@@ -464,7 +464,7 @@ export const Nav: React.FC<any> = () => {
                   sx={{ fill: "none", height: "24px", width: "24px" }}
                 />
                 <LinkOverlay
-                  href="/admin/collections/markets"
+                  href="/admin/collections/seasons"
                   fontFamily="Outfit"
                   fontWeight="semibold"
                   fontSize="2xl"

@@ -212,11 +212,6 @@ export const SeasonsEdit: React.FC<any> = (props) => {
     }
   }, [contact]);
 
-  useEffect(() => {
-    console.log("***data:", data);
-    console.log("***market:", market);
-  }, [data, market]);
-
   if (name && market) {
     return (
       <Box>
@@ -369,13 +364,13 @@ export const SeasonsEdit: React.FC<any> = (props) => {
                               color={"gray.50"}
                               fontSize="2xl"
                             >
-                              {data.market.street}
+                              {market.address.street}
                               {", "}
-                              {data.market.city}
+                              {market.address.city}
                               {", "}
-                              {data.market.state}
+                              {market.address.state}
                               {", "}
-                              {data.market.zipcode}
+                              {market.address.zipcode}
                             </Text>
                           </HStack>
                           <Spacer />
@@ -433,8 +428,8 @@ export const SeasonsEdit: React.FC<any> = (props) => {
                           >
                             Market needs:
                           </Text>
-                          {data.productGaps && data.productGaps.length ? (
-                            data.productGaps.map((need: Product) => (
+                          {productGaps && productGaps.length ? (
+                            productGaps.map((need: Product) => (
                               <Tag bg={"gray.50"} fontWeight={700}>
                                 {need.product}
                               </Tag>
@@ -1002,9 +997,15 @@ export const SeasonsEdit: React.FC<any> = (props) => {
                                       Start time
                                     </Text>
                                     <Input
-                                      value={startTime}
+                                      value={formatTime(startTime)}
                                       type="time"
-                                      onChange={(time) => setStartTime(time)}
+                                      onChange={(e) =>
+                                        setStartTime(
+                                          new Date(
+                                            e.target.value,
+                                          ).toISOString(),
+                                        )
+                                      }
                                     />
                                   </Stack>
                                   <Stack>
@@ -1016,9 +1017,15 @@ export const SeasonsEdit: React.FC<any> = (props) => {
                                       End time
                                     </Text>
                                     <Input
-                                      value={endTime}
+                                      value={formatTime(startTime)}
                                       type="time"
-                                      onChange={(time) => setEndTime(endTime)}
+                                      onChange={(e) =>
+                                        setEndTime(
+                                          new Date(
+                                            e.target.value,
+                                          ).toISOString(),
+                                        )
+                                      }
                                     />
                                   </Stack>
                                 </HStack>
