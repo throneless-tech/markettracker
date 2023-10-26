@@ -88,6 +88,7 @@ export const ReviewsEdit: React.FC<any> = () => {
   useEffect(() => {
     if (doSubmit) {
       submit();
+      history.push("/admin/collections/seasons?tab=2");
     }
   }, [doSubmit]);
 
