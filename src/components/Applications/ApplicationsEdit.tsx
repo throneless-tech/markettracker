@@ -759,11 +759,11 @@ export const ApplicationsEdit: React.FC<any> = (props) => {
             <Button
               variant={"solid"}
               as={"a"}
-              href="/admin/collections/markets?tab=2"
+              href="/admin/collections/seasons?tab=2"
             >
               Apply to another market
             </Button>
-            <Button as={"a"} href="/admin/collections/markets">
+            <Button as={"a"} href="/admin/collections/seasons">
               View my markets
             </Button>
           </HStack>
