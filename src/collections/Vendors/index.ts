@@ -252,10 +252,6 @@ export const Vendors: CollectionConfig = {
             "A local producer who makes products featuring agricultural ingredients sourced from local farms",
           value: "producer",
         },
-        {
-          label: "none of the above",
-          value: "other",
-        },
       ],
       admin: {
         description:

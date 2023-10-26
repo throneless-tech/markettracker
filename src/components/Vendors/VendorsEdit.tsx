@@ -49,6 +49,7 @@ import {
 import { Card } from "../Card";
 
 export const VendorsEdit: React.FC<any> = ({ data: vendor }) => {
+  console.log("***vendor:", vendor);
   if (vendor) {
     return (
       <Box>
@@ -1069,7 +1070,11 @@ export const VendorsEdit: React.FC<any> = ({ data: vendor }) => {
                           </AccordionButton>
                         </h2>
                         <AccordionPanel>
-                          <Checkbox>Meat</Checkbox>
+                          {vendor.products && vendor.products.length
+                            ? vendor.products.map((product) => (
+                                <Tag>{product.product}</Tag>
+                              ))
+                            : ""}
                         </AccordionPanel>
                       </>
                     )}

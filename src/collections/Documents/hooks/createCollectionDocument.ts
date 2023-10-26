@@ -167,7 +167,7 @@ export const createCollectionDocument: CollectionAfterChangeHook = async (
                 state: address.state,
                 zipcode: address.zip,
               },
-              type: source.Farm === "YES" ? "farmer" : "other",
+              type: source.Farm === "YES" ? "farmer" : "producer",
               phoneNumber: source.Phone,
               isSeparateBilling: false,
               description: source["Company Description"] || "None",

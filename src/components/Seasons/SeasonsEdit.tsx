@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { useAuth } from "payload/components/utilities";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import { useHistory } from "react-router-dom";
 
 // Payload imports
 import type { Contact, Product } from "payload/generated-types";
@@ -163,6 +164,7 @@ export const SeasonsEdit: React.FC<any> = (props) => {
   const { submit } = useForm();
   const { user } = useAuth();
   const { id } = useDocumentInfo();
+  const history = useHistory();
   const { data } = props;
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { value: name, setValue: setName } = useField<string>({ path: "name" });
@@ -266,7 +268,11 @@ export const SeasonsEdit: React.FC<any> = (props) => {
                           <HStack spacing={4}>
                             <Button
                               as="a"
-                              href="/admin/collections/applications"
+                              onClick={() =>
+                                history.push(
+                                  `/admin/collections/applications?season=${id}`,
+                                )
+                              }
                               size="md"
                               borderColor={"gray.700"}
                             >
@@ -313,8 +319,16 @@ export const SeasonsEdit: React.FC<any> = (props) => {
                               textStyle="bodyMain"
                               textTransform={"uppercase"}
                             >
-                              {formatDate(startDate)}-{formatDate(endDate)}{" "}
-                              {formatTime(startTime)}-{formatTime(endTime)}
+                              {startDate && endDate && (
+                                <>
+                                  {formatDate(startDate)}-{formatDate(endDate)}{" "}
+                                </>
+                              )}
+                              {startTime && endTime && (
+                                <>
+                                  {formatTime(startTime)}-{formatTime(endTime)}
+                                </>
+                              )}
                             </Text>
                           </HStack>
                           {isAccepting ? (
@@ -374,37 +388,37 @@ export const SeasonsEdit: React.FC<any> = (props) => {
                             </Text>
                           </HStack>
                           <Spacer />
-                          <HStack>
-                            <Text
-                              as={"span"}
-                              color={"gray.50"}
-                              fontSize="2xl"
-                              fontWeight={700}
-                              textStyle="bodyMain"
-                            >
-                              Manager:
-                            </Text>
-                            <Text
-                              textStyle="bodyMain"
-                              as={"span"}
-                              color={"gray.50"}
-                              fontSize="2xl"
-                            >
-                              {data.market.contact
-                                ? data.market.contact.name
-                                : ""}
-                            </Text>
-                            <Text
-                              textStyle="bodyMain"
-                              as={"span"}
-                              color={"gray.50"}
-                              fontSize="2xl"
-                            >
-                              {data.market.contact
-                                ? data.market.contact.phone
-                                : ""}
-                            </Text>
-                          </HStack>
+                          {data.market.contact && data.market.contact.name ? (
+                            <HStack>
+                              <Text
+                                as={"span"}
+                                color={"gray.50"}
+                                fontSize="2xl"
+                                fontWeight={700}
+                                textStyle="bodyMain"
+                              >
+                                Operator:
+                              </Text>
+                              <Text
+                                textStyle="bodyMain"
+                                as={"span"}
+                                color={"gray.50"}
+                                fontSize="2xl"
+                              ></Text>
+                              <Text
+                                textStyle="bodyMain"
+                                as={"span"}
+                                color={"gray.50"}
+                                fontSize="2xl"
+                              >
+                                {data.market.contact
+                                  ? data.market.contact.phone
+                                  : ""}
+                              </Text>
+                            </HStack>
+                          ) : (
+                            ""
+                          )}
                         </Flex>
                         <Text
                           textStyle="bodyMain"
@@ -859,7 +873,7 @@ export const SeasonsEdit: React.FC<any> = (props) => {
                                       textTransform={"uppercase"}
                                       width={"160px"}
                                     >
-                                      Managers
+                                      Operators
                                     </Text>
                                     <Divider
                                       sx={{
@@ -873,7 +887,7 @@ export const SeasonsEdit: React.FC<any> = (props) => {
                                     marginTop={4}
                                     fontSize={"md"}
                                   >
-                                    Select anyone who will be a manager at{" "}
+                                    Select anyone who will be an operator at{" "}
                                     {data.name} this season.
                                   </Text>
                                   <CheckboxGroup
@@ -997,13 +1011,21 @@ export const SeasonsEdit: React.FC<any> = (props) => {
                                       Start time
                                     </Text>
                                     <Input
-                                      value={formatTime(startTime)}
+                                      value={
+                                        startTime
+                                          ? new Date(
+                                              startTime,
+                                            ).toLocaleTimeString("en-US", {
+                                              hour: "2-digit",
+                                              minute: "2-digit",
+                                              hour12: false,
+                                            })
+                                          : null
+                                      }
                                       type="time"
                                       onChange={(e) =>
                                         setStartTime(
-                                          new Date(
-                                            e.target.value,
-                                          ).toISOString(),
+                                          e.target.valueAsDate.toISOString(),
                                         )
                                       }
                                     />
@@ -1017,13 +1039,21 @@ export const SeasonsEdit: React.FC<any> = (props) => {
                                       End time
                                     </Text>
                                     <Input
-                                      value={formatTime(startTime)}
+                                      value={
+                                        endTime
+                                          ? new Date(
+                                              endTime,
+                                            ).toLocaleTimeString("en-US", {
+                                              hour: "2-digit",
+                                              minute: "2-digit",
+                                              hour12: false,
+                                            })
+                                          : null
+                                      }
                                       type="time"
                                       onChange={(e) =>
                                         setEndTime(
-                                          new Date(
-                                            e.target.value,
-                                          ).toISOString(),
+                                          e.target.valueAsDate.toISOString(),
                                         )
                                       }
                                     />
@@ -1129,7 +1159,7 @@ export const SeasonsEdit: React.FC<any> = (props) => {
                         textTransform={"uppercase"}
                         width={"700px"}
                       >
-                        Managers scheduled for this market
+                        Operators scheduled for this market
                       </Text>
                       <Divider
                         sx={{ borderColor: "gray.600", borderBottomWidth: 2 }}
