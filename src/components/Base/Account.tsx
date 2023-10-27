@@ -69,9 +69,9 @@ export const Account: React.FC<any> = () => {
   });
   const [vendor, setShadowVendor] = useState<Vendor>();
 
-  console.log("***isLoaded:", isLoaded);
-  console.log("***Role:", role);
-  console.log("***Vendor:", vendor);
+  // console.log("***isLoaded:", isLoaded);
+  // console.log("***Role:", role);
+  // console.log("***Vendor:", vendor);
 
   const debounceVendor = useDebouncedCallback((vendor) => {
     setRealVendor(vendor);

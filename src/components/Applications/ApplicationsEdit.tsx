@@ -92,15 +92,25 @@ export const ApplicationsEdit: React.FC<any> = (props) => {
   const { submit } = useForm();
   const { id } = useDocumentInfo();
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const [contactName, setContactName] = useState("");
+  const [contactEmail, setContactEmail] = useState("");
+  const [contactPhone, setContactPhone] = useState("");
+  const [contactType, setContactType] = useState([]);
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
   const [numMonths, setNumMonths] = useState(1);
   const [marketDates, setMarketDates] = useState([]);
   const [selectedDates, setSelectedDates] = useState([]);
   const [marketDatesObjects, setMarketDatesObjects] = useState([]);
-  const [application, setApplication] = useState(null);
   const [selectAllDates, setSelectAllDates] = useState(false);
   const [doSubmit, setDoSubmit] = useState(false);
+
+  const handleContactNameChange = (event) => setContactName(event.target.value);
+  const handleContactEmailChange = (event) =>
+    setContactEmail(event.target.value);
+  const handleContactPhoneChange = (event) =>
+    setContactPhone(event.target.value);
+  const handleContactTypeChange = (newValue) => setContactType(newValue);
 
   const { value: isCSA, setValue: setIsCSA } = useField<boolean>({
     path: "isCSA",
@@ -129,6 +139,24 @@ export const ApplicationsEdit: React.FC<any> = (props) => {
     history.push("/admin/collections/markets");
   };
 
+  const onSave = () => {
+    const contact = {
+      name: contactName,
+      email: contactEmail,
+      phone: contactPhone,
+      type: contactType,
+    };
+
+    let allContacts = [];
+
+    contacts
+      ? (allContacts = [contact, ...contacts])
+      : (allContacts = [contact]);
+
+    setContacts(allContacts);
+    onClose();
+  };
+
   const submitForm = () => {
     if (!id && shadowSeason && shadowSeason.id) {
       setSeason(shadowSeason);
@@ -139,8 +167,11 @@ export const ApplicationsEdit: React.FC<any> = (props) => {
   useEffect(() => {
     if (doSubmit) {
       submit();
+      history.push("/admin/collections/markets");
     }
   }, [doSubmit]);
+
+  useEffect(() => {}, [contactName, contactEmail, contactPhone, contactType]);
 
   const monthDiff = (d1, d2) => {
     let months;
@@ -667,16 +698,24 @@ export const ApplicationsEdit: React.FC<any> = (props) => {
                     </Tag>
                   </Checkbox>
                 ))}
+                {contactName ? (
+                  <Checkbox value={contactName}>
+                    {contactName}
+                    <Tag bg={"gray.50"} fontWeight={700}>
+                      {contactType}
+                    </Tag>
+                  </Checkbox>
+                ) : null}
               </HStack>
             </CheckboxGroup>
 
-            {/*<Button
+            <Button
               onClick={onOpen}
               marginTop={4}
               rightIcon={<ArrowForwardIcon />}
             >
               Add a contact
-            </Button>*/}
+            </Button>
             <Modal isOpen={isOpen} onClose={onClose} size={"xl"}>
               <ModalOverlay />
               <ModalContent background={"gray.600"} color={"gray.50"}>
@@ -693,15 +732,29 @@ export const ApplicationsEdit: React.FC<any> = (props) => {
                 <ModalBody>
                   <FormControl marginBottom={4}>
                     <FormLabel>Contact name (required)</FormLabel>
-                    <Input />
+                    <Input
+                      color={"gray.700"}
+                      value={contactName}
+                      onChange={handleContactNameChange}
+                    />
                   </FormControl>
                   <FormControl marginBottom={4}>
                     <FormLabel>Contact email address (required)</FormLabel>
-                    <Input type="email" />
+                    <Input
+                      color={"gray.700"}
+                      value={contactEmail}
+                      onChange={handleContactEmailChange}
+                      type="email"
+                    />
                   </FormControl>
                   <FormControl marginBottom={6}>
                     <FormLabel>Contact phone number (required)</FormLabel>
-                    <Input type="number" />
+                    <Input
+                      color={"gray.700"}
+                      value={contactPhone}
+                      onChange={handleContactPhoneChange}
+                      type="number"
+                    />
                   </FormControl>
                   <FormControl marginBottom={4}>
                     <FormLabel>Type of contact</FormLabel>
@@ -709,17 +762,27 @@ export const ApplicationsEdit: React.FC<any> = (props) => {
                       Select the type(s) that best describes this contact’s
                       responsibility for the business
                     </FormHelperText>
-                    <CheckboxGroup colorScheme="brown" defaultValue={[]}>
+                    <CheckboxGroup
+                      colorScheme="brown"
+                      value={contactType}
+                      onChange={handleContactTypeChange}
+                      defaultValue={["at_market"]}
+                    >
                       <Stack spacing={[1, 5]} direction={["column", "row"]}>
                         <Checkbox value="primary">Primary</Checkbox>
                         <Checkbox value="billing">Billing/financial</Checkbox>
-                        <Checkbox value="market">At-market</Checkbox>
+                        <Checkbox value="at_market">At-market</Checkbox>
                       </Stack>
                     </CheckboxGroup>
                   </FormControl>
                 </ModalBody>
                 <ModalFooter>
-                  <Button colorScheme="brown" variant="solid" mr={3}>
+                  <Button
+                    onClick={onSave}
+                    colorScheme="brown"
+                    variant="solid"
+                    mr={3}
+                  >
                     Save
                   </Button>
                   <Button
