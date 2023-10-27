@@ -129,9 +129,6 @@ export const ApplicationsEdit: React.FC<any> = (props) => {
   const { value: vendor, setValue: setVendor } = useField<Vendor>({
     path: "vendor",
   });
-  const { value: products, setValue: setProducts } = useField<string>({
-    path: "products",
-  });
 
   const [shadowSeason, setShadowSeason] = useState<Season>();
 
@@ -203,6 +200,7 @@ export const ApplicationsEdit: React.FC<any> = (props) => {
       datesArray.push({ date: dateString });
       selectedDatesArray = [date, ...selectedDates];
     }
+    console.log("***datesArray:", datesArray);
     setDates(datesArray);
     setSelectedDates(selectedDatesArray);
   };
@@ -222,49 +220,36 @@ export const ApplicationsEdit: React.FC<any> = (props) => {
   }, [selectAllDates]);
 
   useEffect(() => {
-    if (!id && history.location.state) {
-      setShadowSeason(history.location.state);
+    if (!id && history.location.state.market) {
+      if (history.location.state.id) {
+        setShadowSeason(history.location.state);
+      }
 
       if (
-        history.location.state.seasons &&
-        history.location.state.seasons.length
+        history.location.state.marketDates.startDate &&
+        history.location.state.marketDates.startDate
       ) {
-        if (history.location.state.seasons[0].id) {
-          setShadowSeason(history.location.state.seasons[0]);
-        }
+        let firstDate = new Date(history.location.state.marketDates.startDate);
+        let lastDate = new Date(history.location.state.marketDates.endDate);
+        setStartDate(new Date(history.location.state.marketDates.startDate));
+        setEndDate(new Date(history.location.state.marketDates.endDate));
 
-        if (
-          history.location.state.seasons[0].marketDates.startDate &&
-          history.location.state.seasons[0].marketDates.startDate
-        ) {
-          let firstDate = new Date(
-            history.location.state.seasons[0].marketDates.startDate,
-          );
-          let lastDate = new Date(
-            history.location.state.seasons[0].marketDates.endDate,
-          );
-          setStartDate(
-            new Date(history.location.state.seasons[0].marketDates.startDate),
-          );
-          setEndDate(
-            new Date(history.location.state.seasons[0].marketDates.endDate),
-          );
+        let calLength = monthDiff(firstDate, lastDate);
+        setNumMonths(calLength);
 
-          let calLength = monthDiff(firstDate, lastDate);
-          setNumMonths(calLength);
+        let days = [];
+        let objectDaysArray = [];
 
-          let days = [];
-          let objectDaysArray = [];
-
-          for (var d = firstDate; d <= lastDate; d.setDate(d.getDate() + 1)) {
-            if (history.location.state.days.includes(dayNames[d.getDay()])) {
-              days.push(new Date(d));
-              objectDaysArray.push({ date: new Date(d) });
-            }
+        for (var d = firstDate; d <= lastDate; d.setDate(d.getDate() + 1)) {
+          if (
+            history.location.state.market.days.includes(dayNames[d.getDay()])
+          ) {
+            days.push(new Date(d));
+            objectDaysArray.push({ date: new Date(d) });
           }
-          setMarketDatesObjects(objectDaysArray);
-          setMarketDates(days);
         }
+        setMarketDatesObjects(objectDaysArray);
+        setMarketDates(days);
       }
     }
   }, [history]);

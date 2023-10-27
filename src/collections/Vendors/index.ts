@@ -22,7 +22,7 @@ export const Vendors: CollectionConfig = {
       },
     },
     pagination: {
-      defaultLimit: 100,
+      defaultLimit: 9999,
     },
     useAsTitle: "name",
   },
