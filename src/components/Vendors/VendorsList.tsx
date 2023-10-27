@@ -339,12 +339,17 @@ export const VendorsList: React.FC<any> = (props) => {
                               </Button>
                             </Td>
                             <Td>{app.vendor.type}</Td>
-                            <Td>
-                              {app.vendor.products && app.vendor.products.length
-                                ? app.vendor.products.map((product) => (
-                                    <Tag>{product.product}</Tag>
-                                  ))
-                                : ""}
+                            <Td maxW={400}>
+                              <HStack sx={{ flexWrap: "wrap" }}>
+                                {app.vendor.products &&
+                                app.vendor.products.length
+                                  ? app.vendor.products.map((product) => (
+                                      <Tag key={product.id} marginRight={1}>
+                                        {product.product}
+                                      </Tag>
+                                    ))
+                                  : ""}
+                              </HStack>
                             </Td>
                             <Td>
                               {app.vendor.applications &&
@@ -353,13 +358,15 @@ export const VendorsList: React.FC<any> = (props) => {
                                 : "1"}{" "}
                               applications
                             </Td>
-                            <Td>
-                              {app.vendor.demographics &&
-                              app.vendor.demographics.length
-                                ? app.vendor.demographics.map((demo) => (
-                                    <Tag>{demo.name}</Tag>
-                                  ))
-                                : ""}
+                            <Td maxW={400}>
+                              <HStack sx={{ flexWrap: "wrap" }}>
+                                {app.vendor.demographics &&
+                                app.vendor.demographics.length
+                                  ? app.vendor.demographics.map((demo) => (
+                                      <Tag key={demo.id}>{demo.name}</Tag>
+                                    ))
+                                  : ""}
+                              </HStack>
                             </Td>
                             <Td>
                               <Tag>
