@@ -6,12 +6,19 @@ import {
   afterReadApplication,
   beforeValidateApplication,
 } from "./hooks/populateApplication";
+
 import { ReviewsEdit } from "../../components/Reviews/ReviewsEdit";
+import {
+  afterChangeAddToApplication,
+  afterDeleteRemoveFromApplication,
+} from "./hooks/addToApplication";
 
 export const Reviews: CollectionConfig = {
   slug: "reviews",
   hooks: {
     afterRead: [afterReadApplication],
+    afterChange: [afterChangeAddToApplication],
+    afterDelete: [afterDeleteRemoveFromApplication],
     beforeChange: [createReviewer],
     beforeValidate: [beforeValidateApplication],
   },

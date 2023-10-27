@@ -8,6 +8,7 @@ import type { Application } from "payload/generated-types";
 export const afterReadApplications: CollectionAfterReadHook = async ({
   doc, // full document data
 }) => {
+  console.log("doc.applications", doc.applications);
   if (
     doc.applications &&
     doc.applications.length &&
@@ -19,12 +20,13 @@ export const afterReadApplications: CollectionAfterReadHook = async ({
       where: { id: { in: doc.applications.join(",") } },
     });
     return { ...doc, applications: applications.docs };
-  } else if (!doc.applications) {
+  } else if (!doc.applications || !doc.applications.length) {
     const applications = await payload.find({
       collection: "applications",
       depth: 0,
       where: { vendor: { equals: doc.id } },
     });
+    console.log("***applications:", applications.docs);
     return { ...doc, applications: applications.docs };
   }
   return doc;

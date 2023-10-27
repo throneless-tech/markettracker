@@ -12,7 +12,7 @@ export const createFieldVendor: ApplicationFieldHook = ({
   operation,
   req,
 }) => {
-  if (["create", "update"].includes(operation)) {
+  if (["create"].includes(operation)) {
     return req.user.vendor.id;
   }
   return value;

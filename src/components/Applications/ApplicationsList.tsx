@@ -27,7 +27,7 @@ import {
 import StarIcon from "../../assets/icons/star.js";
 
 // types
-import type { Application, Product, Season } from "payload/generated-types";
+import type { Application, Review, Season } from "payload/generated-types";
 
 export const ApplicationsList: React.FC<any> = ({ data, isTab }) => {
   const history = useHistory();
@@ -89,6 +89,21 @@ export const ApplicationsList: React.FC<any> = ({ data, isTab }) => {
       }
     }
   }, [isTab, data, season]);
+
+  const calculateScore = (reviews: Review[]) => {
+    const total = reviews.reduce((sum, review) => {
+      sum =
+        sum +
+        review.attendanceScore +
+        review.demographicScore +
+        review.productScore +
+        review.saturationScore +
+        review.setupScore +
+        review.vendorScore;
+      return sum;
+    }, 0);
+    return Math.round(total / reviews.length);
+  };
 
   console.log("***applications***:", applications);
   console.log("***season***:", season);
@@ -269,7 +284,11 @@ export const ApplicationsList: React.FC<any> = ({ data, isTab }) => {
                                 : 0}
                               /2 reviewers
                             </Td>
-                            <Td>0</Td>
+                            <Td>
+                              {app.reviews && app.reviews.length
+                                ? calculateScore(app.reviews as Review[])
+                                : 0}
+                            </Td>
                             <Td>
                               <Tag variant={"outline"}>Received</Tag>
                             </Td>
