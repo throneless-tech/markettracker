@@ -1,12 +1,18 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { useHistory, useLocation } from 'react-router-dom';
+import { useHistory, useLocation } from "react-router-dom";
 import DatePicker from "react-datepicker";
 
 // Payload imports
 import { useAuth, useDocumentInfo } from "payload/components/utilities";
 import { useField, useForm } from "payload/components/forms";
-import type { Contact, Product, Season, Vendor } from "payload/generated-types";
+import type {
+  Contact,
+  Market,
+  Product,
+  Season,
+  Vendor,
+} from "payload/generated-types";
 
 // Chakra imports
 import {
@@ -313,7 +319,9 @@ export const ApplicationsEdit: React.FC<any> = (props) => {
                 </Flex>
                 <Flex marginTop={4}>
                   <HStack>
-                    {shadowSeason.marketTime ? (
+                    {shadowSeason.marketTime &&
+                    shadowSeason.market &&
+                    typeof shadowSeason.market === "object" ? (
                       <Text
                         as={"span"}
                         color={"gray.50"}
@@ -323,7 +331,10 @@ export const ApplicationsEdit: React.FC<any> = (props) => {
                         sx={{ textTransform: "capitalize" }}
                       >
                         {shadowSeason.market.days.map((day, index) => {
-                          if (index == shadowSeason.market.days.length - 1) {
+                          if (
+                            index ==
+                            (shadowSeason.market as Market).days.length - 1
+                          ) {
                             return day;
                           } else {
                             return `${day}, `;
