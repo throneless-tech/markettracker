@@ -649,7 +649,7 @@ export const SeasonsEdit: React.FC<any> = (props) => {
                                     onChange={(newValue) =>
                                       setMarket({
                                         ...market,
-                                        days: newValue,
+                                        days: [newValue],
                                       })
                                     }
                                     value={
@@ -687,7 +687,7 @@ export const SeasonsEdit: React.FC<any> = (props) => {
                                         colorScheme="green"
                                         value="saturday"
                                       >
-                                        Sarturday
+                                        Saturday
                                       </Radio>
                                       <Radio colorScheme="green" value="sunday">
                                         Sunday
