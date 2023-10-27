@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { useAuth } from "payload/components/utilities";
 import { useHistory } from "react-router-dom";
+import type { Vendor } from "payload/generated-types";
 
 import {
   Box,
@@ -143,7 +144,20 @@ export const SeasonsList: React.FC<any> = ({ data }) => {
                 </Flex>
                 <Divider color="gray.900" borderBottomWidth={2} opacity={1} />
               </Container>
-              {user.role == "vendor" && !viewMarkets ? (
+              {user.role == "vendor" &&
+              (user.vendor as Vendor).applications &&
+              (user.vendor as Vendor).applications.length ? (
+                (user.vendor as Vendor).applications.map((application) => (
+                  <>
+                    <SeasonCard
+                      key={application.id}
+                      season={application.season}
+                      isApplication
+                      status={application.status}
+                    />
+                  </>
+                ))
+              ) : user.role == "vendor" && !viewMarkets ? (
                 <Container maxW="container.xl" marginY={12}>
                   <Box
                     background="green.600"
@@ -189,22 +203,7 @@ export const SeasonsList: React.FC<any> = ({ data }) => {
                       {seasons &&
                         seasons.length &&
                         seasons.map((season) => (
-                          <SeasonCard
-                            key={season.id}
-                            season={season}
-                            description="Blurb about the market goes here lorem ipsum dolor emet."
-                            openingDay="Sat, April 16, 2024"
-                            closingDay="Sat, December 31, 2024"
-                            managerName="Alex"
-                            managerPhone="202-555-1234"
-                            marketNeeds={[
-                              "vegetables",
-                              "coffee",
-                              "meat",
-                              "yogurt",
-                              "fruit",
-                            ]}
-                          />
+                          <SeasonCard key={season.id} season={season} />
                         ))}
                     </HStack>
                   </HStack>

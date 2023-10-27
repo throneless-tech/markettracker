@@ -27,7 +27,7 @@ import StarIcon from "../../assets/icons/star.js";
 export const SeasonCard: React.FC<any> = (props) => {
   const { user } = useAuth();
   const history = useHistory();
-  const { season } = props;
+  const { season, isApplication, status } = props;
 
   const viewSeason = (season) => {
     history.push({
@@ -72,7 +72,13 @@ export const SeasonCard: React.FC<any> = (props) => {
         </Box>
       ) : null}
       <Box
-        backgroundColor={season.isAccepting ? "green.600" : "gray.700"}
+        backgroundColor={
+          season.isAccepting
+            ? "green.600"
+            : isApplication
+            ? "yellow.700"
+            : "gray.700"
+        }
         padding={4}
       >
         <HStack align={"flex-start"}>
@@ -227,6 +233,7 @@ export const SeasonCard: React.FC<any> = (props) => {
           user.role == "vendor" ? (
             <Center marginBottom={2}>
               <Button
+                isDisabled={isApplication}
                 rightIcon={<ArrowForwardIcon />}
                 variant={"solid"}
                 onClick={(e) => {
@@ -234,7 +241,7 @@ export const SeasonCard: React.FC<any> = (props) => {
                   applyToSeason(season);
                 }}
               >
-                Apply
+                {isApplication ? status : "Apply"}
               </Button>
             </Center>
           ) : (
