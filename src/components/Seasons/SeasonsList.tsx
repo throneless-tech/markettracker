@@ -46,15 +46,7 @@ export const SeasonsList: React.FC<any> = ({ data }) => {
   const [applications, setApplications] = useState([]);
 
   const handleTabsChange = (index) => {
-    console.log("***user:", user);
     setTabIndex(index);
-  };
-
-  const reviewApplication = (app) => {
-    history.push({
-      pathname: `/admin/collections/reviews/create`,
-      state: app,
-    });
   };
 
   useEffect(() => {

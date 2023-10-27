@@ -210,18 +210,6 @@ export const MarketsList: React.FC<any> = (props) => {
                         <MarketCard
                           key={market.id}
                           market={market}
-                          description="Blurb about the market goes here lorem ipsum dolor emet."
-                          openingDay="Sat, April 16, 2024"
-                          closingDay="Sat, December 31, 2024"
-                          managerName="Alex"
-                          managerPhone="202-555-1234"
-                          marketNeeds={[
-                            "vegetables",
-                            "coffee",
-                            "meat",
-                            "yogurt",
-                            "fruit",
-                          ]}
                         />
                       ))}
                   </HStack>

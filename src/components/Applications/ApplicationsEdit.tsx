@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { useHistory } from "react-router-dom";
+import { useHistory, useLocation } from 'react-router-dom';
 import DatePicker from "react-datepicker";
 
 // Payload imports
@@ -86,7 +86,6 @@ export const ApplicationsEdit: React.FC<any> = (props) => {
   const { submit } = useForm();
   const { id } = useDocumentInfo();
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const [market, setMarket] = useState(null);
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
   const [numMonths, setNumMonths] = useState(1);
@@ -187,7 +186,7 @@ export const ApplicationsEdit: React.FC<any> = (props) => {
 
   useEffect(() => {
     if (!id && history.location.state) {
-      setMarket(history.location.state);
+      setShadowSeason(history.location.state);
 
       if (
         history.location.state.seasons &&
@@ -324,7 +323,7 @@ export const ApplicationsEdit: React.FC<any> = (props) => {
                         sx={{ textTransform: "capitalize" }}
                       >
                         {shadowSeason.market.days.map((day, index) => {
-                          if (index == market.days.length - 1) {
+                          if (index == shadowSeason.market.days.length - 1) {
                             return day;
                           } else {
                             return `${day}, `;
