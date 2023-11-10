@@ -9,7 +9,6 @@ import {
   Flex,
   Heading,
   HStack,
-  Link,
   Spacer,
   Table,
   TableContainer,
@@ -35,7 +34,7 @@ export const ApplicationsList: React.FC<any> = ({ data, isTab }) => {
   const [applications, setApplications] = useState<Application[]>([]);
   const [season, setSeason] = useState<Season>();
 
-  const reviewApplication = (app) => {
+  const reviewApplication = (app: Application) => {
     history.push({
       pathname: `/admin/collections/reviews/create`,
       state: app,
@@ -43,7 +42,7 @@ export const ApplicationsList: React.FC<any> = ({ data, isTab }) => {
   };
 
   useEffect(() => {
-    const getSeason = async (id) => {
+    const getSeason = async (id: string) => {
       try {
         const res = await fetch(`/api/seasons/${id}`);
         const season = await res.json();
@@ -81,7 +80,11 @@ export const ApplicationsList: React.FC<any> = ({ data, isTab }) => {
       if (season) {
         setApplications(
           data.docs.filter(
-            (doc) => doc.season && doc.season.id && doc.season.id === season.id,
+            (doc: Application) =>
+              doc.season &&
+              typeof doc.season === "object" &&
+              doc.season.id &&
+              doc.season.id === season.id,
           ),
         );
       } else {
@@ -245,7 +248,7 @@ export const ApplicationsList: React.FC<any> = ({ data, isTab }) => {
                               {app.vendor.demographics &&
                               typeof app.vendor.demographics === "object"
                                 ? Object.entries(app.vendor.demographics).map(
-                                    (key, value) => {
+                                    (key, _) => {
                                       if (key[1] == "yes") {
                                         if (key[0] == "firstGeneration") {
                                           return (

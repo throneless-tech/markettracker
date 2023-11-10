@@ -4,6 +4,7 @@ import {
   CollectionBeforeValidateHook,
 } from "payload/types";
 import { Contact } from "payload/generated-types";
+import { usePayloadAPI } from "payload/dist/exports/components/hooks";
 
 export const afterReadVendor: CollectionAfterReadHook = async ({
   doc, // full document data
