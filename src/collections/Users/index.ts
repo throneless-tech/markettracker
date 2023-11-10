@@ -67,8 +67,8 @@ export const Users: CollectionConfig = {
       },
     },
   ],
-  hooks: {
-    afterRead: [afterReadVendor],
-    beforeValidate: [beforeValidateVendor],
-  },
+  // hooks: {
+  //   afterRead: [afterReadVendor],
+  //   beforeValidate: [beforeValidateVendor],
+  // },
 };

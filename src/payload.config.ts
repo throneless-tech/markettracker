@@ -1,4 +1,7 @@
 import { buildConfig } from "payload/config";
+import { mongooseAdapter } from "@payloadcms/db-mongodb";
+import { slateEditor } from "@payloadcms/richtext-slate";
+import { webpackBundler } from "@payloadcms/bundler-webpack";
 import { payloadCloud } from "@payloadcms/plugin-cloud";
 import path from "path";
 
@@ -46,6 +49,7 @@ export default buildConfig({
   //serverURL: "http://locahost:3000",
   admin: {
     user: Users.slug,
+    bundler: webpackBundler(),
     css: path.resolve(__dirname, "styles/main.scss"),
     components: {
       beforeLogin: [BeforeLogin],
@@ -59,15 +63,13 @@ export default buildConfig({
       },
       Nav: Nav,
       providers: [ThemeProvider],
-      routes: [
-        {
-          Component: Register,
-          path: "/register",
-        },
-      ],
       views: {
         Account: withAccountContext(Account),
         Dashboard: Dashboard,
+        Register: {
+          Component: Register,
+          path: "/register",
+        },
       },
     },
     meta: {
@@ -105,7 +107,11 @@ export default buildConfig({
     // Examples,
   ],
   cors: ["*", "https://markettracker.payloadcms.app"],
+  db: mongooseAdapter({
+    url: process.env.DATABASE_URI,
+  }),
   debug: true,
+  editor: slateEditor({}),
   plugins: [payloadCloud()],
   typescript: {
     outputFile: path.resolve(__dirname, "payload-types.ts"),

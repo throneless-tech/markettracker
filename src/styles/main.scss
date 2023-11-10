@@ -6,15 +6,24 @@ p {
   overflow-x: hidden;
 }
 
+.app-header {
+  display: none;
+}
+
 .nav {
   height: unset;
   position: relative;
+  transform: unset;
   width: 100%;
 
   &:before,
   &:after {
     content: unset;
   }
+}
+
+#nav-toggler {
+  display: none;
 }
 
 .nav__scroll,
@@ -24,7 +33,14 @@ p {
 
 .template-default {
   display: block;
+  // overflow-x: hidden;
   padding-top: 0;
+  transform: unset;
+  width: 100%;
+
+  & .template-default__wrap {
+    transform: unset;
+  }
 }
 
 .login {

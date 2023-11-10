@@ -64,14 +64,15 @@ export const Account: React.FC<any> = () => {
   const { value: email } = useField<string>({
     path: "email",
   });
-  const { value: realVendor, setValue: setRealVendor } = useField<Vendor>({
+  const { value: realVendor, setValue: setRealVendor } = useField<string>({
     path: "vendor",
   });
   const [vendor, setShadowVendor] = useState<Vendor>();
 
-  // console.log("***isLoaded:", isLoaded);
-  // console.log("***Role:", role);
-  // console.log("***Vendor:", vendor);
+  console.log("***isLoaded:", isLoaded);
+  console.log("***Role:", role);
+  console.log("***Vendor:", vendor);
+  console.log("***realVendor:", realVendor);
 
   const debounceVendor = useDebouncedCallback((vendor) => {
     setRealVendor(vendor);

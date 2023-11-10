@@ -16,7 +16,6 @@ app.get("/", (_, res) => {
 // Initialize Payload
 payload.init({
   secret: process.env.PAYLOAD_SECRET,
-  mongoURL: process.env.MONGODB_URI,
   express: app,
   loggerOptions: { level: "debug" },
   onInit: () => {
