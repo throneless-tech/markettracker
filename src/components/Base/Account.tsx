@@ -90,7 +90,7 @@ export const Account: React.FC<any> = () => {
   useEffect(() => {
     if (role && role === "vendor") {
       if (name && email && realVendor && !isLoaded) {
-        const temp = realVendor;
+        const temp: any = realVendor;
         setShadowVendor(temp);
         setIsLoaded(true);
       }

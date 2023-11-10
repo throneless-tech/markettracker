@@ -57,9 +57,10 @@ export const MarketsList: React.FC<any> = (props) => {
   };
 
   useEffect(() => {
+    const vend: any = user.vendor
     const query = {
       vendor: {
-        equals: user.vendor.id,
+        equals: vend.id,
       }
     }
     const getApps = async () => {
