@@ -42,7 +42,7 @@ export const MarketsList: React.FC<any> = (props) => {
   const history = useHistory();
   const [tabIndex, setTabIndex] = useState(0);
   const [markets, setMarkets] = useState([]);
-  const [viewMarkets, setViewMarkets] = useState(false);
+  const [openMarkets, setOpenMarkets] = useState([]);
   const [applications, setApplications] = useState([]);
 
   const handleTabsChange = (index) => {
@@ -97,11 +97,14 @@ export const MarketsList: React.FC<any> = (props) => {
   }, []);
 
   useEffect(() => {
-    console.log(applications);
+    if (applications && markets) {
+      let result = markets.filter(market => !applications.some(app => market.id === app.season.market.id));
+      setOpenMarkets(result);
+    }
     
-  }, [applications])
+  }, [applications, markets])
 
-  useEffect(() => {}, [applications, tabIndex]);
+  useEffect(() => {}, [applications, openMarkets, tabIndex]);
 
   return (
     <>
@@ -250,9 +253,9 @@ export const MarketsList: React.FC<any> = (props) => {
           </Text>
         </Stack> */}
                   <HStack align={"flex-start"} wrap={"wrap"} spacing={6}>
-                    {markets &&
-                      markets.length &&
-                      markets.map((market) => (
+                    {openMarkets &&
+                      openMarkets.length &&
+                      openMarkets.map((market) => (
                         <MarketCard key={market.id} market={market} />
                       ))}
                   </HStack>
