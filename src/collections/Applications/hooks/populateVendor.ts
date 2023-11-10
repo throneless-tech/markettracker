@@ -11,7 +11,7 @@ export const afterReadVendor: CollectionAfterReadHook = async ({
     const vendor = await payload.findByID({
       id: doc.vendor,
       collection: "vendors",
-      depth: 1,
+      depth: 2,
     });
     return { ...doc, vendor: vendor };
   }

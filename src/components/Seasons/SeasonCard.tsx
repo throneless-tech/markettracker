@@ -234,7 +234,7 @@ export const SeasonCard: React.FC<any> = (props) => {
             <Center marginBottom={2}>
               <Button
                 isDisabled={isApplication}
-                rightIcon={<ArrowForwardIcon />}
+                rightIcon={isApplication ? null : <ArrowForwardIcon />}
                 variant={"solid"}
                 onClick={(e) => {
                   e.preventDefault;

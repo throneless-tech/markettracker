@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { useAuth } from "payload/components/utilities";
 import { useHistory } from "react-router-dom";
+import qs from 'qs'
 
 import {
   Box,
@@ -33,6 +34,7 @@ import {
 
 //components
 import { MarketCard } from "./MarketCard";
+import { SeasonCard } from "../Seasons/SeasonCard";
 import { FooterAdmin } from "../FooterAdmin";
 
 export const MarketsList: React.FC<any> = (props) => {
@@ -55,8 +57,20 @@ export const MarketsList: React.FC<any> = (props) => {
   };
 
   useEffect(() => {
+    const query = {
+      vendor: {
+        equals: user.vendor.id,
+      }
+    }
     const getApps = async () => {
-      const response = await fetch(`/api/applications?depth=2`);
+      const stringifiedQuery = qs.stringify(
+        {
+          where: query, // ensure that `qs` adds the `where` property, too!
+        },
+        { addQueryPrefix: true },
+      )
+
+      const response = await fetch(`/api/applications${stringifiedQuery}`);
       let apps = await response.json();
       apps = apps.docs;
       setApplications(apps);
@@ -81,6 +95,11 @@ export const MarketsList: React.FC<any> = (props) => {
 
     getMarkets();
   }, []);
+
+  useEffect(() => {
+    console.log(applications);
+    
+  }, [applications])
 
   useEffect(() => {}, [applications, tabIndex]);
 
@@ -161,7 +180,7 @@ export const MarketsList: React.FC<any> = (props) => {
               </Flex>
               <Divider color="gray.900" borderBottomWidth={2} opacity={1} />
             </Container>
-            {user.role == "vendor" && !viewMarkets ? (
+            {user.role == "vendor" && !applications.length ? (
               <Container maxW="container.xl" marginY={12}>
                 <Box
                   background="green.600"
@@ -204,14 +223,16 @@ export const MarketsList: React.FC<any> = (props) => {
             </Text>
           </Stack> */}
                   <HStack align={"flex-start"} wrap={"wrap"} spacing={6}>
-                    {markets &&
-                      markets.length &&
-                      markets.map((market) => (
-                        <MarketCard
-                          key={market.id}
-                          market={market}
+                    {applications &&
+                      applications.length ?
+                      applications.map((app) => (
+                        <SeasonCard
+                          key={app.season.id}
+                          season={app.season}
+                          status={app.status}
+                          isApplication
                         />
-                      ))}
+                      )) : null}
                   </HStack>
                 </HStack>
               </Container>
