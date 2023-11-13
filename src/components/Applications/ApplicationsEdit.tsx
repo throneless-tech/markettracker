@@ -134,7 +134,7 @@ export const ApplicationsEdit: React.FC<any> = (props) => {
   const [shadowSeason, setShadowSeason] = useState<Season>();
 
   const onCloseThankYou = () => {
-    history.push("/admin/collections/markets");
+    history.push("/admin/collections/seasons");
   };
 
   const onSave = () => {

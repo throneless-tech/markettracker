@@ -4,6 +4,7 @@
 import React, { useEffect, useState } from "react";
 import { useAuth } from "payload/components/utilities";
 import { useHistory } from "react-router-dom";
+import qs from "qs";
 import type { Vendor } from "payload/generated-types";
 
 import {
@@ -50,6 +51,31 @@ export const SeasonsList: React.FC<any> = ({ data }) => {
   const handleTabsChange = (index) => {
     setTabIndex(index);
   };
+
+  useEffect(() => {
+    const vendor: Vendor = user.vendor;
+    const query = {
+      vendor: {
+        equals: vendor.id,
+      },
+    };
+    const getApps = async () => {
+      const stringifiedQuery = qs.stringify(
+        {
+          where: query, // ensure that `qs` adds the `where` property, too!
+        },
+        { addQueryPrefix: true },
+        { depth: 1 },
+      );
+
+      const response = await fetch(`/api/applications${stringifiedQuery}`);
+      let apps = await response.json();
+      apps = apps.docs;
+      setApplications(apps);
+    };
+
+    getApps();
+  }, []);
 
   useEffect(() => {
     if (data && data.docs && data.docs.length && !seasons.length) {
@@ -145,20 +171,33 @@ export const SeasonsList: React.FC<any> = ({ data }) => {
                 </Flex>
                 <Divider color="gray.900" borderBottomWidth={2} opacity={1} />
               </Container>
-              {user.role == "vendor" &&
-              (user.vendor as Vendor).applications &&
-              (user.vendor as Vendor).applications.length ? (
-                (user.vendor as Vendor).applications.map((application) => (
-                  <>
-                    <SeasonCard
-                      key={application.id}
-                      season={application.season}
-                      isApplication
-                      status={application.status}
-                    />
-                  </>
-                ))
-              ) : user.role == "vendor" && !viewMarkets ? (
+              {user.role == "vendor" && applications && applications.length ? (
+                <Container sx={{ maxWidth: "unset" }}>
+                  <HStack align={"flex-start"} marginTop={8} spacing={8}>
+                    {/* <Stack backgroundColor={'gray.50'} padding={4} width={230}>
+            <Text>
+              Filter
+            </Text>
+          </Stack> */}
+                    <HStack align={"flex-start"} wrap={"wrap"} spacing={6}>
+                      {" "}
+                      {applications.map((application) => (
+                        <>
+                          <SeasonCard
+                            key={application.id}
+                            season={application.season}
+                            isApplication
+                            status={application.status}
+                          />
+                        </>
+                      ))}
+                    </HStack>
+                  </HStack>
+                </Container>
+              ) : user.role == "vendor" &&
+                seasons &&
+                seasons.length &&
+                !viewMarkets ? (
                 <Container maxW="container.xl" marginY={12}>
                   <Box
                     background="green.600"
