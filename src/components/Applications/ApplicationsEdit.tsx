@@ -165,7 +165,7 @@ export const ApplicationsEdit: React.FC<any> = (props) => {
   useEffect(() => {
     if (doSubmit) {
       submit();
-      history.push("/admin/collections/markets");
+      history.push("/admin/collections/seasons");
     }
   }, [doSubmit]);
 

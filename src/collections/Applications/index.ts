@@ -6,6 +6,7 @@ import {
   afterReadProducts,
   beforeValidateProducts,
 } from "./hooks/populateProducts";
+import { afterReadStats } from "./hooks/populateStats";
 import { ApplicationsEdit } from "../../components/Applications/ApplicationsEdit";
 import { ApplicationsList } from "../../components/Applications/ApplicationsList";
 import { withFormContext } from "../../utils/withFormContext";
@@ -116,9 +117,29 @@ export const Applications: CollectionConfig = {
       relationTo: "contacts",
       hasMany: true,
     },
+    {
+      name: "numberOfMarkets",
+      type: "number",
+    },
+    {
+      name: "reviewScore",
+      type: "number",
+    },
+    {
+      name: "vendorName",
+      type: "text",
+    },
+    {
+      name: "vendorType",
+      type: "text",
+    },
+    {
+      name: "vendorStanding",
+      type: "text",
+    },
   ],
   hooks: {
-    afterRead: [afterReadMarket, afterReadVendor, afterReadProducts],
+    afterRead: [afterReadStats],
     beforeValidate: [
       beforeValidateMarket,
       beforeValidateVendor,

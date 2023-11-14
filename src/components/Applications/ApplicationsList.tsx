@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useHistory, useLocation } from "react-router-dom";
+import qs from "qs";
 
 // Chakra imports
 import {
@@ -28,10 +29,15 @@ import StarIcon from "../../assets/icons/star.js";
 // types
 import type { Application, Review, Season } from "payload/generated-types";
 
+type ApplicationStats = Application & {
+  gapsMet: any[];
+  vendorDemographics: any;
+};
+
 export const ApplicationsList: React.FC<any> = ({ data, isTab }) => {
   const history = useHistory();
   const location = useLocation();
-  const [applications, setApplications] = useState<Application[]>([]);
+  const [applications, setApplications] = useState<ApplicationStats[]>([]);
   const [season, setSeason] = useState<Season>();
 
   const reviewApplication = (app: Application) => {
@@ -67,7 +73,33 @@ export const ApplicationsList: React.FC<any> = ({ data, isTab }) => {
     if (isTab) {
       const getApplications = async (id = "") => {
         try {
-          const res = await fetch(`/api/applications/${id}/?limit=9999`);
+          let stringifiedQuery: string;
+          if (id !== "") {
+            const query = {
+              season: {
+                equals: id,
+              },
+            };
+            stringifiedQuery = qs.stringify(
+              {
+                where: query, // ensure that `qs` adds the `where` property, too!
+                limit: 9999,
+                depth: 1,
+              },
+              { addQueryPrefix: true },
+            );
+          } else {
+            stringifiedQuery = qs.stringify(
+              {
+                limit: 9999,
+              },
+              { addQueryPrefix: true },
+            );
+          }
+
+          const res = await fetch(
+            `/api/applications${stringifiedQuery ? stringifiedQuery : ""}`,
+          );
           const applications = await res.json();
           console.log("****Getting applications", applications);
           setApplications(applications.docs);
@@ -170,7 +202,7 @@ export const ApplicationsList: React.FC<any> = ({ data, isTab }) => {
                   <Th
                     sx={{ color: "gray.900", fontFamily: "Outfit, sans-serif" }}
                   >
-                    Number of markets
+                    Market name
                   </Th>
                   <Th
                     sx={{ color: "gray.900", fontFamily: "Outfit, sans-serif" }}
@@ -202,102 +234,73 @@ export const ApplicationsList: React.FC<any> = ({ data, isTab }) => {
               <Tbody>
                 {applications && applications.length
                   ? applications.reduce((acc, app) => {
-                      if (typeof app.vendor === "object") {
-                        acc.push(
-                          <Tr key={app.id}>
-                            <Td>
-                              <Button
-                                variant={"link"}
-                                onClick={(e) => {
-                                  e.preventDefault();
-                                  reviewApplication(app);
-                                }}
-                              >
-                                {app.vendor.name}
-                              </Button>
-                            </Td>
-                            <Td>{app.vendor.type}</Td>
-                            <Td>
-                              {app.products && app.products.length
-                                ? app.products.reduce((acc, product) => {
-                                    if (
-                                      typeof product === "object" &&
-                                      typeof app.season === "object" &&
-                                      app.season.productGaps
-                                        .map((product: any) => product.id)
-                                        .includes(product.id)
-                                    ) {
-                                      acc.push(
-                                        <Tag marginRight={1} key={product.id}>
-                                          {product.product}
-                                        </Tag>,
-                                      );
-                                    }
-                                    return acc;
-                                  }, [])
-                                : ""}
-                            </Td>
-                            <Td>
-                              {app.vendor.applications &&
-                              app.vendor.applications.length
-                                ? app.vendor.applications.length
-                                : "1"}{" "}
-                              applications
-                            </Td>
-                            <Td>
-                              {app.vendor.demographics &&
-                              typeof app.vendor.demographics === "object"
-                                ? Object.entries(app.vendor.demographics).map(
-                                    (key, _) => {
-                                      if (key[1] == "yes") {
-                                        if (key[0] == "firstGeneration") {
-                                          return (
-                                            <Tag>First generation farmer</Tag>
-                                          );
-                                        }
-                                        if (key[0] == "veteranOwned") {
-                                          return <Tag>Veteran-owned</Tag>;
-                                        }
-                                        if (key[0] == "bipoc") {
-                                          return <Tag>BIPOC</Tag>;
-                                        }
-                                        if (key[0] == "immigrantOrRefugee") {
-                                          return (
-                                            <Tag>Immigrant or refugee</Tag>
-                                          );
-                                        }
-                                        if (key[0] == "lgbtqia") {
-                                          return <Tag>LGBTQIA</Tag>;
-                                        }
-                                      }
-                                    },
-                                  )
-                                : null}
-                            </Td>
-                            <Td>
-                              <Tag>
-                                {app.vendor.standing
-                                  ? app.vendor.standing
-                                  : "Good"}
+                      acc.push(
+                        <Tr key={app.id}>
+                          <Td>
+                            <Button
+                              variant={"link"}
+                              onClick={(e) => {
+                                e.preventDefault();
+                                reviewApplication(app);
+                              }}
+                            >
+                              {app.vendorName}
+                            </Button>
+                          </Td>
+                          <Td>{app.vendorType}</Td>
+                          <Td>
+                            {app.gapsMet.map((gap) => (
+                              <Tag marginRight={1} key={gap.id}>
+                                {gap.product}
                               </Tag>
-                            </Td>
-                            <Td>
-                              {app.reviews && app.reviews.length
-                                ? app.reviews.length
-                                : 0}
-                              /2 reviewers
-                            </Td>
-                            <Td>
-                              {app.reviews && app.reviews.length
-                                ? calculateScore(app.reviews as Review[])
-                                : 0}
-                            </Td>
-                            <Td>
-                              <Tag variant={"outline"}>Received</Tag>
-                            </Td>
-                          </Tr>,
-                        );
-                      }
+                            ))}
+                          </Td>
+                          <Td>{app.seasonName}</Td>
+                          <Td>
+                            {app.vendorDemographics &&
+                            typeof app.vendorDemographics === "object"
+                              ? Object.entries(app.vendorDemographics).map(
+                                  (key, _) => {
+                                    if (key[1] == "yes") {
+                                      if (key[0] == "firstGeneration") {
+                                        return (
+                                          <Tag>First generation farmer</Tag>
+                                        );
+                                      }
+                                      if (key[0] == "veteranOwned") {
+                                        return <Tag>Veteran-owned</Tag>;
+                                      }
+                                      if (key[0] == "bipoc") {
+                                        return <Tag>BIPOC</Tag>;
+                                      }
+                                      if (key[0] == "immigrantOrRefugee") {
+                                        return <Tag>Immigrant or refugee</Tag>;
+                                      }
+                                      if (key[0] == "lgbtqia") {
+                                        return <Tag>LGBTQIA</Tag>;
+                                      }
+                                    }
+                                  },
+                                )
+                              : null}
+                          </Td>
+                          <Td>
+                            <Tag>
+                              {app.vendorStanding ? app.vendorStanding : "Good"}
+                            </Tag>
+                          </Td>
+                          <Td>
+                            {app.reviews && app.reviews.length
+                              ? app.reviews.length
+                              : 0}
+                            /2 reviewers
+                          </Td>
+                          <Td>{Number(app.reviewScore)}</Td>
+                          <Td>
+                            <Tag variant={"outline"}>Received</Tag>
+                          </Td>
+                        </Tr>,
+                      );
                       return acc;
                     }, [])
                   : null}
@@ -318,7 +321,7 @@ export const ApplicationsList: React.FC<any> = ({ data, isTab }) => {
                   <Th
                     sx={{ color: "gray.900", fontFamily: "Outfit, sans-serif" }}
                   >
-                    Number of markets
+                    Market name
                   </Th>
                   <Th
                     sx={{ color: "gray.900", fontFamily: "Outfit, sans-serif" }}

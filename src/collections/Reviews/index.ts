@@ -16,7 +16,7 @@ import {
 export const Reviews: CollectionConfig = {
   slug: "reviews",
   hooks: {
-    afterRead: [afterReadApplication],
+    //afterRead: [afterReadApplication],
     afterChange: [afterChangeAddToApplication],
     afterDelete: [afterDeleteRemoveFromApplication],
     beforeChange: [createReviewer],

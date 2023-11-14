@@ -54,27 +54,29 @@ export const SeasonsList: React.FC<any> = ({ data }) => {
 
   useEffect(() => {
     const vendor: Vendor = user.vendor;
-    const query = {
-      vendor: {
-        equals: vendor.id,
-      },
-    };
-    const getApps = async () => {
-      const stringifiedQuery = qs.stringify(
-        {
-          where: query, // ensure that `qs` adds the `where` property, too!
+    if (vendor) {
+      const query = {
+        vendor: {
+          equals: vendor.id,
         },
-        { addQueryPrefix: true },
-        { depth: 1 },
-      );
+      };
+      const getApps = async () => {
+        const stringifiedQuery = qs.stringify(
+          {
+            where: query, // ensure that `qs` adds the `where` property, too!
+          },
+          { addQueryPrefix: true },
+          { depth: 1 },
+        );
 
-      const response = await fetch(`/api/applications${stringifiedQuery}`);
-      let apps = await response.json();
-      apps = apps.docs;
-      setApplications(apps);
-    };
+        const response = await fetch(`/api/applications${stringifiedQuery}`);
+        let apps = await response.json();
+        apps = apps.docs;
+        setApplications(apps);
+      };
 
-    getApps();
+      getApps();
+    }
   }, []);
 
   useEffect(() => {
