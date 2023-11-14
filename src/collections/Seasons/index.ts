@@ -268,7 +268,7 @@ export const Seasons: CollectionConfig = {
       hasMany: true,
       admin: {
         description:
-          "Select which Managers will be onsite and supervising during the market.",
+          "Select which Market Operators will be onsite and supervising during the market.",
       },
     },
     {
@@ -280,7 +280,7 @@ export const Seasons: CollectionConfig = {
       minRows: 2,
       admin: {
         description:
-          "Select at least 2 Managers who will review and accept applications.",
+          "Select at least 2 Market Operators who will review and accept applications.",
       },
     },
     {

@@ -92,7 +92,7 @@ const ContactModal: React.FC<any> = (props) => {
   return (
     <>
       <Button onClick={onOpen} marginTop={4} rightIcon={<ArrowForwardIcon />}>
-        Add a manager
+        Add a market operator
       </Button>
       <Modal isOpen={isOpen} onClose={onClose} size={"xl"}>
         <ModalOverlay />
@@ -108,7 +108,7 @@ const ContactModal: React.FC<any> = (props) => {
           <ModalCloseButton />
           <ModalBody>
             <FormControl marginBottom={4}>
-              <FormLabel>Manager name (required)</FormLabel>
+              <FormLabel>Operator name (required)</FormLabel>
               <Input
                 color={"gray.700"}
                 value={contact.name}
@@ -118,7 +118,7 @@ const ContactModal: React.FC<any> = (props) => {
               />
             </FormControl>
             <FormControl marginBottom={4}>
-              <FormLabel>Manager email address (required)</FormLabel>
+              <FormLabel>Operator email address (required)</FormLabel>
               <Input
                 color={"gray.700"}
                 value={contact.email}
@@ -128,7 +128,7 @@ const ContactModal: React.FC<any> = (props) => {
               />
             </FormControl>
             <FormControl marginBottom={6}>
-              <FormLabel>Manager phone number (required)</FormLabel>
+              <FormLabel>Operator phone number (required)</FormLabel>
               <Input
                 color={"gray.700"}
                 value={contact.phone}
@@ -870,7 +870,7 @@ export const SeasonsEdit: React.FC<any> = (props) => {
                       />
                     </HStack>
                     <HStack marginTop={2}>
-                      {/* <Tag bg={"gray.50"}>Manager 1</Tag> */}
+                      {/* <Tag bg={"gray.50"}>Operator 1</Tag> */}
                     </HStack>
                     <HStack marginTop={4}>
                       <Text
