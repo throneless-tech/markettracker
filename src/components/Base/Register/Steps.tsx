@@ -193,6 +193,7 @@ export const Steps: React.FC<any> = (props) => {
                   value={props.userName}
                   onChange={(event) => props.setUserName(event.target.value)}
                   placeholder="Your name"
+                  isRequired
                 />
                 <FormErrorMessage>Your name is required.</FormErrorMessage>
               </FormControl>
@@ -202,6 +203,7 @@ export const Steps: React.FC<any> = (props) => {
                   onChange={(event) => props.setEmail(event.target.value)}
                   placeholder="Your email"
                   type="email"
+                  isRequired
                 />
                 <FormErrorMessage>Email is required.</FormErrorMessage>
               </FormControl>
@@ -212,6 +214,7 @@ export const Steps: React.FC<any> = (props) => {
                     onChange={(event) => props.setPassword(event.target.value)}
                     placeholder="Password"
                     type={show ? "text" : "password"}
+                    isRequired
                   />
                   <InputRightElement width="4.5rem">
                     <Button h="1.75rem" size="sm" onClick={handleClick}>

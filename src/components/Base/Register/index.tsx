@@ -89,107 +89,89 @@ export const Register: React.FC<any> = () => {
   const errorPasswordConfirm = passwordConfirm != password;
 
   function handleBackClick() {
+    console.log("***index", index);
     setIndex(index - 1);
   }
 
   function handleNextClick() {
+    console.log("***index", index);
     if (businessCheck == "none") {
       setIndex(8);
-    } else if (index === 1) {
-      const createVendor = async () => {
-        try {
-          const req = await fetch("/api/users", {
-            method: "POST",
-            credentials: "include",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              name: userName,
-              email: email,
-              password: password,
-              role: "vendor",
-            }),
-          });
-          const data = await req.json();
-          setVendor(data.doc);
-          console.log(data);
-        } catch (err) {
-          console.log(err);
-        }
-      };
-
-      createVendor();
-
-      setIndex(index + 1);
     } else if (index === 6) {
       const createVendor = async () => {
         try {
-          const req = await fetch("/api/vendors", {
+          const req = await fetch("/api/users/register", {
             method: "POST",
             credentials: "include",
             headers: {
               "Content-Type": "application/json",
             },
             body: JSON.stringify({
-              name: companyName,
-              user: vendor.id,
-              isPrimaryContact: primaryContact,
-              isBillingContact: billingContact,
-              address: {
-                street: street,
-                city: city,
-                state: state,
-                zipcode: zipcode,
+              user: {
+                name: userName,
+                email: email,
+                password: password,
+                role: "vendor",
               },
-              phoneNumber: phoneNumber,
-              description: description,
-              yearEstablished: yearEstablished,
-              employees: {
-                fullTime: fullTime,
-                partTime: partTime,
-                interns: interns,
-                h2a: h2a,
-                volunteers: volunteers,
+              vendor: {
+                name: companyName,
+                isPrimaryContact: primaryContact,
+                isBillingContact: billingContact,
+                address: {
+                  street: street,
+                  city: city,
+                  state: state,
+                  zipcode: zipcode,
+                },
+                phoneNumber: phoneNumber,
+                description: description,
+                yearEstablished: yearEstablished,
+                employees: {
+                  fullTime: fullTime,
+                  partTime: partTime,
+                  interns: interns,
+                  h2a: h2a,
+                  volunteers: volunteers,
+                },
+                type: type,
+                structure: structure,
+                growingPractices: growingPractices,
+                sellingLocally: sellingLocally,
+                outletImportance: {
+                  stores: storeRevenue,
+                  markets: marketRevenue,
+                  own: brickRevenue,
+                  online: salesRevenue,
+                },
+                sharedKitchen: sharedKitchen,
+                copacker: copacker,
+                contacts: contacts,
+                licenses: licenses,
+                insurance: insurance,
+                demographics: {
+                  firstGeneration: firstGeneration,
+                  veteranOwned: veteranOwned,
+                  bipoc: bipoc,
+                  immigrantOrRefugee: immigrantOrRefugee,
+                  lgbtqia: lgbtqia,
+                  other: otherDemographics,
+                },
+                marketing: {
+                  website: website,
+                  instagram: instagram,
+                  //twitter: twitter,
+                  facebook: facebook,
+                  store: store,
+                  other: otherSocial,
+                },
+                pictures: pictures,
+                setupNeeds: {
+                  tent: tent,
+                  generator: generator,
+                  vehicle: vehicle,
+                },
+                products: products,
               },
-              type: type,
-              structure: structure,
-              growingPractices: growingPractices,
-              sellingLocally: sellingLocally,
-              outletImportance: {
-                stores: storeRevenue,
-                markets: marketRevenue,
-                own: brickRevenue,
-                online: salesRevenue,
-              },
-              sharedKitchen: sharedKitchen,
-              copacker: copacker,
-              contacts: contacts,
-              licenses: licenses,
-              insurance: insurance,
-              demographics: {
-                firstGeneration: firstGeneration,
-                veteranOwned: veteranOwned,
-                bipoc: bipoc,
-                immigrantOrRefugee: immigrantOrRefugee,
-                lgbtqia: lgbtqia,
-                other: otherDemographics,
-              },
-              marketing: {
-                website: website,
-                instagram: instagram,
-                //twitter: twitter,
-                facebook: facebook,
-                store: store,
-                other: otherSocial,
-              },
-              pictures: pictures,
-              setupNeeds: {
-                tent: tent,
-                generator: generator,
-                vehicle: vehicle,
-              },
-              products: products,
             }),
           });
           const data = await req.json();

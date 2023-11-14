@@ -2,6 +2,7 @@ import { CollectionConfig } from "payload/types";
 //import { withFormContext } from "../../utils/withFormContext";
 //import { UsersEdit } from "../../components/Users/UsersEdit";
 import { afterReadVendor, beforeValidateVendor } from "./hooks/populateVendor";
+import { registerRoute } from "../../routes/register";
 
 const roles = [
   {
@@ -48,14 +49,14 @@ export const Users: CollectionConfig = {
     {
       name: "name",
       type: "text",
-      //required: true,
+      required: true,
     },
     {
       name: "role",
       label: "Role",
       type: "select",
       options: roles,
-      //required: true,
+      required: true,
     },
     {
       name: "vendor",
@@ -65,6 +66,13 @@ export const Users: CollectionConfig = {
       admin: {
         condition: (_, siblingData) => siblingData.role === "vendor",
       },
+    },
+  ],
+  endpoints: [
+    {
+      path: "/register",
+      method: "post",
+      handler: registerRoute,
     },
   ],
   // hooks: {
