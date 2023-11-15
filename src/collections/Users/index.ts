@@ -56,7 +56,7 @@ export const Users: CollectionConfig = {
       label: "Role",
       type: "select",
       options: roles,
-      required: true,
+      required: false,
     },
     {
       name: "vendor",
@@ -75,8 +75,8 @@ export const Users: CollectionConfig = {
       handler: registerRoute,
     },
   ],
-  // hooks: {
-  //   afterRead: [afterReadVendor],
-  //   beforeValidate: [beforeValidateVendor],
-  // },
+  hooks: {
+    afterRead: [afterReadVendor],
+    beforeValidate: [beforeValidateVendor],
+  },
 };

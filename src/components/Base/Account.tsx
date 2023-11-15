@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { useEffect, useState } from "react";
 import { useDebouncedCallback } from "use-debounce";
 
@@ -65,12 +64,15 @@ export const Account: React.FC<any> = () => {
   const { value: email } = useField<string>({
     path: "email",
   });
-  const { value: realVendor, setValue: setRealVendor } = useField<string>({
+  const { value: vendorId } = useField<string>({
     path: "vendor",
   });
+  const [realVendor, setRealVendor] = useState<Vendor>();
   const [vendor, setShadowVendor] = useState<Vendor>();
 
   console.log("***isLoaded:", isLoaded);
+  console.log("***Name:", name);
+  console.log("***Email:", email);
   console.log("***Role:", role);
   console.log("***Vendor:", vendor);
   console.log("***realVendor:", realVendor);
@@ -84,8 +86,24 @@ export const Account: React.FC<any> = () => {
     return debounceVendor(vendor);
   };
 
+  const handleSubmit = async () => {
+    try {
+      await fetch(`/api/vendors/${vendor.id}`, {
+        method: "PATCH",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(realVendor),
+      });
+    } catch (err) {
+      console.error(err);
+    }
+    submit();
+  };
+
   useEffect(() => {
-    if (isLoaded) submit();
+    if (isLoaded) handleSubmit();
   }, [realVendor]);
 
   useEffect(() => {
@@ -101,6 +119,28 @@ export const Account: React.FC<any> = () => {
       }
     }
   }, [name, role, email, realVendor]);
+
+  useEffect(() => {
+    const fetchVendor = async (vendorId: string) => {
+      try {
+        const res = await fetch(`/api/vendors/${vendorId}`, {
+          method: "GET",
+          credentials: "include",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+
+        const data = await res.json();
+        setRealVendor(data);
+      } catch (err) {
+        console.error(err);
+      }
+    };
+    if (vendorId) {
+      fetchVendor(vendorId);
+    }
+  }, []);
 
   return (
     isLoaded && (

@@ -1,27 +1,54 @@
 import React, { createContext, useCallback } from "react";
 import { Form } from "payload/components/forms";
 import { useAuth } from "payload/components/utilities";
-import type { AdminViewProps } from "payload/config";
+import type { FieldTypes } from "payload/config";
+import type { CollectionEditViewProps } from "payload/dist/admin/components/views/types";
 
 const OperationContext = createContext(undefined);
 
-const baseClass = "account";
+export type DefaultAccountViewProps = CollectionEditViewProps & {
+  fieldTypes: FieldTypes;
+};
 
-export const withAccountContext = (CustomAccount: React.FC<AdminViewProps>) => {
-  return (props: AdminViewProps) => {
+export const withAccountContext = (
+  CustomAccount: React.FC<DefaultAccountViewProps>,
+) => {
+  return (props: DefaultAccountViewProps) => {
+    const {
+      action,
+      hasSavePermission,
+      initialState,
+      isLoading,
+      onSave: onSaveFromProps,
+    } = props;
+
     const { refreshCookieAsync } = useAuth();
 
-    const classes = [baseClass].filter(Boolean).join(" ");
+    const onSave = useCallback(
+      async (json) => {
+        await refreshCookieAsync();
+        if (typeof onSaveFromProps === "function") {
+          onSaveFromProps(json);
+        }
+      },
+      [onSaveFromProps, refreshCookieAsync],
+    );
 
     return (
       <React.Fragment>
-        <div className={classes}>
+        {!isLoading && (
           <OperationContext.Provider value="update">
-            <Form className={`${baseClass}__form`} method="patch">
+            <Form
+              action={action}
+              disabled={!hasSavePermission}
+              initialState={initialState}
+              method="patch"
+              onSuccess={onSave}
+            >
               <CustomAccount {...props} />
             </Form>
           </OperationContext.Provider>
-        </div>
+        )}
       </React.Fragment>
     );
   };

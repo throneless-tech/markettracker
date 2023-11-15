@@ -19,7 +19,7 @@ export function useRelation<T = unknown>({
   options = {},
 }: Options): Return<T> {
   const doc = useDocumentInfo();
-  const { value: field } = useField<T>({ path });
+  const { value: field } = useField<T | string>({ path });
   const [collection, setCollection] = useState(null);
   const [value, setValue] = useState<T>();
   const [error, setError] = useState();
