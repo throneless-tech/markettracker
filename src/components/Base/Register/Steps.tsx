@@ -649,7 +649,7 @@ export const Steps: React.FC<any> = (props) => {
                     </Field>
                     <FormControl isInvalid={!!errors.zipcode && touched.zipcode}>
                       <Field
-                        flex={3} 
+                        flex={3}
                         as={Input}
                         id="zipcode"
                         name="zipcode"
@@ -862,662 +862,761 @@ export const Steps: React.FC<any> = (props) => {
           <Text as="div" marginTop={2} textAlign="center">
             Please share your company information
           </Text>
-          <Flex align="center" justify="space-between" marginTop={8}>
-            <Heading
-              as="h2"
-              fontFamily={"font.body"}
-              textStyle="h4"
-              size="md"
-              width={"80%"}
-            >
-              Business Information
-            </Heading>
-            <Divider color="gray.700" borderBottomWidth={2} opacity={1} />
-          </Flex>
-          <Stack marginTop={4}>
-            <Text as="div" textStyle="bodyMain" fontWeight={500}>
-              What type of vendor are you? (required)
-            </Text>
-            <Select
-              value={props.type}
-              onChange={(event) => props.setType(event.target.value)}
-              placeholder="Farm, Non Farm"
-              flex={2}
-              isRequired
-            >
-              <option value="farm">Farm</option>
-              <option value="producer">Producer</option>
-            </Select>
-            <Text as="div" color="gray.500">
-              Select the category that describes the majority of what you sell
-            </Text>
-          </Stack>
-          <Stack marginTop={4}>
-            <Text as="div" textStyle="bodyMain" fontWeight={500}>
-              What is the structure of your business? (required)
-            </Text>
-            <Select
-              value={props.structure}
-              onChange={(event) => props.setStructure(event.target.value)}
-              placeholder="LLC, sole proprietor, nonprofit, etc"
-              flex={2}
-              isRequired
-            >
-              <option value="farm">LLC</option>
-              <option value="soleProprietor">Sole proprietor</option>
-              <option value="nonprofit">Nonprofit</option>
-            </Select>
-            <Text as="div" color="gray.500">
-              Select which type of legal entity your business is registered as
-              in your state
-            </Text>
-          </Stack>
-          <Stack marginTop={4}>
-            <Text as="div" textStyle="bodyMain" fontWeight={500}>
-              Do you use any of the following growing practices?
-            </Text>
-            <Text as="div" color="gray.500">
-              Check all that apply
-            </Text>
-            <CheckboxGroup
-              colorScheme="green"
-              value={props.growingPractices}
-              onChange={(newValue) => props.setGrowingPractices(newValue)}
-            >
-              <Stack>
-                <Checkbox value="organicManagement">
-                  Organic Management
-                </Checkbox>
-                <Checkbox value="certifiedNaturallyGrown">
-                  Certified Naturally Grown
-                </Checkbox>
-                <Checkbox value="IntegratedPestManagement">
-                  Integrated Pest Management (IPM)
-                </Checkbox>
-                <Checkbox value="certifiedOrganic">Certified Organic</Checkbox>
-                <Checkbox value="gmoUse">GMO Use</Checkbox>
-                <Checkbox value="growthHormoneUse">Growth Hormone Use</Checkbox>
-              </Stack>
-            </CheckboxGroup>
-          </Stack>
-          <Stack marginTop={4}>
-            <Text as="div" textStyle="bodyMain" fontWeight={500}>
-              Where are you selling products locally (required)
-            </Text>
-            <Text as="div" color="gray.500">
-              Check all that apply
-            </Text>
-            <CheckboxGroup
-              colorScheme="green"
-              value={props.sellingLocally}
-              onChange={(newValue) => props.setSellingLocally(newValue)}
-            >
-              <Stack>
-                <Checkbox value="nowhere">Nowhere yet</Checkbox>
-                <Checkbox value="freshfarm">At FreshFarm markets</Checkbox>
-                <Checkbox value="other">
-                  At other non-FreshFarm markets or in stores
-                </Checkbox>
-                <Input
-                  marginLeft={6}
-                  variant="filled"
-                  placeholder="Please list other locations you sell products"
-                />
-              </Stack>
-            </CheckboxGroup>
-          </Stack>
-          <Stack marginTop={4}>
-            <Text as="div" textStyle="bodyMain" fontWeight={500}>
-              Rank the following revenue outlets in order of importance to your
-              sales: (required)
-            </Text>
-            <Wrap justify="space-between" spacing={8}>
-              <WrapItem sx={{ flexDirection: "column" }}>
-                <Text as="div" color="gray.600">
-                  Stores
-                </Text>
-                <RadioGroup
-                  onChange={(newValue) => props.setStoreRevenue(newValue)}
-                  value={props.storeRevenue}
-                >
-                  <Stack
-                    align="flex-start"
-                    color="gray.500"
-                    spacing={6}
-                    direction="row"
-                    textAlign="center"
-                  >
-                    <Radio value="1" variant="scale">
-                      <Text
-                        as="span"
-                        fontSize={"xs"}
-                        sx={{ display: "block", marginTop: 1, width: "100%" }}
-                      >
-                        1
-                      </Text>
-                      <Text
-                        as="span"
-                        fontSize={"xs"}
-                        sx={{ display: "block", width: 14 }}
-                      >
-                        Not at all important
-                      </Text>
-                    </Radio>
-                    <Radio value="2" variant="scale" width={6}>
-                      <Text as="span" fontSize={"xs"}>
-                        2
-                      </Text>
-                    </Radio>
-                    <Radio value="3" variant="scale" width={6}>
-                      <Text as="span" fontSize={"xs"}>
-                        3
-                      </Text>
-                    </Radio>
-                    <Radio value="4" variant="scale" width={6}>
-                      <Text as="span" fontSize={"xs"}>
-                        4
-                      </Text>
-                    </Radio>
-                    <Radio value="5" variant="scale">
-                      <Text
-                        as="span"
-                        fontSize={"xs"}
-                        sx={{ display: "block", marginTop: 1, width: "100%" }}
-                      >
-                        5
-                      </Text>
-                      <Text
-                        as="span"
-                        fontSize={"xs"}
-                        sx={{ display: "block", width: 14 }}
-                      >
-                        Very Important
-                      </Text>
-                    </Radio>
-                  </Stack>
-                </RadioGroup>
-              </WrapItem>
-              <WrapItem sx={{ flexDirection: "column" }}>
-                <Text as="div" color="gray.600">
-                  Farmers markets
-                </Text>
-                <RadioGroup
-                  onChange={(newValue) => props.setMarketRevenue(newValue)}
-                  value={props.marketRevenue}
-                >
-                  <Stack
-                    align="flex-start"
-                    color="gray.500"
-                    spacing={6}
-                    direction="row"
-                    textAlign="center"
-                  >
-                    <Radio value="1" variant="scale">
-                      <Text
-                        as="span"
-                        fontSize={"xs"}
-                        sx={{ display: "block", marginTop: 1, width: "100%" }}
-                      >
-                        1
-                      </Text>
-                      <Text
-                        as="span"
-                        fontSize={"xs"}
-                        sx={{ display: "block", width: 14 }}
-                      >
-                        Not at all important
-                      </Text>
-                    </Radio>
-                    <Radio value="2" variant="scale" width={6}>
-                      <Text as="span" fontSize={"xs"}>
-                        2
-                      </Text>
-                    </Radio>
-                    <Radio value="3" variant="scale" width={6}>
-                      <Text as="span" fontSize={"xs"}>
-                        3
-                      </Text>
-                    </Radio>
-                    <Radio value="4" variant="scale" width={6}>
-                      <Text as="span" fontSize={"xs"}>
-                        4
-                      </Text>
-                    </Radio>
-                    <Radio value="5" variant="scale">
-                      <Text
-                        as="span"
-                        fontSize={"xs"}
-                        sx={{ display: "block", marginTop: 1, width: "100%" }}
-                      >
-                        5
-                      </Text>
-                      <Text
-                        as="span"
-                        fontSize={"xs"}
-                        sx={{ display: "block", width: 14 }}
-                      >
-                        Very Important
-                      </Text>
-                    </Radio>
-                  </Stack>
-                </RadioGroup>
-              </WrapItem>
-              <WrapItem sx={{ flexDirection: "column" }}>
-                <Text as="div" color="gray.600">
-                  Own brick & mortar
-                </Text>
-                <RadioGroup
-                  onChange={(newValue) => props.setBrickRevenue(newValue)}
-                  value={props.brickRevenue}
-                >
-                  <Stack
-                    align="flex-start"
-                    color="gray.500"
-                    spacing={6}
-                    direction="row"
-                    textAlign="center"
-                  >
-                    <Radio value="1" variant="scale">
-                      <Text
-                        as="span"
-                        fontSize={"xs"}
-                        sx={{ display: "block", marginTop: 1, width: "100%" }}
-                      >
-                        1
-                      </Text>
-                      <Text
-                        as="span"
-                        fontSize={"xs"}
-                        sx={{ display: "block", width: 14 }}
-                      >
-                        Not at all important
-                      </Text>
-                    </Radio>
-                    <Radio value="2" variant="scale" width={6}>
-                      <Text as="span" fontSize={"xs"}>
-                        2
-                      </Text>
-                    </Radio>
-                    <Radio value="3" variant="scale" width={6}>
-                      <Text as="span" fontSize={"xs"}>
-                        3
-                      </Text>
-                    </Radio>
-                    <Radio value="4" variant="scale" width={6}>
-                      <Text as="span" fontSize={"xs"}>
-                        4
-                      </Text>
-                    </Radio>
-                    <Radio value="5" variant="scale">
-                      <Text
-                        as="span"
-                        fontSize={"xs"}
-                        sx={{ display: "block", marginTop: 1, width: "100%" }}
-                      >
-                        5
-                      </Text>
-                      <Text
-                        as="span"
-                        fontSize={"xs"}
-                        sx={{ display: "block", width: 14 }}
-                      >
-                        Very Important
-                      </Text>
-                    </Radio>
-                  </Stack>
-                </RadioGroup>
-              </WrapItem>
-              <WrapItem sx={{ flexDirection: "column" }}>
-                <Text as="div" color="gray.600">
-                  Online sales
-                </Text>
-                <RadioGroup
-                  onChange={(newValue) => props.setSalesRevenue(newValue)}
-                  value={props.salesRevenue}
-                >
-                  <Stack
-                    align="flex-start"
-                    color="gray.500"
-                    spacing={6}
-                    direction="row"
-                    textAlign="center"
-                  >
-                    <Radio value="1" variant="scale">
-                      <Text
-                        as="span"
-                        fontSize={"xs"}
-                        sx={{ display: "block", marginTop: 1, width: "100%" }}
-                      >
-                        1
-                      </Text>
-                      <Text
-                        as="span"
-                        fontSize={"xs"}
-                        sx={{ display: "block", width: 14 }}
-                      >
-                        Not at all important
-                      </Text>
-                    </Radio>
-                    <Radio value="2" variant="scale" width={6}>
-                      <Text as="span" fontSize={"xs"}>
-                        2
-                      </Text>
-                    </Radio>
-                    <Radio value="3" variant="scale" width={6}>
-                      <Text as="span" fontSize={"xs"}>
-                        3
-                      </Text>
-                    </Radio>
-                    <Radio value="4" variant="scale" width={6}>
-                      <Text as="span" fontSize={"xs"}>
-                        4
-                      </Text>
-                    </Radio>
-                    <Radio value="5" variant="scale">
-                      <Text
-                        as="span"
-                        fontSize={"xs"}
-                        sx={{ display: "block", marginTop: 1, width: "100%" }}
-                      >
-                        5
-                      </Text>
-                      <Text
-                        as="span"
-                        fontSize={"xs"}
-                        sx={{ display: "block", width: 14 }}
-                      >
-                        Very Important
-                      </Text>
-                    </Radio>
-                  </Stack>
-                </RadioGroup>
-              </WrapItem>
-            </Wrap>
-          </Stack>
-          <Flex align="center" justify="flex-start" marginTop={8}>
-            <Heading
-              as="h2"
-              fontFamily={"font.body"}
-              textStyle="h4"
-              size="md"
-              width={"90%"}
-            >
-              Production practices
-            </Heading>
-            <Divider
-              color="gray.700"
-              borderBottomWidth={2}
-              opacity={1}
-              flexGrow={1}
-            />
-          </Flex>
-          <Text as="div" textStyle="bodyMain" fontWeight={500}>
-            Do you work out of a shared kitchen?
-          </Text>
-          <RadioGroup
-            onChange={(newValue) => props.setSharedKitchen(newValue)}
-            value={props.sharedKitchen}
+          <Formik
+            key="formik-2"
+            initialValues={{
+              type: "",
+              structure: "",
+              growingPractices: "",
+              sellingLocally: "",
+              storeRevenue: "",
+              marketRevenue: "",
+              brickRevenue: "",
+              salesRevenue: "",
+              sharedKitchen: "",
+              copacker: "",
+              firstGeneration: "",
+              veteranOwned: "",
+              bipoc: "",
+              immigrantOrRefugee: "",
+              lgbtqia: ""
+            }}
+            onSubmit={(values) => handleNextClick(values)}
           >
-            <Stack marginTop={1}>
-              <HStack>
-                <Radio value={"true"}>Yes</Radio>
-                <Input
-                  marginLeft={2}
-                  variant="filled"
-                  placeholder="Please share the name of the kitchen"
-                />
-              </HStack>
-              <Radio value={"false"}>No</Radio>
-            </Stack>
-          </RadioGroup>
-          <Text as="div" textStyle="bodyMain" fontWeight={500}>
-            Do you use a co-packer?
-          </Text>
-          <RadioGroup
-            onChange={(newValue) => props.setCopacker(newValue)}
-            value={props.copackerKitchen}
-          >
-            <Stack marginTop={1}>
-              <HStack>
-                <Radio value={"true"}>Yes</Radio>
-                <Input
-                  marginLeft={2}
-                  variant="filled"
-                  placeholder="Please share the name of the co-packer"
-                />
-              </HStack>
-              <Radio value={"false"}>No</Radio>
-            </Stack>
-          </RadioGroup>
-          <Flex align="center" justify="flex-start" marginTop={8}>
-            <Heading
-              as="h2"
-              fontFamily={"font.body"}
-              textStyle="h4"
-              size="md"
-              width={"80%"}
-            >
-              Contact information
-            </Heading>
-            <Divider
-              color="gray.700"
-              borderBottomWidth={2}
-              opacity={1}
-              flexGrow={1}
-            />
-          </Flex>
-          <Text as="div" textStyle="bodyMain" marginTop={4}>
-            Add all the members of your staff that will be manning your
-            booth(s); these contacts will be visible to managers of the markets
-            you participate in.
-          </Text>
-          <Button
-            onClick={onOpen}
-            marginTop={4}
-            rightIcon={<ArrowForwardIcon />}
-          >
-            Add a contact
-          </Button>
-          <Modal isOpen={isOpen} onClose={onClose} size={"xl"}>
-            <ModalOverlay />
-            <ModalContent background={"gray.600"} color={"gray.50"}>
-              <ModalHeader>
-                <Stack textAlign={"center"} spacing={1}>
-                  <Heading marginBottom={0}>Add a contact</Heading>
-                  <Text>
-                    Please fill in requested information to create a new contact
+            {({ handleSubmit, errors, touched }) => (
+              <form key="form-2" onSubmit={handleSubmit}>
+                <Flex align="center" justify="space-between" marginTop={8}>
+                  <Heading
+                    as="h2"
+                    fontFamily={"font.body"}
+                    textStyle="h4"
+                    size="md"
+                    width={"80%"}
+                  >
+                    Business Information
+                  </Heading>
+                  <Divider color="gray.700" borderBottomWidth={2} opacity={1} />
+                </Flex>
+                <Stack marginTop={4}>
+                  <Text as="div" textStyle="bodyMain" fontWeight={500}>
+                    What type of vendor are you? (required)
+                  </Text>
+                  <Field name="type">
+                    {({ field, form }) => (
+                      <FormControl
+                        id="type"
+                      >
+                        <Select placeholder="Farm, Non Farm">
+                          <option {...field} value="farm">Farm</option>
+                          <option {...field} value="producer">Producer</option>
+                        </Select>
+                      </FormControl>
+                    )}
+                  </Field>
+                  <Text as="div" color="gray.500">
+                    Select the category that describes the majority of what you sell
                   </Text>
                 </Stack>
-              </ModalHeader>
-              <ModalCloseButton />
-              <ModalBody>
-                <FormControl marginBottom={4}>
-                  <FormLabel>Contact name (required)</FormLabel>
-                  <Input />
-                </FormControl>
-                <FormControl marginBottom={4}>
-                  <FormLabel>Contact email address (required)</FormLabel>
-                  <Input type="email" />
-                </FormControl>
-                <FormControl marginBottom={6}>
-                  <FormLabel>Contact phone number (required)</FormLabel>
-                  <Input type="number" />
-                </FormControl>
-                <FormControl marginBottom={4}>
-                  <FormLabel>Type of contact</FormLabel>
-                  <FormHelperText color={"gray.50"} marginBottom={2}>
-                    Select the type(s) that best describes this contact’s
-                    responsibility for the business
-                  </FormHelperText>
-                  <CheckboxGroup colorScheme="brown" defaultValue={[]}>
-                    <Stack spacing={[1, 5]} direction={["column", "row"]}>
-                      <Checkbox value="primary">Primary</Checkbox>
-                      <Checkbox value="billing">Billing/financial</Checkbox>
-                      <Checkbox value="market">At-market</Checkbox>
-                    </Stack>
-                  </CheckboxGroup>
-                </FormControl>
-              </ModalBody>
-              <ModalFooter>
-                <Button colorScheme="brown" variant="solid" mr={3}>
-                  Save
-                </Button>
-                <Button
-                  color={"gray.50"}
-                  colorScheme="brown"
-                  variant={"outline"}
-                  onClick={onClose}
+                <Stack marginTop={4}>
+                  <Text as="div" textStyle="bodyMain" fontWeight={500}>
+                    What is the structure of your business? (required)
+                  </Text>
+                  <Field name="structure">
+                    {({ field, form }) => (
+                      <FormControl
+                        id="structure"
+                      >
+                        <Select placeholder="LLC, sole proprietor, nonprofit, etc">
+                          <option {...field} value="farm">Farm</option>
+                          <option {...field} value="farm">LLC</option>
+                          <option {...field} value="soleProprietor">Sole proprietor</option>
+                          <option {...field} value="nonprofit">Nonprofit</option>
+                        </Select>
+                      </FormControl>
+                    )}
+                  </Field>
+                  <Text as="div" color="gray.500">
+                    Select which type of legal entity your business is registered as
+                    in your state
+                  </Text>
+                </Stack>
+                <Stack marginTop={4}>
+                  <Text as="div" textStyle="bodyMain" fontWeight={500}>
+                    Do you use any of the following growing practices?
+                  </Text>
+                  <Text as="div" color="gray.500">
+                    Check all that apply
+                  </Text>
+                  <Field name="growingPractices">
+                    {({ field, form }) => (
+                      <FormControl
+                        id="growingPractices"
+                      >
+                        <CheckboxGroup
+                          {...field}
+                          id="growingPractices"
+                          colorScheme="green"
+                          {...props}
+                        >
+                          <Stack>
+                            <Checkbox {...field} value="organicManagement">
+                              Organic Management
+                            </Checkbox>
+                            <Checkbox {...field} value="certifiedNaturallyGrown">
+                              Certified Naturally Grown
+                            </Checkbox>
+                            <Checkbox {...field} value="IntegratedPestManagement">
+                              Integrated Pest Management (IPM)
+                            </Checkbox>
+                            <Checkbox {...field} value="certifiedOrganic">Certified Organic</Checkbox>
+                            <Checkbox {...field} value="gmoUse">GMO Use</Checkbox>
+                            <Checkbox {...field} value="growthHormoneUse">Growth Hormone Use</Checkbox>
+                          </Stack>
+                        </CheckboxGroup>
+                      </FormControl>
+                    )}
+                  </Field>
+                </Stack>
+                <Stack marginTop={4}>
+                  <Text as="div" textStyle="bodyMain" fontWeight={500}>
+                    Where are you selling products locally (required)
+                  </Text>
+                  <Text as="div" color="gray.500">
+                    Check all that apply
+                  </Text>
+                  <Field name="sellingLocally">
+                    {({ field, form }) => (
+                      <FormControl
+                        id="sellingLocally"
+                      >
+                        <CheckboxGroup
+                          {...field}
+                          id="sellingLocally"
+                          colorScheme="green"
+                          {...props}
+                        >
+                          <Stack>
+                            <Checkbox {...field} value="nowhere">Nowhere yet</Checkbox>
+                            <Checkbox {...field} value="freshfarm">At FreshFarm markets</Checkbox>
+                            <Checkbox {...field} value="other">
+                              At other non-FreshFarm markets or in stores
+                            </Checkbox>
+                            <Input
+                              {...field}
+                              marginLeft={6}
+                              variant="filled"
+                              placeholder="Please list other locations you sell products"
+                            />
+                          </Stack>
+                        </CheckboxGroup>
+                      </FormControl>
+                    )}
+                  </Field>
+                  <Field name="growingPractices">
+                    {({ field, form }) => (
+                      <FormControl
+                        id="growingPractices"
+                      >
+                        <CheckboxGroup
+                          {...field}
+                          id="growingPractices"
+                          colorScheme="green"
+                          {...props}
+                        >
+                          <Stack>
+                            <Checkbox {...field} value="organicManagement">
+                              Organic Management
+                            </Checkbox>
+                            <Checkbox {...field} value="certifiedNaturallyGrown">
+                              Certified Naturally Grown
+                            </Checkbox>
+                            <Checkbox {...field} value="IntegratedPestManagement">
+                              Integrated Pest Management (IPM)
+                            </Checkbox>
+                            <Checkbox {...field} value="certifiedOrganic">Certified Organic</Checkbox>
+                            <Checkbox {...field} value="gmoUse">GMO Use</Checkbox>
+                            <Checkbox {...field} value="growthHormoneUse">Growth Hormone Use</Checkbox>
+                          </Stack>
+                        </CheckboxGroup>
+                      </FormControl>
+                    )}
+                  </Field>
+                </Stack>
+                <Stack marginTop={4}>
+                  <Text as="div" textStyle="bodyMain" fontWeight={500}>
+                    Rank the following revenue outlets in order of importance to your
+                    sales: (required)
+                  </Text>
+                  <Wrap justify="space-between" spacing={8}>
+                    <WrapItem sx={{ flexDirection: "column" }}>
+                      <Text as="div" color="gray.600">
+                        Stores
+                      </Text>
+                      <Field name="storeRevenue">
+                        {({ field, form }) => (
+                          <FormControl
+                            id="storeRevenue"
+                          >
+                            <RadioGroup {...field} id="storeRevenue" {...props}>
+                              <Stack
+                                align="flex-start"
+                                color="gray.500"
+                                spacing={6}
+                                direction="row"
+                                textAlign="center"
+                              >
+                                <Radio {...field} value="1" variant="scale">
+                                  <Text
+                                    as="span"
+                                    fontSize={"xs"}
+                                    sx={{ display: "block", marginTop: 1, width: "100%" }}
+                                  >
+                                    1
+                                  </Text>
+                                  <Text
+                                    as="span"
+                                    fontSize={"xs"}
+                                    sx={{ display: "block", width: 14 }}
+                                  >
+                                    Not at all important
+                                  </Text>
+                                </Radio>
+                                <Radio {...field} value="2" variant="scale" width={6}>
+                                  <Text as="span" fontSize={"xs"}>
+                                    2
+                                  </Text>
+                                </Radio>
+                                <Radio {...field} value="3" variant="scale" width={6}>
+                                  <Text as="span" fontSize={"xs"}>
+                                    3
+                                  </Text>
+                                </Radio>
+                                <Radio {...field} value="4" variant="scale" width={6}>
+                                  <Text as="span" fontSize={"xs"}>
+                                    4
+                                  </Text>
+                                </Radio>
+                                <Radio  {...field} value="5" variant="scale">
+                                  <Text
+                                    as="span"
+                                    fontSize={"xs"}
+                                    sx={{ display: "block", marginTop: 1, width: "100%" }}
+                                  >
+                                    5
+                                  </Text>
+                                  <Text
+                                    as="span"
+                                    fontSize={"xs"}
+                                    sx={{ display: "block", width: 14 }}
+                                  >
+                                    Very Important
+                                  </Text>
+                                </Radio>
+                              </Stack>
+                            </RadioGroup>
+                          </FormControl>
+                        )}
+                      </Field>
+                    </WrapItem>
+                    <WrapItem sx={{ flexDirection: "column" }}>
+                      <Text as="div" color="gray.600">
+                        Farmers markets
+                      </Text>
+                      <Field name="marketRevenue">
+                        {({ field, form }) => (
+                          <FormControl
+                            id="marketRevenue"
+                          >
+                            <RadioGroup {...field} id="marketRevenue" {...props}>
+                              <Stack
+                                align="flex-start"
+                                color="gray.500"
+                                spacing={6}
+                                direction="row"
+                                textAlign="center"
+                              >
+                                <Radio {...field} value="1" variant="scale">
+                                  <Text
+                                    as="span"
+                                    fontSize={"xs"}
+                                    sx={{ display: "block", marginTop: 1, width: "100%" }}
+                                  >
+                                    1
+                                  </Text>
+                                  <Text
+                                    as="span"
+                                    fontSize={"xs"}
+                                    sx={{ display: "block", width: 14 }}
+                                  >
+                                    Not at all important
+                                  </Text>
+                                </Radio>
+                                <Radio {...field} value="2" variant="scale" width={6}>
+                                  <Text as="span" fontSize={"xs"}>
+                                    2
+                                  </Text>
+                                </Radio>
+                                <Radio {...field} value="3" variant="scale" width={6}>
+                                  <Text as="span" fontSize={"xs"}>
+                                    3
+                                  </Text>
+                                </Radio>
+                                <Radio  {...field} value="4" variant="scale" width={6}>
+                                  <Text as="span" fontSize={"xs"}>
+                                    4
+                                  </Text>
+                                </Radio>
+                                <Radio {...field} value="5" variant="scale">
+                                  <Text
+                                    as="span"
+                                    fontSize={"xs"}
+                                    sx={{ display: "block", marginTop: 1, width: "100%" }}
+                                  >
+                                    5
+                                  </Text>
+                                  <Text
+                                    as="span"
+                                    fontSize={"xs"}
+                                    sx={{ display: "block", width: 14 }}
+                                  >
+                                    Very Important
+                                  </Text>
+                                </Radio>
+                              </Stack>
+                            </RadioGroup>
+                          </FormControl>
+                        )}
+                      </Field>
+                    </WrapItem>
+                    <WrapItem sx={{ flexDirection: "column" }}>
+                      <Text as="div" color="gray.600">
+                        Own brick & mortar
+                      </Text>
+                      <Field name="brickRevenue">
+                        {({ field, form }) => (
+                          <FormControl
+                            id="brickRevenue"
+                          >
+                            <RadioGroup {...field} id="brickRevenue" {...props}>
+                              <Stack
+                                align="flex-start"
+                                color="gray.500"
+                                spacing={6}
+                                direction="row"
+                                textAlign="center"
+                              >
+                                <Radio {...field} value="1" variant="scale">
+                                  <Text
+                                    as="span"
+                                    fontSize={"xs"}
+                                    sx={{ display: "block", marginTop: 1, width: "100%" }}
+                                  >
+                                    1
+                                  </Text>
+                                  <Text
+                                    as="span"
+                                    fontSize={"xs"}
+                                    sx={{ display: "block", width: 14 }}
+                                  >
+                                    Not at all important
+                                  </Text>
+                                </Radio>
+                                <Radio {...field} value="2" variant="scale" width={6}>
+                                  <Text as="span" fontSize={"xs"}>
+                                    2
+                                  </Text>
+                                </Radio>
+                                <Radio {...field} value="3" variant="scale" width={6}>
+                                  <Text as="span" fontSize={"xs"}>
+                                    3
+                                  </Text>
+                                </Radio>
+                                <Radio  {...field} value="4" variant="scale" width={6}>
+                                  <Text as="span" fontSize={"xs"}>
+                                    4
+                                  </Text>
+                                </Radio>
+                                <Radio {...field} value="5" variant="scale">
+                                  <Text
+                                    as="span"
+                                    fontSize={"xs"}
+                                    sx={{ display: "block", marginTop: 1, width: "100%" }}
+                                  >
+                                    5
+                                  </Text>
+                                  <Text
+                                    as="span"
+                                    fontSize={"xs"}
+                                    sx={{ display: "block", width: 14 }}
+                                  >
+                                    Very Important
+                                  </Text>
+                                </Radio>
+                              </Stack>
+                            </RadioGroup>
+                          </FormControl>
+                        )}
+                      </Field>
+                    </WrapItem>
+                    <WrapItem sx={{ flexDirection: "column" }}>
+                      <Text as="div" color="gray.600">
+                        Online sales
+                      </Text>
+                      <Field name="salesRevenue">
+                        {({ field, form }) => (
+                          <FormControl
+                            id="salesRevenue"
+                          >
+                            <RadioGroup {...field} id="salesRevenue" {...props}>
+                              <Stack
+                                align="flex-start"
+                                color="gray.500"
+                                spacing={6}
+                                direction="row"
+                                textAlign="center"
+                              >
+                                <Radio {...field} value="1" variant="scale">
+                                  <Text
+                                    as="span"
+                                    fontSize={"xs"}
+                                    sx={{ display: "block", marginTop: 1, width: "100%" }}
+                                  >
+                                    1
+                                  </Text>
+                                  <Text
+                                    as="span"
+                                    fontSize={"xs"}
+                                    sx={{ display: "block", width: 14 }}
+                                  >
+                                    Not at all important
+                                  </Text>
+                                </Radio>
+                                <Radio {...field} value="2" variant="scale" width={6}>
+                                  <Text as="span" fontSize={"xs"}>
+                                    2
+                                  </Text>
+                                </Radio>
+                                <Radio {...field} value="3" variant="scale" width={6}>
+                                  <Text as="span" fontSize={"xs"}>
+                                    3
+                                  </Text>
+                                </Radio>
+                                <Radio  {...field} value="4" variant="scale" width={6}>
+                                  <Text as="span" fontSize={"xs"}>
+                                    4
+                                  </Text>
+                                </Radio>
+                                <Radio {...field} value="5" variant="scale">
+                                  <Text
+                                    as="span"
+                                    fontSize={"xs"}
+                                    sx={{ display: "block", marginTop: 1, width: "100%" }}
+                                  >
+                                    5
+                                  </Text>
+                                  <Text
+                                    as="span"
+                                    fontSize={"xs"}
+                                    sx={{ display: "block", width: 14 }}
+                                  >
+                                    Very Important
+                                  </Text>
+                                </Radio>
+                              </Stack>
+                            </RadioGroup>
+                          </FormControl>
+                        )}
+                      </Field>
+                    </WrapItem>
+                  </Wrap>
+                </Stack>
+                <Flex align="center" justify="flex-start" marginTop={8}>
+                  <Heading
+                    as="h2"
+                    fontFamily={"font.body"}
+                    textStyle="h4"
+                    size="md"
+                    width={"90%"}
+                  >
+                    Production practices
+                  </Heading>
+                  <Divider
+                    color="gray.700"
+                    borderBottomWidth={2}
+                    opacity={1}
+                    flexGrow={1}
+                  />
+                </Flex>
+                <Text as="div" textStyle="bodyMain" fontWeight={500}>
+                  Do you work out of a shared kitchen?
+                </Text>
+                <RadioGroup
+                  onChange={(newValue) => props.setSharedKitchen(newValue)}
+                  value={props.sharedKitchen}
                 >
-                  Cancel
+                  <Stack marginTop={1}>
+                    <HStack>
+                      <Radio value={"true"}>Yes</Radio>
+                      <Input
+                        marginLeft={2}
+                        variant="filled"
+                        placeholder="Please share the name of the kitchen"
+                      />
+                    </HStack>
+                    <Radio value={"false"}>No</Radio>
+                  </Stack>
+                </RadioGroup>
+                <Text as="div" textStyle="bodyMain" fontWeight={500}>
+                  Do you use a co-packer?
+                </Text>
+                <RadioGroup
+                  onChange={(newValue) => props.setCopacker(newValue)}
+                  value={props.copackerKitchen}
+                >
+                  <Stack marginTop={1}>
+                    <HStack>
+                      <Radio value={"true"}>Yes</Radio>
+                      <Input
+                        marginLeft={2}
+                        variant="filled"
+                        placeholder="Please share the name of the co-packer"
+                      />
+                    </HStack>
+                    <Radio value={"false"}>No</Radio>
+                  </Stack>
+                </RadioGroup>
+                <Flex align="center" justify="flex-start" marginTop={8}>
+                  <Heading
+                    as="h2"
+                    fontFamily={"font.body"}
+                    textStyle="h4"
+                    size="md"
+                    width={"80%"}
+                  >
+                    Contact information
+                  </Heading>
+                  <Divider
+                    color="gray.700"
+                    borderBottomWidth={2}
+                    opacity={1}
+                    flexGrow={1}
+                  />
+                </Flex>
+                <Text as="div" textStyle="bodyMain" marginTop={4}>
+                  Add all the members of your staff that will be manning your
+                  booth(s); these contacts will be visible to managers of the markets
+                  you participate in.
+                </Text>
+                <Button
+                  onClick={onOpen}
+                  marginTop={4}
+                  rightIcon={<ArrowForwardIcon />}
+                >
+                  Add a contact
                 </Button>
-              </ModalFooter>
-            </ModalContent>
-          </Modal>
-          <Flex align="center" justify="flex-start" marginTop={8}>
-            <Heading
-              as="h2"
-              fontFamily={"font.body"}
-              textStyle="h4"
-              size="md"
-              width={"36%"}
-            >
-              Paper work
-            </Heading>
-            <Divider
-              color="gray.700"
-              borderBottomWidth={2}
-              opacity={1}
-              flexGrow={1}
-            />
-          </Flex>
-          <Text as="div" textStyle="bodyMain" marginTop={4}>
-            Upload business license (required)
-          </Text>
-          <Text as="div" color="gray.500">
-            Add a statement of explanantion
-          </Text>
-          <Input type="file" />
-          <Text as="div" textStyle="bodyMain" marginTop={4}>
-            Upload insurance documentation (required)
-          </Text>
-          <Text as="div" color="gray.500">
-            Add a statement of explanantion
-          </Text>
-          <Input type="file" />
-          <Flex align="center" justify="flex-start" marginTop={8}>
-            <Heading
-              as="h2"
-              fontFamily={"font.body"}
-              textStyle="h4"
-              size="md"
-              width={"112%"}
-            >
-              Demographic information
-            </Heading>
-            <Divider color="gray.700" borderBottomWidth={2} opacity={1} />
-          </Flex>
-          <Text as="div" textStyle="bodyMain" marginTop={4}>
-            The following demographic questions are intended to assess how
-            members of various communities are participating in our programming.
-            The responses will help us make decisions about our outreach,
-            engagement, and programming efforts to ensure we are effectively
-            serving our diverse membership.
-          </Text>
-          <Text as="div" textStyle="bodyMain" fontWeight={500} marginTop={8}>
-            Is the business owner a first generation farmer?
-          </Text>
-          <RadioGroup
-            onChange={(newValue) => props.setfirstGeneration(newValue)}
-            marginTop={2}
-          >
-            <HStack spacing={4}>
-              <Radio value={"true"}>Yes</Radio>
-              <Radio value={"false"}>No</Radio>
-              <Radio value="NA">Prefer not to answer</Radio>
-            </HStack>
-          </RadioGroup>
-          <Text as="div" textStyle="bodyMain" fontWeight={500} marginTop={8}>
-            Is this a veteran-owned busines?
-          </Text>
-          <RadioGroup
-            onChange={(newValue) => props.setVeteranOwned(newValue)}
-            marginTop={2}
-          >
-            <HStack spacing={4}>
-              <Radio value={"true"}>Yes</Radio>
-              <Radio value={"false"}>No</Radio>
-              <Radio value="NA">Prefer not to answer</Radio>
-            </HStack>
-          </RadioGroup>
-          <Text as="div" textStyle="bodyMain" fontWeight={500} marginTop={8}>
-            Do any of the business owners identify as Black, Indigenous, and/or
-            a Person of Color?
-          </Text>
-          <RadioGroup
-            onChange={(newValue) => props.setBipoc(newValue)}
-            marginTop={2}
-          >
-            <HStack spacing={4}>
-              <Radio value={"true"}>Yes</Radio>
-              <Radio value={"false"}>No</Radio>
-              <Radio value="NA">Prefer not to answer</Radio>
-            </HStack>
-          </RadioGroup>
-          <Text as="div" textStyle="bodyMain" fontWeight={500} marginTop={8}>
-            Is this an immigrant or refugee-owned business?
-          </Text>
-          <RadioGroup
-            onChange={(newValue) => props.setImmigrantOrRefugee(newValue)}
-            marginTop={2}
-          >
-            <HStack spacing={4}>
-              <Radio value={"true"}>Yes</Radio>
-              <Radio value={"false"}>No</Radio>
-              <Radio value="NA">Prefer not to answer</Radio>
-            </HStack>
-          </RadioGroup>
-          <Text as="div" textStyle="bodyMain" fontWeight={500} marginTop={8}>
-            Is this an LGBTQIA+ (lesbian, gay, bisexual, transgender, queer,
-            intersex, asexual, plus) owned business?
-          </Text>
-          <RadioGroup
-            onChange={(newValue) => props.setLgbtqia(newValue)}
-            marginTop={2}
-          >
-            <HStack spacing={4}>
-              <Radio value={"true"}>Yes</Radio>
-              <Radio value={"false"}>No</Radio>
-              <Radio value="NA">Prefer not to answer</Radio>
-            </HStack>
-          </RadioGroup>
-          <Text as="div" textStyle="bodyMain" fontWeight={500} marginTop={8}>
-            Other
-          </Text>
-          <Input placeholder="Self describe" />
-          <Center>
-            <HStack spacing={4}>
-              <Button
-                colorScheme="green"
-                marginTop={12}
-                variant="solid"
-                width={125}
-                onClick={handleBackClick}
-                leftIcon={<ArrowBackIcon />}
-              >
-                Back
-              </Button>
-              <Button
-                type="submit"
-                colorScheme="green"
-                marginTop={12}
-                variant="solid"
-                width={125}
-                rightIcon={<ArrowForwardIcon />}
-              >
-                Next
-              </Button>
-            </HStack>
-          </Center>
+                <Modal isOpen={isOpen} onClose={onClose} size={"xl"}>
+                  <ModalOverlay />
+                  <ModalContent background={"gray.600"} color={"gray.50"}>
+                    <ModalHeader>
+                      <Stack textAlign={"center"} spacing={1}>
+                        <Heading marginBottom={0}>Add a contact</Heading>
+                        <Text>
+                          Please fill in requested information to create a new contact
+                        </Text>
+                      </Stack>
+                    </ModalHeader>
+                    <ModalCloseButton />
+                    <ModalBody>
+                      <FormControl marginBottom={4}>
+                        <FormLabel>Contact name (required)</FormLabel>
+                        <Input />
+                      </FormControl>
+                      <FormControl marginBottom={4}>
+                        <FormLabel>Contact email address (required)</FormLabel>
+                        <Input type="email" />
+                      </FormControl>
+                      <FormControl marginBottom={6}>
+                        <FormLabel>Contact phone number (required)</FormLabel>
+                        <Input type="number" />
+                      </FormControl>
+                      <FormControl marginBottom={4}>
+                        <FormLabel>Type of contact</FormLabel>
+                        <FormHelperText color={"gray.50"} marginBottom={2}>
+                          Select the type(s) that best describes this contact’s
+                          responsibility for the business
+                        </FormHelperText>
+                        <CheckboxGroup colorScheme="brown" defaultValue={[]}>
+                          <Stack spacing={[1, 5]} direction={["column", "row"]}>
+                            <Checkbox value="primary">Primary</Checkbox>
+                            <Checkbox value="billing">Billing/financial</Checkbox>
+                            <Checkbox value="market">At-market</Checkbox>
+                          </Stack>
+                        </CheckboxGroup>
+                      </FormControl>
+                    </ModalBody>
+                    <ModalFooter>
+                      <Button colorScheme="brown" variant="solid" mr={3}>
+                        Save
+                      </Button>
+                      <Button
+                        color={"gray.50"}
+                        colorScheme="brown"
+                        variant={"outline"}
+                        onClick={onClose}
+                      >
+                        Cancel
+                      </Button>
+                    </ModalFooter>
+                  </ModalContent>
+                </Modal>
+                <Flex align="center" justify="flex-start" marginTop={8}>
+                  <Heading
+                    as="h2"
+                    fontFamily={"font.body"}
+                    textStyle="h4"
+                    size="md"
+                    width={"36%"}
+                  >
+                    Paper work
+                  </Heading>
+                  <Divider
+                    color="gray.700"
+                    borderBottomWidth={2}
+                    opacity={1}
+                    flexGrow={1}
+                  />
+                </Flex>
+                <Text as="div" textStyle="bodyMain" marginTop={4}>
+                  Upload business license (required)
+                </Text>
+                <Text as="div" color="gray.500">
+                  Add a statement of explanantion
+                </Text>
+                <Input type="file" />
+                <Text as="div" textStyle="bodyMain" marginTop={4}>
+                  Upload insurance documentation (required)
+                </Text>
+                <Text as="div" color="gray.500">
+                  Add a statement of explanantion
+                </Text>
+                <Input type="file" />
+                <Flex align="center" justify="flex-start" marginTop={8}>
+                  <Heading
+                    as="h2"
+                    fontFamily={"font.body"}
+                    textStyle="h4"
+                    size="md"
+                    width={"112%"}
+                  >
+                    Demographic information
+                  </Heading>
+                  <Divider color="gray.700" borderBottomWidth={2} opacity={1} />
+                </Flex>
+                <Text as="div" textStyle="bodyMain" marginTop={4}>
+                  The following demographic questions are intended to assess how
+                  members of various communities are participating in our programming.
+                  The responses will help us make decisions about our outreach,
+                  engagement, and programming efforts to ensure we are effectively
+                  serving our diverse membership.
+                </Text>
+                <Text as="div" textStyle="bodyMain" fontWeight={500} marginTop={8}>
+                  Is the business owner a first generation farmer?
+                </Text>
+                <RadioGroup
+                  onChange={(newValue) => props.setfirstGeneration(newValue)}
+                  marginTop={2}
+                >
+                  <HStack spacing={4}>
+                    <Radio value={"true"}>Yes</Radio>
+                    <Radio value={"false"}>No</Radio>
+                    <Radio value="NA">Prefer not to answer</Radio>
+                  </HStack>
+                </RadioGroup>
+                <Text as="div" textStyle="bodyMain" fontWeight={500} marginTop={8}>
+                  Is this a veteran-owned busines?
+                </Text>
+                <RadioGroup
+                  onChange={(newValue) => props.setVeteranOwned(newValue)}
+                  marginTop={2}
+                >
+                  <HStack spacing={4}>
+                    <Radio value={"true"}>Yes</Radio>
+                    <Radio value={"false"}>No</Radio>
+                    <Radio value="NA">Prefer not to answer</Radio>
+                  </HStack>
+                </RadioGroup>
+                <Text as="div" textStyle="bodyMain" fontWeight={500} marginTop={8}>
+                  Do any of the business owners identify as Black, Indigenous, and/or
+                  a Person of Color?
+                </Text>
+                <RadioGroup
+                  onChange={(newValue) => props.setBipoc(newValue)}
+                  marginTop={2}
+                >
+                  <HStack spacing={4}>
+                    <Radio value={"true"}>Yes</Radio>
+                    <Radio value={"false"}>No</Radio>
+                    <Radio value="NA">Prefer not to answer</Radio>
+                  </HStack>
+                </RadioGroup>
+                <Text as="div" textStyle="bodyMain" fontWeight={500} marginTop={8}>
+                  Is this an immigrant or refugee-owned business?
+                </Text>
+                <RadioGroup
+                  onChange={(newValue) => props.setImmigrantOrRefugee(newValue)}
+                  marginTop={2}
+                >
+                  <HStack spacing={4}>
+                    <Radio value={"true"}>Yes</Radio>
+                    <Radio value={"false"}>No</Radio>
+                    <Radio value="NA">Prefer not to answer</Radio>
+                  </HStack>
+                </RadioGroup>
+                <Text as="div" textStyle="bodyMain" fontWeight={500} marginTop={8}>
+                  Is this an LGBTQIA+ (lesbian, gay, bisexual, transgender, queer,
+                  intersex, asexual, plus) owned business?
+                </Text>
+                <RadioGroup
+                  onChange={(newValue) => props.setLgbtqia(newValue)}
+                  marginTop={2}
+                >
+                  <HStack spacing={4}>
+                    <Radio value={"true"}>Yes</Radio>
+                    <Radio value={"false"}>No</Radio>
+                    <Radio value="NA">Prefer not to answer</Radio>
+                  </HStack>
+                </RadioGroup>
+                <Text as="div" textStyle="bodyMain" fontWeight={500} marginTop={8}>
+                  Other
+                </Text>
+                <Input placeholder="Self describe" />
+                <Center>
+                  <HStack spacing={4}>
+                    <Button
+                      colorScheme="green"
+                      marginTop={12}
+                      variant="solid"
+                      width={125}
+                      onClick={handleBackClick}
+                      leftIcon={<ArrowBackIcon />}
+                    >
+                      Back
+                    </Button>
+                    <Button
+                      type="submit"
+                      colorScheme="green"
+                      marginTop={12}
+                      variant="solid"
+                      width={125}
+                      rightIcon={<ArrowForwardIcon />}
+                    >
+                      Next
+                    </Button>
+                  </HStack>
+                </Center>
+              </form>
+            )}
+          </Formik>
         </>
       ) : index === 4 ? (
         <>
