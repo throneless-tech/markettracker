@@ -41,7 +41,7 @@ export const Vendors: CollectionConfig = {
       name: "user",
       type: "relationship",
       relationTo: "users",
-      required: true,
+      // required: true,
     },
     {
       name: "standing",
@@ -74,13 +74,13 @@ export const Vendors: CollectionConfig = {
       name: "isPrimaryContact",
       label: "Are you the primary contact for the business?",
       type: "checkbox",
-      required: true,
+      // required: true,
     },
     {
       name: "isBillingContact",
       label: "Are you the billing contact for the business?",
       type: "checkbox",
-      required: true,
+      // required: true,
     },
     {
       name: "address",
@@ -137,7 +137,7 @@ export const Vendors: CollectionConfig = {
           name: "street",
           label: "Street",
           type: "text",
-          required: true,
+          // required: true,
         },
         {
           type: "row",
@@ -146,19 +146,19 @@ export const Vendors: CollectionConfig = {
               name: "city",
               label: "City",
               type: "text",
-              required: true,
+              // required: true,
             },
             {
               name: "state",
               label: "State",
               type: "text",
-              required: true,
+              // required: true,
             },
             {
               name: "zipcode",
               label: "Zipcode",
               type: "text",
-              required: true,
+              // required: true,
             },
           ],
         },
@@ -171,13 +171,13 @@ export const Vendors: CollectionConfig = {
       name: "phoneNumber",
       label: "Company Phone Number",
       type: "text",
-      required: true,
+      // required: true,
     },
     {
       name: "description",
       label: "Brief Company Description",
       type: "textarea",
-      required: true,
+      // required: true,
       admin: {
         description: "TODO",
       },
@@ -240,8 +240,9 @@ export const Vendors: CollectionConfig = {
       name: "type",
       label: "What type of vendor are you?",
       type: "select",
-      required: true,
+      // required: true,
       hasMany: false,
+      defaultValue: "producer",
       options: [
         {
           label: "A regional farmer who sells what I produce on my farm",
@@ -283,6 +284,7 @@ export const Vendors: CollectionConfig = {
         },
       ],
       admin: {
+        isClearable: true,
         description:
           "Select which type of legal entity your business is registered as in your state.",
       },
@@ -329,6 +331,7 @@ export const Vendors: CollectionConfig = {
       type: "select",
       //required: true, //temporarily disabled for data import
       hasMany: true,
+      defaultValue: "other",
       options: [
         {
           label: "Nowhere Yet",
@@ -343,6 +346,9 @@ export const Vendors: CollectionConfig = {
           value: "other",
         },
       ],
+      admin: {
+        isClearable: true,
+      },
     },
     {
       name: "otherLocations",
@@ -428,7 +434,7 @@ export const Vendors: CollectionConfig = {
       label:
         "Add all the members of your staff that will be manning your booth(s); these contacts will be visible to the managers of markets your participate in.",
       type: "relationship",
-      required: true,
+      // required: true,
       hasMany: true,
       relationTo: "contacts",
       hooks: {
