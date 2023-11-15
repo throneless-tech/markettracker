@@ -1001,6 +1001,141 @@ export const VendorsEdit: React.FC<any> = ({ data: vendor }) => {
                               size="md"
                               width={"90%"}
                             >
+                              Demographic information
+                            </Heading>
+                            <Divider
+                              color="gray.700"
+                              borderBottomWidth={2}
+                              opacity={1}
+                            />
+                          </Flex>
+                          <Text
+                            as="div"
+                            textStyle="bodyMain"
+                            fontWeight={500}
+                            marginTop={8}
+                          >
+                            Is the business owner a first generation farmer?
+                          </Text>
+                          <RadioGroup
+                            value={vendor.demographics?.firstGeneration}
+                            marginTop={2}
+                          >
+                            <HStack spacing={4}>
+                              <Radio value={"yes"}>Yes</Radio>
+                              <Radio value={"no"}>No</Radio>
+                              <Radio value="no_answer">
+                                Prefer not to answer
+                              </Radio>
+                            </HStack>
+                          </RadioGroup>
+                          <Text
+                            as="div"
+                            textStyle="bodyMain"
+                            fontWeight={500}
+                            marginTop={8}
+                          >
+                            Is this a veteran-owned busines?
+                          </Text>
+                          <RadioGroup
+                            value={vendor.demographics?.veteranOwned}
+                            marginTop={2}
+                          >
+                            <HStack spacing={4}>
+                              <Radio value={"yes"}>Yes</Radio>
+                              <Radio value={"no"}>No</Radio>
+                              <Radio value="no_answer">
+                                Prefer not to answer
+                              </Radio>
+                            </HStack>
+                          </RadioGroup>
+                          <Text
+                            as="div"
+                            textStyle="bodyMain"
+                            fontWeight={500}
+                            marginTop={8}
+                          >
+                            Do any of the business owners identify as Black,
+                            Indigenous, and/or a Person of Color?
+                          </Text>
+                          <RadioGroup
+                            value={vendor.demographics?.bipoc}
+                            marginTop={2}
+                          >
+                            <HStack spacing={4}>
+                              <Radio value={"yes"}>Yes</Radio>
+                              <Radio value={"no"}>No</Radio>
+                              <Radio value="no_answer">
+                                Prefer not to answer
+                              </Radio>
+                            </HStack>
+                          </RadioGroup>
+                          <Text
+                            as="div"
+                            textStyle="bodyMain"
+                            fontWeight={500}
+                            marginTop={8}
+                          >
+                            Is this an immigrant or refugee-owned business?
+                          </Text>
+                          <RadioGroup
+                            value={vendor.demographics?.immigrantOrRefugee}
+                            marginTop={2}
+                          >
+                            <HStack spacing={4}>
+                              <Radio value={"yes"}>Yes</Radio>
+                              <Radio value={"no"}>No</Radio>
+                              <Radio value="no_answer">
+                                Prefer not to answer
+                              </Radio>
+                            </HStack>
+                          </RadioGroup>
+                          <Text
+                            as="div"
+                            textStyle="bodyMain"
+                            fontWeight={500}
+                            marginTop={8}
+                          >
+                            Is this an LGBTQIA+ (lesbian, gay, bisexual,
+                            transgender, queer, intersex, asexual, plus) owned
+                            business?
+                          </Text>
+                          <RadioGroup
+                            value={vendor.demographics?.lgbtqia}
+                            marginTop={2}
+                          >
+                            <HStack spacing={4}>
+                              <Radio value={"yes"}>Yes</Radio>
+                              <Radio value={"no"}>No</Radio>
+                              <Radio value="no_answer">
+                                Prefer not to answer
+                              </Radio>
+                            </HStack>
+                          </RadioGroup>
+                          <Text
+                            as="div"
+                            textStyle="bodyMain"
+                            fontWeight={500}
+                            marginTop={8}
+                          >
+                            Other
+                          </Text>
+                          <Input
+                            placeholder="Self describe"
+                            value={vendor.demographics?.other}
+                          />
+                          <Flex
+                            align="center"
+                            justify="flex-start"
+                            marginTop={8}
+                          >
+                            <Heading
+                              as="h2"
+                              fontFamily={"font.body"}
+                              textStyle="h4"
+                              size="md"
+                              width={"90%"}
+                            >
                               Production practices
                             </Heading>
                             <Divider
