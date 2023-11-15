@@ -180,7 +180,7 @@ export const MarketCard: React.FC<any> = (props) => {
                   },
                 }}
               />
-              <Text fontWeight={500}>Manager:</Text>
+              <Text fontWeight={500}>Operator:</Text>
               <Text>
                 {market.contact.name} {market.contact.phone}
               </Text>

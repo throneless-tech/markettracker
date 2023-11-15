@@ -974,7 +974,7 @@ export const Steps: React.FC<any> = (props) => {
           </Flex>
           <Text as="div" textStyle="bodyMain" marginTop={4}>
             Add all the members of your staff that will be manning your
-            booth(s); these contacts will be visible to managers of the markets
+            booth(s); these contacts will be visible to operators of the markets
             you participate in.
           </Text>
           <Button

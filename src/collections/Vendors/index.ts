@@ -432,7 +432,7 @@ export const Vendors: CollectionConfig = {
     {
       name: "contacts",
       label:
-        "Add all the members of your staff that will be manning your booth(s); these contacts will be visible to the managers of markets your participate in.",
+        "Add all the members of your staff that will be manning your booth(s); these contacts will be visible to the operators of markets your participate in.",
       type: "relationship",
       // required: true,
       hasMany: true,

@@ -69,7 +69,7 @@ export const Markets: CollectionConfig = {
     },
     {
       name: "contact",
-      label: "Market Manager",
+      label: "Market Operator",
       type: "relationship",
       relationTo: "contacts",
       //required: true, //temporarily disabled for data import

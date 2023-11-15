@@ -130,6 +130,10 @@ export const Applications: CollectionConfig = {
       type: "text",
     },
     {
+      name: "seasonName",
+      type: "text",
+    },
+    {
       name: "vendorType",
       type: "text",
     },

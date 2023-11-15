@@ -89,7 +89,7 @@ const ContactModal: React.FC<any> = (props) => {
   return (
     <>
       <Button onClick={onOpen} marginTop={4} rightIcon={<ArrowForwardIcon />}>
-        Add a manager
+        Add a market operator
       </Button>
       <Modal isOpen={isOpen} onClose={onClose} size={"xl"}>
         <ModalOverlay />
@@ -105,7 +105,7 @@ const ContactModal: React.FC<any> = (props) => {
           <ModalCloseButton />
           <ModalBody>
             <FormControl marginBottom={4}>
-              <FormLabel>Manager name (required)</FormLabel>
+              <FormLabel>Operator name (required)</FormLabel>
               <Input
                 color={"gray.700"}
                 value={contact.name}
@@ -115,7 +115,7 @@ const ContactModal: React.FC<any> = (props) => {
               />
             </FormControl>
             <FormControl marginBottom={4}>
-              <FormLabel>Manager email address (required)</FormLabel>
+              <FormLabel>Operator email address (required)</FormLabel>
               <Input
                 color={"gray.700"}
                 value={contact.email}
@@ -125,7 +125,7 @@ const ContactModal: React.FC<any> = (props) => {
               />
             </FormControl>
             <FormControl marginBottom={6}>
-              <FormLabel>Manager phone number (required)</FormLabel>
+              <FormLabel>Operator phone number (required)</FormLabel>
               <Input
                 color={"gray.700"}
                 value={contact.phone}
@@ -396,7 +396,7 @@ export const MarketsEdit: React.FC<any> = (props) => {
                               fontWeight={700}
                               textStyle="bodyMain"
                             >
-                              Manager:
+                              Operator:
                             </Text>
                             <Text
                               textStyle="bodyMain"
@@ -824,7 +824,7 @@ export const MarketsEdit: React.FC<any> = (props) => {
                                       textTransform={"uppercase"}
                                       width={"160px"}
                                     >
-                                      Managers
+                                      Operators
                                     </Text>
                                     <Divider
                                       sx={{
@@ -838,7 +838,7 @@ export const MarketsEdit: React.FC<any> = (props) => {
                                     marginTop={4}
                                     fontSize={"md"}
                                   >
-                                    Select anyone who will be a manager at{" "}
+                                    Select anyone who will be an operator at{" "}
                                     {data.name} this season.
                                   </Text>
                                   <CheckboxGroup
@@ -1143,14 +1143,14 @@ export const MarketsEdit: React.FC<any> = (props) => {
                         textTransform={"uppercase"}
                         width={"700px"}
                       >
-                        Managers scheduled for this market
+                        Operators scheduled for this market
                       </Text>
                       <Divider
                         sx={{ borderColor: "gray.600", borderBottomWidth: 2 }}
                       />
                     </HStack>
                     <HStack marginTop={2}>
-                      {/* <Tag bg={"gray.50"}>Manager 1</Tag> */}
+                      {/* <Tag bg={"gray.50"}>Operator 1</Tag> */}
                     </HStack>
                     <HStack marginTop={4}>
                       <Text

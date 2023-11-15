@@ -177,7 +177,7 @@ export const SeasonCard: React.FC<any> = (props) => {
                   },
                 }}
               />
-              <Text fontWeight={500}>Manager:</Text>
+              <Text fontWeight={500}>Operator:</Text>
               <Text>
                 {season.market.contact.name} {season.market.contact.phone}
               </Text>

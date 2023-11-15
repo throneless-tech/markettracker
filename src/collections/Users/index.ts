@@ -14,8 +14,8 @@ const roles = [
     value: "exec",
   },
   {
-    label: "Market Manager",
-    value: "manager",
+    label: "Market Operator",
+    value: "operator",
   },
   {
     label: "Vendor",

@@ -51,17 +51,18 @@ export const afterReadStats: CollectionAfterReadHook = async ({
       depth: 0,
     });
   }
-  console.log("***season", season);
   let gaps = [];
-  if (season && season.productGaps) {
+  if (season && season.productGaps && doc.products && doc.products.length) {
     gaps = doc.products.reduce((acc, product) => {
       const productId =
         product && product.id !== undefined ? product.id : product;
       if (
         Array.isArray(season.productGaps) &&
-        season.productGaps.map((gap: any) => gap.id).includes(productId)
+        season.productGaps
+          .map((gap: any) => (gap && gap.id !== undefined ? gap.id : gap))
+          .includes(productId)
       ) {
-        acc.push(product);
+        acc.push(productId);
       }
       return acc;
     }, []);

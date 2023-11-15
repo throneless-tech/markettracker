@@ -387,7 +387,7 @@ export const ApplicationsEdit: React.FC<any> = (props) => {
                           fontWeight={700}
                           textStyle="bodyMain"
                         >
-                          Manager:
+                          Operator:
                         </Text>
                         <Text
                           textStyle="bodyMain"

@@ -112,11 +112,7 @@ export const ApplicationsList: React.FC<any> = ({ data, isTab }) => {
       if (season) {
         setApplications(
           data.docs.filter(
-            (doc: Application) =>
-              doc.season &&
-              typeof doc.season === "object" &&
-              doc.season.id &&
-              doc.season.id === season.id,
+            (doc: Application) => doc.season && doc.season === season.id,
           ),
         );
       } else {
