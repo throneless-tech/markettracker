@@ -51,7 +51,7 @@ import LogoMarketTracker from "../../../assets/icons/logoMarketTracker.js";
 
 export const Steps: React.FC<any> = (props) => {
   type formValues = {
-    [key: string]: any; 
+    [key: string]: any;
   }
   const [index, setIndex] = useState(0);
   const [numPages, setNumPages] = useState();
@@ -101,10 +101,10 @@ export const Steps: React.FC<any> = (props) => {
     let newValues = { ...formValues };
     if (values) {
       console.log('values found...');
-      
+
       newValues = { ...formValues, ...values }
       console.log(newValues);
-      
+
       setFormValues(newValues)
     }
 
@@ -473,8 +473,22 @@ export const Steps: React.FC<any> = (props) => {
           <Formik
             key="formik-2"
             initialValues={{
-              companyName: formValues.companyName ? formValues.companyName : "" ,
+              companyName: formValues.companyName ? formValues.companyName : "",
               email: formValues.email ? formValues.email : "",
+              primaryContact: "",
+              billingContact: "",
+              street: "",
+              city: "",
+              state: "",
+              zipcode: "",
+              phoneNumber: "",
+              description: "",
+              yearEstablished: "",
+              fullTime: "",
+              partTime: "",
+              interns: "",
+              h2a: "",
+              volunteers: ""
             }}
             onSubmit={(values) => handleNextClick(values)}
           >
@@ -506,124 +520,163 @@ export const Steps: React.FC<any> = (props) => {
                   <Text as="div" textStyle="bodyMain" fontWeight={500}>
                     Are you the primary contact for this business?
                   </Text>
-                  <RadioGroup
-                    onChange={(newValue) => props.setPrimaryContact(newValue)}
-                  >
-                    <Stack>
-                      <Radio value={"true"}>Yes</Radio>
-                      <Radio value={"false"}>No</Radio>
-                    </Stack>
-                  </RadioGroup>
+                  <Field name="primaryContact">
+                    {({ field, form }) => (
+                      <FormControl
+                        id="primaryContact"
+                      >
+                        <RadioGroup {...field} id="primaryContact" {...props}>
+                          <Stack>
+                            <Radio {...field} value="yes">
+                              Yes
+                            </Radio>
+                            <Radio {...field} value="no">
+                              No
+                            </Radio>
+                          </Stack>
+                        </RadioGroup>
+                      </FormControl>
+                    )}
+                  </Field>
                   <Text as="div" textStyle="bodyMain" fontWeight={500}>
                     Are you the billing contact for this business?
                   </Text>
-                  <RadioGroup
-                    onChange={(newValue) => props.setBillingContact(newValue)}
-                  >
-                    <Stack>
-                      <Radio value={"true"}>Yes</Radio>
-                      <Radio value={"false"}>No</Radio>
-                    </Stack>
-                  </RadioGroup>
+                  <Field name="billingContact">
+                    {({ field, form }) => (
+                      <FormControl
+                        id="billingContact"
+                      >
+                        <RadioGroup {...field} id="billingContact" {...props}>
+                          <Stack>
+                            <Radio {...field} value="yes">
+                              Yes
+                            </Radio>
+                            <Radio {...field} value="no">
+                              No
+                            </Radio>
+                          </Stack>
+                        </RadioGroup>
+                      </FormControl>
+                    )}
+                  </Field>
                 </Stack>
                 <Stack spacing={2} marginTop={4}>
                   <Text as="div" textStyle="bodyMain" fontWeight={500}>
                     Company address (required)
                   </Text>
-                  <Input
-                    value={props.street}
-                    onChange={(event) => props.setStreet(event.target.value)}
-                    placeholder="Street"
-                    isRequired
-                  />
+                  <FormControl isInvalid={!!errors.street && touched.street}>
+                    <Field
+                      as={Input}
+                      id="street"
+                      name="street"
+                      placeholder="Street"
+                      validate={validate}
+                    />
+                    <FormErrorMessage>{errors.street}</FormErrorMessage>
+                  </FormControl>
                   <Flex gap={2}>
-                    <Input
-                      value={props.city}
-                      onChange={(event) => props.setCity(event.target.value)}
-                      placeholder="City"
-                      flex={6}
-                      isRequired
-                    />
-                    <Select
-                      value={props.state}
-                      onChange={(event) => props.setState(event.target.value)}
-                      placeholder="State"
-                      flex={2}
-                      isRequired
-                    >
-                      <option value="AK">AK</option>
-                      <option value="AL">AL</option>
-                      <option value="AR">AR</option>
-                      <option value="AZ">AZ</option>
-                      <option value="CA">CA</option>
-                      <option value="CO">CO</option>
-                      <option value="CT">CT</option>
-                      <option value="DC">DC</option>
-                      <option value="DE">DE</option>
-                      <option value="FL">FL</option>
-                      <option value="GA">GA</option>
-                      <option value="HI">HI</option>
-                      <option value="IA">IA</option>
-                      <option value="ID">ID</option>
-                      <option value="IL">IL</option>
-                      <option value="IN">IN</option>
-                      <option value="KS">KS</option>
-                      <option value="KY">KY</option>
-                      <option value="LA">LA</option>
-                      <option value="MA">MA</option>
-                      <option value="MD">MD</option>
-                      <option value="ME">ME</option>
-                      <option value="MI">MI</option>
-                      <option value="MN">MN</option>
-                      <option value="MO">MO</option>
-                      <option value="MS">MS</option>
-                      <option value="MT">MT</option>
-                      <option value="NC">NC</option>
-                      <option value="ND">ND</option>
-                      <option value="NE">NE</option>
-                      <option value="NH">NH</option>
-                      <option value="NJ">NJ</option>
-                      <option value="NM">NM</option>
-                      <option value="NV">NV</option>
-                      <option value="NY">NY</option>
-                      <option value="OH">OH</option>
-                      <option value="OK">OK</option>
-                      <option value="OR">OR</option>
-                      <option value="PA">PA</option>
-                      <option value="RI">RI</option>
-                      <option value="SC">SC</option>
-                      <option value="SD">SD</option>
-                      <option value="TN">TN</option>
-                      <option value="TX">TX</option>
-                      <option value="UT">UT</option>
-                      <option value="VA">VA</option>
-                      <option value="VT">VT</option>
-                      <option value="WA">WA</option>
-                      <option value="WI">WI</option>
-                      <option value="WV">WV</option>
-                      <option value="WY">WY</option>
-                    </Select>
-                    <Input
-                      value={props.zipcode}
-                      onChange={(event) => props.setZipcode(event.target.value)}
-                      placeholder="Zipcode"
-                      flex={3}
-                      type="number"
-                      isRequired
-                    />
+                    <FormControl isInvalid={!!errors.city && touched.city}>
+                      <Field
+                        flex={6}
+                        as={Input}
+                        id="city"
+                        name="city"
+                        placeholder="City"
+                        validate={validate}
+                      />
+                      <FormErrorMessage>{errors.city}</FormErrorMessage>
+                    </FormControl>
+                    <Field name="state" flex={2}>
+                      {({ field, form }) => (
+                        <FormControl
+                          id="state"
+                        >
+                          <Select placeholder="State">
+                            <option {...field} value="AK">AK</option>
+                            <option {...field} value="AL">AL</option>
+                            <option {...field} value="AR">AR</option>
+                            <option {...field} value="AZ">AZ</option>
+                            <option {...field} value="CA">CA</option>
+                            <option {...field} value="CO">CO</option>
+                            <option {...field} value="CT">CT</option>
+                            <option {...field} value="DC">DC</option>
+                            <option {...field} value="DE">DE</option>
+                            <option {...field} value="FL">FL</option>
+                            <option {...field} value="GA">GA</option>
+                            <option {...field} value="HI">HI</option>
+                            <option {...field} value="IA">IA</option>
+                            <option {...field} value="ID">ID</option>
+                            <option {...field} value="IL">IL</option>
+                            <option {...field} value="IN">IN</option>
+                            <option {...field} value="KS">KS</option>
+                            <option {...field} value="KY">KY</option>
+                            <option {...field} value="LA">LA</option>
+                            <option {...field} value="MA">MA</option>
+                            <option {...field} value="MD">MD</option>
+                            <option {...field} value="ME">ME</option>
+                            <option {...field} value="MI">MI</option>
+                            <option {...field} value="MN">MN</option>
+                            <option {...field} value="MO">MO</option>
+                            <option {...field} value="MS">MS</option>
+                            <option {...field} value="MT">MT</option>
+                            <option {...field} value="NC">NC</option>
+                            <option {...field} value="ND">ND</option>
+                            <option {...field} value="NE">NE</option>
+                            <option {...field} value="NH">NH</option>
+                            <option {...field} value="NJ">NJ</option>
+                            <option {...field} value="NM">NM</option>
+                            <option {...field} value="NV">NV</option>
+                            <option {...field} value="NY">NY</option>
+                            <option {...field} value="OH">OH</option>
+                            <option {...field} value="OK">OK</option>
+                            <option {...field} value="OR">OR</option>
+                            <option {...field} value="PA">PA</option>
+                            <option {...field} value="RI">RI</option>
+                            <option {...field} value="SC">SC</option>
+                            <option {...field} value="SD">SD</option>
+                            <option {...field} value="TN">TN</option>
+                            <option {...field} value="TX">TX</option>
+                            <option {...field} value="UT">UT</option>
+                            <option {...field} value="VA">VA</option>
+                            <option {...field} value="VT">VT</option>
+                            <option {...field} value="WA">WA</option>
+                            <option {...field} value="WI">WI</option>
+                            <option {...field} value="WV">WV</option>
+                            <option {...field} value="WY">WY</option>
+                          </Select>
+                        </FormControl>
+                      )}
+                    </Field>
+                    <FormControl isInvalid={!!errors.zipcode && touched.zipcode}>
+                      <Field
+                        flex={3} 
+                        as={Input}
+                        id="zipcode"
+                        name="zipcode"
+                        placeholder="Zipcode"
+                        validate={validate}
+                        type="number"
+                      />
+                      <FormErrorMessage>{errors.zipcode}</FormErrorMessage>
+                    </FormControl>
                   </Flex>
                 </Stack>
                 <Stack spacing={2} marginTop={4}>
                   <Text as="div" textStyle="bodyMain" fontWeight={500}>
                     Company phone number (required)
                   </Text>
-                  <Input
-                    value={props.phoneNumber}
-                    onChange={(event) => props.setPhoneNumber(event.target.value)}
-                    placeholder="xxx-xxx-xxxx"
-                    type="tel"
-                    isRequired
-                  />
+                  <FormControl isInvalid={!!errors.phoneNumber && touched.phoneNumber}>
+                    <Field
+                      as={Input}
+                      id="phoneNumber"
+                      name="phoneNumber"
+                      placeholder="xxx-xxx-xxxx"
+                      validate={validate}
+                      type="tel"
+
+                    />
+                    <FormErrorMessage>{errors.phoneNumber}</FormErrorMessage>
+                  </FormControl>
                 </Stack>
                 <Stack spacing={2} marginTop={4}>
                   <Text as="div" textStyle="bodyMain" fontWeight={500}>
@@ -632,22 +685,28 @@ export const Steps: React.FC<any> = (props) => {
                   <Text as="div" color="gray.400" fontSize={14}>
                     Add a statement of explanation.
                   </Text>
-                  <Textarea
-                    value={props.description}
-                    onChange={(event) => props.setDescription(event.target.value)}
-                    placeholder="Start typing..."
-                  />
+                  <FormControl>
+                    <Field
+                      as={Textarea}
+                      id="description"
+                      name="description"
+                      placeholder="Start typing..."
+                    />
+                  </FormControl>
                 </Stack>
                 <Stack spacing={2} marginTop={4}>
                   <Text as="div" textStyle="bodyMain" fontWeight={500}>
                     Year company established
                   </Text>
-                  <Input
-                    value={props.yearEstablished}
-                    onChange={(event) => props.setYearEstablished(event.target.value)}
-                    placeholder="eg. 2017"
-                    type="number"
-                  />
+                  <FormControl>
+                    <Field
+                      as={Input}
+                      id="yearEstablished"
+                      name="yearEstablished"
+                      placeholder="eg. 2017"
+                      type="number"
+                    />
+                  </FormControl>
                 </Stack>
                 <Stack spacing={2} marginTop={4}>
                   <Text as="div" textStyle="bodyMain" fontWeight={500}>
@@ -666,12 +725,16 @@ export const Steps: React.FC<any> = (props) => {
                       >
                         Full time
                       </Text>
-                      <Input
-                        value={props.fullTime}
-                        onChange={(event) => props.setFullTime(event.target.value)}
-                        maxWidth={160}
-                        placeholder="# of full time staff"
-                      />
+                      <FormControl>
+                        <Field
+                          as={Input}
+                          id="fullTime"
+                          name="fullTime"
+                          placeholder="# of full time staff"
+                          type="number"
+                          maxWidth={160}
+                        />
+                      </FormControl>
                     </WrapItem>
                     <WrapItem alignItems="center">
                       <Text
@@ -682,12 +745,16 @@ export const Steps: React.FC<any> = (props) => {
                       >
                         Part time
                       </Text>
-                      <Input
-                        value={props.partTime}
-                        onChange={(event) => props.setPartTime(event.target.value)}
-                        maxWidth={160}
-                        placeholder="# of part time staff"
-                      />
+                      <FormControl>
+                        <Field
+                          as={Input}
+                          id="partTime"
+                          name="partTime"
+                          placeholder="# of part time staff"
+                          type="number"
+                          maxWidth={160}
+                        />
+                      </FormControl>
                     </WrapItem>
                     <WrapItem alignItems="center">
                       <Text
@@ -698,12 +765,16 @@ export const Steps: React.FC<any> = (props) => {
                       >
                         Interns
                       </Text>
-                      <Input
-                        value={props.interns}
-                        onChange={(event) => props.setInterns(event.target.value)}
-                        maxWidth={160}
-                        placeholder="# of interns"
-                      />
+                      <FormControl>
+                        <Field
+                          as={Input}
+                          id="interns"
+                          name="interns"
+                          placeholder="# of interns"
+                          type="number"
+                          maxWidth={160}
+                        />
+                      </FormControl>
                     </WrapItem>
                     <WrapItem alignItems="center">
                       <Text
@@ -714,12 +785,16 @@ export const Steps: React.FC<any> = (props) => {
                       >
                         H2A
                       </Text>
-                      <Input
-                        value={props.h2a}
-                        onChange={(event) => props.setH2a(event.target.value)}
-                        maxWidth={160}
-                        placeholder="# of H2A"
-                      />
+                      <FormControl>
+                        <Field
+                          as={Input}
+                          id="h2a"
+                          name="h2a"
+                          placeholder="# of H2A"
+                          type="number"
+                          maxWidth={160}
+                        />
+                      </FormControl>
                     </WrapItem>
                     <WrapItem alignItems="center">
                       <Text
@@ -730,12 +805,16 @@ export const Steps: React.FC<any> = (props) => {
                       >
                         Volunteers
                       </Text>
-                      <Input
-                        value={props.volunteers}
-                        onChange={(event) => props.setVolunteers(event.target.value)}
-                        maxWidth={160}
-                        placeholder="# of volunteers"
-                      />
+                      <FormControl>
+                        <Field
+                          as={Input}
+                          id="volunteers"
+                          name="volunteers"
+                          placeholder="# of volunteers"
+                          type="number"
+                          maxWidth={160}
+                        />
+                      </FormControl>
                     </WrapItem>
                   </Wrap>
                 </Stack>
@@ -1415,6 +1494,30 @@ export const Steps: React.FC<any> = (props) => {
             Other
           </Text>
           <Input placeholder="Self describe" />
+          <Center>
+            <HStack spacing={4}>
+              <Button
+                colorScheme="green"
+                marginTop={12}
+                variant="solid"
+                width={125}
+                onClick={handleBackClick}
+                leftIcon={<ArrowBackIcon />}
+              >
+                Back
+              </Button>
+              <Button
+                type="submit"
+                colorScheme="green"
+                marginTop={12}
+                variant="solid"
+                width={125}
+                rightIcon={<ArrowForwardIcon />}
+              >
+                Next
+              </Button>
+            </HStack>
+          </Center>
         </>
       ) : index === 4 ? (
         <>
@@ -1565,6 +1668,31 @@ export const Steps: React.FC<any> = (props) => {
               </HStack>
             </RadioGroup>
           </Stack>
+          <Center>
+            <HStack spacing={4}>
+              <Button
+                colorScheme="green"
+                marginTop={12}
+                variant="solid"
+                width={125}
+                onClick={handleBackClick}
+                leftIcon={<ArrowBackIcon />}
+                isDisabled
+              >
+                Back
+              </Button>
+              <Button
+                type="submit"
+                colorScheme="green"
+                marginTop={12}
+                variant="solid"
+                width={125}
+                rightIcon={<ArrowForwardIcon />}
+              >
+                Next
+              </Button>
+            </HStack>
+          </Center>
         </>
       ) : index === 5 ? (
         <>
@@ -1869,6 +1997,31 @@ export const Steps: React.FC<any> = (props) => {
               placeholder="Start typing..."
             />
           </Stack>
+          <Center>
+            <HStack spacing={4}>
+              <Button
+                colorScheme="green"
+                marginTop={12}
+                variant="solid"
+                width={125}
+                onClick={handleBackClick}
+                leftIcon={<ArrowBackIcon />}
+                isDisabled
+              >
+                Back
+              </Button>
+              <Button
+                type="submit"
+                colorScheme="green"
+                marginTop={12}
+                variant="solid"
+                width={125}
+                rightIcon={<ArrowForwardIcon />}
+              >
+                Next
+              </Button>
+            </HStack>
+          </Center>
         </>
       ) : index === 6 ? (
         <>
@@ -1929,6 +2082,31 @@ export const Steps: React.FC<any> = (props) => {
               I have read, understand, and agree to comply with FRESHFARM Market
               Rules and Regulations.
             </Checkbox>
+            <Center>
+              <HStack spacing={4}>
+                <Button
+                  colorScheme="green"
+                  marginTop={12}
+                  variant="solid"
+                  width={125}
+                  onClick={handleBackClick}
+                  leftIcon={<ArrowBackIcon />}
+                  isDisabled
+                >
+                  Back
+                </Button>
+                <Button
+                  type="submit"
+                  colorScheme="green"
+                  marginTop={12}
+                  variant="solid"
+                  width={125}
+                  rightIcon={<ArrowForwardIcon />}
+                >
+                  Finish
+                </Button>
+              </HStack>
+            </Center>
           </Stack>
         </>
       ) : index === 7 ? (
