@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { Formik, Field } from "formik";
 import { pdfjs } from "react-pdf";
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.js`;
@@ -44,24 +45,168 @@ import {
 } from "@chakra-ui/react";
 
 // icons + images
+import { ArrowBackIcon } from "@chakra-ui/icons";
 import { ArrowForwardIcon } from "@chakra-ui/icons";
 import LogoMarketTracker from "../../../assets/icons/logoMarketTracker.js";
 
 export const Steps: React.FC<any> = (props) => {
+  type formValues = {
+    [key: string]: any; 
+  }
+  const [index, setIndex] = useState(0);
   const [numPages, setNumPages] = useState();
   const [pageNumber, setPageNumber] = useState(1);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [show, setShow] = useState(false);
   const handleClick = () => setShow(!show);
+  const [formValues, setFormValues] = useState(null);
 
   function onDocumentLoadSuccess({ numPages }) {
     setNumPages(numPages);
   }
 
-  useEffect(() => {}, [props]);
+  // Validate not a blank field
+  function validate(value) {
+    let error;
+    if (!value) {
+      error = 'This field is required.';
+    }
+    return error;
+  }
+
+
+  // Email validation function
+  const validateEmail = value => {
+    let error;
+    if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(value)) {
+      error = 'Invalid email address.';
+    }
+    return error;
+  };
+
+  // Password validation function
+  function validatePassword(value) {
+    let error;
+    if (value.length < 8) {
+      error = 'Password must be at least 8 characters.';
+    }
+    return error;
+  }
+
+  function handleBackClick() {
+    setIndex(index - 1);
+  }
+
+  function handleNextClick(values) {
+    let newValues = { ...formValues };
+    if (values) {
+      console.log('values found...');
+      
+      newValues = { ...formValues, ...values }
+      console.log(newValues);
+      
+      setFormValues(newValues)
+    }
+
+    if (values.businessCheck == "none") {
+      setIndex(8);
+    } else if (index === 6) {
+      const createVendor = async () => {
+        try {
+          const req = await fetch("/api/users/register", {
+            method: "POST",
+            credentials: "include",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              user: {
+                name: formValues.userName,
+                email: formValues.email,
+                password: formValues.password,
+                role: "vendor",
+              },
+              vendor: {
+                name: formValues.companyName,
+                isPrimaryContact: formValues.primaryContact,
+                isBillingContact: formValues.billingContact,
+                address: {
+                  street: formValues.street,
+                  city: formValues.city,
+                  state: formValues.state,
+                  zipcode: formValues.zipcode,
+                },
+                phoneNumber: formValues.phoneNumber,
+                description: formValues.description,
+                yearEstablished: formValues.yearEstablished,
+                employees: {
+                  fullTime: formValues.fullTime,
+                  partTime: formValues.partTime,
+                  interns: formValues.interns,
+                  h2a: formValues.h2a,
+                  volunteers: formValues.volunteers,
+                },
+                type: formValues.type,
+                structure: formValues.structure,
+                growingPractices: formValues.growingPractices,
+                sellingLocally: formValues.sellingLocally,
+                outletImportance: {
+                  stores: formValues.storeRevenue,
+                  markets: formValues.marketRevenue,
+                  own: formValues.brickRevenue,
+                  online: formValues.salesRevenue,
+                },
+                sharedKitchen: formValues.sharedKitchen,
+                copacker: formValues.copacker,
+                contacts: formValues.contacts,
+                licenses: formValues.licenses,
+                insurance: formValues.insurance,
+                demographics: {
+                  firstGeneration: formValues.firstGeneration,
+                  veteranOwned: formValues.veteranOwned,
+                  bipoc: formValues.bipoc,
+                  immigrantOrRefugee: formValues.immigrantOrRefugee,
+                  lgbtqia: formValues.lgbtqia,
+                  other: formValues.otherDemographics,
+                },
+                marketing: {
+                  website: formValues.website,
+                  instagram: formValues.instagram,
+                  twitter: formValues.twitter,
+                  facebook: formValues.facebook,
+                  store: formValues.store,
+                  other: formValues.otherSocial,
+                },
+                pictures: formValues.pictures,
+                setupNeeds: {
+                  tent: formValues.tent,
+                  generator: formValues.generator,
+                  vehicle: formValues.vehicle,
+                },
+                products: formValues.products,
+              },
+            }),
+          });
+          const data = await req.json();
+        } catch (err) {
+          console.log(err);
+        }
+      };
+
+      createVendor();
+      setIndex(index + 1);
+    } else {
+      setIndex(index + 1);
+    }
+
+    console.log('index: ', index);
+    console.log('values: ', formValues);
+  }
+
+  useEffect(() => { }, [props, formValues, index]);
 
   return (
-    <div key={props.index}>
+    <div key={index}>
       <LogoMarketTracker
         sx={{
           display: "block",
@@ -71,7 +216,7 @@ export const Steps: React.FC<any> = (props) => {
           width: 246,
         }}
       />
-      {props.index === 0 ? (
+      {index === 0 ? (
         <>
           <Heading
             as="h1"
@@ -138,32 +283,71 @@ export const Steps: React.FC<any> = (props) => {
                 opacity: 1,
               }}
             />
-            <Stack spacing={0}>
-              <Text as="div" textStyle="h3">
-                I certify that my business is:
-              </Text>
-              <Text as="div" color="gray.500">
-                Choose one that best describes your business
-              </Text>
-            </Stack>
-            <RadioGroup
-              onChange={(newValue) => props.setBusinessCheck(newValue)}
-              value={props.businessCheck}
+            <Formik
+              key="formik-0"
+              initialValues={{ businessCheck: "none" }}
+              onSubmit={values => handleNextClick(values)}
             >
-              <Stack>
-                <Radio value="farmer">
-                  A regional farmer who sells what I produce
-                </Radio>
-                <Radio value="producer">
-                  A local producer who makes products featuring agricultural
-                  ingredients sourced from local farms
-                </Radio>
-                <Radio value="none">None of the above</Radio>
-              </Stack>
-            </RadioGroup>
+              {({ handleSubmit, errors, touched }) => (
+                <form key="form-0" onSubmit={handleSubmit}>
+                  <Stack spacing={0}>
+                    <Text as="div" textStyle="h3">
+                      I certify that my business is:
+                    </Text>
+                    <Text as="div" color="gray.500">
+                      Choose one that best describes your business
+                    </Text>
+                  </Stack>
+                  <Field name="businessCheck">
+                    {({ field, form }) => (
+                      <FormControl
+                        id="businessCheck"
+                      >
+                        <RadioGroup {...field} id="businessCheck" {...props}>
+                          <Stack>
+                            <Radio {...field} value="farmer">
+                              A regional farmer who sells what I produce
+                            </Radio>
+                            <Radio {...field} value="producer">
+                              A local producer who makes products featuring agricultural
+                              ingredients sourced from local farms
+                            </Radio>
+                            <Radio {...field} value="none">None of the above</Radio>
+                          </Stack>
+                        </RadioGroup>
+                      </FormControl>
+                    )}
+                  </Field>
+                  <Center>
+                    <HStack spacing={4}>
+                      <Button
+                        colorScheme="green"
+                        marginTop={12}
+                        variant="solid"
+                        width={125}
+                        leftIcon={<ArrowBackIcon />}
+                        isDisabled
+                      >
+                        Back
+                      </Button>
+                      <Button
+                        type="submit"
+                        colorScheme="green"
+                        marginTop={12}
+                        variant="solid"
+                        width={125}
+                        rightIcon={<ArrowForwardIcon />}
+                      >
+                        Next
+                      </Button>
+                    </HStack>
+                  </Center>
+                </form>
+              )}
+            </Formik>
           </Stack>
         </>
-      ) : props.index === 1 ? (
+      ) : index === 1 ? (
         <>
           <Heading
             as="h1"
@@ -179,75 +363,99 @@ export const Steps: React.FC<any> = (props) => {
             Please create an account
           </Text>
           <Center>
-            <Stack marginTop={12} spacing={6} width={360}>
-              <FormControl isInvalid={props.errorCompanyName} isRequired>
-                <Input
-                  value={props.companyName}
-                  onChange={(event) => props.setCompanyName(event.target.value)}
-                  placeholder="Business name"
-                />
-                <FormErrorMessage>Business name is required.</FormErrorMessage>
-              </FormControl>
-              <FormControl isInvalid={props.errorUserName} isRequired>
-                <Input
-                  value={props.userName}
-                  onChange={(event) => props.setUserName(event.target.value)}
-                  placeholder="Your name"
-                  isRequired
-                />
-                <FormErrorMessage>Your name is required.</FormErrorMessage>
-              </FormControl>
-              <FormControl isInvalid={props.errorEmail} isRequired>
-                <Input
-                  value={props.email}
-                  onChange={(event) => props.setEmail(event.target.value)}
-                  placeholder="Your email"
-                  type="email"
-                  isRequired
-                />
-                <FormErrorMessage>Email is required.</FormErrorMessage>
-              </FormControl>
-              <FormControl isInvalid={props.errorPassword} isRequired>
-                <InputGroup>
-                  <Input
-                    value={props.password}
-                    onChange={(event) => props.setPassword(event.target.value)}
-                    placeholder="Password"
-                    type={show ? "text" : "password"}
-                    isRequired
-                  />
-                  <InputRightElement width="4.5rem">
-                    <Button h="1.75rem" size="sm" onClick={handleClick}>
-                      {show ? "Hide" : "Show"}
-                    </Button>
-                  </InputRightElement>
-                </InputGroup>
-                <FormErrorMessage>
-                  Password must be at least 8 characters.
-                </FormErrorMessage>
-              </FormControl>
-              <FormControl isInvalid={props.errorPasswordConfirm} isRequired>
-                <InputGroup>
-                  <Input
-                    value={props.passwordConfirm}
-                    onChange={(event) =>
-                      props.setPasswordConfirm(event.target.value)
-                    }
-                    placeholder="Confirm password"
-                    type={show ? "text" : "password"}
-                  />
-                  <InputRightElement width="4.5rem">
-                    <Button h="1.75rem" size="sm" onClick={handleClick}>
-                      {show ? "Hide" : "Show"}
-                    </Button>
-                  </InputRightElement>
-                </InputGroup>
-                <FormErrorMessage>Passwords must match.</FormErrorMessage>
-              </FormControl>
-            </Stack>
+            <Formik
+              key="formik-1"
+              initialValues={{
+                companyName: "",
+                userName: "",
+                email: "",
+                password: ""
+              }}
+              onSubmit={(values) => handleNextClick(values)}
+            >
+              {({ handleSubmit, errors, touched }) => (
+                <form key="form-1" onSubmit={handleSubmit}>
+                  <Stack marginTop={12} spacing={6} width={360}>
+                    <FormControl isInvalid={!!errors.companyName && touched.companyName}>
+                      <Field
+                        as={Input}
+                        id="companyName"
+                        name="companyName"
+                        placeholder="Business name"
+                        validate={validate}
+                      />
+                      <FormErrorMessage>{errors.companyName}</FormErrorMessage>
+                    </FormControl>
+                    <FormControl isInvalid={!!errors.userName && touched.userName}>
+                      <Field
+                        as={Input}
+                        id="userName"
+                        name="userName"
+                        placeholder="Your name"
+                        validate={validate}
+                      />
+                      <FormErrorMessage>{errors.userName}</FormErrorMessage>
+                    </FormControl>
+                    <FormControl isInvalid={!!errors.email && touched.email}>
+                      <Field
+                        as={Input}
+                        id="email"
+                        name="email"
+                        placeholder="Your email"
+                        validate={validateEmail}
+                      />
+                      <FormErrorMessage>{errors.email}</FormErrorMessage>
+                    </FormControl>
+                    <FormControl isInvalid={!!errors.password && touched.password}>
+                      <InputGroup>
+                        <Field
+                          as={Input}
+                          id="password"
+                          name="password"
+                          placeholder="Password"
+                          validate={validatePassword}
+                          type={show ? "text" : "password"}
+                        />
+
+                        <InputRightElement width="4.5rem">
+                          <Button h="1.75rem" size="sm" onClick={handleClick}>
+                            {show ? "Hide" : "Show"}
+                          </Button>
+                        </InputRightElement>
+                      </InputGroup>
+                      <FormErrorMessage>{errors.password}</FormErrorMessage>
+                    </FormControl>
+                    <Center>
+                      <HStack spacing={4}>
+                        <Button
+                          colorScheme="green"
+                          marginTop={12}
+                          variant="solid"
+                          width={125}
+                          onClick={handleBackClick}
+                          leftIcon={<ArrowBackIcon />}
+                        >
+                          Back
+                        </Button>
+                        <Button
+                          type="submit"
+                          colorScheme="green"
+                          marginTop={12}
+                          variant="solid"
+                          width={125}
+                          rightIcon={<ArrowForwardIcon />}
+                        >
+                          Next
+                        </Button>
+                      </HStack>
+                    </Center>
+                  </Stack>
+                </form>
+              )}
+            </Formik>
           </Center>
         </>
-      ) : props.index === 2 ? (
+      ) : index === 2 ? (
         <>
           <Heading
             as="h1"
@@ -262,258 +470,305 @@ export const Steps: React.FC<any> = (props) => {
           <Text as="div" marginTop={2} textAlign="center">
             Please share your company information
           </Text>
-          <HStack marginTop={12} spacing={4}>
-            <Input
-              value={props.companyName}
-              onChange={(event) => props.setCompanyName(event.target.value)}
-              placeholder="Company name"
-            />
-            <Input
-              value={props.email}
-              onChange={(event) => props.setEmail(event.target.value)}
-              placeholder="Login email"
-              type="email"
-            />
-          </HStack>
-          <Stack marginTop={4}>
-            <Text as="div" textStyle="bodyMain" fontWeight={500}>
-              Are you the primary contact for this business?
-            </Text>
-            <RadioGroup
-              onChange={(newValue) => props.setPrimaryContact(newValue)}
-            >
-              <Stack>
-                <Radio value={"true"}>Yes</Radio>
-                <Radio value={"false"}>No</Radio>
-              </Stack>
-            </RadioGroup>
-            <Text as="div" textStyle="bodyMain" fontWeight={500}>
-              Are you the billing contact for this business?
-            </Text>
-            <RadioGroup
-              onChange={(newValue) => props.setBillingContact(newValue)}
-            >
-              <Stack>
-                <Radio value={"true"}>Yes</Radio>
-                <Radio value={"false"}>No</Radio>
-              </Stack>
-            </RadioGroup>
-          </Stack>
-          <Stack spacing={2} marginTop={4}>
-            <Text as="div" textStyle="bodyMain" fontWeight={500}>
-              Company address (required)
-            </Text>
-            <Input
-              value={props.street}
-              onChange={(event) => props.setStreet(event.target.value)}
-              placeholder="Street"
-              isRequired
-            />
-            <Flex gap={2}>
-              <Input
-                value={props.city}
-                onChange={(event) => props.setCity(event.target.value)}
-                placeholder="City"
-                flex={6}
-                isRequired
-              />
-              <Select
-                value={props.state}
-                onChange={(event) => props.setState(event.target.value)}
-                placeholder="State"
-                flex={2}
-                isRequired
-              >
-                <option value="AK">AK</option>
-                <option value="AL">AL</option>
-                <option value="AR">AR</option>
-                <option value="AZ">AZ</option>
-                <option value="CA">CA</option>
-                <option value="CO">CO</option>
-                <option value="CT">CT</option>
-                <option value="DC">DC</option>
-                <option value="DE">DE</option>
-                <option value="FL">FL</option>
-                <option value="GA">GA</option>
-                <option value="HI">HI</option>
-                <option value="IA">IA</option>
-                <option value="ID">ID</option>
-                <option value="IL">IL</option>
-                <option value="IN">IN</option>
-                <option value="KS">KS</option>
-                <option value="KY">KY</option>
-                <option value="LA">LA</option>
-                <option value="MA">MA</option>
-                <option value="MD">MD</option>
-                <option value="ME">ME</option>
-                <option value="MI">MI</option>
-                <option value="MN">MN</option>
-                <option value="MO">MO</option>
-                <option value="MS">MS</option>
-                <option value="MT">MT</option>
-                <option value="NC">NC</option>
-                <option value="ND">ND</option>
-                <option value="NE">NE</option>
-                <option value="NH">NH</option>
-                <option value="NJ">NJ</option>
-                <option value="NM">NM</option>
-                <option value="NV">NV</option>
-                <option value="NY">NY</option>
-                <option value="OH">OH</option>
-                <option value="OK">OK</option>
-                <option value="OR">OR</option>
-                <option value="PA">PA</option>
-                <option value="RI">RI</option>
-                <option value="SC">SC</option>
-                <option value="SD">SD</option>
-                <option value="TN">TN</option>
-                <option value="TX">TX</option>
-                <option value="UT">UT</option>
-                <option value="VA">VA</option>
-                <option value="VT">VT</option>
-                <option value="WA">WA</option>
-                <option value="WI">WI</option>
-                <option value="WV">WV</option>
-                <option value="WY">WY</option>
-              </Select>
-              <Input
-                value={props.zipcode}
-                onChange={(event) => props.setZipcode(event.target.value)}
-                placeholder="Zipcode"
-                flex={3}
-                type="number"
-                isRequired
-              />
-            </Flex>
-          </Stack>
-          <Stack spacing={2} marginTop={4}>
-            <Text as="div" textStyle="bodyMain" fontWeight={500}>
-              Company phone number (required)
-            </Text>
-            <Input
-              value={props.phoneNumber}
-              onChange={(event) => props.setPhoneNumber(event.target.value)}
-              placeholder="xxx-xxx-xxxx"
-              type="tel"
-              isRequired
-            />
-          </Stack>
-          <Stack spacing={2} marginTop={4}>
-            <Text as="div" textStyle="bodyMain" fontWeight={500}>
-              Brief company description (required)
-            </Text>
-            <Text as="div" color="gray.400" fontSize={14}>
-              Add a statement of explanation.
-            </Text>
-            <Textarea
-              value={props.description}
-              onChange={(event) => props.setDescription(event.target.value)}
-              placeholder="Start typing..."
-            />
-          </Stack>
-          <Stack spacing={2} marginTop={4}>
-            <Text as="div" textStyle="bodyMain" fontWeight={500}>
-              Year company established
-            </Text>
-            <Input
-              value={props.yearEstablished}
-              onChange={(event) => props.setYearEstablished(event.target.value)}
-              placeholder="eg. 2017"
-              type="number"
-            />
-          </Stack>
-          <Stack spacing={2} marginTop={4}>
-            <Text as="div" textStyle="bodyMain" fontWeight={500}>
-              Number of employees
-            </Text>
-            <Text as="div" color="gray.400" fontSize={14}>
-              Including yourself how many people work for your company?
-            </Text>
-            <Wrap align="center" spacing={4}>
-              <WrapItem alignItems="center">
-                <Text
-                  as="span"
-                  paddingRight={2}
-                  textStyle="bodyMain"
-                  fontWeight={500}
-                >
-                  Full time
-                </Text>
-                <Input
-                  value={props.fullTime}
-                  onChange={(event) => props.setFullTime(event.target.value)}
-                  maxWidth={160}
-                  placeholder="# of full time staff"
-                />
-              </WrapItem>
-              <WrapItem alignItems="center">
-                <Text
-                  as="span"
-                  paddingRight={2}
-                  textStyle="bodyMain"
-                  fontWeight={500}
-                >
-                  Part time
-                </Text>
-                <Input
-                  value={props.partTime}
-                  onChange={(event) => props.setPartTime(event.target.value)}
-                  maxWidth={160}
-                  placeholder="# of part time staff"
-                />
-              </WrapItem>
-              <WrapItem alignItems="center">
-                <Text
-                  as="span"
-                  paddingRight={2}
-                  textStyle="bodyMain"
-                  fontWeight={500}
-                >
-                  Interns
-                </Text>
-                <Input
-                  value={props.interns}
-                  onChange={(event) => props.setInterns(event.target.value)}
-                  maxWidth={160}
-                  placeholder="# of interns"
-                />
-              </WrapItem>
-              <WrapItem alignItems="center">
-                <Text
-                  as="span"
-                  paddingRight={2}
-                  textStyle="bodyMain"
-                  fontWeight={500}
-                >
-                  H2A
-                </Text>
-                <Input
-                  value={props.h2a}
-                  onChange={(event) => props.setH2a(event.target.value)}
-                  maxWidth={160}
-                  placeholder="# of H2A"
-                />
-              </WrapItem>
-              <WrapItem alignItems="center">
-                <Text
-                  as="span"
-                  paddingRight={2}
-                  textStyle="bodyMain"
-                  fontWeight={500}
-                >
-                  Volunteers
-                </Text>
-                <Input
-                  value={props.volunteers}
-                  onChange={(event) => props.setVolunteers(event.target.value)}
-                  maxWidth={160}
-                  placeholder="# of volunteers"
-                />
-              </WrapItem>
-            </Wrap>
-          </Stack>
+          <Formik
+            key="formik-2"
+            initialValues={{
+              companyName: formValues.companyName ? formValues.companyName : "" ,
+              email: formValues.email ? formValues.email : "",
+            }}
+            onSubmit={(values) => handleNextClick(values)}
+          >
+            {({ handleSubmit, errors, touched }) => (
+              <form key="form-2" onSubmit={handleSubmit}>
+                <HStack marginTop={12} spacing={4}>
+                  <FormControl isInvalid={!!errors.companyName && touched.companyName}>
+                    <Field
+                      as={Input}
+                      id="companyName"
+                      name="companyName"
+                      placeholder="Company name"
+                      validate={validate}
+                    />
+                    <FormErrorMessage>{errors.companyName}</FormErrorMessage>
+                  </FormControl>
+                  <FormControl isInvalid={!!errors.email && touched.email}>
+                    <Field
+                      as={Input}
+                      id="email"
+                      name="email"
+                      placeholder="Login email"
+                      validate={validate}
+                    />
+                    <FormErrorMessage>{errors.email}</FormErrorMessage>
+                  </FormControl>
+                </HStack>
+                <Stack marginTop={4}>
+                  <Text as="div" textStyle="bodyMain" fontWeight={500}>
+                    Are you the primary contact for this business?
+                  </Text>
+                  <RadioGroup
+                    onChange={(newValue) => props.setPrimaryContact(newValue)}
+                  >
+                    <Stack>
+                      <Radio value={"true"}>Yes</Radio>
+                      <Radio value={"false"}>No</Radio>
+                    </Stack>
+                  </RadioGroup>
+                  <Text as="div" textStyle="bodyMain" fontWeight={500}>
+                    Are you the billing contact for this business?
+                  </Text>
+                  <RadioGroup
+                    onChange={(newValue) => props.setBillingContact(newValue)}
+                  >
+                    <Stack>
+                      <Radio value={"true"}>Yes</Radio>
+                      <Radio value={"false"}>No</Radio>
+                    </Stack>
+                  </RadioGroup>
+                </Stack>
+                <Stack spacing={2} marginTop={4}>
+                  <Text as="div" textStyle="bodyMain" fontWeight={500}>
+                    Company address (required)
+                  </Text>
+                  <Input
+                    value={props.street}
+                    onChange={(event) => props.setStreet(event.target.value)}
+                    placeholder="Street"
+                    isRequired
+                  />
+                  <Flex gap={2}>
+                    <Input
+                      value={props.city}
+                      onChange={(event) => props.setCity(event.target.value)}
+                      placeholder="City"
+                      flex={6}
+                      isRequired
+                    />
+                    <Select
+                      value={props.state}
+                      onChange={(event) => props.setState(event.target.value)}
+                      placeholder="State"
+                      flex={2}
+                      isRequired
+                    >
+                      <option value="AK">AK</option>
+                      <option value="AL">AL</option>
+                      <option value="AR">AR</option>
+                      <option value="AZ">AZ</option>
+                      <option value="CA">CA</option>
+                      <option value="CO">CO</option>
+                      <option value="CT">CT</option>
+                      <option value="DC">DC</option>
+                      <option value="DE">DE</option>
+                      <option value="FL">FL</option>
+                      <option value="GA">GA</option>
+                      <option value="HI">HI</option>
+                      <option value="IA">IA</option>
+                      <option value="ID">ID</option>
+                      <option value="IL">IL</option>
+                      <option value="IN">IN</option>
+                      <option value="KS">KS</option>
+                      <option value="KY">KY</option>
+                      <option value="LA">LA</option>
+                      <option value="MA">MA</option>
+                      <option value="MD">MD</option>
+                      <option value="ME">ME</option>
+                      <option value="MI">MI</option>
+                      <option value="MN">MN</option>
+                      <option value="MO">MO</option>
+                      <option value="MS">MS</option>
+                      <option value="MT">MT</option>
+                      <option value="NC">NC</option>
+                      <option value="ND">ND</option>
+                      <option value="NE">NE</option>
+                      <option value="NH">NH</option>
+                      <option value="NJ">NJ</option>
+                      <option value="NM">NM</option>
+                      <option value="NV">NV</option>
+                      <option value="NY">NY</option>
+                      <option value="OH">OH</option>
+                      <option value="OK">OK</option>
+                      <option value="OR">OR</option>
+                      <option value="PA">PA</option>
+                      <option value="RI">RI</option>
+                      <option value="SC">SC</option>
+                      <option value="SD">SD</option>
+                      <option value="TN">TN</option>
+                      <option value="TX">TX</option>
+                      <option value="UT">UT</option>
+                      <option value="VA">VA</option>
+                      <option value="VT">VT</option>
+                      <option value="WA">WA</option>
+                      <option value="WI">WI</option>
+                      <option value="WV">WV</option>
+                      <option value="WY">WY</option>
+                    </Select>
+                    <Input
+                      value={props.zipcode}
+                      onChange={(event) => props.setZipcode(event.target.value)}
+                      placeholder="Zipcode"
+                      flex={3}
+                      type="number"
+                      isRequired
+                    />
+                  </Flex>
+                </Stack>
+                <Stack spacing={2} marginTop={4}>
+                  <Text as="div" textStyle="bodyMain" fontWeight={500}>
+                    Company phone number (required)
+                  </Text>
+                  <Input
+                    value={props.phoneNumber}
+                    onChange={(event) => props.setPhoneNumber(event.target.value)}
+                    placeholder="xxx-xxx-xxxx"
+                    type="tel"
+                    isRequired
+                  />
+                </Stack>
+                <Stack spacing={2} marginTop={4}>
+                  <Text as="div" textStyle="bodyMain" fontWeight={500}>
+                    Brief company description (required)
+                  </Text>
+                  <Text as="div" color="gray.400" fontSize={14}>
+                    Add a statement of explanation.
+                  </Text>
+                  <Textarea
+                    value={props.description}
+                    onChange={(event) => props.setDescription(event.target.value)}
+                    placeholder="Start typing..."
+                  />
+                </Stack>
+                <Stack spacing={2} marginTop={4}>
+                  <Text as="div" textStyle="bodyMain" fontWeight={500}>
+                    Year company established
+                  </Text>
+                  <Input
+                    value={props.yearEstablished}
+                    onChange={(event) => props.setYearEstablished(event.target.value)}
+                    placeholder="eg. 2017"
+                    type="number"
+                  />
+                </Stack>
+                <Stack spacing={2} marginTop={4}>
+                  <Text as="div" textStyle="bodyMain" fontWeight={500}>
+                    Number of employees
+                  </Text>
+                  <Text as="div" color="gray.400" fontSize={14}>
+                    Including yourself how many people work for your company?
+                  </Text>
+                  <Wrap align="center" spacing={4}>
+                    <WrapItem alignItems="center">
+                      <Text
+                        as="span"
+                        paddingRight={2}
+                        textStyle="bodyMain"
+                        fontWeight={500}
+                      >
+                        Full time
+                      </Text>
+                      <Input
+                        value={props.fullTime}
+                        onChange={(event) => props.setFullTime(event.target.value)}
+                        maxWidth={160}
+                        placeholder="# of full time staff"
+                      />
+                    </WrapItem>
+                    <WrapItem alignItems="center">
+                      <Text
+                        as="span"
+                        paddingRight={2}
+                        textStyle="bodyMain"
+                        fontWeight={500}
+                      >
+                        Part time
+                      </Text>
+                      <Input
+                        value={props.partTime}
+                        onChange={(event) => props.setPartTime(event.target.value)}
+                        maxWidth={160}
+                        placeholder="# of part time staff"
+                      />
+                    </WrapItem>
+                    <WrapItem alignItems="center">
+                      <Text
+                        as="span"
+                        paddingRight={2}
+                        textStyle="bodyMain"
+                        fontWeight={500}
+                      >
+                        Interns
+                      </Text>
+                      <Input
+                        value={props.interns}
+                        onChange={(event) => props.setInterns(event.target.value)}
+                        maxWidth={160}
+                        placeholder="# of interns"
+                      />
+                    </WrapItem>
+                    <WrapItem alignItems="center">
+                      <Text
+                        as="span"
+                        paddingRight={2}
+                        textStyle="bodyMain"
+                        fontWeight={500}
+                      >
+                        H2A
+                      </Text>
+                      <Input
+                        value={props.h2a}
+                        onChange={(event) => props.setH2a(event.target.value)}
+                        maxWidth={160}
+                        placeholder="# of H2A"
+                      />
+                    </WrapItem>
+                    <WrapItem alignItems="center">
+                      <Text
+                        as="span"
+                        paddingRight={2}
+                        textStyle="bodyMain"
+                        fontWeight={500}
+                      >
+                        Volunteers
+                      </Text>
+                      <Input
+                        value={props.volunteers}
+                        onChange={(event) => props.setVolunteers(event.target.value)}
+                        maxWidth={160}
+                        placeholder="# of volunteers"
+                      />
+                    </WrapItem>
+                  </Wrap>
+                </Stack>
+                <Center>
+                  <HStack spacing={4}>
+                    <Button
+                      colorScheme="green"
+                      marginTop={12}
+                      variant="solid"
+                      width={125}
+                      onClick={handleBackClick}
+                      leftIcon={<ArrowBackIcon />}
+                      isDisabled
+                    >
+                      Back
+                    </Button>
+                    <Button
+                      type="submit"
+                      colorScheme="green"
+                      marginTop={12}
+                      variant="solid"
+                      width={125}
+                      rightIcon={<ArrowForwardIcon />}
+                    >
+                      Next
+                    </Button>
+                  </HStack>
+                </Center>
+              </form>
+            )}
+          </Formik>
         </>
-      ) : props.index === 3 ? (
+      ) : index === 3 ? (
         <>
           <Heading
             as="h1"
@@ -1161,7 +1416,7 @@ export const Steps: React.FC<any> = (props) => {
           </Text>
           <Input placeholder="Self describe" />
         </>
-      ) : props.index === 4 ? (
+      ) : index === 4 ? (
         <>
           <Flex align="center" justify="flex-start" marginTop={8}>
             <Heading
@@ -1311,7 +1566,7 @@ export const Steps: React.FC<any> = (props) => {
             </RadioGroup>
           </Stack>
         </>
-      ) : props.index === 5 ? (
+      ) : index === 5 ? (
         <>
           <Flex align="center" justify="flex-start" marginTop={8}>
             <Heading
@@ -1615,7 +1870,7 @@ export const Steps: React.FC<any> = (props) => {
             />
           </Stack>
         </>
-      ) : props.index === 6 ? (
+      ) : index === 6 ? (
         <>
           <Flex align="center" justify="flex-start" marginTop={8}>
             <Heading
@@ -1676,7 +1931,7 @@ export const Steps: React.FC<any> = (props) => {
             </Checkbox>
           </Stack>
         </>
-      ) : props.index === 7 ? (
+      ) : index === 7 ? (
         <>
           <Heading
             as="h1"
@@ -1692,8 +1947,30 @@ export const Steps: React.FC<any> = (props) => {
             Please fill out an application for each individual market in which
             you would like to participate.
           </Text>
+          <Center>
+            <HStack spacing={4}>
+              <Link href="/admin">
+                <Button
+                  colorScheme="green"
+                  marginTop={12}
+                  variant="solid"
+                >
+                  Apply to markets now
+                </Button>
+              </Link>
+              <Link href="/">
+                <Button
+                  colorScheme="green"
+                  marginTop={12}
+                  variant="outline"
+                >
+                  Apply to markets later
+                </Button>
+              </Link>
+            </HStack>
+          </Center>
         </>
-      ) : props.index === 8 ? (
+      ) : index === 8 ? (
         <>
           <Heading
             as="h1"
