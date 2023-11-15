@@ -201,6 +201,7 @@ export const SeasonsEdit: React.FC<any> = (props) => {
     path: "market",
   });
 
+  console.log("***startTime", startTime);
   const [contact, setContact] = useState(null);
 
   const submitForm = async () => {
@@ -714,24 +715,14 @@ export const SeasonsEdit: React.FC<any> = (props) => {
                                     >
                                       Start time
                                     </Text>
-                                    <Input
-                                      value={
-                                        startTime
-                                          ? new Date(
-                                              startTime,
-                                            ).toLocaleTimeString("en-US", {
-                                              hour: "2-digit",
-                                              minute: "2-digit",
-                                              hour12: false,
-                                            })
-                                          : null
-                                      }
-                                      type="time"
-                                      onChange={(e) =>
-                                        setStartTime(
-                                          e.target.valueAsDate.toISOString(),
-                                        )
-                                      }
+                                    <DatePicker
+                                      showTimeSelect
+                                      showTimeSelectOnly
+                                      selected={new Date(startTime)}
+                                      dateFormat="h:mm aa"
+                                      onChange={(date) => {
+                                        setStartTime(date.toISOString());
+                                      }}
                                     />
                                   </Stack>
                                   <Stack>
@@ -742,24 +733,14 @@ export const SeasonsEdit: React.FC<any> = (props) => {
                                     >
                                       End time
                                     </Text>
-                                    <Input
-                                      value={
-                                        endTime
-                                          ? new Date(
-                                              endTime,
-                                            ).toLocaleTimeString("en-US", {
-                                              hour: "2-digit",
-                                              minute: "2-digit",
-                                              hour12: false,
-                                            })
-                                          : null
-                                      }
-                                      type="time"
-                                      onChange={(e) =>
-                                        setEndTime(
-                                          e.target.valueAsDate.toISOString(),
-                                        )
-                                      }
+                                    <DatePicker
+                                      showTimeSelect
+                                      showTimeSelectOnly
+                                      selected={new Date(endTime)}
+                                      dateFormat="h:mm aa"
+                                      onChange={(date) => {
+                                        setEndTime(date.toISOString());
+                                      }}
                                     />
                                   </Stack>
                                 </HStack>
