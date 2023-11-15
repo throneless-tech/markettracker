@@ -675,24 +675,26 @@ export const ApplicationsEdit: React.FC<any> = (props) => {
               onChange={(newValue) => setContacts(newValue)}
               value={contacts}
             >
-              <HStack spacing={4}>
-                {(user.vendor as Vendor).contacts.map((contact) => (
-                  <Checkbox key={contact.id} value={contact.id}>
-                    {contact.name}
-                    <Tag bg={"gray.50"} fontWeight={700}>
-                      {contact.type}
-                    </Tag>
-                  </Checkbox>
-                ))}
-                {contactName ? (
-                  <Checkbox value={contactName}>
-                    {contactName}
-                    <Tag bg={"gray.50"} fontWeight={700}>
-                      {contactType}
-                    </Tag>
-                  </Checkbox>
-                ) : null}
-              </HStack>
+              {user.vendor.contacts && user.vendor.contacts.length && (
+                <HStack spacing={4}>
+                  {(user.vendor as Vendor).contacts.map((contact) => (
+                    <Checkbox key={contact.id} value={contact.id}>
+                      {contact.name}
+                      <Tag bg={"gray.50"} fontWeight={700}>
+                        {contact.type}
+                      </Tag>
+                    </Checkbox>
+                  ))}
+                  {contactName ? (
+                    <Checkbox value={contactName}>
+                      {contactName}
+                      <Tag bg={"gray.50"} fontWeight={700}>
+                        {contactType}
+                      </Tag>
+                    </Checkbox>
+                  ) : null}
+                </HStack>
+              )}
             </CheckboxGroup>
 
             <Button

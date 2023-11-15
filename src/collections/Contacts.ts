@@ -16,13 +16,13 @@ export const Contacts: CollectionConfig = {
       name: "email",
       label: "Email",
       type: "email",
-      required: true,
+      //required: true,
     },
     {
       name: "phone",
       label: "Contact Phone Number",
       type: "text",
-      required: true,
+      //required: true,
     },
     {
       name: "type",

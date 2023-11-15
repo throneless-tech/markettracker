@@ -10,22 +10,24 @@ export const createFieldContacts: VendorFieldHook = async ({
   originalDoc,
 }) => {
   if (["create", "update"].includes(operation)) {
-    for (let contact of value) {
-      const oldContact = await payload.findByID({
-        collection: "contacts",
-        id: typeof contact === "string" ? contact : contact.id,
-        depth: 0,
-      });
-      await payload.update({
-        collection: "contacts",
-        id: oldContact.id,
-        data: {
-          vendors: [
-            ...((oldContact.vendors as string[]) || []),
-            originalDoc.id,
-          ],
-        },
-      });
+    if (value && value.length) {
+      for (let contact of value) {
+        const oldContact = await payload.findByID({
+          collection: "contacts",
+          id: typeof contact === "string" ? contact : contact.id,
+          depth: 0,
+        });
+        await payload.update({
+          collection: "contacts",
+          id: oldContact.id,
+          data: {
+            vendors: [
+              ...((oldContact.vendors as string[]) || []),
+              originalDoc.id,
+            ],
+          },
+        });
+      }
     }
   }
   return value;
