@@ -11,6 +11,8 @@ import {
   afterReadApplications,
   beforeValidateApplications,
 } from "./hooks/populateApplications";
+import { beforeValidateUser } from "./hooks/populateUser";
+import { beforeValidateProducts } from "./hooks/populateProducts";
 
 export const Vendors: CollectionConfig = {
   slug: "vendors",
@@ -738,6 +740,10 @@ export const Vendors: CollectionConfig = {
   ],
   hooks: {
     afterRead: [afterReadContacts],
-    beforeValidate: [beforeValidateContacts],
+    beforeValidate: [
+      beforeValidateContacts,
+      beforeValidateUser,
+      beforeValidateProducts,
+    ],
   },
 };
