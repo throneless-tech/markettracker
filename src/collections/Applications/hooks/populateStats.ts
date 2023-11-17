@@ -5,8 +5,10 @@ import {
 } from "payload/types";
 
 export const afterReadStats: CollectionAfterReadHook = async ({
+  context,
   doc, // full document data
 }) => {
+  if (context.skipTrigger) return;
   let vendor = doc.vendor;
   //  if (typeof vendor !== "object") {
   vendor = await payload.findByID({
@@ -16,11 +18,17 @@ export const afterReadStats: CollectionAfterReadHook = async ({
   });
   //}
 
-  // const applications = await payload.find({
-  //   collection: "applications",
-  //   depth: 0,
-  //   where: { vendor: { equals: vendor.id } },
-  // });
+  const applications = await payload.find({
+    collection: "applications",
+    depth: 0,
+    where: {
+      and: [
+        { vendor: { equals: vendor.id } },
+        { status: { equals: "approved" } },
+      ],
+    },
+    context: { skipTrigger: true },
+  });
 
   let reviewScore = 0;
   if (doc.reviews && doc.reviews.length && typeof doc.reviews[0] === "string") {
@@ -84,7 +92,9 @@ export const afterReadStats: CollectionAfterReadHook = async ({
     gapsMet: gaps,
     reviewScore,
     seasonName: season && season.name ? season.name : "",
-    //numberOfMarkets: Array.isArray(applications) ? applications.length : 1,
+    numberOfMarkets: Array.isArray(applications.docs)
+      ? applications.docs?.length
+      : 0,
   };
 };
 

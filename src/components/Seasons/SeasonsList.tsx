@@ -280,11 +280,22 @@ export const SeasonsList: React.FC<any> = ({ data }) => {
           </Text>
         </Stack> */}
                     <HStack align={"flex-start"} wrap={"wrap"} spacing={6}>
-                      {seasons &&
-                        seasons.length &&
-                        seasons.map((season) => (
-                          <SeasonCard key={season.id} season={season} />
-                        ))}
+                      {seasons?.length &&
+                        seasons.reduce((acc, season) => {
+                          if (
+                            !applications?.length ||
+                            !applications.findIndex(
+                              (app) =>
+                                app.season === season.id ||
+                                app.season?.id === season.id,
+                            )
+                          ) {
+                            acc.push(
+                              <SeasonCard key={season.id} season={season} />,
+                            );
+                          }
+                          return acc;
+                        }, [])}
                     </HStack>
                   </HStack>
                 </Container>

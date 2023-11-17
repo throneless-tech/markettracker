@@ -66,6 +66,7 @@ export const ApplicationsRow: React.FC<any> = (props) => {
         ))}
       </Td>
       <Td>{app.seasonName}</Td>
+      <Td>{app.numberOfMarkets}</Td>
       <Td>
         {app.vendorDemographics && typeof app.vendorDemographics === "object"
           ? Object.entries(app.vendorDemographics).map((key, _) => {

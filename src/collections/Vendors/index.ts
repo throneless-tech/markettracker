@@ -16,6 +16,7 @@ import { beforeValidateProducts } from "./hooks/populateProducts";
 
 export const Vendors: CollectionConfig = {
   slug: "vendors",
+  defaultSort: "name",
   admin: {
     components: {
       views: {

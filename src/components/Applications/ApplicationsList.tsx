@@ -185,7 +185,11 @@ export const ApplicationsList: React.FC<any> = ({ data, isTab }) => {
             <Table variant="simple">
               <Thead>
                 <Tr background={"gray.100"}>
-                  <Th> </Th>
+                  <Th
+                    sx={{ color: "gray.900", fontFamily: "Outfit, sans-serif" }}
+                  >
+                    Vendor name
+                  </Th>
                   <Th
                     sx={{ color: "gray.900", fontFamily: "Outfit, sans-serif" }}
                   >
@@ -200,6 +204,11 @@ export const ApplicationsList: React.FC<any> = ({ data, isTab }) => {
                     sx={{ color: "gray.900", fontFamily: "Outfit, sans-serif" }}
                   >
                     Market name
+                  </Th>
+                  <Th
+                    sx={{ color: "gray.900", fontFamily: "Outfit, sans-serif" }}
+                  >
+                    Number of Markets
                   </Th>
                   <Th
                     sx={{ color: "gray.900", fontFamily: "Outfit, sans-serif" }}
@@ -238,7 +247,11 @@ export const ApplicationsList: React.FC<any> = ({ data, isTab }) => {
               </Tbody>
               <Tfoot>
                 <Tr background={"gray.100"}>
-                  <Th> </Th>
+                  <Th
+                    sx={{ color: "gray.900", fontFamily: "Outfit, sans-serif" }}
+                  >
+                    Vendor name
+                  </Th>
                   <Th
                     sx={{ color: "gray.900", fontFamily: "Outfit, sans-serif" }}
                   >
@@ -253,6 +266,11 @@ export const ApplicationsList: React.FC<any> = ({ data, isTab }) => {
                     sx={{ color: "gray.900", fontFamily: "Outfit, sans-serif" }}
                   >
                     Market name
+                  </Th>
+                  <Th
+                    sx={{ color: "gray.900", fontFamily: "Outfit, sans-serif" }}
+                  >
+                    Number of Markets
                   </Th>
                   <Th
                     sx={{ color: "gray.900", fontFamily: "Outfit, sans-serif" }}
