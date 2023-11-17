@@ -47,6 +47,7 @@ import {
 
 // components
 import { Card } from "../Card";
+import { ProductsCell } from "../cells/ProductsCell";
 
 export const VendorsEdit: React.FC<any> = ({ data: vendor }) => {
   console.log("***vendor:", vendor);
@@ -1237,11 +1238,7 @@ export const VendorsEdit: React.FC<any> = ({ data: vendor }) => {
                           </AccordionButton>
                         </h2>
                         <AccordionPanel>
-                          {vendor.products && vendor.products.length
-                            ? vendor.products.map((product) => (
-                                <Tag>{product.product}</Tag>
-                              ))
-                            : ""}
+                          <ProductsCell cellData={vendor.products} />
                         </AccordionPanel>
                       </>
                     )}

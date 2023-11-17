@@ -77,18 +77,21 @@ export const ProductsField: FC<Props> = ({
 
   useEffect(() => {
     if (value) {
+      console.log("***value", value);
       setCurrent(value);
     }
   }, [value]);
 
   const onChangeHandler = (newValue) => {
     if (onChange) {
+      console.log("***newValue1", newValue);
       setCurrent(newValue);
       if (useObjects) {
         return onChange(newValue.map((id) => index.get(id)));
       }
       return onChange(newValue);
     }
+    console.log("***newValue2", newValue);
     return setCurrent(newValue);
   };
 

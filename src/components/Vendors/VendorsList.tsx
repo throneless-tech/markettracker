@@ -157,9 +157,7 @@ export const VendorsList: React.FC<any> = (props) => {
                                       </Link>
                                     </Td>
                                     <Td>{vendor.type}</Td>
-                                    <Td>
-                                      <Tag colorScheme="gray">Market name</Tag>
-                                    </Td>
+                                    <Td>{vendor.numberOfMarkets}</Td>
                                     <Td>DC</Td>
                                     <Td>
                                       {vendor.demographics &&
@@ -358,9 +356,7 @@ export const VendorsList: React.FC<any> = (props) => {
                                     </Link>
                                   </Td>
                                   <Td>{vendor.type}</Td>
-                                  <Td>
-                                    <Tag colorScheme="gray">Market name</Tag>
-                                  </Td>
+                                  <Td>{vendor.numberOfMarkets}</Td>
                                   <Td>DC</Td>
                                   <Td>
                                     {vendor.demographics &&
