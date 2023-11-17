@@ -52,6 +52,7 @@ import {
 // components
 import { FooterAdmin } from "../FooterAdmin";
 import { ProductsField } from "../fields/ProductsField";
+import { ContactsModal } from "../Contacts/ContactsModal";
 
 // icons
 import EditIcon from "../../assets/icons/edit.js";
@@ -59,6 +60,11 @@ import EditIcon from "../../assets/icons/edit.js";
 export const Account: React.FC<any> = () => {
   const { submit } = useForm();
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const {
+    isOpen: isOpenContacts,
+    onOpen: onOpenContacts,
+    onClose: onCloseContacts,
+  } = useDisclosure();
   const [isLoaded, setIsLoaded] = useState(false);
   const { value: name } = useField<string>({ path: "name" });
   const { value: role } = useField<string>({ path: "role" });
@@ -70,6 +76,7 @@ export const Account: React.FC<any> = () => {
   });
   const [realVendor, setRealVendor] = useState<Vendor>();
   const [vendor, setShadowVendor] = useState<Vendor>();
+  const [editContact, setEditContact] = useState<Contact>();
 
   console.log("***isLoaded:", isLoaded);
   console.log("***Name:", name);
@@ -101,6 +108,68 @@ export const Account: React.FC<any> = () => {
       console.error(err);
     }
     submit();
+  };
+
+  const onSaveContact = ({ data, isError }) => {
+    if (typeof data === "object" && !isError && vendor.id) {
+      const newContacts = [
+        ...vendor.contacts.filter((contact) => contact.id !== data.id),
+        data,
+      ];
+      const updateContacts = async () => {
+        try {
+          const res = await fetch(`/api/vendors/${user.vendor.id}`, {
+            method: "PATCH",
+            credentials: "include",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              contacts: newContacts.map((contact) => contact.id),
+            }),
+          });
+          if (!res.ok) throw new Error(res.statusText);
+        } catch (err) {
+          console.error(err.message);
+        }
+      };
+      setVendor({ ...vendor, contacts: newContacts });
+      updateContacts();
+      onCloseContacts();
+    } else if (isError) {
+      console.error(data);
+    }
+  };
+
+  const onDeleteContact = ({ data, isError }) => {
+    console.log("***data", data);
+    if (!isError && vendor.id) {
+      const newContacts = [
+        ...vendor.contacts.filter((contact) => contact.id !== data.id),
+      ];
+      const updateContacts = async () => {
+        try {
+          const res = await fetch(`/api/vendors/${user.vendor.id}`, {
+            method: "PATCH",
+            credentials: "include",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              contacts: newContacts.map((contact) => contact.id),
+            }),
+          });
+          if (!res.ok) throw new Error(res.statusText);
+        } catch (err) {
+          console.error(err.message);
+        }
+      };
+      setVendor({ ...vendor, contacts: newContacts });
+      updateContacts();
+      onCloseContacts();
+    } else if (isError) {
+      console.error(data);
+    }
   };
 
   useEffect(() => {
@@ -758,23 +827,38 @@ export const Account: React.FC<any> = () => {
                             </Tr>
                           </Thead>
                           <Tbody>
-                            {vendor && vendor.contacts && vendor.contacts.length
+                            {vendor?.contacts?.length
                               ? vendor.contacts.map((contact) => (
                                   <Tr key={contact.id}>
                                     <Td>{contact.name}</Td>
                                     <Td>
-                                      {contact.type.map((type) => (
-                                        <Tag key={type}>{type}</Tag>
-                                      ))}
+                                      {contact.type?.length &&
+                                        contact.type.map((type) => (
+                                          <Tag key={type}>{type}</Tag>
+                                        ))}
                                     </Td>
                                     <Td>{contact.email}</Td>
                                     <Td>{contact.phone}</Td>
                                     <Td>
-                                      <Button>Edit/delete</Button>
+                                      <Button
+                                        onClick={() => {
+                                          setEditContact(contact);
+                                          onOpenContacts();
+                                        }}
+                                      >
+                                        Edit/delete
+                                      </Button>
                                     </Td>
                                   </Tr>
                                 ))
                               : null}
+                            <ContactsModal
+                              contact={editContact}
+                              isOpen={isOpenContacts}
+                              onSave={onSaveContact}
+                              onClose={onCloseContacts}
+                              onDelete={onDeleteContact}
+                            />
                           </Tbody>
                         </Table>
                       </TableContainer>

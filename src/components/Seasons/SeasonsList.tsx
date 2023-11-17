@@ -72,7 +72,13 @@ export const SeasonsList: React.FC<any> = ({ data }) => {
         const response = await fetch(`/api/applications${stringifiedQuery}`);
         let apps = await response.json();
         apps = apps.docs;
-        setApplications(apps);
+        setApplications(
+          apps.sort(
+            (a: Season, b: Season) =>
+              new Date(a.season.marketDates.startDate) -
+              new Date(b.season.marketDates.startDate),
+          ),
+        );
       };
 
       getApps();
@@ -81,7 +87,13 @@ export const SeasonsList: React.FC<any> = ({ data }) => {
 
   useEffect(() => {
     if (data && data.docs && data.docs.length && !seasons.length) {
-      setSeasons(data.docs);
+      setSeasons(
+        data.docs.sort(
+          (a: Season, b: Season) =>
+            new Date(a.marketDates.startDate) -
+            new Date(b.marketDates.startDate),
+        ),
+      );
     }
   }, [data]);
 
@@ -93,6 +105,10 @@ export const SeasonsList: React.FC<any> = ({ data }) => {
       setTabIndex(index);
     }
   }, []);
+  console.log(
+    "***seasons:",
+    seasons.map((season) => season.marketDates.startDate),
+  );
 
   return (
     seasons &&

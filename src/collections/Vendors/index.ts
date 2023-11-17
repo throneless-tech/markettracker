@@ -53,6 +53,7 @@ export const Vendors: CollectionConfig = {
       //   label: 'Good',
       //   value: 'good',
       // },
+      defaultValue: "underReview",
       options: [
         {
           label: "Good",
@@ -411,6 +412,7 @@ export const Vendors: CollectionConfig = {
       name: "sharedKitchen",
       label: "Do you work out of a Shared Kitchen?",
       type: "checkbox",
+      defaultValue: false,
     },
     {
       name: "sharedKitchenName",
@@ -423,6 +425,7 @@ export const Vendors: CollectionConfig = {
       name: "copacker",
       label: "Do you use a Co-Packer?",
       type: "checkbox",
+      defaultValue: false,
     },
     {
       name: "copackerName",

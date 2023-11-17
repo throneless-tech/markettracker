@@ -61,6 +61,7 @@ import {
 
 // components
 import { ProductsField } from "../fields/ProductsField";
+import { ContactsModal } from "../Contacts/ContactsModal";
 
 // utils
 import formatTime from "../../utils/formatTime.js";
@@ -105,6 +106,7 @@ export const ApplicationsEdit: React.FC<any> = (props) => {
   const [marketDatesObjects, setMarketDatesObjects] = useState([]);
   const [selectAllDates, setSelectAllDates] = useState(false);
   const [doSubmit, setDoSubmit] = useState(false);
+  const [available, setAvailable] = useState<Contact[]>([]);
 
   const handleContactNameChange = (event) => setContactName(event.target.value);
   const handleContactEmailChange = (event) =>
@@ -259,7 +261,41 @@ export const ApplicationsEdit: React.FC<any> = (props) => {
     if (!id && (user.vendor as Vendor)) {
       setVendor(user.vendor as Vendor);
     }
+    if (user.vendor?.contacts?.length && !available.length) {
+      setAvailable(user.vendor.contacts);
+    }
   }, [user]);
+
+  const onSaveContact = ({ data, isError }) => {
+    if (typeof data === "object" && !isError && user.vendor.id) {
+      const newContacts = [
+        ...available.filter((contact) => contact.id !== data.id),
+        data,
+      ];
+      const updateContacts = async () => {
+        try {
+          const res = await fetch(`/api/vendors/${user.vendor.id}`, {
+            method: "PATCH",
+            credentials: "include",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              contacts: newContacts.map((contact) => contact.id),
+            }),
+          });
+          if (!res.ok) throw new Error(res.statusText);
+        } catch (err) {
+          console.error(err.message);
+        }
+      };
+      setAvailable(newContacts);
+      updateContacts();
+      onClose();
+    } else if (isError) {
+      console.error(data);
+    }
+  };
 
   // useEffect(() => {
   //   if (id) {
@@ -675,9 +711,9 @@ export const ApplicationsEdit: React.FC<any> = (props) => {
               onChange={(newValue) => setContacts(newValue)}
               value={contacts}
             >
-              {user.vendor.contacts && user.vendor.contacts.length && (
+              {available && available.length && (
                 <HStack spacing={4}>
-                  {(user.vendor as Vendor).contacts.map((contact) => (
+                  {available.map((contact) => (
                     <Checkbox key={contact.id} value={contact.id}>
                       {contact.name}
                       <Tag bg={"gray.50"} fontWeight={700}>
@@ -685,14 +721,6 @@ export const ApplicationsEdit: React.FC<any> = (props) => {
                       </Tag>
                     </Checkbox>
                   ))}
-                  {contactName ? (
-                    <Checkbox value={contactName}>
-                      {contactName}
-                      <Tag bg={"gray.50"} fontWeight={700}>
-                        {contactType}
-                      </Tag>
-                    </Checkbox>
-                  ) : null}
                 </HStack>
               )}
             </CheckboxGroup>
@@ -704,86 +732,11 @@ export const ApplicationsEdit: React.FC<any> = (props) => {
             >
               Add a contact
             </Button>
-            <Modal isOpen={isOpen} onClose={onClose} size={"xl"}>
-              <ModalOverlay />
-              <ModalContent background={"gray.600"} color={"gray.50"}>
-                <ModalHeader>
-                  <Stack textAlign={"center"} spacing={1}>
-                    <Heading marginBottom={0}>Add a contact</Heading>
-                    <Text>
-                      Please fill in requested information to create a new
-                      contact
-                    </Text>
-                  </Stack>
-                </ModalHeader>
-                <ModalCloseButton />
-                <ModalBody>
-                  <FormControl marginBottom={4}>
-                    <FormLabel>Contact name (required)</FormLabel>
-                    <Input
-                      color={"gray.700"}
-                      value={contactName}
-                      onChange={handleContactNameChange}
-                    />
-                  </FormControl>
-                  <FormControl marginBottom={4}>
-                    <FormLabel>Contact email address (required)</FormLabel>
-                    <Input
-                      color={"gray.700"}
-                      value={contactEmail}
-                      onChange={handleContactEmailChange}
-                      type="email"
-                    />
-                  </FormControl>
-                  <FormControl marginBottom={6}>
-                    <FormLabel>Contact phone number (required)</FormLabel>
-                    <Input
-                      color={"gray.700"}
-                      value={contactPhone}
-                      onChange={handleContactPhoneChange}
-                      type="number"
-                    />
-                  </FormControl>
-                  <FormControl marginBottom={4}>
-                    <FormLabel>Type of contact</FormLabel>
-                    <FormHelperText color={"gray.50"} marginBottom={2}>
-                      Select the type(s) that best describes this contact’s
-                      responsibility for the business
-                    </FormHelperText>
-                    <CheckboxGroup
-                      colorScheme="brown"
-                      value={contactType}
-                      onChange={handleContactTypeChange}
-                      defaultValue={["at_market"]}
-                    >
-                      <Stack spacing={[1, 5]} direction={["column", "row"]}>
-                        <Checkbox value="primary">Primary</Checkbox>
-                        <Checkbox value="billing">Billing/financial</Checkbox>
-                        <Checkbox value="at_market">At-market</Checkbox>
-                      </Stack>
-                    </CheckboxGroup>
-                  </FormControl>
-                </ModalBody>
-                <ModalFooter>
-                  <Button
-                    onClick={onSave}
-                    colorScheme="brown"
-                    variant="solid"
-                    mr={3}
-                  >
-                    Save
-                  </Button>
-                  <Button
-                    color={"gray.50"}
-                    colorScheme="brown"
-                    variant={"outline"}
-                    onClick={onClose}
-                  >
-                    Cancel
-                  </Button>
-                </ModalFooter>
-              </ModalContent>
-            </Modal>
+            <ContactsModal
+              isOpen={isOpen}
+              onSave={onSaveContact}
+              onClose={onClose}
+            />
             <Divider
               sx={{ borderColor: "gray.600", borderBottomWidth: 2, marginY: 8 }}
             />

@@ -53,6 +53,7 @@ import {
 // components
 //import Calendar from "../Calendar.js";
 import { ProductsField } from "../fields/ProductsField";
+import { ContactsModal } from "../Contacts/ContactsModal";
 
 // utils
 import formatDate from "../../utils/formatDate";
@@ -208,6 +209,17 @@ export const MarketsEdit: React.FC<any> = (props) => {
   if (!id) {
     return null;
   }
+  const onSaveContact = ({ data, isError }) => {
+    if (typeof data === "object" && !isError) {
+      const newOperators = [
+        ...operators.filter((id) => id !== data.id),
+        data.id,
+      ];
+      setOperators(newOperators);
+    } else if (isError) {
+      console.error(data);
+    }
+  };
 
   useEffect(() => {
     if (contact) {
@@ -868,9 +880,11 @@ export const MarketsEdit: React.FC<any> = (props) => {
                                         : null}
                                     </HStack>
                                   </CheckboxGroup>
-                                  <ContactModal
-                                    operators={operators}
-                                    setOperators={setOperators}
+                                  <ContactsModal
+                                    isOpen={isOpen}
+                                    onSave={onSaveContact}
+                                    onClose={onClose}
+                                    hideType
                                   />
                                 </Stack>
                                 <Flex

@@ -4,6 +4,7 @@ import { useAuth } from "payload/components/utilities";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { useHistory } from "react-router-dom";
+import qs from "qs";
 
 // Payload imports
 import type { Contact, Product } from "payload/generated-types";
@@ -56,6 +57,7 @@ import {
 //import Calendar from "../Calendar.js";
 import { ProductsField } from "../fields/ProductsField";
 import type { Market } from "payload/generated-types";
+import { ContactsModal } from "../Contacts/ContactsModal";
 
 // utils
 import formatDate from "../../utils/formatDate";
@@ -72,96 +74,6 @@ import stats2 from "../../assets/images/FF-sample-stats-2.jpg";
 import stats3 from "../../assets/images/FF-sample-stats-3.jpg";
 import stats4 from "../../assets/images/FF-sample-stats-4.jpg";
 
-const ContactModal: React.FC<any> = (props) => {
-  const { operators, setOperators } = props;
-
-  const { onOpen, isOpen, onClose } = useDisclosure();
-  const [contact, setContact] = useState({
-    name: "",
-    email: "",
-    phone: "",
-    type: "",
-  });
-
-  useEffect(() => {
-    if (operators) {
-      setOperators([contact, ...operators]);
-    }
-  }, [contact]);
-
-  return (
-    <>
-      <Button onClick={onOpen} marginTop={4} rightIcon={<ArrowForwardIcon />}>
-        Add a market operator
-      </Button>
-      <Modal isOpen={isOpen} onClose={onClose} size={"xl"}>
-        <ModalOverlay />
-        <ModalContent background={"gray.600"} color={"gray.50"}>
-          <ModalHeader>
-            <Stack textAlign={"center"} spacing={1}>
-              <Heading marginBottom={0}>Add a contact</Heading>
-              <Text>
-                Please fill in requested information to create a new contact
-              </Text>
-            </Stack>
-          </ModalHeader>
-          <ModalCloseButton />
-          <ModalBody>
-            <FormControl marginBottom={4}>
-              <FormLabel>Operator name (required)</FormLabel>
-              <Input
-                color={"gray.700"}
-                value={contact.name}
-                onChange={(e) =>
-                  setContact({ ...contact, name: e.target.value })
-                }
-              />
-            </FormControl>
-            <FormControl marginBottom={4}>
-              <FormLabel>Operator email address (required)</FormLabel>
-              <Input
-                color={"gray.700"}
-                value={contact.email}
-                onChange={(e) =>
-                  setContact({ ...contact, email: e.target.value })
-                }
-              />
-            </FormControl>
-            <FormControl marginBottom={6}>
-              <FormLabel>Operator phone number (required)</FormLabel>
-              <Input
-                color={"gray.700"}
-                value={contact.phone}
-                onChange={(e) =>
-                  setContact({ ...contact, phone: e.target.value })
-                }
-              />
-            </FormControl>
-          </ModalBody>
-          <ModalFooter>
-            <Button
-              onClick={onClose}
-              colorScheme="brown"
-              variant="solid"
-              mr={3}
-            >
-              Save
-            </Button>
-            <Button
-              color={"gray.50"}
-              colorScheme="brown"
-              variant={"outline"}
-              onClick={onClose}
-            >
-              Cancel
-            </Button>
-          </ModalFooter>
-        </ModalContent>
-      </Modal>
-    </>
-  );
-};
-
 export const SeasonsEdit: React.FC<any> = (props) => {
   const { submit } = useForm();
   const { user } = useAuth();
@@ -169,6 +81,11 @@ export const SeasonsEdit: React.FC<any> = (props) => {
   const history = useHistory();
   const { data } = props;
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const {
+    isOpen: isOpenContacts,
+    onOpen: onOpenContacts,
+    onClose: onCloseContacts,
+  } = useDisclosure();
   const { value: name, setValue: setName } = useField<string>({ path: "name" });
   const { value: startDate, setValue: setStartDate } = useField<string>({
     path: "marketDates.startDate",
@@ -192,6 +109,7 @@ export const SeasonsEdit: React.FC<any> = (props) => {
     path: "operators",
   });
   const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
+  const [isLoaded, setIsLoaded] = useState<boolean>(false);
 
   const {
     value: market,
@@ -201,9 +119,20 @@ export const SeasonsEdit: React.FC<any> = (props) => {
     path: "market",
   });
 
-  console.log("***startTime", startTime);
-  const [contact, setContact] = useState(null);
+  const [contacts, setContacts] = useState<Contact[]>([]);
 
+  const onSaveContact = ({ data, isError }) => {
+    if (typeof data === "object" && !isError) {
+      const newContacts = [
+        ...contacts.filter((contact) => contact.id !== data.id),
+        data,
+      ];
+      setContacts(newContacts);
+      setOperators(newContacts.map((contact) => contact.id));
+    } else if (isError) {
+      console.error(data);
+    }
+  };
   const submitForm = async () => {
     setIsSubmitted(true);
     submit();
@@ -215,14 +144,30 @@ export const SeasonsEdit: React.FC<any> = (props) => {
   }
 
   useEffect(() => {
-    if (contact) {
-      console.log("contact found...");
+    if (operators && !isLoaded) {
+      const query = {
+        id: {
+          in: operators.join(","),
+        },
+      };
+      const getOps = async () => {
+        const stringifiedQuery = qs.stringify(
+          {
+            where: query, // ensure that `qs` adds the `where` property, too!
+          },
+          { addQueryPrefix: true },
+        );
 
-      let contacts = [];
-      contacts.push(contact);
-      setOperators(contacts);
+        const response = await fetch(`/api/contacts${stringifiedQuery}`);
+        let newContacts = await response.json();
+        newContacts = newContacts.docs;
+        setContacts(newContacts);
+        setIsLoaded(true);
+      };
+
+      getOps();
     }
-  }, [contact]);
+  }, [operators]);
 
   if (name && market) {
     return (
@@ -595,33 +540,33 @@ export const SeasonsEdit: React.FC<any> = (props) => {
                                     Select anyone who will be an operator at{" "}
                                     {data.name} this season.
                                   </Text>
-                                  <CheckboxGroup
-                                    onChange={(newValue) =>
-                                      setOperators(newValue)
-                                    }
-                                  >
-                                    <HStack spacing={4}>
-                                      {operators
-                                        ? operators.map((contact) => (
-                                            <Checkbox
-                                              key={contact.id}
-                                              value={contact.id}
+                                  <HStack spacing={4}>
+                                    {contacts
+                                      ? contacts.map((contact) => (
+                                          <>
+                                            {contact.name}
+                                            <Tag
+                                              bg={"gray.50"}
+                                              fontWeight={700}
                                             >
-                                              {contact.name}
-                                              <Tag
-                                                bg={"gray.50"}
-                                                fontWeight={700}
-                                              >
-                                                {contact.type}
-                                              </Tag>
-                                            </Checkbox>
-                                          ))
-                                        : null}
-                                    </HStack>
-                                  </CheckboxGroup>
-                                  <ContactModal
-                                    operators={operators}
-                                    setOperators={setOperators}
+                                              {contact.email}
+                                            </Tag>
+                                          </>
+                                        ))
+                                      : null}
+                                  </HStack>
+                                  <Button
+                                    onClick={onOpenContacts}
+                                    marginTop={4}
+                                    rightIcon={<ArrowForwardIcon />}
+                                  >
+                                    Add a market operator
+                                  </Button>
+                                  <ContactsModal
+                                    isOpen={isOpenContacts}
+                                    onSave={onSaveContact}
+                                    onClose={onCloseContacts}
+                                    isOperator
                                   />
                                 </Stack>
                                 <Flex
@@ -851,7 +796,15 @@ export const SeasonsEdit: React.FC<any> = (props) => {
                       />
                     </HStack>
                     <HStack marginTop={2}>
-                      {/* <Tag bg={"gray.50"}>Operator 1</Tag> */}
+                      {contacts?.length &&
+                        contacts.map((contact) => (
+                          <>
+                            {contact.name}
+                            <Tag bg={"gray.50"} fontWeight={700}>
+                              {contact.email}
+                            </Tag>
+                          </>
+                        ))}
                     </HStack>
                     <HStack marginTop={4}>
                       <Text

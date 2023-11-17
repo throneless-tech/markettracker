@@ -34,7 +34,7 @@ export const Standing: React.FC<any> = (props) => {
         payments, instances of rule violations, and site visit completion.
       </Text>
       <Tag variant="solid" colorScheme="teal" marginTop={2}>
-        Good
+        {user.vendor ? user.vendor.standing : "good"}
       </Tag>
     </HStack>
   );

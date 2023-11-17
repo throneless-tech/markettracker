@@ -36,4 +36,5 @@ export const beforeValidateContacts: CollectionBeforeValidateHook = async ({
       contacts: data.contacts.map((contact: Contact) => contact.id),
     };
   }
+  return data;
 };

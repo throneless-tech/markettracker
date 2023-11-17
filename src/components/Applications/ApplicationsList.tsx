@@ -293,7 +293,7 @@ export const ApplicationsList: React.FC<any> = ({ data, isTab }) => {
                           </Td>
                           <Td>{Number(app.reviewScore)}</Td>
                           <Td>
-                            <Tag variant={"outline"}>Received</Tag>
+                            <Tag variant={"outline"}>{app.status}</Tag>
                           </Td>
                         </Tr>,
                       );
