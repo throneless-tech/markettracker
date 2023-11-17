@@ -50,6 +50,34 @@ import { Card } from "../Card";
 
 export const VendorsEdit: React.FC<any> = ({ data: vendor }) => {
   console.log("***vendor:", vendor);
+  const [standing, setStanding] = useState<string>();
+  const [isLoaded, setIsLoaded] = useState<boolean>(false);
+
+  useEffect(() => {
+    if (vendor?.standing && !isLoaded) {
+      setIsLoaded(true);
+      setStanding(vendor.standing);
+    }
+  }, [vendor]);
+
+  const onChange = async (standing: string) => {
+    try {
+      const res = await fetch(`/api/vendors/${vendor.id}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          standing,
+        }),
+      });
+      if (!res.ok) throw new Error(res.statusText);
+      setStanding(standing);
+    } catch (err) {
+      console.error(err.message);
+    }
+  };
+
   if (vendor) {
     return (
       <Box>
@@ -79,13 +107,17 @@ export const VendorsEdit: React.FC<any> = ({ data: vendor }) => {
                 </HStack>
                 <Spacer />
                 <HStack>
-                  <Tag
-                    variant="solid"
+                  <Select
+                    value={standing}
                     colorScheme="teal"
-                    sx={{ border: "2px solid #F6F5F4", paddingY: 1 }}
+                    variant="filled"
+                    onChange={(e) => onChange(e.target.value)}
                   >
-                    Good
-                  </Tag>
+                    <option value="good">Good</option>
+                    <option value="bad">Bad</option>
+                    <option value="conditional">Conditional</option>
+                    <option value="underReview">Under Review</option>
+                  </Select>
                 </HStack>
               </Flex>
               <Flex marginTop={4}>

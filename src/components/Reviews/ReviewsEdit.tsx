@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { useHistory } from "react-router-dom";
+import { useHistory, Link as ReactRouterLink } from "react-router-dom";
 
 // Payload imports
 import { useField, useForm } from "payload/components/forms";
@@ -19,6 +19,7 @@ import {
   FormLabel,
   Heading,
   HStack,
+  Link,
   NumberInput,
   NumberInputField,
   Spacer,
@@ -135,16 +136,21 @@ export const ReviewsEdit: React.FC<any> = () => {
             <Box background="green.600" padding={6}>
               <Flex borderBottom={"2px solid #F6F5F4"} paddingBottom={6}>
                 <HStack>
-                  <Text
-                    as={"span"}
-                    color={"gray.50"}
-                    fontFamily={"Zilla Slab"}
-                    fontSize="3xl"
-                    fontWeight={700}
-                    textTransform={"uppercase"}
+                  <Link
+                    as={ReactRouterLink}
+                    to={`/admin/collections/vendors/${shadowApp.vendor.id}`}
                   >
-                    {shadowApp.vendor.name}
-                  </Text>
+                    <Text
+                      as={"span"}
+                      color={"gray.50"}
+                      fontFamily={"Zilla Slab"}
+                      fontSize="3xl"
+                      fontWeight={700}
+                      textTransform={"uppercase"}
+                    >
+                      {shadowApp.vendor.name}
+                    </Text>
+                  </Link>
                 </HStack>
                 <Spacer />
                 <HStack>

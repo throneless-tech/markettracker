@@ -28,6 +28,7 @@ import StarIcon from "../../assets/icons/star.js";
 
 // types
 import type { Application, Review, Season } from "payload/generated-types";
+import { ApplicationsRow } from "./ApplicationsRow";
 
 type ApplicationStats = Application & {
   gapsMet: any[];
@@ -230,73 +231,7 @@ export const ApplicationsList: React.FC<any> = ({ data, isTab }) => {
               <Tbody>
                 {applications && applications.length
                   ? applications.reduce((acc, app) => {
-                      acc.push(
-                        <Tr key={app.id}>
-                          <Td>
-                            <Button
-                              variant={"link"}
-                              onClick={(e) => {
-                                e.preventDefault();
-                                reviewApplication(app);
-                              }}
-                            >
-                              {app.vendorName}
-                            </Button>
-                          </Td>
-                          <Td>{app.vendorType}</Td>
-                          <Td>
-                            {app.gapsMet.map((gap) => (
-                              <Tag marginRight={1} key={gap.id}>
-                                {gap.product}
-                              </Tag>
-                            ))}
-                          </Td>
-                          <Td>{app.seasonName}</Td>
-                          <Td>
-                            {app.vendorDemographics &&
-                            typeof app.vendorDemographics === "object"
-                              ? Object.entries(app.vendorDemographics).map(
-                                  (key, _) => {
-                                    if (key[1] == "yes") {
-                                      if (key[0] == "firstGeneration") {
-                                        return (
-                                          <Tag>First generation farmer</Tag>
-                                        );
-                                      }
-                                      if (key[0] == "veteranOwned") {
-                                        return <Tag>Veteran-owned</Tag>;
-                                      }
-                                      if (key[0] == "bipoc") {
-                                        return <Tag>BIPOC</Tag>;
-                                      }
-                                      if (key[0] == "immigrantOrRefugee") {
-                                        return <Tag>Immigrant or refugee</Tag>;
-                                      }
-                                      if (key[0] == "lgbtqia") {
-                                        return <Tag>LGBTQIA</Tag>;
-                                      }
-                                    }
-                                  },
-                                )
-                              : null}
-                          </Td>
-                          <Td>
-                            <Tag>
-                              {app.vendorStanding ? app.vendorStanding : "Good"}
-                            </Tag>
-                          </Td>
-                          <Td>
-                            {app.reviews && app.reviews.length
-                              ? app.reviews.length
-                              : 0}
-                            /2 reviewers
-                          </Td>
-                          <Td>{Number(app.reviewScore)}</Td>
-                          <Td>
-                            <Tag variant={"outline"}>{app.status}</Tag>
-                          </Td>
-                        </Tr>,
-                      );
+                      acc.push(<ApplicationsRow app={app} />);
                       return acc;
                     }, [])
                   : null}
