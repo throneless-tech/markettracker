@@ -1,4 +1,5 @@
-import React, { useEffect, useReducer, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
+import qs from "qs";
 import { useField } from "payload/components/forms";
 import { useDocumentInfo } from "payload/components/utilities";
 
@@ -20,16 +21,28 @@ export function useRelation<T = unknown>({
 }: Options): Return<T> {
   const doc = useDocumentInfo();
   const { value: field } = useField<T | string>({ path });
-  const [collection, setCollection] = useState(null);
+  const [collection, setCollection] = useState<string>(null);
   const [value, setValue] = useState<T>();
-  const [error, setError] = useState();
+  const [error, setError] = useState<Error>();
 
   const fetchData = async (options: RequestInit) => {
     const method = options.method ? options.method : "GET";
     try {
       if (Array.isArray(field)) {
+        const query = {
+          vendor: {
+            equals: field.join(","),
+          },
+        };
+        const stringifiedQuery = qs.stringify(
+          {
+            where: query,
+          },
+          { addQueryPrefix: true },
+        );
+
         const response = await fetch(
-          `/api/${collection}?where[id][in]=${field.join(",")}`,
+          `/api/${collection}${stringifiedQuery}`,
           options,
         );
         if (!response.ok) {
@@ -45,21 +58,17 @@ export function useRelation<T = unknown>({
           throw new Error(response.statusText);
         }
         const data = await response.json();
-        console.log("***DATA:", data);
         if (method !== "PATCH") {
-          console.log("***PATCHING***", options);
           setValue(data.doc ? data.doc : data);
         }
       }
     } catch (error) {
-      console.error("***ERROR:", error);
       setError(error);
     }
   };
 
   const onSubmit = () => {
     if (collection && field) {
-      console.log("***VALUE:", value);
       fetchData({
         ...options,
         method: "PATCH",
