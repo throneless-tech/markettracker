@@ -27,6 +27,9 @@ import {
   Tag,
 } from "@chakra-ui/react";
 
+// components
+import { FooterAdmin } from "../FooterAdmin";
+
 // icons
 import { GrayCheckIcon } from "../../assets/icons/gray-check";
 
@@ -75,15 +78,29 @@ export const VendorsList: React.FC<any> = (props) => {
                 <Divider color="gray.900" borderBottomWidth={2} opacity={1} />
               </Container>
               <Container sx={{ maxWidth: "unset" }}>
-                <HStack align={"flex-start"} marginTop={8} spacing={8}>
+                <HStack
+                  align={"flex-start"}
+                  justifyContent={"center"}
+                  marginTop={8}
+                  spacing={8}
+                >
                   {/* <Stack backgroundColor={'gray.50'} padding={4} width={230}>
           <Text>
             Filter
           </Text>
         </Stack> */}
-                  <TableContainer>
+                  <TableContainer
+                    sx={{
+                      maxHeight: "60vh",
+                      overflowY: "auto",
+                      position: "relative",
+                      zIndex: 1,
+                    }}
+                  >
                     <Table variant="simple">
-                      <Thead>
+                      <Thead
+                        sx={{ left: 0, position: "sticky", top: 0, zIndex: 5 }}
+                      >
                         <Tr background={"gray.100"}>
                           <Th
                             sx={{
@@ -143,7 +160,7 @@ export const VendorsList: React.FC<any> = (props) => {
                           </Th>
                         </Tr>
                       </Thead>
-                      <Tbody>
+                      <Tbody sx={{ position: "relative", zIndex: 1 }}>
                         {data.docs && data.docs.length
                           ? data.docs.reduce((acc, vendor) => {
                               if (vendor.standing !== "underReview") {
@@ -477,6 +494,7 @@ export const VendorsList: React.FC<any> = (props) => {
             </TabPanel>
           </TabPanels>
         </Tabs>
+        <FooterAdmin />
       </>
     )
   );

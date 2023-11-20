@@ -181,9 +181,16 @@ export const ApplicationsList: React.FC<any> = ({ data, isTab }) => {
           </Container>
         ) : null}
         <Container maxW="container.xl">
-          <TableContainer>
+          <TableContainer
+            sx={{
+              maxHeight: "75vh",
+              overflowY: "auto",
+              position: "relative",
+              zIndex: 1,
+            }}
+          >
             <Table variant="simple">
-              <Thead>
+              <Thead sx={{ left: 0, position: "sticky", top: 0, zIndex: 5 }}>
                 <Tr background={"gray.100"}>
                   <Th
                     sx={{ color: "gray.900", fontFamily: "Outfit, sans-serif" }}
@@ -196,7 +203,11 @@ export const ApplicationsList: React.FC<any> = ({ data, isTab }) => {
                     Vendor type
                   </Th>
                   <Th
-                    sx={{ color: "gray.900", fontFamily: "Outfit, sans-serif" }}
+                    sx={{
+                      color: "gray.900",
+                      fontFamily: "Outfit, sans-serif",
+                      maxWidth: 300,
+                    }}
                   >
                     Meet product gap
                   </Th>
@@ -237,7 +248,7 @@ export const ApplicationsList: React.FC<any> = ({ data, isTab }) => {
                   </Th>
                 </Tr>
               </Thead>
-              <Tbody>
+              <Tbody sx={{ position: "relative", zIndex: 1 }}>
                 {applications && applications.length
                   ? applications.reduce((acc, app) => {
                       acc.push(<ApplicationsRow app={app} />);
@@ -258,7 +269,11 @@ export const ApplicationsList: React.FC<any> = ({ data, isTab }) => {
                     Vendor type
                   </Th>
                   <Th
-                    sx={{ color: "gray.900", fontFamily: "Outfit, sans-serif" }}
+                    sx={{
+                      color: "gray.900",
+                      fontFamily: "Outfit, sans-serif",
+                      maxWidth: 300,
+                    }}
                   >
                     Meet product gap
                   </Th>

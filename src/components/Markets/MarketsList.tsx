@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { useAuth } from "payload/components/utilities";
 import { useHistory } from "react-router-dom";
-import qs from 'qs'
+import qs from "qs";
 
 import {
   Box,
@@ -32,7 +32,7 @@ import {
   Tr,
 } from "@chakra-ui/react";
 
-//components
+// components
 import { MarketCard } from "./MarketCard";
 import { SeasonCard } from "../Seasons/SeasonCard";
 import { FooterAdmin } from "../FooterAdmin";
@@ -57,19 +57,19 @@ export const MarketsList: React.FC<any> = (props) => {
   };
 
   useEffect(() => {
-    const vend: any = user.vendor
+    const vend: any = user.vendor;
     const query = {
       vendor: {
         equals: vend.id,
-      }
-    }
+      },
+    };
     const getApps = async () => {
       const stringifiedQuery = qs.stringify(
         {
           where: query, // ensure that `qs` adds the `where` property, too!
         },
         { addQueryPrefix: true },
-      )
+      );
 
       const response = await fetch(`/api/applications${stringifiedQuery}`);
       let apps = await response.json();
@@ -99,11 +99,13 @@ export const MarketsList: React.FC<any> = (props) => {
 
   useEffect(() => {
     if (applications && markets) {
-      let result = markets.filter(market => !applications.some(app => market.id === app.season.market.id));
+      let result = markets.filter(
+        (market) =>
+          !applications.some((app) => market.id === app.season.market.id),
+      );
       setOpenMarkets(result);
     }
-    
-  }, [applications, markets])
+  }, [applications, markets]);
 
   useEffect(() => {}, [applications, openMarkets, tabIndex]);
 
@@ -227,16 +229,16 @@ export const MarketsList: React.FC<any> = (props) => {
             </Text>
           </Stack> */}
                   <HStack align={"flex-start"} wrap={"wrap"} spacing={6}>
-                    {applications &&
-                      applications.length ?
-                      applications.map((app) => (
-                        <SeasonCard
-                          key={app.season.id}
-                          season={app.season}
-                          status={app.status}
-                          isApplication
-                        />
-                      )) : null}
+                    {applications && applications.length
+                      ? applications.map((app) => (
+                          <SeasonCard
+                            key={app.season.id}
+                            season={app.season}
+                            status={app.status}
+                            isApplication
+                          />
+                        ))
+                      : null}
                   </HStack>
                 </HStack>
               </Container>
@@ -264,9 +266,18 @@ export const MarketsList: React.FC<any> = (props) => {
               </Container>
             ) : (
               <Container maxW="container.xl" marginY={12}>
-                <TableContainer>
+                <TableContainer
+                  sx={{
+                    maxHeight: "75vh",
+                    overflowY: "auto",
+                    position: "relative",
+                    zIndex: 1,
+                  }}
+                >
                   <Table variant="simple">
-                    <Thead>
+                    <Thead
+                      sx={{ left: 0, position: "sticky", top: 0, zIndex: 5 }}
+                    >
                       <Tr background={"gray.100"}>
                         <Th> </Th>
                         <Th
@@ -335,7 +346,7 @@ export const MarketsList: React.FC<any> = (props) => {
                         </Th>
                       </Tr>
                     </Thead>
-                    <Tbody>
+                    <Tbody sx={{ position: "relative", zIndex: 1 }}>
                       {applications && applications.length
                         ? applications.map((app) => (
                             <Tr key={app.id}>

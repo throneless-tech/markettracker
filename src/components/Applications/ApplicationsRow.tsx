@@ -4,7 +4,7 @@ import { useHistory } from "react-router-dom";
 import { Application } from "payload/generated-types";
 
 // Chakra imports
-import { Button, Select, Tag, Td, Tr } from "@chakra-ui/react";
+import { Button, Select, Tag, Td, Tr, Wrap, WrapItem } from "@chakra-ui/react";
 
 export const ApplicationsRow: React.FC<any> = (props) => {
   const history = useHistory();
@@ -58,12 +58,16 @@ export const ApplicationsRow: React.FC<any> = (props) => {
         </Button>
       </Td>
       <Td>{app.vendorType}</Td>
-      <Td>
-        {app.gapsMet.map((gap) => (
-          <Tag marginRight={1} key={gap.id}>
-            {gap.product}
-          </Tag>
-        ))}
+      <Td sx={{ maxWidth: 300 }}>
+        <Wrap>
+          {app.gapsMet.map((gap) => (
+            <WrapItem>
+              <Tag marginRight={1} key={gap.id}>
+                {gap.product}
+              </Tag>
+            </WrapItem>
+          ))}
+        </Wrap>
       </Td>
       <Td>{app.seasonName}</Td>
       <Td>{app.numberOfMarkets}</Td>
