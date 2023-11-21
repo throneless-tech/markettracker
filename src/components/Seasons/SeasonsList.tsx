@@ -276,8 +276,8 @@ export const SeasonsList: React.FC<any> = ({ data }) => {
                             !applications?.length ||
                             !applications.findIndex(
                               (app) =>
-                                app.season === season.id ||
-                                app.season?.id === season.id,
+                                app.season !== season.id &&
+                                app.season?.id !== season.id,
                             )
                           ) {
                             acc.push(
