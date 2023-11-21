@@ -461,7 +461,7 @@ export const Vendors: CollectionConfig = {
           name: "licenseDocument",
           type: "upload",
           relationTo: "documents",
-          required: true,
+          //required: true,
         },
       ],
       admin: {
@@ -478,7 +478,7 @@ export const Vendors: CollectionConfig = {
           name: "insuranceDocument",
           type: "upload",
           relationTo: "documents",
-          required: true,
+          //required: true,
         },
       ],
       admin: {
@@ -495,7 +495,7 @@ export const Vendors: CollectionConfig = {
           name: "sharedKitchenInsuranceDocument",
           type: "upload",
           relationTo: "documents",
-          required: true,
+          //required: true,
         },
       ],
       admin: {
@@ -512,7 +512,7 @@ export const Vendors: CollectionConfig = {
           name: "copackerInsuranceDocument",
           type: "upload",
           relationTo: "documents",
-          required: true,
+          //required: true,
         },
       ],
       admin: {
