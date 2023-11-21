@@ -31,6 +31,7 @@ export const Applications: CollectionConfig = {
       name: "vendor",
       type: "relationship",
       relationTo: "vendors",
+      index: true,
       //required: true,
       access: {
         create: ({ req }) => req.user.role !== "vendor",
@@ -63,6 +64,7 @@ export const Applications: CollectionConfig = {
     {
       name: "status",
       type: "select",
+      index: true,
       defaultValue: "pending",
       options: [
         {

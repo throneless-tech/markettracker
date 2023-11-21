@@ -18,20 +18,11 @@ import {
   Spacer,
   Tab,
   TabIndicator,
-  Tag,
-  Table,
-  TableContainer,
   TabList,
   TabPanel,
   TabPanels,
   Tabs,
-  Tbody,
-  Td,
   Text,
-  Tfoot,
-  Th,
-  Thead,
-  Tr,
 } from "@chakra-ui/react";
 
 //components
@@ -43,7 +34,6 @@ export const SeasonsList: React.FC<any> = ({ data }) => {
   const { user } = useAuth();
   const history = useHistory();
   const [tabIndex, setTabIndex] = useState(0);
-  const [markets, setMarkets] = useState([]);
   const [seasons, setSeasons] = useState([]);
   const [viewMarkets, setViewMarkets] = useState(false);
   const [applications, setApplications] = useState([]);

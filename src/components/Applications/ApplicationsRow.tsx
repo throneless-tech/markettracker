@@ -8,14 +8,22 @@ import { Button, Select, Tag, Td, Tr, Wrap, WrapItem } from "@chakra-ui/react";
 
 export const ApplicationsRow: React.FC<any> = (props) => {
   const history = useHistory();
-  const { app } = props;
+  const { app, season } = props;
   const [status, setStatus] = useState<string>();
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
 
   const reviewApplication = (app: Application) => {
+    let state;
+    if (season) {
+      state = { ...app, season };
+    } else {
+      state = app;
+    }
+    console.log("***app", app);
+
     history.push({
       pathname: `/admin/collections/reviews/create`,
-      state: app,
+      state,
     });
   };
 

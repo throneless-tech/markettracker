@@ -10,13 +10,13 @@ export const afterReadStats: CollectionAfterReadHook = async ({
 }) => {
   if (context.skipTrigger) return;
   let vendor = doc.vendor;
-  //  if (typeof vendor !== "object") {
-  vendor = await payload.findByID({
-    id: doc.vendor && doc.vendor.id ? doc.vendor.id : doc.vendor,
-    collection: "vendors",
-    depth: 0,
-  });
-  //}
+  if (typeof vendor !== "object") {
+    vendor = await payload.findByID({
+      id: doc.vendor && doc.vendor.id ? doc.vendor.id : doc.vendor,
+      collection: "vendors",
+      depth: 0,
+    });
+  }
 
   const applications = await payload.find({
     collection: "applications",

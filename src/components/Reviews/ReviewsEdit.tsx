@@ -1,6 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { useHistory, Link as ReactRouterLink } from "react-router-dom";
+import DatePicker from "react-datepicker";
 
 // Payload imports
 import { useField, useForm } from "payload/components/forms";
@@ -27,6 +28,7 @@ import {
   Tag,
   Text,
   Textarea,
+  Wrap,
 } from "@chakra-ui/react";
 
 // components
@@ -36,12 +38,20 @@ import {
 // icons
 
 // images
+const monthDiff = (d1, d2) => {
+  let months;
+  months = (d2.getFullYear() - d1.getFullYear()) * 12;
+  months -= d1.getMonth();
+  months += d2.getMonth();
+  return months <= 0 ? 0 : months;
+};
 
 export const ReviewsEdit: React.FC<any> = () => {
   const { user } = useAuth();
   const history = useHistory();
   const { submit } = useForm();
   const { id } = useDocumentInfo();
+  const [numMonths, setNumMonths] = useState(1);
 
   const { value: application, setValue: setApplication } =
     useField<Application>({
@@ -94,8 +104,27 @@ export const ReviewsEdit: React.FC<any> = () => {
   }, [doSubmit]);
 
   useEffect(() => {
+    const app: Application = history.location.state as Application;
+    const setShadow = async (id: string) => {
+      try {
+        const response = await fetch(`/api/vendors/${id}`, {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+        if (!response.ok) throw new Error(response.statusText);
+        const data = await response.json();
+        setShadowApp({ ...app, vendor: data });
+      } catch (error) {
+        console.error(error.message);
+      }
+    };
     if (history.location.state) {
-      setShadowApp(history.location.state);
+      if (typeof app.vendor === "string") {
+        setShadow(app.vendor);
+      } else {
+        setShadowApp(history.location.state);
+      }
     }
 
     if (user) {
@@ -103,17 +132,21 @@ export const ReviewsEdit: React.FC<any> = () => {
     }
   }, [history]);
 
-  useEffect(() => {}, [
-    application,
-    attendScore,
-    demoScore,
-    notes,
-    productScore,
-    reviewer,
-    satScore,
-    setupScore,
-    vendorScore,
-  ]);
+  useEffect(() => {
+    if (
+      shadowApp?.season?.marketDates.startDate &&
+      shadowApp?.season?.marketDates.endDate
+    ) {
+      console.log("***shadowApp.season", shadowApp.season);
+      let calLength = monthDiff(
+        new Date(shadowApp.season.marketDates.startDate),
+        new Date(shadowApp.season.marketDates.endDate),
+      );
+      setNumMonths(calLength);
+    }
+  }, [shadowApp]);
+
+  console.log("***shadowApp", shadowApp);
 
   if (
     shadowApp &&
@@ -361,8 +394,8 @@ export const ReviewsEdit: React.FC<any> = () => {
                     Saturation/Opportunity
                   </FormLabel>
                   <FormHelperText>
-                    {shadowApp.vendor.name} is approved for 0/12 FRESHFARM
-                    markets
+                    {shadowApp.vendor.name} is approved for{" "}
+                    {shadowApp.vendor.numberOfMarkets} FRESHFARM markets
                   </FormHelperText>
                 </Stack>
               </HStack>
@@ -429,6 +462,34 @@ export const ReviewsEdit: React.FC<any> = () => {
                   <FormHelperText>
                     {shadowApp.vendor.name} plans to attend{" "}
                     {shadowApp.dates.length}/16 market days
+                    <Wrap>
+                      <DatePicker
+                        inline
+                        readOnly={true}
+                        onChange={() => true}
+                        dayClassName={(date) => {
+                          let dateFound = null;
+                          if (shadowApp.dates) {
+                            dateFound = shadowApp.dates.find((item) => {
+                              return item.date === date.toISOString();
+                            });
+                          }
+
+                          if (dateFound) {
+                            return "vendor-select";
+                          } else {
+                            return "";
+                          }
+                        }}
+                        selected={null}
+                        includeDates={shadowApp.dates.map(
+                          (item) => new Date(item.date),
+                        )}
+                        minDate={shadowApp.startDate}
+                        maxDate={shadowApp.endDate}
+                        monthsShown={numMonths + 1}
+                      />
+                    </Wrap>
                   </FormHelperText>
                 </Stack>
               </HStack>

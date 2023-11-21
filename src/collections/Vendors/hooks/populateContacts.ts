@@ -6,8 +6,10 @@ import {
 import type { Contact } from "payload/generated-types";
 
 export const afterReadContacts: CollectionAfterReadHook = async ({
+  context,
   doc, // full document data
 }) => {
+  if (context.skipTrigger) return;
   if (
     doc.contacts &&
     doc.contacts.length &&

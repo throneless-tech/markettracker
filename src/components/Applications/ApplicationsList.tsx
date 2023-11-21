@@ -108,7 +108,7 @@ export const ApplicationsList: React.FC<any> = ({ data, isTab }) => {
           console.error(err);
         }
       };
-      getApplications(season && season.id ? season.id : "");
+      getApplications(season?.id ? season.id : "");
     } else if (data && data.docs && data.docs.length) {
       if (season) {
         setApplications(
@@ -251,7 +251,7 @@ export const ApplicationsList: React.FC<any> = ({ data, isTab }) => {
               <Tbody sx={{ position: "relative", zIndex: 1 }}>
                 {applications && applications.length
                   ? applications.reduce((acc, app) => {
-                      acc.push(<ApplicationsRow app={app} />);
+                      acc.push(<ApplicationsRow app={app} season={season} />);
                       return acc;
                     }, [])
                   : null}
