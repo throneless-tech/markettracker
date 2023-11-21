@@ -12,31 +12,33 @@ export const ProductsCell: FC<Props | CellData> = ({ cellData }) => {
   const [products, setProducts] = useState<Product[]>([]);
 
   useEffect(() => {
-    const query = {
-      id: {
-        in: cellData.join(","),
-      },
-    };
+    if (cellData) {
+      const query = {
+        id: {
+          in: cellData.join(","),
+        },
+      };
 
-    const stringifiedQuery = qs.stringify(
-      {
-        where: query,
-        limit: 9999,
-        depth: 0,
-      },
-      { addQueryPrefix: true },
-    );
-    const fetchProducts = async () => {
-      try {
-        const response = await fetch(`/api/products${stringifiedQuery}`);
-        if (!response.ok) throw new Error(response.statusText);
-        const res = await response.json();
-        setProducts(res.docs);
-      } catch (err) {
-        console.error(err);
-      }
-    };
-    fetchProducts();
+      const stringifiedQuery = qs.stringify(
+        {
+          where: query,
+          limit: 9999,
+          depth: 0,
+        },
+        { addQueryPrefix: true },
+      );
+      const fetchProducts = async () => {
+        try {
+          const response = await fetch(`/api/products${stringifiedQuery}`);
+          if (!response.ok) throw new Error(response.statusText);
+          const res = await response.json();
+          setProducts(res.docs);
+        } catch (err) {
+          console.error(err);
+        }
+      };
+      fetchProducts();
+    }
   }, [cellData]);
 
   return products ? (
