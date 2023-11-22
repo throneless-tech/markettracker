@@ -152,16 +152,18 @@ export const SeasonsList: React.FC<any> = ({ data }) => {
                       {user.role == "vendor" ? "My " : ""} Markets
                     </Heading>
                   </Box>
-                  {user.role == "vendor" && user.vendor ? (
+                  {user.role == "vendor" ? (
                     <>
                       <Spacer />
-                      <Button
-                        // as="a"
-                        // href="/admin/collections/applications"
-                        onClick={() => setTabIndex(1)}
-                      >
-                        Apply to markets
-                      </Button>
+                      {user.vendor ? (
+                        <Button
+                          // as="a"
+                          // href="/admin/collections/applications"
+                          onClick={() => setTabIndex(1)}
+                        >
+                          Apply to markets
+                        </Button>
+                      ) : null}
                     </>
                   ) : (
                     <>
