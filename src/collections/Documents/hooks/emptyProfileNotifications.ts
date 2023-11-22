@@ -30,6 +30,7 @@ export const emptyProfileNotifications: CollectionAfterChangeHook = async (
           fromCSV.forEach((source: VendorSource) => {
             console.log("Notifying:", source.email);
             payload.sendEmail({
+              from: "cms@markettracker.payloadcms.app",
               to: source.email,
               subject: "Please fill out your Markettracker Vendor Profile",
               text: "Hello! This is an automated notification that there is missing information in your vendor profile on FreshFarm's Markettracker. During this beta period, it's possible that information from your vendor application wasn't saved correctly. If so, please visit https://markettracker.payloadcms.app and go to the 'My Profile' page to correct the information. Thank you so much for your patience, and hope you have a wonderful day!",
