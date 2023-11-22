@@ -42,6 +42,10 @@ const createCollectionDocumentPath = path.resolve(
   __dirname,
   "collections/Documents/hooks/createCollectionDocument",
 );
+const emptyProfileNotificationsPath = path.resolve(
+  __dirname,
+  "collections/Documents/hooks/emptyProfileNotifications",
+);
 
 const mockModulePath = path.resolve(__dirname, "mocks/emptyObject.js");
 
@@ -84,6 +88,7 @@ export default buildConfig({
         alias: {
           ...config.resolve.alias,
           [createCollectionDocumentPath]: mockModulePath,
+          [emptyProfileNotificationsPath]: mockModulePath,
         },
       },
     }),
