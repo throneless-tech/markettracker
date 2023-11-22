@@ -152,7 +152,7 @@ export const SeasonsList: React.FC<any> = ({ data }) => {
                       {user.role == "vendor" ? "My " : ""} Markets
                     </Heading>
                   </Box>
-                  {user.role == "vendor" ? (
+                  {user.role == "vendor" && user.vendor ? (
                     <>
                       <Spacer />
                       <Button
@@ -214,29 +214,60 @@ export const SeasonsList: React.FC<any> = ({ data }) => {
                     marginTop={8}
                     padding={6}
                   >
-                    <Text
-                      as={"span"}
-                      color={"gray.50"}
-                      fontFamily={"Zilla Slab"}
-                      fontSize="3xl"
-                      fontWeight={700}
-                      textStyle="bodyMain"
-                      textTransform={"uppercase"}
-                    >
-                      Apply to your first market!
-                    </Text>
-                    <Text
-                      color={"gray.50"}
-                      fontSize={"xl"}
-                      marginTop={4}
-                      textStyle="bodyMain"
-                    >
-                      To sell at Fresh Farm Markets vendors must apply to each
-                      market. We accept applications annually from farmers and
-                      producers selling items that feature agricultural products
-                      grown within 200 miles of Washington, DC. Click the "Apply
-                      to markets" button above to begin your first application.
-                    </Text>
+                    {!user.vendor ? (
+                      <>
+                        <Text
+                          as={"span"}
+                          color={"gray.50"}
+                          fontFamily={"Zilla Slab"}
+                          fontSize="3xl"
+                          fontWeight={700}
+                          textStyle="bodyMain"
+                          textTransform={"uppercase"}
+                        >
+                          Complete your vendor profile!
+                        </Text>
+                        <Text
+                          color={"gray.50"}
+                          fontSize={"xl"}
+                          marginTop={4}
+                          textStyle="bodyMain"
+                        >
+                          Your vendor profile has some missing information!
+                          Vendor profiles are important for FreshFarm staff to
+                          correctly evaluate applications to markets. Click the
+                          "My Profile" button above to fill out any missing
+                          information.
+                        </Text>
+                      </>
+                    ) : (
+                      <>
+                        <Text
+                          as={"span"}
+                          color={"gray.50"}
+                          fontFamily={"Zilla Slab"}
+                          fontSize="3xl"
+                          fontWeight={700}
+                          textStyle="bodyMain"
+                          textTransform={"uppercase"}
+                        >
+                          Apply to your first market!
+                        </Text>
+                        <Text
+                          color={"gray.50"}
+                          fontSize={"xl"}
+                          marginTop={4}
+                          textStyle="bodyMain"
+                        >
+                          To sell at Fresh Farm Markets vendors must apply to
+                          each market. We accept applications annually from
+                          farmers and producers selling items that feature
+                          agricultural products grown within 200 miles of
+                          Washington, DC. Click the "Apply to markets" button
+                          above to begin your first application.
+                        </Text>
+                      </>
+                    )}
                   </Box>
                 </Container>
               ) : (

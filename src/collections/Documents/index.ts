@@ -1,10 +1,11 @@
 import { CollectionConfig } from "payload/types";
 import { createCollectionDocument } from "./hooks/createCollectionDocument";
+import { emptyProfileNotifications } from "./hooks/emptyProfileNotifications";
 
 export const Documents: CollectionConfig = {
   slug: "documents",
   hooks: {
-    afterChange: [createCollectionDocument],
+    afterChange: [emptyProfileNotifications],
   },
   upload: {
     staticURL: "/documents",

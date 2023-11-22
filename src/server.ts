@@ -5,6 +5,9 @@ import path from "path";
 require("dotenv").config();
 const app = express();
 
+// Parse JSON request bodies
+app.use(express.json());
+
 // Serve images
 app.use("/assets", express.static(path.resolve(__dirname, "./assets")));
 

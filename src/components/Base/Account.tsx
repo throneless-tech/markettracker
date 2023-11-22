@@ -1,9 +1,11 @@
 // @ts-nocheck
 import React, { useEffect, useState } from "react";
 import { useDebouncedCallback } from "use-debounce";
+import { toast } from "react-toastify";
 
 // Payload imports
 import { useField, useForm } from "payload/components/forms";
+import { useAuth } from "payload/components/utilities";
 import type { Vendor } from "payload/generated-types";
 
 import {
@@ -59,6 +61,7 @@ import EditIcon from "../../assets/icons/edit.js";
 
 export const Account: React.FC<any> = () => {
   const { submit } = useForm();
+  const { user } = useAuth();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const {
     isOpen: isOpenContacts,
@@ -96,7 +99,7 @@ export const Account: React.FC<any> = () => {
 
   const handleSubmit = async () => {
     try {
-      await fetch(`/api/vendors/${vendor.id}`, {
+      const response = await fetch(`/api/vendors/${vendor.id}`, {
         method: "PATCH",
         credentials: "include",
         headers: {
@@ -104,10 +107,16 @@ export const Account: React.FC<any> = () => {
         },
         body: JSON.stringify(realVendor),
       });
+      const data = await response.json();
+      if (response.ok) return submit();
+      if (data.errors?.length && data.errors[0].name === "ValidationError") {
+        toast.error(data.errors[0].message);
+        throw new Error(data.errors[0].message);
+      }
+      throw new Error(response.statusText);
     } catch (err) {
       console.error(err);
     }
-    submit();
   };
 
   const onSaveContact = ({ data, isError }) => {
@@ -142,7 +151,6 @@ export const Account: React.FC<any> = () => {
   };
 
   const onDeleteContact = ({ data, isError }) => {
-    console.log("***data", data);
     if (!isError && vendor.id) {
       const newContacts = [
         ...vendor.contacts.filter((contact) => contact.id !== data.id),
@@ -201,14 +209,59 @@ export const Account: React.FC<any> = () => {
           },
         });
 
+        if (!res.ok) throw new Error(res.statusText);
         const data = await res.json();
         setRealVendor(data);
       } catch (err) {
         console.error(err);
       }
     };
+
+    const createVendor = async (name: string) => {
+      try {
+        console.log(
+          `Creating vendor ${name} for user ${user.name} with id ${user.id}`,
+        );
+        const resVendor = await fetch(`/api/vendors`, {
+          method: "POST",
+          credentials: "include",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            name: `${name}'s Vendor`,
+            user: user.id,
+          }),
+        });
+
+        if (!resVendor.ok) throw new Error(resVendor.statusText);
+        const dataVendor = await resVendor.json();
+        console.log("***dataVendor", dataVendor);
+        setRealVendor(dataVendor.doc);
+        console.log("Successfully created vendor");
+        console.log(
+          `Updating user ${user.name} with id ${user.id} for vendor ${dataVendor.doc.id}`,
+        );
+        const resUser = await fetch(`/api/users/${user.id}`, {
+          method: "PATCH",
+          credentials: "include",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            vendor: dataVendor.doc.id,
+          }),
+        });
+        if (!resUser.ok) throw new Error(resUser.statusText);
+        console.log("Successfully updated user");
+      } catch (err) {
+        console.error(err);
+      }
+    };
     if (vendorId) {
       fetchVendor(vendorId);
+    } else if (name && !isLoaded) {
+      createVendor(name);
     }
   }, []);
 
@@ -288,7 +341,7 @@ export const Account: React.FC<any> = () => {
                                   paddingY: 1,
                                 }}
                               >
-                                Good
+                                {vendor.standing ? vendor.standing : "good"}
                               </Tag>
                             ) : null}
                           </HStack>
@@ -307,7 +360,11 @@ export const Account: React.FC<any> = () => {
                             </Text>
                             <Text as={"span"} color={"gray.50"} fontSize="2xl">
                               {role === "vendor" && vendor && vendor.address
-                                ? `${vendor.address.street} ${vendor.address.city} ${vendor.address.state} ${vendor.address.zipcode}`
+                                ? `${vendor.address.street || ""} ${
+                                    vendor.address.city || ""
+                                  } ${vendor.address.state || ""} ${
+                                    vendor.address.zipcode || ""
+                                  }`
                                 : null}
                             </Text>
                           </HStack>
@@ -411,7 +468,7 @@ export const Account: React.FC<any> = () => {
                                   })
                                 }
                                 value={
-                                  typeof vendor.copacker === "boolean"
+                                  typeof vendor.isPrimaryContact === "boolean"
                                     ? vendor.isPrimaryContact.toString()
                                     : undefined
                                 }
@@ -436,7 +493,7 @@ export const Account: React.FC<any> = () => {
                                   })
                                 }
                                 value={
-                                  typeof vendor.copacker === "boolean"
+                                  typeof vendor.isBillingContact === "boolean"
                                     ? vendor.isBillingContact.toString()
                                     : undefined
                                 }
@@ -468,7 +525,7 @@ export const Account: React.FC<any> = () => {
                                   })
                                 }
                                 value={
-                                  vendor.address && vendor.address.street
+                                  vendor.address?.street
                                     ? vendor.address.street
                                     : null
                                 }

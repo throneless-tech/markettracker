@@ -3,6 +3,7 @@ import { CollectionConfig } from "payload/types";
 //import { UsersEdit } from "../../components/Users/UsersEdit";
 import { afterReadVendor, beforeValidateVendor } from "./hooks/populateVendor";
 import { registerRoute } from "../../routes/register";
+import { emailRoute } from "../../routes/email";
 
 const roles = [
   {
@@ -73,6 +74,11 @@ export const Users: CollectionConfig = {
       path: "/register",
       method: "post",
       handler: registerRoute,
+    },
+    {
+      path: "/:id/email",
+      method: "post",
+      handler: emailRoute,
     },
   ],
   hooks: {

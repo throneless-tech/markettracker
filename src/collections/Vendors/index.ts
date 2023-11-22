@@ -14,6 +14,7 @@ import {
 import { beforeValidateUser } from "./hooks/populateUser";
 import { beforeValidateProducts } from "./hooks/populateProducts";
 import { afterReadStats } from "./hooks/populateStats";
+import { validateRoute } from "../../routes/validate";
 
 export const Vendors: CollectionConfig = {
   slug: "vendors",
@@ -33,6 +34,7 @@ export const Vendors: CollectionConfig = {
   // hooks: {
   //   beforeRead: [beforeReadHook],
   // },
+  endpoints: [{ path: "/:id/validate", method: "get", handler: validateRoute }],
   fields: [
     {
       name: "name",
@@ -79,13 +81,13 @@ export const Vendors: CollectionConfig = {
       name: "isPrimaryContact",
       label: "Are you the primary contact for the business?",
       type: "checkbox",
-      // required: true,
+      //required: true,
     },
     {
       name: "isBillingContact",
       label: "Are you the billing contact for the business?",
       type: "checkbox",
-      // required: true,
+      //required: true,
     },
     {
       name: "address",
@@ -245,7 +247,7 @@ export const Vendors: CollectionConfig = {
       name: "type",
       label: "What type of vendor are you?",
       type: "select",
-      // required: true,
+      //required: true,
       hasMany: false,
       defaultValue: "producer",
       options: [
