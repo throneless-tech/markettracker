@@ -215,6 +215,11 @@ export const ApplicationsList: React.FC<any> = ({ data, isTab }) => {
                     sx={{ color: "gray.900", fontFamily: "Outfit, sans-serif" }}
                   >
                     Market name
+                  </Th>{" "}
+                  <Th
+                    sx={{ color: "gray.900", fontFamily: "Outfit, sans-serif" }}
+                  >
+                    Number of applications
                   </Th>
                   <Th
                     sx={{ color: "gray.900", fontFamily: "Outfit, sans-serif" }}
@@ -281,6 +286,11 @@ export const ApplicationsList: React.FC<any> = ({ data, isTab }) => {
                     sx={{ color: "gray.900", fontFamily: "Outfit, sans-serif" }}
                   >
                     Market name
+                  </Th>{" "}
+                  <Th
+                    sx={{ color: "gray.900", fontFamily: "Outfit, sans-serif" }}
+                  >
+                    Number of applications
                   </Th>
                   <Th
                     sx={{ color: "gray.900", fontFamily: "Outfit, sans-serif" }}

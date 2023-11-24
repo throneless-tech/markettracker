@@ -78,6 +78,7 @@ export const ApplicationsRow: React.FC<any> = (props) => {
         </Wrap>
       </Td>
       <Td>{app.seasonName}</Td>
+      <Td>{app.numberOfApplications}</Td>
       <Td>{app.numberOfMarkets}</Td>
       <Td>
         {app.vendorDemographics && typeof app.vendorDemographics === "object"

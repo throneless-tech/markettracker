@@ -22,10 +22,7 @@ export const afterReadStats: CollectionAfterReadHook = async ({
     collection: "applications",
     depth: 0,
     where: {
-      and: [
-        { vendor: { equals: vendor.id } },
-        { status: { equals: "approved" } },
-      ],
+      vendor: { equals: vendor.id },
     },
     context: { skipTrigger: true },
   });
@@ -92,8 +89,14 @@ export const afterReadStats: CollectionAfterReadHook = async ({
     gapsMet: gaps,
     reviewScore,
     seasonName: season && season.name ? season.name : "",
-    numberOfMarkets: Array.isArray(applications.docs)
-      ? applications.docs?.length
+    numberOfApplications: applications.docs?.length
+      ? applications.docs.length
+      : 0,
+    numberOfMarkets: applications.docs?.length
+      ? applications.docs.reduce((acc, app) => {
+          if (app.status === "approved") acc += 1;
+          return acc;
+        }, 0)
       : 0,
   };
 };
