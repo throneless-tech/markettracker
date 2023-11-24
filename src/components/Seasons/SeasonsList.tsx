@@ -54,9 +54,9 @@ export const SeasonsList: React.FC<any> = ({ data }) => {
         const stringifiedQuery = qs.stringify(
           {
             where: query, // ensure that `qs` adds the `where` property, too!
+            depth: 1,
           },
           { addQueryPrefix: true },
-          { depth: 1 },
         );
 
         const response = await fetch(`/api/applications${stringifiedQuery}`);

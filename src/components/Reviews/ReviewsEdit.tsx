@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from "react";
 import { useHistory, Link as ReactRouterLink } from "react-router-dom";
 import DatePicker from "react-datepicker";
+import qs from "qs";
 
 // Payload imports
 import { useField, useForm } from "payload/components/forms";
@@ -143,6 +144,40 @@ export const ReviewsEdit: React.FC<any> = () => {
         new Date(shadowApp.season.marketDates.endDate),
       );
       setNumMonths(calLength);
+    }
+
+    const setProducts = async (ids: string[]) => {
+      const query = {
+        id: {
+          in: ids.join(","),
+        },
+      };
+      try {
+        const stringifiedQuery = qs.stringify(
+          {
+            where: query, // ensure that `qs` adds the `where` property, too!
+            depth: 0,
+          },
+          { addQueryPrefix: true },
+        );
+
+        const response = await fetch(`/api/products${stringifiedQuery}`, {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+        if (!response.ok) throw new Error(response.statusText);
+        const data = await response.json();
+        setShadowApp({ ...shadowApp, products: data.docs });
+      } catch (error) {
+        console.error(error.message);
+      }
+    };
+    if (
+      shadowApp?.products?.length &&
+      typeof shadowApp.products[0] === "string"
+    ) {
+      setProducts(shadowApp.products);
     }
   }, [shadowApp]);
 
@@ -314,8 +349,8 @@ export const ReviewsEdit: React.FC<any> = () => {
                   >
                     Products
                   </FormLabel>
-                  {shadowApp.vendor.products && shadowApp.vendor.products.length
-                    ? shadowApp.vendor.products.map((product) => (
+                  {shadowApp.products?.length
+                    ? shadowApp.products.map((product) => (
                         <Tag key={product.id}>{product.product}</Tag>
                       ))
                     : null}
