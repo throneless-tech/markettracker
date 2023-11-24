@@ -11,15 +11,21 @@ export const afterReadStats: CollectionAfterReadHook = async ({
     collection: "applications",
     depth: 0,
     where: {
-      and: [{ vendor: { equals: doc.id } }, { status: { equals: "approved" } }],
+      vendor: { equals: doc.id },
     },
     context: { skipTrigger: true },
   });
 
   return {
     ...doc,
-    numberOfMarkets: Array.isArray(applications.docs)
-      ? applications.docs?.length
+    numberOfApplications: applications.docs?.length
+      ? applications.docs.length
+      : 0,
+    numberOfMarkets: applications.docs?.length
+      ? applications.docs.reduce((acc, app) => {
+          if (app.status === "approved") acc += 1;
+          return acc;
+        }, 0)
       : 0,
   };
 };

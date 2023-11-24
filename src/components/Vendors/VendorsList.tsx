@@ -117,6 +117,14 @@ export const VendorsList: React.FC<any> = (props) => {
                             }}
                           >
                             Vendor type
+                          </Th>{" "}
+                          <Th
+                            sx={{
+                              color: "gray.900",
+                              fontFamily: "Outfit, sans-serif",
+                            }}
+                          >
+                            Number of applications
                           </Th>
                           <Th
                             sx={{
@@ -174,6 +182,7 @@ export const VendorsList: React.FC<any> = (props) => {
                                       </Link>
                                     </Td>
                                     <Td>{vendor.type}</Td>
+                                    <Td>{vendor.numberOfApplications}</Td>
                                     <Td>{vendor.numberOfMarkets}</Td>
                                     <Td>DC</Td>
                                     <Td>
@@ -247,6 +256,14 @@ export const VendorsList: React.FC<any> = (props) => {
                             }}
                           >
                             Vendor type
+                          </Th>{" "}
+                          <Th
+                            sx={{
+                              color: "gray.900",
+                              fontFamily: "Outfit, sans-serif",
+                            }}
+                          >
+                            Number of applications
                           </Th>
                           <Th
                             sx={{
@@ -323,7 +340,7 @@ export const VendorsList: React.FC<any> = (props) => {
                             fontFamily: "Outfit, sans-serif",
                           }}
                         >
-                          Number of markets
+                          Number of applications
                         </Th>
                         <Th
                           sx={{
@@ -340,14 +357,6 @@ export const VendorsList: React.FC<any> = (props) => {
                           }}
                         >
                           Priority group
-                        </Th>
-                        <Th
-                          sx={{
-                            color: "gray.900",
-                            fontFamily: "Outfit, sans-serif",
-                          }}
-                        >
-                          Sales report status
                         </Th>
                         <Th
                           sx={{
@@ -373,7 +382,7 @@ export const VendorsList: React.FC<any> = (props) => {
                                     </Link>
                                   </Td>
                                   <Td>{vendor.type}</Td>
-                                  <Td>{vendor.numberOfMarkets}</Td>
+                                  <Td>{vendor.numberOfApplications}</Td>
                                   <Td>DC</Td>
                                   <Td>
                                     {vendor.demographics &&
@@ -412,11 +421,6 @@ export const VendorsList: React.FC<any> = (props) => {
                                       : null}
                                   </Td>
                                   <Td>
-                                    <GrayCheckIcon
-                                      sx={{ height: 12, width: 12 }}
-                                    />
-                                  </Td>
-                                  <Td>
                                     <Tag colorScheme="teal">
                                       {vendor.standing}
                                     </Tag>
@@ -452,7 +456,7 @@ export const VendorsList: React.FC<any> = (props) => {
                             fontFamily: "Outfit, sans-serif",
                           }}
                         >
-                          Number of markets
+                          Number of applications
                         </Th>
                         <Th
                           sx={{
@@ -469,14 +473,6 @@ export const VendorsList: React.FC<any> = (props) => {
                           }}
                         >
                           Priority group
-                        </Th>
-                        <Th
-                          sx={{
-                            color: "gray.900",
-                            fontFamily: "Outfit, sans-serif",
-                          }}
-                        >
-                          Sales report status
                         </Th>
                         <Th
                           sx={{
