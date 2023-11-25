@@ -298,14 +298,14 @@ export const ReviewsEdit: React.FC<any> = () => {
               </Text>
             </Box>
             <Text fontSize={18} marginY={4}>
-              Grade the following catagories on a scale from 1 to 5. 1 being
+              Grade the following catagories on a scale from 0 to 5. 0 being
               least qualified, 5 being most qualified.
             </Text>
             <FormControl marginBottom={8}>
               <HStack alignItems={"center"} spacing={3}>
                 <NumberInput
                   colorScheme="green"
-                  min={1}
+                  min={0}
                   max={5}
                   sx={{ width: 16 }}
                   value={vendorScore}
@@ -331,7 +331,7 @@ export const ReviewsEdit: React.FC<any> = () => {
               <HStack alignItems={"center"} spacing={3}>
                 <NumberInput
                   colorScheme="green"
-                  min={1}
+                  min={0}
                   max={5}
                   sx={{ width: 16 }}
                   value={productScore}
@@ -361,7 +361,7 @@ export const ReviewsEdit: React.FC<any> = () => {
               <HStack alignItems={"center"} spacing={3}>
                 <NumberInput
                   colorScheme="green"
-                  min={1}
+                  min={0}
                   max={5}
                   sx={{ width: 16 }}
                   value={demoScore}
@@ -410,7 +410,7 @@ export const ReviewsEdit: React.FC<any> = () => {
               <HStack alignItems={"center"} spacing={3}>
                 <NumberInput
                   colorScheme="green"
-                  min={1}
+                  min={0}
                   max={5}
                   sx={{ width: 16 }}
                   value={satScore}
@@ -439,7 +439,7 @@ export const ReviewsEdit: React.FC<any> = () => {
               <HStack alignItems={"center"} spacing={3}>
                 <NumberInput
                   colorScheme="green"
-                  min={1}
+                  min={0}
                   max={5}
                   sx={{ width: 16 }}
                   value={setupScore}
@@ -476,7 +476,7 @@ export const ReviewsEdit: React.FC<any> = () => {
               <HStack alignItems={"center"} spacing={3}>
                 <NumberInput
                   colorScheme="green"
-                  min={1}
+                  min={0}
                   max={5}
                   sx={{ width: 16 }}
                   value={attendScore}
@@ -496,7 +496,7 @@ export const ReviewsEdit: React.FC<any> = () => {
                   </FormLabel>
                   <FormHelperText>
                     {shadowApp.vendor.name} plans to attend{" "}
-                    {shadowApp.dates.length}/16 market days
+                    {shadowApp.dates.length}/13 market days
                     <Wrap>
                       <DatePicker
                         inline

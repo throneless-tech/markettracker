@@ -39,37 +39,37 @@ export const Reviews: CollectionConfig = {
     {
       name: "vendorScore",
       type: "number",
-      defaultValue: 1,
+      defaultValue: 0,
       required: true,
     },
     {
       name: "productScore",
       type: "number",
-      defaultValue: 1,
+      defaultValue: 0,
       required: true,
     },
     {
       name: "demographicScore",
       type: "number",
-      defaultValue: 1,
+      defaultValue: 0,
       required: true,
     },
     {
       name: "saturationScore",
       type: "number",
-      defaultValue: 1,
+      defaultValue: 0,
       required: true,
     },
     {
       name: "setupScore",
       type: "number",
-      defaultValue: 1,
+      defaultValue: 0,
       required: true,
     },
     {
       name: "attendanceScore",
       type: "number",
-      defaultValue: 1,
+      defaultValue: 0,
       required: true,
     },
     {
