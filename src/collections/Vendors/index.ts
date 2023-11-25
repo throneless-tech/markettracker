@@ -695,7 +695,7 @@ export const Vendors: CollectionConfig = {
           name: "tent",
           label: "Would you like to use a Fresh Farm tent?",
           type: "radio",
-          options: ["size 1", "size 2", "size 3", "size 4"],
+          options: ["1", "2", "3", "4"],
         },
         {
           name: "generator",

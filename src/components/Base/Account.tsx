@@ -1614,6 +1614,91 @@ export const Account: React.FC<any> = () => {
                         size="md"
                         width={"90%"}
                       >
+                        Set up needs at market
+                      </Heading>
+                      <Divider
+                        color="gray.700"
+                        borderBottomWidth={2}
+                        opacity={1}
+                      />
+                    </Flex>
+                    <Stack marginTop={4}>
+                      <Text as="div" textStyle="bodyMain" fontWeight={500}>
+                        Would you like to use a FreshFarm tent? If yes, choose a
+                        size.
+                      </Text>
+                      <RadioGroup
+                        onChange={(newValue) =>
+                          setVendor({
+                            ...vendor,
+                            setupNeeds: {
+                              ...vendor.setupNeeds,
+                              tent: newValue,
+                            },
+                          })
+                        }
+                        value={vendor.setupNeeds.tent}
+                      >
+                        <HStack spacing={6}>
+                          <Radio value="1">Size 1</Radio>
+                          <Radio value="2">Size 2</Radio>
+                          <Radio value="3">Size 3</Radio>
+                          <Radio value="4">Size 4</Radio>
+                        </HStack>
+                      </RadioGroup>
+                    </Stack>
+                    <Stack marginTop={4}>
+                      <Text as="div" textStyle="bodyMain" fontWeight={500}>
+                        Do you need access to a generator?
+                      </Text>
+                      <RadioGroup
+                        value={vendor.setupNeeds.generator ? "true" : "false"}
+                        onChange={(newValue) =>
+                          setVendor({
+                            ...vendor,
+                            setupNeeds: {
+                              ...vendor.setupNeeds,
+                              generator: newValue === "true",
+                            },
+                          })
+                        }
+                      >
+                        <HStack spacing={6}>
+                          <Radio value="true">Yes</Radio>
+                          <Radio value="false">No</Radio>
+                        </HStack>
+                      </RadioGroup>
+                    </Stack>
+                    <Stack marginTop={4}>
+                      <Text as="div" textStyle="bodyMain" fontWeight={500}>
+                        Will you need to bring a vehicle into the market?
+                      </Text>
+                      <RadioGroup
+                        onChange={(newValue) =>
+                          setVendor({
+                            ...vendor,
+                            setupNeeds: {
+                              ...vendor.setupNeeds,
+                              vehicle: newValue === "true",
+                            },
+                          })
+                        }
+                        value={vendor.setupNeeds.vehicle ? "true" : "false"}
+                      >
+                        <HStack spacing={6}>
+                          <Radio value="true">Yes</Radio>
+                          <Radio value="false">No</Radio>
+                        </HStack>
+                      </RadioGroup>
+                    </Stack>
+                    <Flex align="center" justify="flex-start" marginTop={8}>
+                      <Heading
+                        as="h2"
+                        fontFamily={"font.body"}
+                        textStyle="h4"
+                        size="md"
+                        width={"90%"}
+                      >
                         Production practices
                       </Heading>
                       <Divider
