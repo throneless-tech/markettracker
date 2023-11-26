@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from "react";
-import { useHistory, useLocation } from "react-router-dom";
+import React, { useCallback, useEffect, useState } from "react";
+import { useLocation } from "react-router-dom";
+import { useInView } from "react-intersection-observer";
 import qs from "qs";
 
 // Chakra imports
 import {
-  Button,
   Container,
   Divider,
   Flex,
@@ -13,9 +13,7 @@ import {
   Spacer,
   Table,
   TableContainer,
-  Tag,
   Tbody,
-  Td,
   Text,
   Tfoot,
   Th,
@@ -27,7 +25,7 @@ import {
 import StarIcon from "../../assets/icons/star.js";
 
 // types
-import type { Application, Review, Season } from "payload/generated-types";
+import type { Application, Season } from "payload/generated-types";
 import { ApplicationsRow } from "./ApplicationsRow";
 
 type ApplicationStats = Application & {
@@ -35,18 +33,28 @@ type ApplicationStats = Application & {
   vendorDemographics: any;
 };
 
-export const ApplicationsList: React.FC<any> = ({ data, isTab }) => {
-  const history = useHistory();
+export const ApplicationsList: React.FC<any> = () => {
   const location = useLocation();
   const [applications, setApplications] = useState<ApplicationStats[]>([]);
   const [season, setSeason] = useState<Season>();
+  const [isFetching, setIsFetching] = useState<boolean>(false);
+  const [page, setPage] = useState<number>(1);
+  const { ref, inView } = useInView({});
 
-  const reviewApplication = (app: Application) => {
-    history.push({
-      pathname: `/admin/collections/reviews/create`,
-      state: app,
-    });
-  };
+  useEffect(() => {
+    getApplications();
+  }, []);
+
+  useEffect(() => {
+    getApplications();
+  }, [page]);
+
+  useEffect(() => {
+    console.log("***checking inView");
+    if (inView) {
+      setPage((prevState) => prevState + 1);
+    }
+  }, [inView]);
 
   useEffect(() => {
     const getSeason = async (id: string) => {
@@ -70,75 +78,46 @@ export const ApplicationsList: React.FC<any> = ({ data, isTab }) => {
     }
   }, [location]);
 
-  useEffect(() => {
-    if (isTab) {
-      const getApplications = async (id = "") => {
-        try {
-          let stringifiedQuery: string;
-          if (id !== "") {
-            const query = {
-              season: {
-                equals: id,
-              },
-            };
-            stringifiedQuery = qs.stringify(
-              {
-                where: query, // ensure that `qs` adds the `where` property, too!
-                limit: 9999,
-                depth: 1,
-              },
-              { addQueryPrefix: true },
-            );
-          } else {
-            stringifiedQuery = qs.stringify(
-              {
-                limit: 9999,
-              },
-              { addQueryPrefix: true },
-            );
-          }
-
-          const res = await fetch(
-            `/api/applications${stringifiedQuery ? stringifiedQuery : ""}`,
-          );
-          const applications = await res.json();
-          console.log("****Getting applications", applications);
-          setApplications(applications.docs);
-        } catch (err) {
-          console.error(err);
-        }
+  const getApplications = useCallback(async () => {
+    if (isFetching) return;
+    const id = season?.id ? season.id : "";
+    let stringifiedQuery: string;
+    if (id !== "") {
+      const query = {
+        season: {
+          equals: id,
+        },
       };
-      getApplications(season?.id ? season.id : "");
-    } else if (data && data.docs && data.docs.length) {
-      if (season) {
-        setApplications(
-          data.docs.filter(
-            (doc: Application) => doc.season && doc.season === season.id,
-          ),
-        );
-      } else {
-        setApplications(data.docs);
-      }
+      stringifiedQuery = qs.stringify(
+        {
+          where: query, // ensure that `qs` adds the `where` property, too!
+          depth: 1,
+          page,
+        },
+        { addQueryPrefix: true },
+      );
+    } else {
+      stringifiedQuery = qs.stringify(
+        {
+          page,
+        },
+        { addQueryPrefix: true },
+      );
     }
-  }, [isTab, data, season]);
-
-  const calculateScore = (reviews: Review[]) => {
-    const total = reviews.reduce((sum, review) => {
-      sum =
-        sum +
-        review.attendanceScore +
-        review.demographicScore +
-        review.productScore +
-        review.saturationScore +
-        review.setupScore +
-        review.vendorScore;
-      return sum;
-    }, 0);
-    return Math.round(total / reviews.length);
-  };
-
-  console.log("***applications***:", applications);
-  console.log("***season***:", season);
+    setIsFetching(true);
+    try {
+      const res = await fetch(
+        `/api/applications${stringifiedQuery ? stringifiedQuery : ""}`,
+      );
+      if (!res.ok) throw new Error(res.statusText);
+      const newApplications = await res.json();
+      setApplications(applications.concat(newApplications.docs));
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setIsFetching(false);
+    }
+  }, [applications]);
 
   if (applications) {
     return (
@@ -182,6 +161,7 @@ export const ApplicationsList: React.FC<any> = ({ data, isTab }) => {
         ) : null}
         <Container maxW="container.xl">
           <TableContainer
+            id="apptable"
             sx={{
               maxHeight: "75vh",
               overflowY: "auto",
@@ -254,11 +234,14 @@ export const ApplicationsList: React.FC<any> = ({ data, isTab }) => {
                 </Tr>
               </Thead>
               <Tbody sx={{ position: "relative", zIndex: 1 }}>
-                {applications && applications.length
-                  ? applications.reduce((acc, app) => {
-                      acc.push(<ApplicationsRow app={app} season={season} />);
-                      return acc;
-                    }, [])
+                {applications?.length
+                  ? applications.map((app, idx) => (
+                      <ApplicationsRow
+                        app={app}
+                        season={season}
+                        ref={idx === applications.length - 1 ? ref : null}
+                      />
+                    ))
                   : null}
               </Tbody>
               <Tfoot>

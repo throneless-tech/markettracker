@@ -1,25 +1,24 @@
-import React, { useEffect, useState } from "react";
+import React, { forwardRef, useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 
-import { Application } from "payload/generated-types";
+import { Application, Product } from "payload/generated-types";
 
 // Chakra imports
 import { Button, Select, Tag, Td, Tr, Wrap, WrapItem } from "@chakra-ui/react";
 
-export const ApplicationsRow: React.FC<any> = (props) => {
+export const ApplicationsRow = forwardRef<any, any>((props, ref) => {
   const history = useHistory();
   const { app, season } = props;
   const [status, setStatus] = useState<string>();
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
 
   const reviewApplication = (app: Application) => {
-    let state;
+    let state: any;
     if (season) {
       state = { ...app, season };
     } else {
       state = app;
     }
-    console.log("***app", app);
 
     history.push({
       pathname: `/admin/collections/reviews/create`,
@@ -53,7 +52,7 @@ export const ApplicationsRow: React.FC<any> = (props) => {
   }, [app]);
 
   return app ? (
-    <Tr key={app.id}>
+    <Tr key={app.id} ref={ref}>
       <Td>
         <Button
           variant={"link"}
@@ -68,7 +67,7 @@ export const ApplicationsRow: React.FC<any> = (props) => {
       <Td>{app.vendorType}</Td>
       <Td sx={{ maxWidth: 300 }}>
         <Wrap>
-          {app.gapsMet.map((gap) => (
+          {app.gapsMet.map((gap: Product) => (
             <WrapItem>
               <Tag marginRight={1} key={gap.id}>
                 {gap.product}
@@ -125,4 +124,4 @@ export const ApplicationsRow: React.FC<any> = (props) => {
       </Td>
     </Tr>
   ) : null;
-};
+});
