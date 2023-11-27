@@ -50,7 +50,6 @@ export const ApplicationsList: React.FC<any> = () => {
   }, [page]);
 
   useEffect(() => {
-    console.log("***checking inView");
     if (inView) {
       setPage((prevState) => prevState + 1);
     }
@@ -199,12 +198,12 @@ export const ApplicationsList: React.FC<any> = () => {
                   <Th
                     sx={{ color: "gray.900", fontFamily: "Outfit, sans-serif" }}
                   >
-                    Number of applications
+                    # of applications
                   </Th>
                   <Th
                     sx={{ color: "gray.900", fontFamily: "Outfit, sans-serif" }}
                   >
-                    Number of Markets
+                    # of Markets
                   </Th>
                   <Th
                     sx={{ color: "gray.900", fontFamily: "Outfit, sans-serif" }}
@@ -244,69 +243,6 @@ export const ApplicationsList: React.FC<any> = () => {
                     ))
                   : null}
               </Tbody>
-              <Tfoot>
-                <Tr background={"gray.100"}>
-                  <Th
-                    sx={{ color: "gray.900", fontFamily: "Outfit, sans-serif" }}
-                  >
-                    Vendor name
-                  </Th>
-                  <Th
-                    sx={{ color: "gray.900", fontFamily: "Outfit, sans-serif" }}
-                  >
-                    Vendor type
-                  </Th>
-                  <Th
-                    sx={{
-                      color: "gray.900",
-                      fontFamily: "Outfit, sans-serif",
-                      maxWidth: 300,
-                    }}
-                  >
-                    Meet product gap
-                  </Th>
-                  <Th
-                    sx={{ color: "gray.900", fontFamily: "Outfit, sans-serif" }}
-                  >
-                    Market name
-                  </Th>{" "}
-                  <Th
-                    sx={{ color: "gray.900", fontFamily: "Outfit, sans-serif" }}
-                  >
-                    Number of applications
-                  </Th>
-                  <Th
-                    sx={{ color: "gray.900", fontFamily: "Outfit, sans-serif" }}
-                  >
-                    Number of Markets
-                  </Th>
-                  <Th
-                    sx={{ color: "gray.900", fontFamily: "Outfit, sans-serif" }}
-                  >
-                    Priority group
-                  </Th>
-                  <Th
-                    sx={{ color: "gray.900", fontFamily: "Outfit, sans-serif" }}
-                  >
-                    Standing
-                  </Th>
-                  <Th
-                    sx={{ color: "gray.900", fontFamily: "Outfit, sans-serif" }}
-                  >
-                    Reviewers
-                  </Th>
-                  <Th
-                    sx={{ color: "gray.900", fontFamily: "Outfit, sans-serif" }}
-                  >
-                    Grade (avg)
-                  </Th>
-                  <Th
-                    sx={{ color: "gray.900", fontFamily: "Outfit, sans-serif" }}
-                  >
-                    Application status
-                  </Th>
-                </Tr>
-              </Tfoot>
             </Table>
           </TableContainer>
         </Container>

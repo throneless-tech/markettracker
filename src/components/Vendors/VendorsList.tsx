@@ -1,7 +1,9 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
+import { useInView } from "react-intersection-observer";
+import qs from "qs";
 
 import {
   Button,
@@ -29,23 +31,61 @@ import {
 
 // components
 import { FooterAdmin } from "../FooterAdmin";
+import { Vendor } from "payload/generated-types";
 
 // icons
 import { GrayCheckIcon } from "../../assets/icons/gray-check";
 
-export const VendorsList: React.FC<any> = (props) => {
-  const { data } = props;
-  const history = useHistory();
+type VendorStats = Vendor & {
+  numberOfApplications: number;
+  numberOfMarkets: number;
+};
 
-  const reviewApplication = (app) => {
-    history.push({
-      pathname: `/admin/collections/reviews/create`,
-      state: app,
-    });
-  };
+export const VendorsList: React.FC<any> = (props) => {
+  const [vendors, setVendors] = useState<VendorStats[]>([]);
+  const [isFetching, setIsFetching] = useState<boolean>(false);
+  const [page, setPage] = useState<number>(1);
+  const { ref, inView } = useInView({});
+
+  const getVendors = useCallback(async () => {
+    if (isFetching) return;
+    const stringifiedQuery = qs.stringify(
+      {
+        page,
+      },
+      { addQueryPrefix: true },
+    );
+    setIsFetching(true);
+    try {
+      const res = await fetch(
+        `/api/vendors${stringifiedQuery ? stringifiedQuery : ""}`,
+      );
+      if (!res.ok) throw new Error(res.statusText);
+      const newVendors = await res.json();
+      setVendors(vendors.concat(newVendors.docs));
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setIsFetching(false);
+    }
+  }, [vendors]);
+
+  useEffect(() => {
+    getVendors();
+  }, []);
+
+  useEffect(() => {
+    getVendors();
+  }, [page]);
+
+  useEffect(() => {
+    if (inView) {
+      setPage((prevState) => prevState + 1);
+    }
+  }, [inView]);
 
   return (
-    data?.docs?.length && (
+    vendors?.length && (
       <>
         <Tabs position="relative" variant="unstyled" colorScheme="teal">
           <TabList bg={"gray.50"}>
@@ -169,11 +209,17 @@ export const VendorsList: React.FC<any> = (props) => {
                         </Tr>
                       </Thead>
                       <Tbody sx={{ position: "relative", zIndex: 1 }}>
-                        {data.docs && data.docs.length
-                          ? data.docs.reduce((acc, vendor) => {
+                        {vendors?.length
+                          ? vendors.reduce((acc, vendor, idx) => {
+                              console.log("***vendor", vendor);
                               if (vendor.standing !== "underReview") {
                                 acc.push(
-                                  <Tr key={vendor.id}>
+                                  <Tr
+                                    key={idx}
+                                    ref={
+                                      idx === vendors.length - 1 ? ref : null
+                                    }
+                                  >
                                     <Td>
                                       <Link
                                         href={`/admin/collections/vendors/${vendor.id}`}
@@ -239,74 +285,6 @@ export const VendorsList: React.FC<any> = (props) => {
                             }, [])
                           : null}
                       </Tbody>
-                      <Tfoot>
-                        <Tr background={"gray.100"}>
-                          <Th
-                            sx={{
-                              color: "gray.900",
-                              fontFamily: "Outfit, sans-serif",
-                            }}
-                          >
-                            Vendor name
-                          </Th>
-                          <Th
-                            sx={{
-                              color: "gray.900",
-                              fontFamily: "Outfit, sans-serif",
-                            }}
-                          >
-                            Vendor type
-                          </Th>{" "}
-                          <Th
-                            sx={{
-                              color: "gray.900",
-                              fontFamily: "Outfit, sans-serif",
-                            }}
-                          >
-                            Number of applications
-                          </Th>
-                          <Th
-                            sx={{
-                              color: "gray.900",
-                              fontFamily: "Outfit, sans-serif",
-                            }}
-                          >
-                            Number of markets
-                          </Th>
-                          <Th
-                            sx={{
-                              color: "gray.900",
-                              fontFamily: "Outfit, sans-serif",
-                            }}
-                          >
-                            Region
-                          </Th>
-                          <Th
-                            sx={{
-                              color: "gray.900",
-                              fontFamily: "Outfit, sans-serif",
-                            }}
-                          >
-                            Priority group
-                          </Th>
-                          <Th
-                            sx={{
-                              color: "gray.900",
-                              fontFamily: "Outfit, sans-serif",
-                            }}
-                          >
-                            Sales report status
-                          </Th>
-                          <Th
-                            sx={{
-                              color: "gray.900",
-                              fontFamily: "Outfit, sans-serif",
-                            }}
-                          >
-                            Standing
-                          </Th>
-                        </Tr>
-                      </Tfoot>
                     </Table>
                   </TableContainer>
                 </HStack>
@@ -314,7 +292,14 @@ export const VendorsList: React.FC<any> = (props) => {
             </TabPanel>
             <TabPanel>
               <Container maxW="container.xl" marginY={12}>
-                <TableContainer>
+                <TableContainer
+                  sx={{
+                    maxHeight: "60vh",
+                    overflowY: "auto",
+                    position: "relative",
+                    zIndex: 1,
+                  }}
+                >
                   <Table variant="simple">
                     <Thead>
                       <Tr background={"gray.100"}>
@@ -368,12 +353,15 @@ export const VendorsList: React.FC<any> = (props) => {
                         </Th>
                       </Tr>
                     </Thead>
-                    <Tbody>
-                      {data.docs?.length
-                        ? data.docs.reduce((acc, vendor) => {
+                    <Tbody sx={{ position: "relative", zIndex: 1 }}>
+                      {vendors?.length
+                        ? vendors.reduce((acc, vendor, idx) => {
                             if (vendor.standing === "underReview") {
                               acc.push(
-                                <Tr key={vendor.id}>
+                                <Tr
+                                  key={idx}
+                                  ref={idx === vendors.length - 1 ? ref : null}
+                                >
                                   <Td>
                                     <Link
                                       href={`/admin/collections/vendors/${vendor.id}`}
