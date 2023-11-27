@@ -21,9 +21,6 @@ export const Applications: CollectionConfig = {
         List: ApplicationsList,
       },
     },
-    pagination: {
-      defaultLimit: 9999,
-    },
     useAsTitle: "name",
   },
   fields: [
