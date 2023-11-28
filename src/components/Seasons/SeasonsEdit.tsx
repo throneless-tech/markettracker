@@ -225,7 +225,7 @@ export const SeasonsEdit: React.FC<any> = (props) => {
                               as="a"
                               onClick={() =>
                                 history.push(
-                                  `/admin/collections/applications?season=${id}`,
+                                  `/admin/collections/applications?season=${id}&limit=10`,
                                 )
                               }
                               size="md"

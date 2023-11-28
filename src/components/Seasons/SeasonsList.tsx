@@ -169,7 +169,10 @@ export const SeasonsList: React.FC<any> = ({ data }) => {
                     <>
                       <Spacer />
                       <HStack flexGrow={1} spacing={4} justify={"flex-end"}>
-                        <Button as="a" href="/admin/collections/applications">
+                        <Button
+                          as="a"
+                          href="/admin/collections/applications?limit=10"
+                        >
                           Review market applications
                         </Button>
                         <Button as="a" href="/admin/collections/markets/create">
