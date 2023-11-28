@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { useInView } from "react-intersection-observer";
 import qs from "qs";
+import { usePreferences } from "payload/components/preferences";
 
 // Chakra imports
 import {
@@ -15,7 +16,6 @@ import {
   TableContainer,
   Tbody,
   Text,
-  Tfoot,
   Th,
   Thead,
   Tr,
@@ -40,9 +40,24 @@ export const ApplicationsList: React.FC<any> = () => {
   const [isFetching, setIsFetching] = useState<boolean>(false);
   const [page, setPage] = useState<number>(1);
   const { ref, inView } = useInView({});
+  const { setPreference } = usePreferences();
 
   useEffect(() => {
-    getApplications();
+    const getAll = async (seasonId: string) => {
+      await getSeason(seasonId);
+      await getApplications();
+    };
+    let seasonId: string;
+    if (location.search && typeof location.search === "string") {
+      const params = new URLSearchParams(location.search);
+      seasonId = params.get("season");
+    }
+
+    if (seasonId && !season) {
+      getAll(seasonId);
+    }
+
+    setPreference("limit", 10);
   }, []);
 
   useEffect(() => {
@@ -56,16 +71,6 @@ export const ApplicationsList: React.FC<any> = () => {
   }, [inView]);
 
   useEffect(() => {
-    const getSeason = async (id: string) => {
-      try {
-        const res = await fetch(`/api/seasons/${id}`);
-        const season = await res.json();
-        setSeason(season);
-      } catch (err) {
-        console.error(err);
-      }
-    };
-
     let seasonId: string;
     if (location.search && typeof location.search === "string") {
       const params = new URLSearchParams(location.search);
@@ -76,6 +81,19 @@ export const ApplicationsList: React.FC<any> = () => {
       getSeason(seasonId);
     }
   }, [location]);
+
+  const getSeason = useCallback(
+    async (id: string) => {
+      try {
+        const res = await fetch(`/api/seasons/${id}`);
+        const season = await res.json();
+        setSeason(season);
+      } catch (err) {
+        console.error(err);
+      }
+    },
+    [location],
+  );
 
   const getApplications = useCallback(async () => {
     if (isFetching) return;
@@ -90,7 +108,7 @@ export const ApplicationsList: React.FC<any> = () => {
       stringifiedQuery = qs.stringify(
         {
           where: query, // ensure that `qs` adds the `where` property, too!
-          depth: 1,
+          depth: 0,
           page,
         },
         { addQueryPrefix: true },
@@ -104,12 +122,15 @@ export const ApplicationsList: React.FC<any> = () => {
       );
     }
     setIsFetching(true);
+    console.log("***stringifiedQuery", stringifiedQuery);
+    console.log("***applications", applications);
     try {
       const res = await fetch(
         `/api/applications${stringifiedQuery ? stringifiedQuery : ""}`,
       );
       if (!res.ok) throw new Error(res.statusText);
       const newApplications = await res.json();
+      console.log("***newApplications", newApplications);
       setApplications(applications.concat(newApplications.docs));
     } catch (err) {
       console.error(err);

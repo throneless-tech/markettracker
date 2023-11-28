@@ -22,6 +22,9 @@ export const Applications: CollectionConfig = {
       },
     },
     useAsTitle: "name",
+    pagination: {
+      defaultLimit: 10,
+    },
   },
   fields: [
     {

@@ -26,9 +26,6 @@ export const Vendors: CollectionConfig = {
         List: VendorsList,
       },
     },
-    pagination: {
-      defaultLimit: 9999,
-    },
     useAsTitle: "name",
   },
   // hooks: {
