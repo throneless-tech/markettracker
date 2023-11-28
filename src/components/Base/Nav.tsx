@@ -601,7 +601,7 @@ export const Nav: React.FC<any> = () => {
                       sx={{ fill: "none", height: "24px", width: "24px" }}
                     />
                     <LinkOverlay
-                      href="/admin/collections/vendors"
+                      href="/admin/collections/vendors?limit=10"
                       fontFamily="Outfit"
                       fontWeight="semibold"
                       fontSize="2xl"
