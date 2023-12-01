@@ -6,12 +6,16 @@ import { usePreferences } from "payload/components/preferences";
 
 // Chakra imports
 import {
+  chakra,
+  Box,
   Container,
   Divider,
   Flex,
   Heading,
   HStack,
+  Select,
   Spacer,
+  Tag,
   Table,
   TableContainer,
   Tbody,
@@ -19,19 +23,37 @@ import {
   Th,
   Thead,
   Tr,
+  Wrap,
+  WrapItem,
 } from "@chakra-ui/react";
 
-// icons
+// for table sort
+import {
+  ColumnDef,
+  RowData,
+} from "@tanstack/react-table";
+
+// components
+import { DataTable } from "../DataTable";
+
+// local icons
 import StarIcon from "../../assets/icons/star.js";
 
 // types
-import type { Application, Season } from "payload/generated-types";
+import type { Application, Product, Season } from "payload/generated-types";
+
 import { ApplicationsRow } from "./ApplicationsRow";
 
 type ApplicationStats = Application & {
   gapsMet: any[];
   vendorDemographics: any;
 };
+
+declare module '@tanstack/react-table' {
+  interface TableMeta<TData extends RowData> {
+    updateData: (rowIndex: number, columnId: string, value: unknown) => void
+  }
+}
 
 export const ApplicationsList: React.FC<any> = () => {
   const location = useLocation();
@@ -41,6 +63,137 @@ export const ApplicationsList: React.FC<any> = () => {
   const [page, setPage] = useState<number>(1);
   const { ref, inView } = useInView({});
   const { setPreference } = usePreferences();
+
+  // table
+  const columns: ColumnDef<Application>[] = [
+    {
+      header: "Vendor name",
+      accessorKey: 'vendorName',
+      cell: (info) => {
+        const value: any = info.getValue();
+        return (
+          <span>{value}</span>
+        )
+      }
+    },
+    {
+      header: "Vendor type",
+      accessorKey: 'vendorType',
+      cell: (info) => {
+        const value: any = info.getValue();
+        return (
+          <span>{value}</span>
+        )
+      }
+    },
+    {
+      header: "Meet product gap",
+      accessorKey: 'gapsMet',
+      cell: (gaps) => {
+        const gapsMet: any = gaps.getValue();
+        return (
+          <Wrap>
+            {gapsMet.map((gap: Product) => (
+              <WrapItem>
+                <Tag marginRight={1} key={gap.id}>
+                  {gap.product}
+                </Tag>
+              </WrapItem>
+            ))}
+          </Wrap>
+        )
+      }
+    },
+    {
+      header: "Market name",
+      accessorKey: 'seasonName',
+      cell: (info) => {
+        const value: any = info.getValue();
+        return (
+          <span>{value}</span>
+        )
+      }
+    },
+    {
+      header: "# of applications",
+      accessorKey: 'numberOfApplications',
+      cell: (info) => {
+        const value: any = info.getValue();
+        return (
+          <span>{value}</span>
+        )
+      }
+    },
+    {
+      header: "# of markets",
+      accessorKey: 'numberOfMarkets',
+      cell: (info) => {
+        const value: any = info.getValue();
+        return (
+          <span>{value}</span>
+        )
+      }
+    },
+    {
+      header: "Priority group",
+      accessorKey: 'vendorDemographics',
+      cell: (demoCell) => {
+        const demos: any = demoCell.getValue();
+        return demos && typeof demos === "object"
+          ? Object.entries(demos).map((key, _) => {
+            if (key[1] == "yes") {
+              if (key[0] == "firstGeneration") {
+                return <Tag>First generation farmer</Tag>;
+              }
+              if (key[0] == "veteranOwned") {
+                return <Tag>Veteran-owned</Tag>;
+              }
+              if (key[0] == "bipoc") {
+                return <Tag>BIPOC</Tag>;
+              }
+              if (key[0] == "immigrantOrRefugee") {
+                return <Tag>Immigrant or refugee</Tag>;
+              }
+              if (key[0] == "lgbtqia") {
+                return <Tag>LGBTQIA</Tag>;
+              }
+            }
+          }) : null
+      }
+    },
+    {
+      header: "Standing",
+      accessorKey: 'vendorStanding',
+      cell: (standingCell) => {
+        const standing: any = standingCell.getValue();
+        return (
+          <Tag>{standing ? standing : "Good"}</Tag>
+        )
+      }
+    },
+    {
+      header: "Reviewers",
+      accessorKey: '', // FIXME
+      cell: () => (
+        <span>0/2 reviewers</span>
+      )
+    },
+    {
+      header: "Grade (AVG)",
+      accessorKey: 'reviewScore',
+      cell: (info) => {
+        const value: any = info.getValue();
+        return (
+          <span>{value}</span>
+        )
+      }
+    },
+    {
+      header: "Application status",
+      accessorKey: 'status',
+      // cell not included because it is defined as editable in ../DataTable.tsx
+    },
+  ]
 
   useEffect(() => {
     const getAll = async (seasonId: string) => {
@@ -179,95 +332,15 @@ export const ApplicationsList: React.FC<any> = () => {
             <Divider color="gray.900" borderBottomWidth={2} opacity={1} />
           </Container>
         ) : null}
-        <Container maxW="container.xl">
-          <TableContainer
-            id="apptable"
-            sx={{
-              maxHeight: "75vh",
-              overflowY: "auto",
-              position: "relative",
-              zIndex: 1,
-            }}
-          >
-            <Table variant="simple">
-              <Thead sx={{ left: 0, position: "sticky", top: 0, zIndex: 5 }}>
-                <Tr background={"gray.100"}>
-                  <Th
-                    sx={{ color: "gray.900", fontFamily: "Outfit, sans-serif" }}
-                  >
-                    Vendor name
-                  </Th>
-                  <Th
-                    sx={{ color: "gray.900", fontFamily: "Outfit, sans-serif" }}
-                  >
-                    Vendor type
-                  </Th>
-                  <Th
-                    sx={{
-                      color: "gray.900",
-                      fontFamily: "Outfit, sans-serif",
-                      maxWidth: 300,
-                    }}
-                  >
-                    Meet product gap
-                  </Th>
-                  <Th
-                    sx={{ color: "gray.900", fontFamily: "Outfit, sans-serif" }}
-                  >
-                    Market name
-                  </Th>{" "}
-                  <Th
-                    sx={{ color: "gray.900", fontFamily: "Outfit, sans-serif" }}
-                  >
-                    # of applications
-                  </Th>
-                  <Th
-                    sx={{ color: "gray.900", fontFamily: "Outfit, sans-serif" }}
-                  >
-                    # of Markets
-                  </Th>
-                  <Th
-                    sx={{ color: "gray.900", fontFamily: "Outfit, sans-serif" }}
-                  >
-                    Priority group
-                  </Th>
-                  <Th
-                    sx={{ color: "gray.900", fontFamily: "Outfit, sans-serif" }}
-                  >
-                    Standing
-                  </Th>
-                  <Th
-                    sx={{ color: "gray.900", fontFamily: "Outfit, sans-serif" }}
-                  >
-                    Reviewers
-                  </Th>
-                  <Th
-                    sx={{ color: "gray.900", fontFamily: "Outfit, sans-serif" }}
-                  >
-                    Grade (avg)
-                  </Th>
-                  <Th
-                    sx={{ color: "gray.900", fontFamily: "Outfit, sans-serif" }}
-                  >
-                    Application status
-                  </Th>
-                </Tr>
-              </Thead>
-              <Tbody sx={{ position: "relative", zIndex: 1 }}>
-                {applications?.length
-                  ? applications.map((app, idx) => (
-                      <ApplicationsRow
-                        app={app}
-                        season={season}
-                        ref={idx === applications.length - 1 ? ref : null}
-                      />
-                    ))
-                  : null}
-              </Tbody>
-            </Table>
-          </TableContainer>
-        </Container>
+        <Flex>
+          <Box p={4} bg={'gray.100'}>
+            <Text>Filter</Text>
+          </Box>
+          <Container maxW="container.xl">
+            <DataTable columns={columns} data={applications}/>
+          </Container>
+        </Flex>
       </>
     );
-  }
+  };
 };
