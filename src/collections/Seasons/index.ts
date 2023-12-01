@@ -13,6 +13,7 @@ import {
   afterReadOperators,
   beforeValidateOperators,
 } from "./hooks/populateOperators";
+import { afterReadVendorsField } from "./hooks/vendorsField";
 
 export const Seasons: CollectionConfig = {
   slug: "seasons",
@@ -28,7 +29,12 @@ export const Seasons: CollectionConfig = {
   hooks: {
     beforeChange: [createSlugField],
     afterChange: [createCollectionSeason],
-    afterRead: [afterReadMarket, afterReadProductGaps, afterReadOperators],
+    afterRead: [
+      afterReadMarket,
+      afterReadProductGaps,
+      afterReadOperators,
+      afterReadVendorsField,
+    ],
     beforeValidate: [
       beforeValidateMarket,
       beforeValidateProductGaps,
@@ -109,6 +115,12 @@ export const Seasons: CollectionConfig = {
           },
         },
       ],
+    },
+    {
+      name: "vendors",
+      type: "relationship",
+      relationTo: "vendors",
+      hasMany: true,
     },
     {
       name: "vendorSalesType",

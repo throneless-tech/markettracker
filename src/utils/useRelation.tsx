@@ -30,8 +30,8 @@ export function useRelation<T = unknown>({
     try {
       if (Array.isArray(field)) {
         const query = {
-          vendor: {
-            equals: field.join(","),
+          id: {
+            in: field.join(","),
           },
         };
         const stringifiedQuery = qs.stringify(

@@ -17,18 +17,12 @@ import { MarketField } from "../fields/MarketsField";
 import {
   Box,
   Button,
-  Checkbox,
-  CheckboxGroup,
   Container,
   Divider,
   Flex,
-  FormControl,
-  FormHelperText,
-  FormLabel,
   Heading,
   HStack,
   Image,
-  Input,
   Modal,
   ModalBody,
   ModalCloseButton,
@@ -38,7 +32,6 @@ import {
   ModalOverlay,
   Radio,
   RadioGroup,
-  Select,
   Spacer,
   Stack,
   Tab,
@@ -49,14 +42,13 @@ import {
   Tabs,
   Tag,
   Text,
-  Textarea,
   useDisclosure,
 } from "@chakra-ui/react";
 
 // components
 //import Calendar from "../Calendar.js";
 import { ProductsField } from "../fields/ProductsField";
-import type { Market } from "payload/generated-types";
+import type { Market, Vendor } from "payload/generated-types";
 import { ContactsModal } from "../Contacts/ContactsModal";
 
 // utils
@@ -111,14 +103,13 @@ export const SeasonsEdit: React.FC<any> = (props) => {
   const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
 
-  const {
-    value: market,
-    setValue: setMarket,
-    onSubmit: onSubmitMarket,
-  } = useRelation<Market>({
+  const { value: market } = useRelation<Market>({
     path: "market",
   });
 
+  const { value: vendors } = useRelation<Vendor[]>({
+    path: "vendors",
+  });
   const [contacts, setContacts] = useState<Contact[]>([]);
 
   const onSaveContact = ({ data, isError }) => {
@@ -821,6 +812,14 @@ export const SeasonsEdit: React.FC<any> = (props) => {
                       />
                     </HStack>
                     <HStack marginTop={2}>
+                      {vendors?.length &&
+                        vendors.map((vendor) => (
+                          <>
+                            <Tag bg={"gray.50"} fontWeight={700}>
+                              {vendor.name}
+                            </Tag>
+                          </>
+                        ))}
                       {/* <Tag bg={"gray.50"}>Vendor 1</Tag> */}
                     </HStack>
                     <HStack marginTop={4}>
