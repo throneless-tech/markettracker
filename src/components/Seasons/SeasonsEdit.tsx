@@ -7,7 +7,6 @@ import { useHistory } from "react-router-dom";
 import qs from "qs";
 
 // Payload imports
-import type { Contact, Product } from "payload/generated-types";
 import { useDocumentInfo } from "payload/components/utilities";
 import { useField, useForm } from "payload/components/forms";
 import { useRelation } from "../../utils/useRelation";
@@ -17,6 +16,8 @@ import { MarketField } from "../fields/MarketsField";
 import {
   Box,
   Button,
+  Checkbox,
+  CheckboxGroup,
   Container,
   Divider,
   Flex,
@@ -48,7 +49,7 @@ import {
 // components
 //import Calendar from "../Calendar.js";
 import { ProductsField } from "../fields/ProductsField";
-import type { Market, Vendor } from "payload/generated-types";
+import type { Market, Product, Vendor, User } from "payload/generated-types";
 import { ContactsModal } from "../Contacts/ContactsModal";
 
 // utils
@@ -56,7 +57,6 @@ import formatDate from "../../utils/formatDate";
 import formatTime from "../../utils/formatTime";
 
 // icons
-import { ArrowForwardIcon } from "@chakra-ui/icons";
 import EditIcon from "../../assets/icons/edit.js";
 import StarIcon from "../../assets/icons/star.js";
 
@@ -73,11 +73,7 @@ export const SeasonsEdit: React.FC<any> = (props) => {
   const history = useHistory();
   const { data } = props;
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const {
-    isOpen: isOpenContacts,
-    onOpen: onOpenContacts,
-    onClose: onCloseContacts,
-  } = useDisclosure();
+
   const { value: name, setValue: setName } = useField<string>({ path: "name" });
   const { value: startDate, setValue: setStartDate } = useField<string>({
     path: "marketDates.startDate",
@@ -97,7 +93,7 @@ export const SeasonsEdit: React.FC<any> = (props) => {
   const { value: isAccepting, setValue: setIsAccepting } = useField<boolean>({
     path: "isAccepting",
   });
-  const { value: operators, setValue: setOperators } = useField<Contact[]>({
+  const { value: operators, setValue: setOperators } = useField<string[]>({
     path: "operators",
   });
   const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
@@ -110,20 +106,8 @@ export const SeasonsEdit: React.FC<any> = (props) => {
   const { value: vendors } = useRelation<Vendor[]>({
     path: "vendors",
   });
-  const [contacts, setContacts] = useState<Contact[]>([]);
+  const [users, setUsers] = useState<User[]>([]);
 
-  const onSaveContact = ({ data, isError }) => {
-    if (typeof data === "object" && !isError) {
-      const newContacts = [
-        ...contacts.filter((contact) => contact.id !== data.id),
-        data,
-      ];
-      setContacts(newContacts);
-      setOperators(newContacts.map((contact) => contact.id));
-    } else if (isError) {
-      console.error(data);
-    }
-  };
   const submitForm = async () => {
     setIsSubmitted(true);
     submit();
@@ -137,8 +121,8 @@ export const SeasonsEdit: React.FC<any> = (props) => {
   useEffect(() => {
     if (operators && !isLoaded) {
       const query = {
-        id: {
-          in: operators.join(","),
+        role: {
+          equals: "operator",
         },
       };
       const getOps = async () => {
@@ -149,10 +133,11 @@ export const SeasonsEdit: React.FC<any> = (props) => {
           { addQueryPrefix: true },
         );
 
-        const response = await fetch(`/api/contacts${stringifiedQuery}`);
+        const response = await fetch(`/api/users${stringifiedQuery}`);
         let newContacts = await response.json();
+
         newContacts = newContacts.docs;
-        setContacts(newContacts);
+        setUsers(newContacts);
         setIsLoaded(true);
       };
 
@@ -531,34 +516,31 @@ export const SeasonsEdit: React.FC<any> = (props) => {
                                     Select anyone who will be an operator at{" "}
                                     {data.name} this season.
                                   </Text>
-                                  <HStack spacing={4}>
-                                    {contacts
-                                      ? contacts.map((contact) => (
-                                          <>
-                                            {contact.name}
+                                  <CheckboxGroup
+                                    onChange={(newValue) => {
+                                      setOperators(newValue);
+                                    }}
+                                    value={operators}
+                                  >
+                                    {users?.length && (
+                                      <HStack spacing={4}>
+                                        {users.map((user) => (
+                                          <Checkbox
+                                            key={user.id}
+                                            value={user.id}
+                                          >
+                                            {user.name}
                                             <Tag
                                               bg={"gray.50"}
                                               fontWeight={700}
                                             >
-                                              {contact.email}
+                                              {user.email}
                                             </Tag>
-                                          </>
-                                        ))
-                                      : null}
-                                  </HStack>
-                                  <Button
-                                    onClick={onOpenContacts}
-                                    marginTop={4}
-                                    rightIcon={<ArrowForwardIcon />}
-                                  >
-                                    Add a market operator
-                                  </Button>
-                                  <ContactsModal
-                                    isOpen={isOpenContacts}
-                                    onSave={onSaveContact}
-                                    onClose={onCloseContacts}
-                                    isOperator
-                                  />
+                                          </Checkbox>
+                                        ))}
+                                      </HStack>
+                                    )}
+                                  </CheckboxGroup>{" "}
                                 </Stack>
                                 <Flex
                                   align="center"
@@ -787,15 +769,19 @@ export const SeasonsEdit: React.FC<any> = (props) => {
                       />
                     </HStack>
                     <HStack marginTop={2}>
-                      {contacts?.length &&
-                        contacts.map((contact) => (
-                          <>
-                            {contact.name}
-                            <Tag bg={"gray.50"} fontWeight={700}>
-                              {contact.email}
-                            </Tag>
-                          </>
-                        ))}
+                      {users.reduce((acc, user) => {
+                        if (operators.includes(user.id)) {
+                          acc.push(
+                            <>
+                              {user.name}
+                              <Tag bg={"gray.50"} fontWeight={700}>
+                                {user.email}
+                              </Tag>
+                            </>,
+                          );
+                        }
+                        return acc;
+                      }, [])}
                     </HStack>
                     <HStack marginTop={4}>
                       <Text

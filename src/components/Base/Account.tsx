@@ -55,8 +55,10 @@ import {
 import { FooterAdmin } from "../FooterAdmin";
 import { ProductsField } from "../fields/ProductsField";
 import { ContactsModal } from "../Contacts/ContactsModal";
+import { TextField } from "../fields/TextField";
 
 // icons
+import { ArrowForwardIcon } from "@chakra-ui/icons";
 import EditIcon from "../../assets/icons/edit.js";
 
 export const Account: React.FC<any> = () => {
@@ -869,6 +871,19 @@ export const Account: React.FC<any> = () => {
                 </TabPanel>
                 {role === "vendor" && vendor ? (
                   <TabPanel>
+                    <Flex justify="space-between" paddingRight={10}>
+                      <Spacer />
+                      <Button
+                        onClick={() => {
+                          setEditContact();
+                          onOpenContacts();
+                        }}
+                        marginTop={4}
+                        rightIcon={<ArrowForwardIcon />}
+                      >
+                        Add a contact
+                      </Button>{" "}
+                    </Flex>
                     <TableContainer>
                       <TableContainer>
                         <Table>

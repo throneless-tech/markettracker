@@ -55,6 +55,8 @@ export const ContactsModal: React.FC<ContactProps> = ({
       setEmail(contact.email);
       setPhone(contact.phone);
       setType(contact.type);
+    } else {
+      reset();
     }
   }, [contact]);
 
@@ -130,10 +132,21 @@ export const ContactsModal: React.FC<ContactProps> = ({
       <ModalContent background={"gray.600"} color={"gray.50"}>
         <ModalHeader>
           <Stack textAlign={"center"} spacing={1}>
-            <Heading marginBottom={0}>Add a contact</Heading>
-            <Text>
-              Please fill in requested information to create a new contact
-            </Text>
+            {contact ? (
+              <>
+                <Heading marginBottom={0}>Edit or delete a contact</Heading>
+                <Text>
+                  Please fill in requested information to edit the contact
+                </Text>
+              </>
+            ) : (
+              <>
+                <Heading marginBottom={0}>Add a contact</Heading>
+                <Text>
+                  Please fill in requested information to create a new contact
+                </Text>
+              </>
+            )}
           </Stack>
         </ModalHeader>
         <ModalCloseButton />

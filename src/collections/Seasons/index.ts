@@ -32,13 +32,13 @@ export const Seasons: CollectionConfig = {
     afterRead: [
       afterReadMarket,
       afterReadProductGaps,
-      afterReadOperators,
+      // afterReadOperators,
       afterReadVendorsField,
     ],
     beforeValidate: [
       beforeValidateMarket,
       beforeValidateProductGaps,
-      beforeValidateOperators,
+      // beforeValidateOperators,
     ],
   },
   fields: [
