@@ -20,6 +20,7 @@ import {
 type Props = {
   path: string;
   isSubmitted?: boolean;
+  setThisMarket?: Function;
 };
 
 type Day =
@@ -33,7 +34,7 @@ type Day =
 type Size = "flagship" | "large" | "medium" | "small" | "stand";
 type Focus = "neighborhood" | "downtown" | "grocery" | "prepared";
 
-export const MarketField: FC<Props> = ({ path, isSubmitted = false }) => {
+export const MarketField: FC<Props> = ({ path, isSubmitted = false, setThisMarket }) => {
   const { value } = useField<string>({ path });
   const [name, setName] = useState<string>();
   const [street, setStreet] = useState<string>();
@@ -135,8 +136,9 @@ export const MarketField: FC<Props> = ({ path, isSubmitted = false }) => {
               description,
             }),
           })
-          const data = await req.json()
+          const data = await req.json()          
           setMarket(data.doc);
+          setThisMarket(data.doc);
         } catch (err) {
           console.log(err)
         }

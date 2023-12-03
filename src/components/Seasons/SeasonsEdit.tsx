@@ -166,6 +166,7 @@ export const SeasonsEdit: React.FC<any> = (props) => {
     }
   }, [operators]);
 
+  console.log('history state: ', history.location.state);
 
   // id will be undefined on the create form
   if (!id) {

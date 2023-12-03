@@ -205,16 +205,20 @@ export const MarketsEdit: React.FC<any> = (props) => {
     path: "operators",
   });
   const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
+  const [market, setMarket] = useState<object>({});
 
   const [contact, setContact] = useState(null);
 
+  useEffect(() => {console.log(market)}, [market]);
+
   const submitForm = async () => {
     setIsSubmitted(true);
-    submit();
-    // history.push({
-    //   pathname: `/admin/collections/seasons/create`,
-    //   // state: app,
-    // });
+    console.log('market: ', market);
+    
+    history.push({
+      pathname: `/admin/collections/seasons/create`,
+      state: market,
+    });
   };
 
   const onSaveContact = ({ data, isError }) => {
@@ -252,6 +256,7 @@ export const MarketsEdit: React.FC<any> = (props) => {
             <MarketField
               path="market"
               isSubmitted={isSubmitted}
+              setThisMarket={setMarket}
             />
             <HStack justify={'center'} marginTop={4} spacing={2}>
               <Button rightIcon={<ArrowForwardIcon />} colorScheme='teal' variant='solid' onClick={submitForm}>
