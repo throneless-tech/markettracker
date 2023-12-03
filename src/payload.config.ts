@@ -31,6 +31,7 @@ import { LogoutButton } from "./components/Base/LogoutButton";
 import { Nav } from "./components/Base/Nav";
 import { ThemeProvider } from "./styles/ThemeProvider";
 import { Register } from "./components/Base/Register";
+import { QueryProvider } from "./components/QueryProvider";
 
 // utils
 import { withAccountContext } from "./utils/withAccountContext";
@@ -66,7 +67,7 @@ export default buildConfig({
         // Button: CustomLogoutButton,
       },
       Nav: Nav,
-      providers: [ThemeProvider],
+      providers: [QueryProvider, ThemeProvider],
       views: {
         Account: withAccountContext(Account),
         Dashboard: Dashboard,

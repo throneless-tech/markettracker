@@ -28,10 +28,7 @@ import {
 } from "@chakra-ui/react";
 
 // for table sort
-import {
-  ColumnDef,
-  RowData,
-} from "@tanstack/react-table";
+import { ColumnDef, RowData } from "@tanstack/react-table";
 
 // components
 import { DataTable } from "../DataTable";
@@ -49,9 +46,9 @@ type ApplicationStats = Application & {
   vendorDemographics: any;
 };
 
-declare module '@tanstack/react-table' {
+declare module "@tanstack/react-table" {
   interface TableMeta<TData extends RowData> {
-    updateData: (rowIndex: number, columnId: string, value: unknown) => void
+    updateData: (rowIndex: number, columnId: string, value: unknown) => void;
   }
 }
 
@@ -68,27 +65,24 @@ export const ApplicationsList: React.FC<any> = () => {
   const columns: ColumnDef<Application>[] = [
     {
       header: "Vendor name",
-      accessorKey: 'vendorName',
+      accessorKey: "vendorName",
       cell: (info) => {
+        console.log("***info.row", info.row);
         const value: any = info.getValue();
-        return (
-          <span>{value}</span>
-        )
-      }
+        return <span>{value}</span>;
+      },
     },
     {
       header: "Vendor type",
-      accessorKey: 'vendorType',
+      accessorKey: "vendorType",
       cell: (info) => {
         const value: any = info.getValue();
-        return (
-          <span>{value}</span>
-        )
-      }
+        return <span>{value}</span>;
+      },
     },
     {
       header: "Meet product gap",
-      accessorKey: 'gapsMet',
+      accessorKey: "gapsMet",
       cell: (gaps) => {
         const gapsMet: any = gaps.getValue();
         return (
@@ -101,99 +95,88 @@ export const ApplicationsList: React.FC<any> = () => {
               </WrapItem>
             ))}
           </Wrap>
-        )
-      }
+        );
+      },
     },
     {
       header: "Market name",
-      accessorKey: 'seasonName',
+      accessorKey: "seasonName",
       cell: (info) => {
         const value: any = info.getValue();
-        return (
-          <span>{value}</span>
-        )
-      }
+        return <span>{value}</span>;
+      },
     },
     {
       header: "# of applications",
-      accessorKey: 'numberOfApplications',
+      accessorKey: "numberOfApplications",
       cell: (info) => {
         const value: any = info.getValue();
-        return (
-          <span>{value}</span>
-        )
-      }
+        return <span>{value}</span>;
+      },
     },
     {
       header: "# of markets",
-      accessorKey: 'numberOfMarkets',
+      accessorKey: "numberOfMarkets",
       cell: (info) => {
         const value: any = info.getValue();
-        return (
-          <span>{value}</span>
-        )
-      }
+        return <span>{value}</span>;
+      },
     },
     {
       header: "Priority group",
-      accessorKey: 'vendorDemographics',
+      accessorKey: "vendorDemographics",
       cell: (demoCell) => {
         const demos: any = demoCell.getValue();
         return demos && typeof demos === "object"
           ? Object.entries(demos).map((key, _) => {
-            if (key[1] == "yes") {
-              if (key[0] == "firstGeneration") {
-                return <Tag>First generation farmer</Tag>;
+              if (key[1] == "yes") {
+                if (key[0] == "firstGeneration") {
+                  return <Tag>First generation farmer</Tag>;
+                }
+                if (key[0] == "veteranOwned") {
+                  return <Tag>Veteran-owned</Tag>;
+                }
+                if (key[0] == "bipoc") {
+                  return <Tag>BIPOC</Tag>;
+                }
+                if (key[0] == "immigrantOrRefugee") {
+                  return <Tag>Immigrant or refugee</Tag>;
+                }
+                if (key[0] == "lgbtqia") {
+                  return <Tag>LGBTQIA</Tag>;
+                }
               }
-              if (key[0] == "veteranOwned") {
-                return <Tag>Veteran-owned</Tag>;
-              }
-              if (key[0] == "bipoc") {
-                return <Tag>BIPOC</Tag>;
-              }
-              if (key[0] == "immigrantOrRefugee") {
-                return <Tag>Immigrant or refugee</Tag>;
-              }
-              if (key[0] == "lgbtqia") {
-                return <Tag>LGBTQIA</Tag>;
-              }
-            }
-          }) : null
-      }
+            })
+          : null;
+      },
     },
     {
       header: "Standing",
-      accessorKey: 'vendorStanding',
+      accessorKey: "vendorStanding",
       cell: (standingCell) => {
         const standing: any = standingCell.getValue();
-        return (
-          <Tag>{standing ? standing : "Good"}</Tag>
-        )
-      }
+        return <Tag>{standing ? standing : "Good"}</Tag>;
+      },
     },
     {
       header: "Reviewers",
-      accessorKey: '', // FIXME
-      cell: () => (
-        <span>0/2 reviewers</span>
-      )
+      accessorKey: "", // FIXME
+      cell: () => <span>0/2 reviewers</span>,
     },
     {
       header: "Grade (AVG)",
-      accessorKey: 'reviewScore',
+      accessorKey: "reviewScore",
       cell: (info) => {
         const value: any = info.getValue();
-        return (
-          <span>{value}</span>
-        )
-      }
+        return <span>{value}</span>;
+      },
     },
     {
       header: "Application status",
-      accessorKey: 'status',
+      accessorKey: "status",
       // cell not included because it is defined as editable in ../DataTable.tsx
     },
-  ]
+  ];
 
   useEffect(() => {
     const getAll = async (seasonId: string) => {
@@ -248,49 +231,54 @@ export const ApplicationsList: React.FC<any> = () => {
     [location],
   );
 
-  const getApplications = useCallback(async () => {
-    if (isFetching) return;
-    const id = season?.id ? season.id : "";
-    let stringifiedQuery: string;
-    if (id !== "") {
-      const query = {
-        season: {
-          equals: id,
-        },
-      };
-      stringifiedQuery = qs.stringify(
-        {
-          where: query, // ensure that `qs` adds the `where` property, too!
-          depth: 0,
-          page,
-        },
-        { addQueryPrefix: true },
-      );
-    } else {
-      stringifiedQuery = qs.stringify(
-        {
-          page,
-        },
-        { addQueryPrefix: true },
-      );
-    }
-    setIsFetching(true);
-    console.log("***stringifiedQuery", stringifiedQuery);
-    console.log("***applications", applications);
-    try {
-      const res = await fetch(
-        `/api/applications${stringifiedQuery ? stringifiedQuery : ""}`,
-      );
-      if (!res.ok) throw new Error(res.statusText);
-      const newApplications = await res.json();
-      console.log("***newApplications", newApplications);
-      setApplications(applications.concat(newApplications.docs));
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setIsFetching(false);
-    }
-  }, [applications]);
+  const getApplications = useCallback(
+    async (page, limit, sorting) => {
+      if (isFetching) return;
+      const id = season?.id ? season.id : "";
+      let stringifiedQuery: string;
+      if (id !== "") {
+        const query = {
+          season: {
+            equals: id,
+          },
+        };
+        stringifiedQuery = qs.stringify(
+          {
+            where: query, // ensure that `qs` adds the `where` property, too!
+            depth: 0,
+            page,
+          },
+          { addQueryPrefix: true },
+        );
+      } else {
+        stringifiedQuery = qs.stringify(
+          {
+            page,
+            limit,
+          },
+          { addQueryPrefix: true },
+        );
+      }
+      setIsFetching(true);
+      console.log("***stringifiedQuery", stringifiedQuery);
+      console.log("***applications", applications);
+      try {
+        const res = await fetch(
+          `/api/applications${stringifiedQuery ? stringifiedQuery : ""}`,
+        );
+        if (!res.ok) throw new Error(res.statusText);
+        const newApplications = await res.json();
+        console.log("***newApplications", newApplications);
+        return newApplications.docs;
+        setApplications(applications.concat(newApplications.docs));
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setIsFetching(false);
+      }
+    },
+    [applications],
+  );
 
   if (applications) {
     return (
@@ -333,14 +321,14 @@ export const ApplicationsList: React.FC<any> = () => {
           </Container>
         ) : null}
         <Flex>
-          <Box p={4} bg={'gray.100'}>
+          <Box p={4} bg={"gray.100"}>
             <Text>Filter</Text>
           </Box>
           <Container maxW="container.xl">
-            <DataTable columns={columns} data={applications}/>
+            <DataTable columns={columns} fetchData={getApplications} />
           </Container>
         </Flex>
       </>
     );
-  };
+  }
 };
