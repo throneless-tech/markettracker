@@ -18,11 +18,7 @@ import {
   SortingState,
   getSortedRowModel,
 } from "@tanstack/react-table";
-import {
-  QueryClient,
-  QueryClientProvider,
-  useInfiniteQuery,
-} from "@tanstack/react-query";
+import { useInfiniteQuery } from "@tanstack/react-query";
 
 import type { Application } from "payload/generated-types";
 
@@ -97,7 +93,7 @@ export function DataTable<Data extends object>({
   const { data, fetchNextPage, isFetching, isLoading } = useInfiniteQuery({
     queryKey: ["table-data", sorting], //adding sorting state as key causes table to reset and fetch from new beginning upon sort
     queryFn: async ({ pageParam }) => {
-      const fetchedData = fetchData(page, limit, sorting); //pretend api call
+      const fetchedData = fetchData(pageParam, limit, sorting); //pretend api call
       return fetchedData;
     },
     initialPageParam: page,

@@ -1,28 +1,18 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
-import { useInView } from "react-intersection-observer";
 import qs from "qs";
-import { usePreferences } from "payload/components/preferences";
 
 // Chakra imports
 import {
-  chakra,
   Box,
   Container,
   Divider,
   Flex,
   Heading,
   HStack,
-  Select,
   Spacer,
   Tag,
-  Table,
-  TableContainer,
-  Tbody,
   Text,
-  Th,
-  Thead,
-  Tr,
   Wrap,
   WrapItem,
 } from "@chakra-ui/react";
@@ -38,8 +28,6 @@ import StarIcon from "../../assets/icons/star.js";
 
 // types
 import type { Application, Product, Season } from "payload/generated-types";
-
-import { ApplicationsRow } from "./ApplicationsRow";
 
 type ApplicationStats = Application & {
   gapsMet: any[];
@@ -57,9 +45,7 @@ export const ApplicationsList: React.FC<any> = () => {
   const [applications, setApplications] = useState<ApplicationStats[]>([]);
   const [season, setSeason] = useState<Season>();
   const [isFetching, setIsFetching] = useState<boolean>(false);
-  const [page, setPage] = useState<number>(1);
-  const { ref, inView } = useInView({});
-  const { setPreference } = usePreferences();
+  const lastRef = React.useRef<HTMLDivElement>(null);
 
   // table
   const columns: ColumnDef<Application>[] = [
@@ -177,34 +163,6 @@ export const ApplicationsList: React.FC<any> = () => {
       // cell not included because it is defined as editable in ../DataTable.tsx
     },
   ];
-
-  useEffect(() => {
-    const getAll = async (seasonId: string) => {
-      await getSeason(seasonId);
-      await getApplications();
-    };
-    let seasonId: string;
-    if (location.search && typeof location.search === "string") {
-      const params = new URLSearchParams(location.search);
-      seasonId = params.get("season");
-    }
-
-    if (seasonId && !season) {
-      getAll(seasonId);
-    }
-
-    setPreference("limit", 10);
-  }, []);
-
-  useEffect(() => {
-    getApplications();
-  }, [page]);
-
-  useEffect(() => {
-    if (inView) {
-      setPage((prevState) => prevState + 1);
-    }
-  }, [inView]);
 
   useEffect(() => {
     let seasonId: string;
