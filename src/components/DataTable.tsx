@@ -105,20 +105,19 @@ export function DataTable<Data extends object>({
     refetchOnWindowFocus: false,
   });
 
-  console.log("***data", data);
   //we must flatten the array of arrays from the useInfiniteQuery hook
   const flatData = React.useMemo(
-    () => data?.pages?.flatMap((page) => page.data) ?? [],
+    () => data?.pages?.flatMap((page) => page.docs) ?? [],
     [data],
   );
-  const totalDBRowCount = data?.pages?.[0]?.meta?.totalRowCount ?? 0;
+  const totalDBRowCount = data?.pages?.[0]?.totalDocs ?? 0;
   const totalFetched = flatData.length;
 
   //called on scroll and possibly on mount to fetch more data as the user scrolls and reaches bottom of table
   const fetchMore = React.useCallback(
-    (containerRefElement?: HTMLDivElement | null) => {
-      if (containerRefElement) {
-        const { scrollHeight, scrollTop, clientHeight } = containerRefElement;
+    (lastRef?: HTMLDivElement | null) => {
+      if (lastRef) {
+        const { scrollHeight, scrollTop, clientHeight } = lastRef;
         //once the user has scrolled within 300px of the bottom of the table, fetch more data if there is any
         if (
           scrollHeight - scrollTop - clientHeight < 300 &&
@@ -132,16 +131,18 @@ export function DataTable<Data extends object>({
     [fetchNextPage, isFetching, totalFetched, totalDBRowCount],
   );
 
+  console.log("***flatData:", flatData);
   const table = useReactTable({
     data: flatData,
     columns,
+    defaultColumn,
     state: {
       sorting,
     },
     onSortingChange: setSorting,
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
-    debugTable: true,
+    //debugTable: true,
   });
 
   return (

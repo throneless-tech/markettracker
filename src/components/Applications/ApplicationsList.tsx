@@ -67,8 +67,8 @@ export const ApplicationsList: React.FC<any> = () => {
       header: "Vendor name",
       accessorKey: "vendorName",
       cell: (info) => {
-        console.log("***info.row", info.row);
         const value: any = info.getValue();
+        console.log("***info.getValue()", value);
         return <span>{value}</span>;
       },
     },
@@ -269,8 +269,7 @@ export const ApplicationsList: React.FC<any> = () => {
         if (!res.ok) throw new Error(res.statusText);
         const newApplications = await res.json();
         console.log("***newApplications", newApplications);
-        return newApplications.docs;
-        setApplications(applications.concat(newApplications.docs));
+        return newApplications;
       } catch (err) {
         console.error(err);
       } finally {
