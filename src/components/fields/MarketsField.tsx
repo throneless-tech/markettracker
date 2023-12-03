@@ -117,7 +117,7 @@ export const MarketField: FC<Props> = ({ path, isSubmitted = false }) => {
   }, [isSubmitted]);
 
   return (
-    <Container maxW={"lg"}>
+    <>
       <FormControl>
         <FormLabel>Market name (required)</FormLabel>
         <Input
@@ -315,6 +315,6 @@ export const MarketField: FC<Props> = ({ path, isSubmitted = false }) => {
           value={description}
         />
       </FormControl>
-    </Container>
+    </>
   );
 };

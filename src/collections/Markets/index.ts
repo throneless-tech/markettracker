@@ -10,12 +10,12 @@ import {
 export const Markets: CollectionConfig = {
   slug: "markets",
   admin: {
-    // components: {
-    //   views: {
-    //     Edit: withFormContext(MarketsEdit),
-    //     List: MarketsList,
-    //   },
-    // },
+    components: {
+      views: {
+        Edit: withFormContext(MarketsEdit),
+        // List: MarketsList,
+      },
+    },
     pagination: {
       defaultLimit: 20,
     },
