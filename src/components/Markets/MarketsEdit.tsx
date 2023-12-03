@@ -2,6 +2,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { useAuth } from "payload/components/utilities";
+import { useHistory } from "react-router-dom";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
@@ -55,8 +56,9 @@ import {
 
 // components
 //import Calendar from "../Calendar.js";
-import { ProductsField } from "../fields/ProductsField";
 import { ContactsModal } from "../Contacts/ContactsModal";
+import { FooterAdmin } from "../FooterAdmin";
+import { ProductsField } from "../fields/ProductsField";
 
 // utils
 import formatDate from "../../utils/formatDate";
@@ -166,6 +168,7 @@ const ContactModal: React.FC<any> = (props) => {
 export const MarketsEdit: React.FC<any> = (props) => {
   const { submit } = useForm();
   const { user } = useAuth();
+  const history = useHistory();
   const { id } = useDocumentInfo();
   const { data } = props;
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -208,6 +211,10 @@ export const MarketsEdit: React.FC<any> = (props) => {
   const submitForm = async () => {
     setIsSubmitted(true);
     submit();
+    // history.push({
+    //   pathname: `/admin/collections/seasons/create`,
+    //   // state: app,
+    // });
   };
 
   const onSaveContact = ({ data, isError }) => {
@@ -235,26 +242,29 @@ export const MarketsEdit: React.FC<any> = (props) => {
   // id will be undefined on the create form
   if (!id) {
     return (
-      <Container maxW="container.xl">
-        <Heading as="h2" sx={{ textTransform: "uppercase" }} marginTop={4}>
-          Create a new market
-        </Heading>
-        <Divider color="gray.900" borderBottomWidth={2} opacity={1} />
-        <Container maxW={'2xl'} my={4}>
-          <MarketField
-            path="market"
-            isSubmitted={isSubmitted}
-          />
-          <HStack justify={'center'} marginTop={4} spacing={2}>
-            <Button rightIcon={<ArrowForwardIcon />} colorScheme='teal' variant='solid' type="submit">
-              Add market and start new season
-            </Button>
-            <Button variant='outline' as="a" href="/admin/collections/seasons">
-              Cancel
-            </Button>
-          </HStack>
+      <>
+        <Container maxW="container.xl" marginBottom={12}>
+          <Heading as="h2" sx={{ textTransform: "uppercase" }} marginTop={4}>
+            Create a new market
+          </Heading>
+          <Divider color="gray.900" borderBottomWidth={2} opacity={1} />
+          <Container maxW={'2xl'} my={4}>
+            <MarketField
+              path="market"
+              isSubmitted={isSubmitted}
+            />
+            <HStack justify={'center'} marginTop={4} spacing={2}>
+              <Button rightIcon={<ArrowForwardIcon />} colorScheme='teal' variant='solid' onClick={submitForm}>
+                Add market and start new season
+              </Button>
+              <Button variant='outline' as="a" href="/admin/collections/seasons">
+                Cancel
+              </Button>
+            </HStack>
+          </Container>
         </Container>
-      </Container>
+        <FooterAdmin />
+      </>
     )
   }
 

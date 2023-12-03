@@ -55,9 +55,11 @@ import {
 
 // components
 //import Calendar from "../Calendar.js";
-import { ProductsField } from "../fields/ProductsField";
-import type { Market } from "payload/generated-types";
 import { ContactsModal } from "../Contacts/ContactsModal";
+import { FooterAdmin } from "../FooterAdmin";
+import { ProductsField } from "../fields/ProductsField";
+import { SeasonField } from "../fields/SeasonsField";
+import type { Market } from "payload/generated-types";
 
 // utils
 import formatDate from "../../utils/formatDate";
@@ -138,11 +140,6 @@ export const SeasonsEdit: React.FC<any> = (props) => {
     submit();
   };
 
-  // id will be undefined on the create form
-  if (!id) {
-    return null;
-  }
-
   useEffect(() => {
     if (operators && !isLoaded) {
       const query = {
@@ -168,6 +165,36 @@ export const SeasonsEdit: React.FC<any> = (props) => {
       getOps();
     }
   }, [operators]);
+
+
+  // id will be undefined on the create form
+  if (!id) {
+    return (
+      <>
+        <Container maxW="container.xl" marginBottom={12}>
+          <Heading as="h2" sx={{ textTransform: "uppercase" }} marginTop={4}>
+            Create a new season
+          </Heading>
+          <Divider color="gray.900" borderBottomWidth={2} opacity={1} />
+          <Container maxW={'2xl'} my={4}>
+            <SeasonField
+              path="market"
+              isSubmitted={isSubmitted}
+            />
+            <HStack justify={'center'} marginTop={4} spacing={2}>
+              <Button rightIcon={<ArrowForwardIcon />} colorScheme='teal' variant='solid' onClick={submitForm}>
+                Add season
+              </Button>
+              <Button variant='outline' as="a" href="/admin/collections/seasons">
+                Cancel
+              </Button>
+            </HStack>
+          </Container>
+        </Container>
+        <FooterAdmin />
+      </>
+    )
+  }
 
   if (name && market) {
     return (
