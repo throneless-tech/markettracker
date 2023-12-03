@@ -10,12 +10,22 @@ import type { Vendor } from "payload/generated-types";
 import {
   Box,
   Button,
+  Checkbox,
+  CheckboxGroup,
   Container,
   Divider,
   Flex,
+  FormControl,
+  FormLabel,
   Heading,
   HStack,
+  Input,
+  InputGroup,
+  InputLeftElement,
+  Radio,
+  RadioGroup,
   Spacer,
+  Stack,
   Tab,
   TabIndicator,
   TabList,
@@ -24,6 +34,9 @@ import {
   Tabs,
   Text,
 } from "@chakra-ui/react";
+
+// chakra icons
+import { Search2Icon } from "@chakra-ui/icons";
 
 //components
 import { SeasonCard } from "./SeasonCard";
@@ -38,6 +51,10 @@ export const SeasonsList: React.FC<any> = ({ data }) => {
   const [viewMarkets, setViewMarkets] = useState(false);
   const [applications, setApplications] = useState([]);
 
+  // filter settings
+  const [value, setValue] = React.useState('all')
+
+  // tab settings
   const handleTabsChange = (index) => {
     setTabIndex(index);
   };
@@ -277,12 +294,43 @@ export const SeasonsList: React.FC<any> = ({ data }) => {
                 </Container>
               ) : (
                 <Container sx={{ maxWidth: "unset" }}>
-                  <HStack align={"flex-start"} marginTop={8} spacing={8}>
-                    {/* <Stack backgroundColor={'gray.50'} padding={4} width={230}>
-            <Text>
-              Filter
-            </Text>
-          </Stack> */}
+                  <Flex justify={"center"} marginTop={8} wrap={{ base: "wrap", lg: "nowrap" }}>
+                    <Box p={4} marginRight={4} minW={230} marginBottom={{ base: 4, lg: 0 }} bg={'gray.100'}>
+                      <Heading as='h2' size='xl' sx={{ fontWeight: 600 }}>
+                        Filter
+                      </Heading>
+                      <Flex wrap={{ base: "nowrap", lg: "wrap" }}>
+                        <FormControl>
+                          <FormLabel fontSize="sm" sx={{ fontWeight: 900, textTransform: "uppercase" }}>Search for market</FormLabel>
+                          <InputGroup>
+                            <InputLeftElement pointerEvents='none'>
+                              <Search2Icon color='gray.300' />
+                            </InputLeftElement>
+                            <Input placeholder="Start typing market name" />
+                          </InputGroup>
+                        </FormControl>
+                        <FormControl marginTop={4}>
+                          <FormLabel fontSize="sm" sx={{ fontWeight: 900, textTransform: "uppercase" }}>Show</FormLabel>
+                          <RadioGroup colorScheme='green' onChange={setValue} value={value}>
+                            <Stack direction='column'>
+                              <Radio value='all'>All markets</Radio>
+                              <Radio value='open'>Only markets accepting applications</Radio>
+                            </Stack>
+                          </RadioGroup>
+                        </FormControl>
+                        <FormControl marginTop={4}>
+                          <FormLabel fontSize="sm" sx={{ fontWeight: 900, textTransform: "uppercase" }}>Market location</FormLabel>
+                          <CheckboxGroup colorScheme='green'>
+                            <Stack spacing={2} direction="column">
+                              <Checkbox value='DC'>DC</Checkbox>
+                              <Checkbox value='MD'>Maryland</Checkbox>
+                              <Checkbox value='VA'>Virginia</Checkbox>
+                            </Stack>
+                          </CheckboxGroup>
+                        </FormControl>
+                      </Flex>
+                    </Box>
+                    <Spacer />
                     <HStack align={"flex-start"} wrap={"wrap"} spacing={6}>
                       {seasons &&
                         seasons.length &&
@@ -290,7 +338,7 @@ export const SeasonsList: React.FC<any> = ({ data }) => {
                           <SeasonCard key={season.id} season={season} />
                         ))}
                     </HStack>
-                  </HStack>
+                  </Flex>
                 </Container>
               )}
 

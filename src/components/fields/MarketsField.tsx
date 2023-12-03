@@ -81,43 +81,73 @@ export const MarketField: FC<Props> = ({ path, isSubmitted = false }) => {
   useEffect(() => {
     if (!isSubmitted) return;
 
-    const patchData = async () => {
-      try {
-        const response = await fetch(`/api/markets/${value}`, {
-          method: "PATCH",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            name,
-            address: {
-              street,
-              city,
-              state,
-              zipcode,
+    const sendData = async () => {
+      if (value) { 
+        try {
+          const response = await fetch(`/api/markets/${value}`, {
+            method: "PATCH",
+            headers: {
+              "Content-Type": "application/json",
             },
-            days,
-            size,
-            focus,
-            visitors,
-            description,
-          }),
-        });
-        if (!response.ok) {
-          throw new Error(response.statusText);
+            body: JSON.stringify({
+              name,
+              address: {
+                street,
+                city,
+                state,
+                zipcode,
+              },
+              days,
+              size,
+              focus,
+              visitors,
+              description,
+            }),
+          });
+          if (!response.ok) {
+            throw new Error(response.statusText);
+          }
+          const data = await response.json();
+          setMarket(data.doc);
+        } catch (error) {
+          console.log(error);
         }
-        const data = await response.json();
-        setMarket(data.doc);
-      } catch (error) {
-        console.log(error);
+      } else {
+        try {
+          const req = await fetch('/api/markets', {
+            method: "POST",
+            credentials: "include",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              name,
+              address: {
+                street,
+                city,
+                state,
+                zipcode,
+              },
+              days,
+              size,
+              focus,
+              visitors,
+              description,
+            }),
+          })
+          const data = await req.json()
+          setMarket(data.doc);
+        } catch (err) {
+          console.log(err)
+        }
       }
     };
 
-    patchData();
+    sendData();
   }, [isSubmitted]);
 
   return (
-    <Container maxW={"lg"}>
+    <>
       <FormControl>
         <FormLabel>Market name (required)</FormLabel>
         <Input
@@ -126,7 +156,6 @@ export const MarketField: FC<Props> = ({ path, isSubmitted = false }) => {
           onChange={(e) => setName(e.target.value)}
         />
       </FormControl>
-      {street ? (
         <Stack spacing={2} marginTop={4}>
           <FormControl>
             <FormLabel as="div" textStyle="bodyMain" fontWeight={500}>
@@ -216,7 +245,6 @@ export const MarketField: FC<Props> = ({ path, isSubmitted = false }) => {
             />
           </Flex>
         </Stack>
-      ) : null}
       <FormControl marginTop={4}>
         <FormLabel as="div" textStyle="bodyMain" fontWeight={500}>
           Market day (required)
@@ -315,6 +343,6 @@ export const MarketField: FC<Props> = ({ path, isSubmitted = false }) => {
           value={description}
         />
       </FormControl>
-    </Container>
+    </>
   );
 };
