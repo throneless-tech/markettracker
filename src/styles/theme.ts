@@ -199,6 +199,7 @@ export const theme = extendTheme({
       fontFamily: "'Zilla Slab', serif",
       fontSize: ["24px"],
       fontWeight: "700",
+      letterSpacing: "0.72px", 
       lineHeight: "24px",
       textTransform: "uppercase",
     },
