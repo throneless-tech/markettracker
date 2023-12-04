@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useHistory, useLocation } from "react-router-dom";
 import qs from "qs";
 
 // Chakra imports
@@ -54,7 +54,7 @@ declare module "@tanstack/react-table" {
 }
 
 export const ApplicationsList: React.FC<any> = () => {
-  const location = useLocation();
+  const { search } = useLocation();
   const [applications, setApplications] = useState<ApplicationStats[]>([]);
   const [season, setSeason] = useState<Season>();
   const [isFetching, setIsFetching] = useState<boolean>(false);
@@ -181,7 +181,7 @@ export const ApplicationsList: React.FC<any> = () => {
 
   useEffect(() => {
     let seasonId: string;
-    if (location.search && typeof location.search === "string") {
+    if (search && typeof search === "string") {
       const params = new URLSearchParams(location.search);
       seasonId = params.get("season");
     }
@@ -189,37 +189,59 @@ export const ApplicationsList: React.FC<any> = () => {
     if (seasonId && !season) {
       getSeason(seasonId);
     }
-  }, [location]);
+  }, [search]);
 
-  const getSeason = useCallback(
-    async (id: string) => {
-      try {
-        const res = await fetch(`/api/seasons/${id}`);
-        const season = await res.json();
-        setSeason(season);
-      } catch (err) {
-        console.error(err);
-      }
-    },
-    [location],
-  );
+  const getSeason = useCallback(async (id: string) => {
+    try {
+      const res = await fetch(`/api/seasons/${id}`);
+      const season = await res.json();
+      setSeason(season);
+    } catch (err) {
+      console.error(err);
+    }
+  }, []);
 
   const getApplications = useCallback(
     async (page, limit, sorting) => {
       if (isFetching) return;
+      const searchParams = new URLSearchParams(search);
+      const queries = [];
       const id = season?.id ? season.id : "";
-      let stringifiedQuery: string;
       if (id !== "") {
-        const query = {
-          season: {
-            equals: id,
-          },
-        };
+        queries.push({ season: { equals: id } });
+      }
+      const searchQuery = searchParams.get("search");
+      if (searchQuery) {
+        queries.push({ name: { like: searchQuery } });
+      }
+      const accepting = searchParams.get("accepting");
+      if (accepting === "true") {
+        queries.push({ "season.isAccepting": { equals: true } });
+      }
+      let sort: string;
+      if (sorting?.length) {
+        sort = `${sorting[0].desc ? "-" : ""}${sorting[0].id}`;
+      }
+      let stringifiedQuery: string;
+      if (queries.length === 1) {
         stringifiedQuery = qs.stringify(
           {
-            where: query, // ensure that `qs` adds the `where` property, too!
+            where: queries[0], // ensure that `qs` adds the `where` property, too!
             depth: 0,
             page,
+            sort,
+          },
+          { addQueryPrefix: true },
+        );
+      } else if (queries.length > 1) {
+        stringifiedQuery = qs.stringify(
+          {
+            where: {
+              and: queries,
+            },
+            depth: 0,
+            page,
+            sort,
           },
           { addQueryPrefix: true },
         );
@@ -228,6 +250,7 @@ export const ApplicationsList: React.FC<any> = () => {
           {
             page,
             limit,
+            sort,
           },
           { addQueryPrefix: true },
         );
