@@ -53,13 +53,13 @@ declare module "@tanstack/react-table" {
   }
 }
 
-export const ApplicationsList: React.FC<any> = (props) => {
-  const { isTab } = props;
+export const ApplicationsList: React.FC<any> = () => {
   const { search } = useLocation();
   const [applications, setApplications] = useState<ApplicationStats[]>([]);
   const [season, setSeason] = useState<Season>();
   const [isFetching, setIsFetching] = useState<boolean>(false);
   const lastRef = React.useRef<HTMLDivElement>(null);
+  
   // filter settings
   const [value, setValue] = React.useState("all");
 
@@ -380,7 +380,7 @@ export const ApplicationsList: React.FC<any> = (props) => {
             </Flex>
           </Box>
           <Container maxW="container.2xl">
-            <DataTable columns={columns} fetchData={getApplications} waitToFetch={isTab} />
+            <DataTable columns={columns} fetchData={getApplications} />
           </Container>
         </Flex>
       </>
