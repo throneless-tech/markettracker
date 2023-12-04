@@ -209,16 +209,19 @@ export const MarketsEdit: React.FC<any> = (props) => {
 
   const [contact, setContact] = useState(null);
 
-  useEffect(() => {console.log(market)}, [market]);
+  useEffect(() => {
+    console.log("market: ", market);
+    console.log("isSubmitted: ", isSubmitted);
+    if (market && isSubmitted) {
+      history.push({
+        pathname: `/admin/collections/seasons/create?market=${market.id}`,
+        state: market,
+      });
+    }
+  }, [market]);
 
   const submitForm = async () => {
     setIsSubmitted(true);
-    console.log('market: ', market);
-    
-    // history.push({
-    //   pathname: `/admin/collections/seasons/create`,
-    //   state: market,
-    // });
   };
 
   const onSaveContact = ({ data, isError }) => {
@@ -241,7 +244,7 @@ export const MarketsEdit: React.FC<any> = (props) => {
     }
   }, [contact]);
 
-  useEffect(() => { }, [seasons]);
+  useEffect(() => {}, [seasons]);
 
   // id will be undefined on the create form
   if (!id) {
@@ -252,17 +255,26 @@ export const MarketsEdit: React.FC<any> = (props) => {
             Create a new market
           </Heading>
           <Divider color="gray.900" borderBottomWidth={2} opacity={1} />
-          <Container maxW={'2xl'} my={4}>
+          <Container maxW={"2xl"} my={4}>
             <MarketField
               path="market"
               isSubmitted={isSubmitted}
               setThisMarket={setMarket}
             />
-            <HStack justify={'center'} marginTop={4} spacing={2}>
-              <Button rightIcon={<ArrowForwardIcon />} colorScheme='teal' variant='solid' onClick={submitForm}>
+            <HStack justify={"center"} marginTop={4} spacing={2}>
+              <Button
+                rightIcon={<ArrowForwardIcon />}
+                colorScheme="teal"
+                variant="solid"
+                onClick={submitForm}
+              >
                 Add market and start new season
               </Button>
-              <Button variant='outline' as="a" href="/admin/collections/seasons">
+              <Button
+                variant="outline"
+                as="a"
+                href="/admin/collections/seasons"
+              >
                 Cancel
               </Button>
             </HStack>
@@ -270,7 +282,7 @@ export const MarketsEdit: React.FC<any> = (props) => {
         </Container>
         <FooterAdmin />
       </>
-    )
+    );
   }
 
   if (name && seasons && seasons.length && typeof seasons[0] === "object") {
@@ -841,7 +853,7 @@ export const MarketsEdit: React.FC<any> = (props) => {
                                     }
                                     value={
                                       typeof seasons[0].isAccepting ===
-                                        "boolean"
+                                      "boolean"
                                         ? seasons[0].isAccepting.toString()
                                         : "false"
                                     }
@@ -900,21 +912,21 @@ export const MarketsEdit: React.FC<any> = (props) => {
                                     <HStack spacing={4}>
                                       {data.seasons[0].operators
                                         ? data.seasons[0].operators.map(
-                                          (contact) => (
-                                            <Checkbox
-                                              key={contact.id}
-                                              value={contact.id}
-                                            >
-                                              {contact.name}
-                                              <Tag
-                                                bg={"gray.50"}
-                                                fontWeight={700}
+                                            (contact) => (
+                                              <Checkbox
+                                                key={contact.id}
+                                                value={contact.id}
                                               >
-                                                {contact.type}
-                                              </Tag>
-                                            </Checkbox>
-                                          ),
-                                        )
+                                                {contact.name}
+                                                <Tag
+                                                  bg={"gray.50"}
+                                                  fontWeight={700}
+                                                >
+                                                  {contact.type}
+                                                </Tag>
+                                              </Checkbox>
+                                            ),
+                                          )
                                         : null}
                                     </HStack>
                                   </CheckboxGroup>
@@ -965,8 +977,8 @@ export const MarketsEdit: React.FC<any> = (props) => {
                                       selected={
                                         seasons[0].marketDates.startDate
                                           ? new Date(
-                                            seasons[0].marketDates.startDate,
-                                          )
+                                              seasons[0].marketDates.startDate,
+                                            )
                                           : null
                                       }
                                       onChange={(date) =>
@@ -1000,8 +1012,8 @@ export const MarketsEdit: React.FC<any> = (props) => {
                                       selected={
                                         seasons[0].marketDates.endDate
                                           ? new Date(
-                                            seasons[0].marketDates.endDate,
-                                          )
+                                              seasons[0].marketDates.endDate,
+                                            )
                                           : null
                                       }
                                       onChange={(date) =>
@@ -1112,7 +1124,7 @@ export const MarketsEdit: React.FC<any> = (props) => {
                                   }
                                   value={
                                     seasons[0].productGaps &&
-                                      seasons[0].productGaps.length
+                                    seasons[0].productGaps.length
                                       ? (seasons[0].productGaps as string[]) // we know it will be string[] here unless we specifically fetch it
                                       : []
                                   }
@@ -1169,12 +1181,12 @@ export const MarketsEdit: React.FC<any> = (props) => {
                       {data.size == "flagship"
                         ? "Daily sales for the entire market are upwards of $150,000. This market can support upwards of 20 produce vendors, 14 prepared food vendors, 9 baked goods vendors, 6 alcohol vendors, 5 dairy vendors, and 2 to 4 vendors from each additional category."
                         : data.size == "large"
-                          ? "Daily sales for large markets range from $20,000 to $70,000. They can support average numbers of 8 produce vendors, 8 prepared food vendors, 5 baked goods vendors, 3 alcohol vendors, and 1 to 2 vendors from each additional category."
-                          : data.size == "medium"
-                            ? "Daily sales for medium markets range from $10,000 to $19,000. They can support average numbers of 5 prepared food vendors, 4 produce vendors, and 1 to 2 vendors from each additional category."
-                            : data.size == "small"
-                              ? "Daily sales for small markets range from $1,500 to $9,000. They can support average numbers of 4 produce vendors, 4 prepared food vendors, and 1 to 2 vendors from each additional category with some product category gaps."
-                              : "These markets are limited to one produce vendor for retail and wholesale sales."}
+                        ? "Daily sales for large markets range from $20,000 to $70,000. They can support average numbers of 8 produce vendors, 8 prepared food vendors, 5 baked goods vendors, 3 alcohol vendors, and 1 to 2 vendors from each additional category."
+                        : data.size == "medium"
+                        ? "Daily sales for medium markets range from $10,000 to $19,000. They can support average numbers of 5 prepared food vendors, 4 produce vendors, and 1 to 2 vendors from each additional category."
+                        : data.size == "small"
+                        ? "Daily sales for small markets range from $1,500 to $9,000. They can support average numbers of 4 produce vendors, 4 prepared food vendors, and 1 to 2 vendors from each additional category with some product category gaps."
+                        : "These markets are limited to one produce vendor for retail and wholesale sales."}
                     </Text>
                     <HStack marginTop={4}>
                       <Text as={"span"} color={"blue.500"} fontWeight={700}>
