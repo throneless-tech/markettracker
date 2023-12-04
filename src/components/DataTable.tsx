@@ -8,19 +8,24 @@ import {
   Th,
   Td,
   chakra,
+  Box,
 } from "@chakra-ui/react";
 import { TriangleDownIcon, TriangleUpIcon } from "@chakra-ui/icons";
 import {
-  useReactTable,
   flexRender,
   getCoreRowModel,
+  getSortedRowModel,
+  useReactTable,
   ColumnDef,
   SortingState,
-  getSortedRowModel,
+  Row,
 } from "@tanstack/react-table";
 import { useInfiniteQuery } from "@tanstack/react-query";
+import { useVirtual } from 'react-virtual'
 
 import type { Application } from "payload/generated-types";
+
+import useOnScreen from "../utils/useOnScreenHook";
 
 export type DataTableProps<Data extends object> = {
   fetchData: any;
@@ -83,17 +88,25 @@ const defaultColumn: Partial<ColumnDef<Application>> = {
 };
 
 export function DataTable<Data extends object>({
-  fetchData,
   columns,
+  fetchData,
   limit = 10,
   page = 1,
 }: DataTableProps<Data>) {
+  //we need a reference to the scrolling element for logic down below
+  const tableContainerRef = React.useRef<HTMLDivElement>(null);
   const lastRef = React.useRef<HTMLDivElement>(null);
-  const [sorting, setSorting] = React.useState<SortingState>([]); //react-query has an useInfiniteQuery hook just for this situation!
+  const [sorting, setSorting] = React.useState<SortingState>([]);
+  const isVisible = useOnScreen(tableContainerRef);
+
+  console.log('isVisible', isVisible);
+
+
+  //react-query has an useInfiniteQuery hook just for this situation!
   const { data, fetchNextPage, isFetching, isLoading } = useInfiniteQuery({
     queryKey: ["table-data", sorting], //adding sorting state as key causes table to reset and fetch from new beginning upon sort
     queryFn: async ({ pageParam }) => {
-      const fetchedData = fetchData(pageParam, limit, sorting); //pretend api call
+      const fetchedData = fetchData(pageParam, limit, sorting);
       return fetchedData;
     },
     initialPageParam: page,
@@ -111,9 +124,9 @@ export function DataTable<Data extends object>({
 
   //called on scroll and possibly on mount to fetch more data as the user scrolls and reaches bottom of table
   const fetchMore = React.useCallback(
-    (lastRef?: HTMLDivElement | null) => {
-      if (lastRef) {
-        const { scrollHeight, scrollTop, clientHeight } = lastRef;
+    (tableContainerRef?: HTMLDivElement | null) => {
+      if (tableContainerRef) {
+        const { scrollHeight, scrollTop, clientHeight } = tableContainerRef;
         //once the user has scrolled within 300px of the bottom of the table, fetch more data if there is any
         if (
           scrollHeight - scrollTop - clientHeight < 300 &&
@@ -127,7 +140,15 @@ export function DataTable<Data extends object>({
     [fetchNextPage, isFetching, totalFetched, totalDBRowCount],
   );
 
-  console.log("***flatData:", flatData);
+  // console.log("***flatData:", flatData);
+
+  React.useEffect(() => {
+    if (isVisible) {
+      fetchMore(tableContainerRef.current);
+    }
+  }, [fetchMore])
+
+
   const table = useReactTable({
     data: flatData,
     columns,
@@ -138,65 +159,113 @@ export function DataTable<Data extends object>({
     onSortingChange: setSorting,
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
-    //debugTable: true,
+    // debugTable: true,
   });
 
+  const { rows } = table.getRowModel()
+
+  //Virtualizing is optional, but might be necessary if we are going to potentially have hundreds or thousands of rows
+  const rowVirtualizer = useVirtual({
+    parentRef: tableContainerRef,
+    size: rows.length,
+    overscan: 10,
+  })
+  const { virtualItems: virtualRows, totalSize } = rowVirtualizer
+  const paddingTop = virtualRows.length > 0 ? virtualRows?.[0]?.start || 0 : 0
+  const paddingBottom =
+    virtualRows.length > 0
+      ? totalSize - (virtualRows?.[virtualRows.length - 1]?.end || 0)
+      : 0
+
   return (
-    <Table
-      variant="simple"
-      as="div"
-      onScroll={(e) => fetchMore(e.target as HTMLDivElement)}
-      ref={lastRef}
-    >
-      <Thead sx={{ left: 0, position: "sticky", top: 0, zIndex: 5 }}>
-        {table.getHeaderGroups().map((headerGroup, idx) => (
-          <Tr key={headerGroup.id} background={"gray.100"}>
-            {headerGroup.headers.map((header) => {
-              // see https://tanstack.com/table/v8/docs/api/core/column-def#meta to type this correctly
-              const meta: any = header.column.columnDef.meta;
-              return (
-                <Th
-                  key={header.id}
-                  onClick={header.column.getToggleSortingHandler()}
-                  isNumeric={meta?.isNumeric}
-                  sx={{ color: "gray.900", fontFamily: "Outfit, sans-serif" }}
-                >
-                  {flexRender(
-                    header.column.columnDef.header,
-                    header.getContext(),
-                  )}
+    <>
+      <Box
+        onScroll={e => fetchMore(e.target as HTMLDivElement)}
+        ref={tableContainerRef}
+        sx={{ height: "80vh", maxWidth: "3000px !important;", overflow: "auto" }}
+      >
+        <Table variant="simple">
+          <Thead sx={{ position: "sticky", top: 0, zIndex: 5 }}>
+            {table.getHeaderGroups().map((headerGroup) => (
+              <Tr key={headerGroup.id} background={"gray.100"}>
+                {headerGroup.headers.map((header) => {
+                  // see https://tanstack.com/table/v8/docs/api/core/column-def#meta to type this correctly
+                  const meta: any = header.column.columnDef.meta;
+                  return (
+                    <Th
+                      key={header.id}
+                      onClick={header.column.getToggleSortingHandler()}
+                      isNumeric={meta?.isNumeric}
+                      sx={{ color: "gray.900", fontFamily: "Outfit, sans-serif" }}
+                    >
+                      {flexRender(
+                        header.column.columnDef.header,
+                        header.getContext(),
+                      )}
 
-                  <chakra.span pl="4">
-                    {header.column.getIsSorted() ? (
-                      header.column.getIsSorted() === "desc" ? (
-                        <TriangleDownIcon aria-label="sorted descending" />
-                      ) : (
-                        <TriangleUpIcon aria-label="sorted ascending" />
-                      )
-                    ) : null}
-                  </chakra.span>
-                </Th>
-              );
-            })}
-          </Tr>
-        ))}
-      </Thead>
-      <Tbody>
-        {table.getRowModel().rows.map((row) => (
-          <Tr key={row.id}>
-            {row.getVisibleCells().map((cell) => {
-              // see https://tanstack.com/table/v8/docs/api/core/column-def#meta to type this correctly
-              const meta: any = cell.column.columnDef.meta;
-
+                      <chakra.span pl="4">
+                        {header.column.getIsSorted() ? (
+                          header.column.getIsSorted() === "desc" ? (
+                            <TriangleDownIcon aria-label="sorted descending" />
+                          ) : (
+                            <TriangleUpIcon aria-label="sorted ascending" />
+                          )
+                        ) : null}
+                      </chakra.span>
+                    </Th>
+                  );
+                })}
+              </Tr>
+            ))}
+          </Thead>
+          <Tbody>
+            {paddingTop > 0 && (
+              <tr>
+                <td style={{ height: `${paddingTop}px` }} />
+              </tr>
+            )}
+            {virtualRows.map(virtualRow => {
+              const row = rows[virtualRow.index] as Row<any>
               return (
-                <Td key={cell.id} isNumeric={meta?.isNumeric}>
-                  {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                </Td>
-              );
+                <Tr key={row.id}>
+                  {row.getVisibleCells().map(cell => {
+                    // see https://tanstack.com/table/v8/docs/api/core/column-def#meta to type this correctly
+                    const meta: any = cell.column.columnDef.meta;
+
+                    return (
+                      <Td key={cell.id} isNumeric={meta?.isNumeric}>
+                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                      </Td>
+                    );
+                  })}
+                </Tr>
+              )
             })}
-          </Tr>
-        ))}
-      </Tbody>
-    </Table>
+            {paddingBottom > 0 && (
+              <tr>
+                <td style={{ height: `${paddingBottom}px` }} />
+              </tr>
+            )}
+            {/* {table.getRowModel().rows.map((row) => (
+              <Tr key={row.id}>
+                {row.getVisibleCells().map((cell) => {
+                  // see https://tanstack.com/table/v8/docs/api/core/column-def#meta to type this correctly
+                  const meta: any = cell.column.columnDef.meta;
+
+                  return (
+                    <Td key={cell.id} isNumeric={meta?.isNumeric}>
+                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                    </Td>
+                  );
+                })}
+              </Tr>
+            ))} */}
+          </Tbody>
+        </Table>
+      </Box>
+      <div>
+        Fetched {flatData.length} of {totalDBRowCount} applications
+      </div>
+    </>
   );
 }

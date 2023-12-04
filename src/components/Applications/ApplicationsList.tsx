@@ -53,7 +53,8 @@ declare module "@tanstack/react-table" {
   }
 }
 
-export const ApplicationsList: React.FC<any> = () => {
+export const ApplicationsList: React.FC<any> = (props) => {
+  const { isTab } = props;
   const { search } = useLocation();
   const [applications, setApplications] = useState<ApplicationStats[]>([]);
   const [season, setSeason] = useState<Season>();
@@ -69,7 +70,7 @@ export const ApplicationsList: React.FC<any> = () => {
       accessorKey: "vendorName",
       cell: (info) => {
         const value: any = info.getValue();
-        console.log("***info.getValue()", value);
+        // console.log("***info.getValue()", value);
         return <span>{value}</span>;
       },
     },
@@ -89,7 +90,7 @@ export const ApplicationsList: React.FC<any> = () => {
         return (
           <Wrap>
             {gapsMet.map((gap: Product) => (
-              <WrapItem>
+              <WrapItem key={gap.id}>
                 <Tag marginRight={1} key={gap.id}>
                   {gap.product}
                 </Tag>
@@ -256,15 +257,15 @@ export const ApplicationsList: React.FC<any> = () => {
         );
       }
       setIsFetching(true);
-      console.log("***stringifiedQuery", stringifiedQuery);
-      console.log("***applications", applications);
+      // console.log("***stringifiedQuery", stringifiedQuery);
+      // console.log("***applications", applications);
       try {
         const res = await fetch(
           `/api/applications${stringifiedQuery ? stringifiedQuery : ""}`,
         );
         if (!res.ok) throw new Error(res.statusText);
         const newApplications = await res.json();
-        console.log("***newApplications", newApplications);
+        // console.log("***newApplications", newApplications);
         return newApplications;
       } catch (err) {
         console.error(err);
@@ -318,14 +319,15 @@ export const ApplicationsList: React.FC<any> = () => {
         <Flex wrap={{ base: "wrap", lg: "nowrap" }}>
           <Box
             p={4}
-            minW={230}
+            minWidth={230}
+            width={{ base: "100%", lg: 260}}
             marginBottom={{ base: 4, lg: 0 }}
             bg={"gray.100"}
           >
             <Heading as="h2" size="xl" sx={{ fontWeight: 600 }}>
               Filter
             </Heading>
-            <Flex wrap={{ base: "nowrap", lg: "wrap" }}>
+            <Flex wrap={"wrap"}>
               <FormControl>
                 <FormLabel
                   fontSize="sm"
@@ -377,8 +379,8 @@ export const ApplicationsList: React.FC<any> = () => {
               </FormControl>
             </Flex>
           </Box>
-          <Container maxW="container.xl">
-            <DataTable columns={columns} fetchData={getApplications} />
+          <Container maxW="container.2xl">
+            <DataTable columns={columns} fetchData={getApplications} waitToFetch={isTab} />
           </Container>
         </Flex>
       </>

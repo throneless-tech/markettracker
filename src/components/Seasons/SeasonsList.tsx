@@ -112,10 +112,6 @@ export const SeasonsList: React.FC<any> = ({ data }) => {
       setTabIndex(index);
     }
   }, []);
-  console.log(
-    "***seasons:",
-    seasons.map((season) => season.marketDates.startDate),
-  );
 
   return (
     seasons &&
