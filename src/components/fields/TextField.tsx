@@ -1,5 +1,11 @@
-import React, { FC } from "react";
+import React, { FC, useCallback } from "react";
+
+// Payload imports
 import { useField } from "payload/components/forms";
+import type { Condition, Validate } from "payload/types";
+import { text } from "payload/dist/fields/validations";
+
+// Chakra imports
 import {
   FormControl,
   FormHelperText,
@@ -7,11 +13,19 @@ import {
   Input,
 } from "@chakra-ui/react";
 
+// Local imports
+import { ErrorTooltip } from "../ErrorTooltip";
+
 type Props = {
   label: string;
+  minLength?: number;
+  maxLength?: number;
   path: string;
   required?: boolean;
+  type?: string;
+  validate?: Validate;
   admin?: {
+    condition?: Condition;
     description?: string;
     placeholder?: string;
   };
@@ -19,21 +33,39 @@ type Props = {
 
 export const TextField: FC<Props> = ({
   label,
+  minLength,
+  maxLength,
   path,
   required,
-  admin: { description, placeholder } = {},
+  type = "text",
+  validate = text,
+  admin: { condition, description, placeholder } = {},
 }) => {
-  const { value, setValue } = useField<string>({ path });
+  const memoizedValidate = useCallback(
+    (value: string, options: any) => {
+      return validate(value, { ...options, maxLength, minLength, required });
+    },
+    [validate, minLength, maxLength, required],
+  );
+
+  const { errorMessage, setValue, showError, value } = useField<string>({
+    condition,
+    path,
+    validate: memoizedValidate,
+  });
 
   return (
     <FormControl>
       <FormLabel>{label + (required ? " (Required)" : "")}</FormLabel>
       {description ? <FormHelperText>{description}</FormHelperText> : ""}
-      <Input
-        placeholder={placeholder}
-        value={value}
-        onChange={(e) => setValue(e.target.value)}
-      />
+      <ErrorTooltip message={errorMessage} showError={showError}>
+        <Input
+          placeholder={placeholder}
+          type={type}
+          value={value}
+          onChange={(e) => setValue(e.target.value)}
+        />
+      </ErrorTooltip>
     </FormControl>
   );
 };

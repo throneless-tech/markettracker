@@ -49,9 +49,11 @@ export const SeasonField: FC<Props> = ({ path, isSubmitted = false }) => {
   const [startTime, setStartTime] = useState<Date>();
   const [endTime, setEndTime] = useState<Date>();
   const [vendorSalesType, setVendorSalesType] = useState<Array<string>>();
-  const [marketReportSalesType, setMarketReportSalesType] = useState<Array<string>>();
-  const [farmersRegisterSalesType, setFarmersRegisterSalesType] = useState<Array<string>>();
-  const [operators, setOperators] = useState<Array<User>>();
+  const [marketReportSalesType, setMarketReportSalesType] =
+    useState<Array<string>>();
+  const [farmersRegisterSalesType, setFarmersRegisterSalesType] =
+    useState<Array<string>>();
+  const [operators, setOperators] = useState<Array<string>>();
   const [productGaps, setProductGaps] = useState<Array<Product>>();
   const [market, setMarket] = useState<Market>();
 
@@ -116,7 +118,7 @@ export const SeasonField: FC<Props> = ({ path, isSubmitted = false }) => {
               farmersRegisterSalesType,
               operators,
               productGaps,
-              market
+              market,
             }),
           });
           if (!response.ok) {
@@ -129,7 +131,7 @@ export const SeasonField: FC<Props> = ({ path, isSubmitted = false }) => {
         }
       } else {
         try {
-          const req = await fetch('/api/seasons', {
+          const req = await fetch("/api/seasons", {
             method: "POST",
             credentials: "include",
             headers: {
@@ -151,13 +153,13 @@ export const SeasonField: FC<Props> = ({ path, isSubmitted = false }) => {
               farmersRegisterSalesType,
               operators,
               productGaps,
-              market
+              market,
             }),
-          })
-          const data = await req.json()
+          });
+          const data = await req.json();
           setSeason(data.doc);
         } catch (err) {
-          console.log(err)
+          console.log(err);
         }
       }
     };
@@ -197,11 +199,14 @@ export const SeasonField: FC<Props> = ({ path, isSubmitted = false }) => {
         <FormLabel as="div" fontWeight={500} textStyle="bodyMain">
           Market operators
         </FormLabel>
-        <FormHelperText>Select which operators will be onsite and supervising during the market</FormHelperText>
+        <FormHelperText>
+          Select which operators will be onsite and supervising during the
+          market
+        </FormHelperText>
         <CheckboxGroup
           colorScheme="green"
           value={operators}
-          onChange={(newValue) => setOperators(newValue as User[])}
+          onChange={(newValue) => setOperators(newValue as string[])}
         >
           <HStack>
             <Checkbox value="1">Manager 1</Checkbox>

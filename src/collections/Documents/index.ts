@@ -4,9 +4,9 @@ import { emptyProfileNotifications } from "./hooks/emptyProfileNotifications";
 
 export const Documents: CollectionConfig = {
   slug: "documents",
-  hooks: {
-    afterChange: [emptyProfileNotifications],
-  },
+  // hooks: {
+  //   afterChange: [emptyProfileNotifications],
+  // },
   upload: {
     staticURL: "/documents",
     staticDir: "documents",
@@ -26,6 +26,21 @@ export const Documents: CollectionConfig = {
         },
         description: "example 01/15/2023",
       },
+    },
+    {
+      name: "type",
+      label: "Document Type",
+      type: "select",
+      options: [
+        {
+          value: "license",
+          label: "Business License",
+        },
+        {
+          value: "insurance",
+          label: "Business Insurance Documentation",
+        },
+      ],
     },
   ],
 };
