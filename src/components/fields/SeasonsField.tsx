@@ -21,6 +21,9 @@ import {
   Textarea,
 } from "@chakra-ui/react";
 
+// Local imports
+import { ErrorTooltip } from "../ErrorTooltip";
+
 type Props = {
   path: string;
   isSubmitted?: boolean;

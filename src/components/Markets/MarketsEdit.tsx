@@ -215,10 +215,10 @@ export const MarketsEdit: React.FC<any> = (props) => {
     setIsSubmitted(true);
     console.log('market: ', market);
     
-    history.push({
-      pathname: `/admin/collections/seasons/create`,
-      state: market,
-    });
+    // history.push({
+    //   pathname: `/admin/collections/seasons/create`,
+    //   state: market,
+    // });
   };
 
   const onSaveContact = ({ data, isError }) => {

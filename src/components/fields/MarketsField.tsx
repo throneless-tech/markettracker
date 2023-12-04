@@ -1,5 +1,5 @@
-import React, { FC, useEffect, useState } from "react";
-import { useField } from "payload/components/forms";
+import React, { FC, useCallback, useEffect, useState } from "react";
+import { Submit, useField, useForm } from "payload/components/forms";
 import {
   Checkbox,
   CheckboxGroup,
@@ -16,6 +16,9 @@ import {
   Stack,
   Textarea,
 } from "@chakra-ui/react";
+
+// Local imports
+import { ErrorTooltip } from "../ErrorTooltip";
 
 type Props = {
   path: string;
@@ -35,6 +38,7 @@ type Size = "flagship" | "large" | "medium" | "small" | "stand";
 type Focus = "neighborhood" | "downtown" | "grocery" | "prepared";
 
 export const MarketField: FC<Props> = ({ path, isSubmitted = false, setThisMarket }) => {
+  const { submit, validateForm } = useForm();
   const { value } = useField<string>({ path });
   const [name, setName] = useState<string>();
   const [street, setStreet] = useState<string>();
@@ -60,6 +64,21 @@ export const MarketField: FC<Props> = ({ path, isSubmitted = false, setThisMarke
     setDescription(data.description);
   };
 
+  // form validation
+  // const memoizedValidate = useCallback(
+  //   (value: string, options: any) => {
+  //     return validate(value, { ...options, maxLength, minLength, required });
+  //   },
+  //   [validate],
+  // );
+
+  // const { errorMessage, setValue, showError } = useField<string>({
+  //   condition,
+  //   path,
+  //   validate: memoizedValidate,
+  // });
+
+  // submit form
   useEffect(() => {
     if (!value) return;
 
@@ -83,6 +102,10 @@ export const MarketField: FC<Props> = ({ path, isSubmitted = false, setThisMarke
     if (!isSubmitted) return;
 
     const sendData = async () => {
+      // const validate = await validateForm();
+      // if (!validate) {
+      //   console.log(validate);
+      // }
       if (value) { 
         try {
           const response = await fetch(`/api/markets/${value}`, {
@@ -146,6 +169,8 @@ export const MarketField: FC<Props> = ({ path, isSubmitted = false, setThisMarke
     };
 
     sendData();
+    
+    // submit();
   }, [isSubmitted]);
 
   return (
@@ -163,12 +188,14 @@ export const MarketField: FC<Props> = ({ path, isSubmitted = false, setThisMarke
             <FormLabel as="div" textStyle="bodyMain" fontWeight={500}>
               Market address (required)
             </FormLabel>
+          {/* <ErrorTooltip message={errorMessage} showError={showError}> */}
             <Input
               placeholder="Street"
               value={street}
               onChange={(e) => setStreet(e.target.value)}
               isRequired
             />
+          {/* </ErrorTooltip> */}
           </FormControl>
           <Flex gap={2}>
             <Input
