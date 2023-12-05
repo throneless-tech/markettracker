@@ -124,7 +124,7 @@ export const SeasonsEdit: React.FC<any> = (props) => {
   };
 
   useEffect(() => {
-    if (operators && !isLoaded) {
+    if (!isLoaded) {
       const query = {
         role: {
           equals: "operator",
@@ -149,7 +149,7 @@ export const SeasonsEdit: React.FC<any> = (props) => {
 
       getOps();
     }
-  }, [operators]);
+  }, []);
 
   console.log("history state: ", history.location.state);
 
@@ -813,7 +813,7 @@ export const SeasonsEdit: React.FC<any> = (props) => {
                     </HStack>
                     <HStack marginTop={2}>
                       {users.reduce((acc, user) => {
-                        if (operators.includes(user.id)) {
+                        if (operators && operators.includes(user.id)) {
                           acc.push(
                             <>
                               {user.name}
