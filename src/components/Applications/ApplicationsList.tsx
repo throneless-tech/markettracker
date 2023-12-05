@@ -57,13 +57,12 @@ export const ApplicationsList: React.FC<any> = () => {
   const [isFetching, setIsFetching] = useState<boolean>(false);
   const lastRef = React.useRef<HTMLDivElement>(null);
 
-
   // table
   const columns: ColumnDef<Application>[] = [
     {
       header: "Vendor name",
       accessorKey: "vendorName",
-      filterFn: 'fuzzy',
+      filterFn: "fuzzy",
       cell: (info) => {
         const value: any = info.getValue();
         // console.log("***info.getValue()", value);
@@ -209,7 +208,7 @@ export const ApplicationsList: React.FC<any> = () => {
       }
       const searchQuery = searchParams.get("search");
       if (searchQuery) {
-        queries.push({ name: { like: searchQuery } });
+        queries.push({ "vendor.name": { like: searchQuery } });
       }
       const accepting = searchParams.get("accepting");
       if (accepting === "true") {
@@ -253,7 +252,7 @@ export const ApplicationsList: React.FC<any> = () => {
         );
       }
       setIsFetching(true);
-      // console.log("***stringifiedQuery", stringifiedQuery);
+      //console.log("***stringifiedQuery", stringifiedQuery);
       // console.log("***applications", applications);
       try {
         const res = await fetch(
@@ -261,7 +260,7 @@ export const ApplicationsList: React.FC<any> = () => {
         );
         if (!res.ok) throw new Error(res.statusText);
         const newApplications = await res.json();
-        // console.log("***newApplications", newApplications);
+        console.log("***newApplications", newApplications);
         return newApplications;
       } catch (err) {
         console.error(err);
