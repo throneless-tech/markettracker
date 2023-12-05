@@ -214,7 +214,7 @@ export const MarketsEdit: React.FC<any> = (props) => {
     console.log("isSubmitted: ", isSubmitted);
     if (market && isSubmitted) {
       history.push({
-        pathname: `/admin/collections/seasons/create?market=${market.id}`,
+        pathname: `/admin/collections/seasons/create`,
         state: market,
       });
     }

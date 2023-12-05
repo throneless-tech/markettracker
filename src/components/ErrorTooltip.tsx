@@ -19,6 +19,7 @@ export const ErrorTooltip: React.FC<Props> = (props) => {
     return (
       <Tooltip
         placement={alignCaret === "center" ? "bottom" : alignCaret}
+        defaultIsOpen
         className={baseClass}
         openDelay={0}
         label={message}
@@ -28,5 +29,5 @@ export const ErrorTooltip: React.FC<Props> = (props) => {
     );
   }
 
-  return null;
+  return children;
 };
