@@ -566,7 +566,7 @@ export const SeasonsEdit: React.FC<any> = (props) => {
                                     value={operators}
                                   >
                                     {users?.length && (
-                                      <HStack spacing={4}>
+                                      <Stack spacing={4}>
                                         {users.map((user) => (
                                           <Checkbox
                                             key={user.id}
@@ -581,7 +581,7 @@ export const SeasonsEdit: React.FC<any> = (props) => {
                                             </Tag>
                                           </Checkbox>
                                         ))}
-                                      </HStack>
+                                      </Stack>
                                     )}
                                   </CheckboxGroup>{" "}
                                 </Stack>
