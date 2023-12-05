@@ -1,6 +1,20 @@
 import * as React from "react";
 import {
+  Box,
+  Checkbox,
+  CheckboxGroup,
+  Container,
+  Flex,
+  FormControl,
+  FormLabel,
+  Heading,
+  Input,
+  InputGroup,
+  InputLeftElement,
+  Radio,
+  RadioGroup,
   Select,
+  Stack,
   Table,
   Thead,
   Tbody,
@@ -11,16 +25,30 @@ import {
 } from "@chakra-ui/react";
 import { TriangleDownIcon, TriangleUpIcon } from "@chakra-ui/icons";
 import {
-  useReactTable,
   flexRender,
   getCoreRowModel,
-  ColumnDef,
-  SortingState,
   getSortedRowModel,
+  useReactTable,
+  ColumnDef,
+  FilterFn,
+  SortingState,
+  Row,
 } from "@tanstack/react-table";
 import { useInfiniteQuery } from "@tanstack/react-query";
+import {
+  RankingInfo,
+  rankItem,
+  compareItems,
+} from '@tanstack/match-sorter-utils'
+import { useVirtual } from 'react-virtual'
 
 import type { Application } from "payload/generated-types";
+
+// chakra icons
+import { Search2Icon } from "@chakra-ui/icons";
+
+// utils + react hooks
+import useOnScreen from "../utils/useOnScreenHook";
 
 export type DataTableProps<Data extends object> = {
   fetchData: any;
@@ -28,6 +56,28 @@ export type DataTableProps<Data extends object> = {
   limit?: number;
   page?: number;
 };
+
+declare module '@tanstack/table-core' {
+  interface FilterFns {
+    fuzzy: FilterFn<unknown>
+  }
+  interface FilterMeta {
+    itemRank: RankingInfo
+  }
+}
+
+const fuzzyFilter: FilterFn<any> = (row, columnId, value, addMeta) => {
+  // Rank the item
+  const itemRank = rankItem(row.getValue(columnId), value)
+
+  // Store the itemRank info
+  addMeta({
+    itemRank,
+  })
+
+  // Return if the item should be filtered in/out
+  return itemRank.passed
+}
 
 const onChange = async (newStatus: string, id: string) => {
   try {
@@ -83,17 +133,26 @@ const defaultColumn: Partial<ColumnDef<Application>> = {
 };
 
 export function DataTable<Data extends object>({
-  fetchData,
   columns,
+  fetchData,
   limit = 10,
   page = 1,
 }: DataTableProps<Data>) {
-  const lastRef = React.useRef<HTMLDivElement>(null);
-  const [sorting, setSorting] = React.useState<SortingState>([]); //react-query has an useInfiniteQuery hook just for this situation!
-  const { data, fetchNextPage, isFetching, isLoading } = useInfiniteQuery({
+
+  // filter settings
+  const [value, setValue] = React.useState("all");
+  const [globalFilter, setGlobalFilter] = React.useState('')
+
+  //we need a reference to the scrolling element for logic down below
+  const tableContainerRef = React.useRef<HTMLDivElement>(null);
+  const [sorting, setSorting] = React.useState<SortingState>([]);
+  const isVisible = useOnScreen(tableContainerRef);
+
+  //react-query has an useInfiniteQuery hook just for this situation!
+  const { data, fetchNextPage, hasNextPage, isFetching } = useInfiniteQuery({
     queryKey: ["table-data", sorting], //adding sorting state as key causes table to reset and fetch from new beginning upon sort
     queryFn: async ({ pageParam }) => {
-      const fetchedData = fetchData(pageParam, limit, sorting); //pretend api call
+      const fetchedData = fetchData(pageParam, limit, sorting);
       return fetchedData;
     },
     initialPageParam: page,
@@ -111,92 +170,226 @@ export function DataTable<Data extends object>({
 
   //called on scroll and possibly on mount to fetch more data as the user scrolls and reaches bottom of table
   const fetchMore = React.useCallback(
-    (lastRef?: HTMLDivElement | null) => {
-      if (lastRef) {
-        const { scrollHeight, scrollTop, clientHeight } = lastRef;
+    (tableContainerRef?: HTMLDivElement | null) => {
+      if (tableContainerRef) {
+        const { scrollHeight, scrollTop, clientHeight } = tableContainerRef;
         //once the user has scrolled within 300px of the bottom of the table, fetch more data if there is any
         if (
           scrollHeight - scrollTop - clientHeight < 300 &&
-          !isFetching &&
+          hasNextPage && !isFetching &&
           totalFetched < totalDBRowCount
         ) {
-          fetchNextPage();
+          fetchNextPage({ cancelRefetch: false });
         }
       }
     },
     [fetchNextPage, isFetching, totalFetched, totalDBRowCount],
   );
 
-  console.log("***flatData:", flatData);
+  // console.log("***flatData:", flatData);
+  // console.log("***data:", data);
+  console.log("global filter:", globalFilter);
+
+  React.useEffect(() => {
+    if (isVisible) {
+      fetchMore(tableContainerRef.current);
+    }
+  }, [fetchMore])
+
+
   const table = useReactTable({
     data: flatData,
     columns,
     defaultColumn,
+    filterFns: {
+      fuzzy: fuzzyFilter,
+    },
     state: {
+      globalFilter,
       sorting,
     },
+    onGlobalFilterChange: setGlobalFilter,
+    globalFilterFn: fuzzyFilter,
     onSortingChange: setSorting,
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
-    //debugTable: true,
+    // debugTable: true,
   });
 
+  const { rows } = table.getRowModel()
+
+  //Virtualizing is optional, but might be necessary if we are going to potentially have hundreds or thousands of rows
+  const rowVirtualizer = useVirtual({
+    parentRef: tableContainerRef,
+    size: rows.length,
+    overscan: 10,
+  })
+  const { virtualItems: virtualRows, totalSize } = rowVirtualizer
+  const paddingTop = virtualRows.length > 0 ? virtualRows?.[0]?.start || 0 : 0
+  const paddingBottom =
+    virtualRows.length > 0
+      ? totalSize - (virtualRows?.[virtualRows.length - 1]?.end || 0)
+      : 0
+
   return (
-    <Table
-      variant="simple"
-      as="div"
-      onScroll={(e) => fetchMore(e.target as HTMLDivElement)}
-      ref={lastRef}
-    >
-      <Thead sx={{ left: 0, position: "sticky", top: 0, zIndex: 5 }}>
-        {table.getHeaderGroups().map((headerGroup, idx) => (
-          <Tr key={headerGroup.id} background={"gray.100"}>
-            {headerGroup.headers.map((header) => {
-              // see https://tanstack.com/table/v8/docs/api/core/column-def#meta to type this correctly
-              const meta: any = header.column.columnDef.meta;
-              return (
-                <Th
-                  key={header.id}
-                  onClick={header.column.getToggleSortingHandler()}
-                  isNumeric={meta?.isNumeric}
-                  sx={{ color: "gray.900", fontFamily: "Outfit, sans-serif" }}
-                >
-                  {flexRender(
-                    header.column.columnDef.header,
-                    header.getContext(),
-                  )}
+    <>
+      <Flex wrap={{ base: "wrap", lg: "nowrap" }}>
+        <Box
+          p={4}
+          minWidth={230}
+          width={{ base: "100%", lg: 260 }}
+          marginBottom={{ base: 4, lg: 0 }}
+          bg={"gray.100"}
+        >
+          <Heading as="h2" size="xl" sx={{ fontWeight: 600 }}>
+            Filter
+          </Heading>
+          <Flex wrap={"wrap"}>
+            <FormControl>
+              <FormLabel
+                fontSize="sm"
+                sx={{ fontWeight: 900, textTransform: "uppercase" }}
+              >
+                Search for market
+              </FormLabel>
+              <InputGroup>
+                <InputLeftElement pointerEvents="none">
+                  <Search2Icon color="gray.300" />
+                </InputLeftElement>
+                <Input
+                  onChange={value => setGlobalFilter(String(value))}
+                  placeholder="Start typing"
+                  value={globalFilter ?? ''}
+                />
+              </InputGroup>
+            </FormControl>
+            <FormControl marginTop={4}>
+              <FormLabel
+                fontSize="sm"
+                sx={{ fontWeight: 900, textTransform: "uppercase" }}
+              >
+                Show
+              </FormLabel>
+              <RadioGroup
+                colorScheme="green"
+                onChange={setValue}
+                value={value}
+              >
+                <Stack direction="column">
+                  <Radio value="all">All markets</Radio>
+                  <Radio value="open">
+                    Only markets accepting applications
+                  </Radio>
+                </Stack>
+              </RadioGroup>
+            </FormControl>
+            <FormControl marginTop={4}>
+              <FormLabel
+                fontSize="sm"
+                sx={{ fontWeight: 900, textTransform: "uppercase" }}
+              >
+                Market location
+              </FormLabel>
+              <CheckboxGroup colorScheme="green">
+                <Stack spacing={2} direction="column">
+                  <Checkbox value="DC">DC</Checkbox>
+                  <Checkbox value="MD">Maryland</Checkbox>
+                  <Checkbox value="VA">Virginia</Checkbox>
+                </Stack>
+              </CheckboxGroup>
+            </FormControl>
+          </Flex>
+        </Box>
+        <Container maxW="container.2xl">
+          <Box
+            onScroll={e => fetchMore(e.target as HTMLDivElement)}
+            ref={tableContainerRef}
+            sx={{ height: "80vh", maxWidth: "3000px !important;", overflow: "auto" }}
+          >
+            <Table variant="simple">
+              <Thead sx={{ position: "sticky", top: 0, zIndex: 5 }}>
+                {table.getHeaderGroups().map((headerGroup) => (
+                  <Tr key={headerGroup.id} background={"gray.100"}>
+                    {headerGroup.headers.map((header) => {
+                      // see https://tanstack.com/table/v8/docs/api/core/column-def#meta to type this correctly
+                      const meta: any = header.column.columnDef.meta;
+                      return (
+                        <Th
+                          key={header.id}
+                          onClick={header.column.getToggleSortingHandler()}
+                          isNumeric={meta?.isNumeric}
+                          sx={{ color: "gray.900", fontFamily: "Outfit, sans-serif" }}
+                        >
+                          {flexRender(
+                            header.column.columnDef.header,
+                            header.getContext(),
+                          )}
 
-                  <chakra.span pl="4">
-                    {header.column.getIsSorted() ? (
-                      header.column.getIsSorted() === "desc" ? (
-                        <TriangleDownIcon aria-label="sorted descending" />
-                      ) : (
-                        <TriangleUpIcon aria-label="sorted ascending" />
-                      )
-                    ) : null}
-                  </chakra.span>
-                </Th>
-              );
-            })}
-          </Tr>
-        ))}
-      </Thead>
-      <Tbody>
-        {table.getRowModel().rows.map((row) => (
-          <Tr key={row.id}>
-            {row.getVisibleCells().map((cell) => {
-              // see https://tanstack.com/table/v8/docs/api/core/column-def#meta to type this correctly
-              const meta: any = cell.column.columnDef.meta;
+                          <chakra.span pl="4">
+                            {header.column.getIsSorted() ? (
+                              header.column.getIsSorted() === "desc" ? (
+                                <TriangleDownIcon aria-label="sorted descending" />
+                              ) : (
+                                <TriangleUpIcon aria-label="sorted ascending" />
+                              )
+                            ) : null}
+                          </chakra.span>
+                        </Th>
+                      );
+                    })}
+                  </Tr>
+                ))}
+              </Thead>
+              <Tbody>
+                {paddingTop > 0 && (
+                  <tr>
+                    <td style={{ height: `${paddingTop}px` }} />
+                  </tr>
+                )}
+                {virtualRows.map(virtualRow => {
+                  const row = rows[virtualRow.index] as Row<any>
+                  return (
+                    <Tr key={row.id}>
+                      {row.getVisibleCells().map(cell => {
+                        // see https://tanstack.com/table/v8/docs/api/core/column-def#meta to type this correctly
+                        const meta: any = cell.column.columnDef.meta;
 
-              return (
-                <Td key={cell.id} isNumeric={meta?.isNumeric}>
-                  {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                </Td>
-              );
-            })}
-          </Tr>
-        ))}
-      </Tbody>
-    </Table>
+                        return (
+                          <Td key={cell.id} isNumeric={meta?.isNumeric}>
+                            {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                          </Td>
+                        );
+                      })}
+                    </Tr>
+                  )
+                })}
+                {paddingBottom > 0 && (
+                  <tr>
+                    <td style={{ height: `${paddingBottom}px` }} />
+                  </tr>
+                )}
+                {/* {table.getRowModel().rows.map((row) => (
+              <Tr key={row.id}>
+                {row.getVisibleCells().map((cell) => {
+                  // see https://tanstack.com/table/v8/docs/api/core/column-def#meta to type this correctly
+                  const meta: any = cell.column.columnDef.meta;
+
+                  return (
+                    <Td key={cell.id} isNumeric={meta?.isNumeric}>
+                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                    </Td>
+                  );
+                })}
+              </Tr>
+            ))} */}
+              </Tbody>
+            </Table>
+          </Box>
+          <div>
+            Fetched {flatData.length} of {totalDBRowCount} applications
+          </div>
+        </Container>
+      </Flex>
+    </>
   );
 }
