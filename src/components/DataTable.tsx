@@ -1,4 +1,5 @@
 import * as React from "react";
+import { useHistory } from "react-router-dom";
 import {
   Box,
   Checkbox,
@@ -138,6 +139,7 @@ export function DataTable<Data extends object>({
   limit = 10,
   page = 1,
 }: DataTableProps<Data>) {
+  const history = useHistory();
   // filter settings
   const [value, setValue] = React.useState("all");
   const [globalFilter, setGlobalFilter] = React.useState("");
@@ -146,6 +148,17 @@ export function DataTable<Data extends object>({
   const tableContainerRef = React.useRef<HTMLDivElement>(null);
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const isVisible = useOnScreen(tableContainerRef);
+  const [searchBox, setSearchBox] = React.useState("");
+
+  const searchViaBox = (e) => {
+    if (e.key == "Enter" && e.code == "Enter") {
+      history.push({
+        pathname: `/admin/collections/applications`,
+        search: `?limit=10&search=${searchBox}`,
+      });
+      history.go(0);
+    }
+  };
 
   //react-query has an useInfiniteQuery hook just for this situation!
   const { data, fetchNextPage, hasNextPage, isFetching } = useInfiniteQuery({
@@ -256,9 +269,10 @@ export function DataTable<Data extends object>({
                   <Search2Icon color="gray.300" />
                 </InputLeftElement>
                 <Input
-                  onChange={(value) => setGlobalFilter(String(value))}
+                  onChange={(e) => setSearchBox(e.target.value)}
+                  onKeyDown={searchViaBox}
                   placeholder="Start typing"
-                  value={globalFilter ?? ""}
+                  value={searchBox}
                 />
               </InputGroup>
             </FormControl>
