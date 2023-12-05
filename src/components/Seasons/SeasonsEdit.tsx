@@ -142,6 +142,7 @@ export const SeasonsEdit: React.FC<any> = (props) => {
         let newContacts = await response.json();
 
         newContacts = newContacts.docs;
+        console.log("***newContacts:", newContacts);
         setUsers(newContacts);
         setIsLoaded(true);
       };
