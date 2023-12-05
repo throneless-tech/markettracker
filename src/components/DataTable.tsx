@@ -262,6 +262,7 @@ export function DataTable<Data extends object>({
                 />
               </InputGroup>
             </FormControl>
+            {/*
             <FormControl marginTop={4}>
               <FormLabel
                 fontSize="sm"
@@ -293,6 +294,7 @@ export function DataTable<Data extends object>({
                 </Stack>
               </CheckboxGroup>
             </FormControl>
+            */}
           </Flex>
         </Box>
         <Container maxW="container.2xl">
