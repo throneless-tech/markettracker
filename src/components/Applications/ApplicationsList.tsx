@@ -202,9 +202,9 @@ export const ApplicationsList: React.FC<any> = () => {
       if (isFetching) return;
       const searchParams = new URLSearchParams(search);
       const queries = [];
-      const id = season?.id ? season.id : "";
-      if (id !== "") {
-        queries.push({ season: { equals: id } });
+      const seasonId = searchParams.get("season");
+      if (seasonId) {
+        queries.push({ season: { equals: seasonId } });
       }
       const searchQuery = searchParams.get("search");
       if (searchQuery) {
