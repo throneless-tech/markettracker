@@ -63,6 +63,7 @@ export const ApplicationsList: React.FC<any> = () => {
       header: "Vendor name",
       accessorKey: "vendorName",
       filterFn: "fuzzy",
+      enableSorting: false,
       cell: (info) => {
         const value: any = info.getValue();
         // console.log("***info.getValue()", value);
@@ -72,6 +73,7 @@ export const ApplicationsList: React.FC<any> = () => {
     {
       header: "Vendor type",
       accessorKey: "vendorType",
+      enableSorting: false,
       cell: (info) => {
         const value: any = info.getValue();
         return <span>{value}</span>;
@@ -98,6 +100,7 @@ export const ApplicationsList: React.FC<any> = () => {
     {
       header: "Market name",
       accessorKey: "seasonName",
+      enableSorting: false,
       cell: (info) => {
         const value: any = info.getValue();
         return <span>{value}</span>;
@@ -106,6 +109,7 @@ export const ApplicationsList: React.FC<any> = () => {
     {
       header: "# of applications",
       accessorKey: "numberOfApplications",
+      enableSorting: false,
       cell: (info) => {
         const value: any = info.getValue();
         return <span>{value}</span>;
@@ -114,6 +118,7 @@ export const ApplicationsList: React.FC<any> = () => {
     {
       header: "# of markets",
       accessorKey: "numberOfMarkets",
+      enableSorting: false,
       cell: (info) => {
         const value: any = info.getValue();
         return <span>{value}</span>;
@@ -122,6 +127,7 @@ export const ApplicationsList: React.FC<any> = () => {
     {
       header: "Priority group",
       accessorKey: "vendorDemographics",
+      enableSorting: false,
       cell: (demoCell) => {
         const demos: any = demoCell.getValue();
         return demos && typeof demos === "object"
@@ -150,6 +156,7 @@ export const ApplicationsList: React.FC<any> = () => {
     {
       header: "Standing",
       accessorKey: "vendorStanding",
+      enableSorting: false,
       cell: (standingCell) => {
         const standing: any = standingCell.getValue();
         return <Tag>{standing ? standing : "Good"}</Tag>;
@@ -163,6 +170,7 @@ export const ApplicationsList: React.FC<any> = () => {
     {
       header: "Grade (AVG)",
       accessorKey: "reviewScore",
+      enableSorting: false,
       cell: (info) => {
         const value: any = info.getValue();
         return <span>{value}</span>;
@@ -171,6 +179,7 @@ export const ApplicationsList: React.FC<any> = () => {
     {
       header: "Application status",
       accessorKey: "status",
+      enableSorting: false,
       // cell not included because it is defined as editable in ../DataTable.tsx
     },
   ];
