@@ -47,6 +47,9 @@ export const MarketsList: React.FC<any> = (props) => {
 
   const handleTabsChange = (index) => {
     setTabIndex(index);
+    if (index == 2) {
+      history.push("/admin/collections/applications");
+    }
   };
 
   const reviewApplication = (app) => {

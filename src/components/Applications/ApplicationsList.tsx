@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { useHistory, useLocation } from "react-router-dom";
+import { useAuth } from "payload/components/utilities";
+import { Redirect, useHistory, useLocation } from "react-router-dom";
 import qs from "qs";
 
 // Chakra imports
@@ -21,6 +22,12 @@ import {
   RadioGroup,
   Spacer,
   Stack,
+  Tab,
+  TabIndicator,
+  TabList,
+  TabPanel,
+  TabPanels,
+  Tabs,
   Tag,
   Text,
   Wrap,
@@ -32,6 +39,10 @@ import { ColumnDef, RowData } from "@tanstack/react-table";
 
 // components
 import { DataTable } from "../DataTable";
+import { FooterAdmin } from "../FooterAdmin";
+
+// chakra icons
+import { Search2Icon } from "@chakra-ui/icons";
 
 // local icons
 import StarIcon from "../../assets/icons/star.js";
@@ -51,11 +62,33 @@ declare module "@tanstack/react-table" {
 }
 
 export const ApplicationsList: React.FC<any> = () => {
+  const { user } = useAuth();
   const { search } = useLocation();
+  const history = useHistory();
   const [applications, setApplications] = useState<ApplicationStats[]>([]);
   const [season, setSeason] = useState<Season>();
   const [isFetching, setIsFetching] = useState<boolean>(false);
   const lastRef = React.useRef<HTMLDivElement>(null);
+  const [filter, setFilter] = React.useState("");
+  const [tabIndex, setTabIndex] = useState(0);
+
+  // tab settings
+  const handleTabsChange = (index) => {
+    setTabIndex(index);
+  };
+
+  useEffect(() => {
+    if (history.location.search.indexOf("tab") > -1) {
+      let index = history.location.search.indexOf("tab") + 4;
+      index = Number(history.location.search.charAt(index));
+      index = index - 1;
+      setTabIndex(index);
+    }
+  }, []);
+
+  useEffect(() => {
+    console.log(tabIndex);
+  }, [tabIndex]);
 
   // table
   const columns: ColumnDef<Application>[] = [
@@ -175,6 +208,16 @@ export const ApplicationsList: React.FC<any> = () => {
     },
   ];
 
+  // search input box filter
+  const searchViaFilter = (e) => {
+    if (e.key == "Enter" && e.code == "Enter") {
+      history.push({
+        pathname: `/admin/collections/applications?search=${filter}`,
+      });
+    }
+  };
+  useEffect(() => {}, [filter]);
+
   useEffect(() => {
     let seasonId: string;
     if (search && typeof search === "string") {
@@ -207,8 +250,10 @@ export const ApplicationsList: React.FC<any> = () => {
         queries.push({ season: { equals: id } });
       }
       const searchQuery = searchParams.get("search");
-      if (searchQuery) {
-        queries.push({ "vendor.name": { like: searchQuery } });
+      if (searchQuery || filter) {
+        queries.push({
+          "vendor.name": { like: searchQuery ? searchQuery : filter },
+        });
       }
       const accepting = searchParams.get("accepting");
       if (accepting === "true") {
@@ -274,44 +319,175 @@ export const ApplicationsList: React.FC<any> = () => {
   if (applications) {
     return (
       <>
-        {season && season.market && typeof season.market === "object" ? (
-          <Container maxW="container.xl">
-            <Flex>
-              <Heading
-                as="h2"
-                sx={{ textTransform: "uppercase" }}
-                marginTop={4}
+        <Tabs
+          defaultIndex={tabIndex}
+          index={tabIndex}
+          onChange={handleTabsChange}
+          position="relative"
+          variant="unstyled"
+          colorScheme="teal"
+        >
+          <TabList bg={"gray.50"}>
+            <>
+              <Tab
+                _selected={{ color: "#000", fontWeight: "700" }}
+                sx={{ fontSize: 16 }}
               >
-                <Text as={"span"}>Review</Text>{" "}
-                <Text as={"span"} sx={{ fontWeight: 700 }}>
-                  {season.name}
-                </Text>{" "}
-                <Text as={"span"}>applications</Text>
-              </Heading>
-              {season.isAccepting ? (
-                <>
-                  <Spacer />
-                  <HStack>
-                    <Text
-                      color={"gray.700"}
-                      fontSize="sm"
-                      fontWeight={700}
-                      textAlign={"right"}
-                      textTransform={"uppercase"}
-                      width={28}
-                    >
-                      Accepting applications
-                    </Text>
-                    <StarIcon height={8} width={8} />
-                  </HStack>
-                </>
+                Markets
+              </Tab>
+              <Tab
+                _selected={{ color: "#000", fontWeight: "700" }}
+                sx={{ fontSize: 16 }}
+              >
+                Market Applications
+              </Tab>
+              {user.role == "vendor" ? null : (
+                <Tab
+                  _selected={{ color: "#000", fontWeight: "700" }}
+                  sx={{ fontSize: 16 }}
+                >
+                  Market Reports
+                </Tab>
+              )}
+            </>
+          </TabList>
+          <TabIndicator
+            mt="-1.5px"
+            height="2px"
+            bg="blue.400"
+            borderRadius="1px"
+            color={"gray.600"}
+          />
+          <TabPanels>
+            <TabPanel>
+              {tabIndex != 0 && tabIndex != 1 ? (
+                <Redirect
+                  to={{
+                    pathname: "/admin/collections/seasons",
+                  }}
+                />
               ) : null}
-            </Flex>
-            <Text>{season.market.description}</Text>
-            <Divider color="gray.900" borderBottomWidth={2} opacity={1} />
-          </Container>
-        ) : null}
-        <DataTable columns={columns} fetchData={getApplications} />
+            </TabPanel>
+            <TabPanel>
+              {season && season.market && typeof season.market === "object" ? (
+                <Container maxW="container.xl">
+                  <Flex>
+                    <Heading
+                      as="h2"
+                      sx={{ textTransform: "uppercase" }}
+                      marginTop={4}
+                    >
+                      <Text as={"span"}>Review</Text>{" "}
+                      <Text as={"span"} sx={{ fontWeight: 700 }}>
+                        {season.name}
+                      </Text>{" "}
+                      <Text as={"span"}>applications</Text>
+                    </Heading>
+                    {season.isAccepting ? (
+                      <>
+                        <Spacer />
+                        <HStack>
+                          <Text
+                            color={"gray.700"}
+                            fontSize="sm"
+                            fontWeight={700}
+                            textAlign={"right"}
+                            textTransform={"uppercase"}
+                            width={28}
+                          >
+                            Accepting applications
+                          </Text>
+                          <StarIcon height={8} width={8} />
+                        </HStack>
+                      </>
+                    ) : null}
+                  </Flex>
+                  <Text>{season.market.description}</Text>
+                  <Divider color="gray.900" borderBottomWidth={2} opacity={1} />
+                </Container>
+              ) : null}
+              <Flex wrap={{ base: "wrap", lg: "nowrap" }}>
+                <Box
+                  p={4}
+                  minWidth={230}
+                  width={{ base: "100%", lg: 260 }}
+                  marginBottom={{ base: 4, lg: 0 }}
+                  bg={"gray.100"}
+                >
+                  <Heading as="h2" size="xl" sx={{ fontWeight: 600 }}>
+                    Filter
+                  </Heading>
+                  <Flex wrap={"wrap"}>
+                    <FormControl>
+                      <FormLabel
+                        fontSize="sm"
+                        sx={{ fontWeight: 900, textTransform: "uppercase" }}
+                      >
+                        Search for vendor
+                      </FormLabel>
+                      <InputGroup>
+                        <InputLeftElement pointerEvents="none">
+                          <Search2Icon color="gray.300" />
+                        </InputLeftElement>
+                        <Input
+                          onChange={(e) => setFilter(String(e.target.value))}
+                          onKeyDown={(e) => searchViaFilter(e)}
+                          placeholder="Start typing"
+                          value={filter ?? ""}
+                        />
+                      </InputGroup>
+                    </FormControl>
+                    {/*
+            <FormControl marginTop={4}>
+              <FormLabel
+                fontSize="sm"
+                sx={{ fontWeight: 900, textTransform: "uppercase" }}
+              >
+                Show
+              </FormLabel>
+              <RadioGroup colorScheme="green" onChange={setValue} value={value}>
+                <Stack direction="column">
+                  <Radio value="all">All markets</Radio>
+                  <Radio value="open">
+                    Only markets accepting applications
+                  </Radio>
+                </Stack>
+              </RadioGroup>
+            </FormControl>
+            <FormControl marginTop={4}>
+              <FormLabel
+                fontSize="sm"
+                sx={{ fontWeight: 900, textTransform: "uppercase" }}
+              >
+                Market location
+              </FormLabel>
+              <CheckboxGroup colorScheme="green">
+                <Stack spacing={2} direction="column">
+                  <Checkbox value="DC">DC</Checkbox>
+                  <Checkbox value="MD">Maryland</Checkbox>
+                  <Checkbox value="VA">Virginia</Checkbox>
+                </Stack>
+              </CheckboxGroup>
+            </FormControl>
+            */}
+                  </Flex>
+                </Box>
+                <DataTable columns={columns} fetchData={getApplications} />
+              </Flex>
+            </TabPanel>
+            <TabPanel>
+              {tabIndex == 2 ? (
+                <Redirect
+                  to={{
+                    pathname: "/admin/collections/seasons",
+                    search: "?tab=2",
+                  }}
+                />
+              ) : null}
+            </TabPanel>
+          </TabPanels>
+        </Tabs>
+        <FooterAdmin />
       </>
     );
   }

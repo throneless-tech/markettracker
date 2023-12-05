@@ -1,4 +1,5 @@
 import * as React from "react";
+import { useHistory, useLocation } from "react-router-dom";
 import {
   Box,
   Checkbox,
@@ -139,8 +140,14 @@ export function DataTable<Data extends object>({
   page = 1,
 }: DataTableProps<Data>) {
   // filter settings
+  const { search } = useLocation();
   const [value, setValue] = React.useState("all");
   const [globalFilter, setGlobalFilter] = React.useState("");
+
+  React.useEffect(() => {
+    const params = new URLSearchParams(search);
+    setGlobalFilter(params.get("search"));
+  }, []);
 
   //we need a reference to the scrolling element for logic down below
   const tableContainerRef = React.useRef<HTMLDivElement>(null);
@@ -188,7 +195,7 @@ export function DataTable<Data extends object>({
 
   // console.log("***flatData:", flatData);
   // console.log("***data:", data);
-  console.log("global filter:", globalFilter);
+  // console.log("global filter:", globalFilter);
 
   React.useEffect(() => {
     if (isVisible) {
@@ -232,104 +239,39 @@ export function DataTable<Data extends object>({
 
   return (
     <>
-      <Flex wrap={{ base: "wrap", lg: "nowrap" }}>
+      <Container maxW="container.2xl">
         <Box
-          p={4}
-          minWidth={230}
-          width={{ base: "100%", lg: 260 }}
-          marginBottom={{ base: 4, lg: 0 }}
-          bg={"gray.100"}
+          onScroll={(e) => fetchMore(e.target as HTMLDivElement)}
+          ref={tableContainerRef}
+          sx={{
+            height: "80vh",
+            maxWidth: "3000px !important;",
+            overflow: "auto",
+          }}
         >
-          <Heading as="h2" size="xl" sx={{ fontWeight: 600 }}>
-            Filter
-          </Heading>
-          <Flex wrap={"wrap"}>
-            <FormControl>
-              <FormLabel
-                fontSize="sm"
-                sx={{ fontWeight: 900, textTransform: "uppercase" }}
-              >
-                Search for vendor
-              </FormLabel>
-              <InputGroup>
-                <InputLeftElement pointerEvents="none">
-                  <Search2Icon color="gray.300" />
-                </InputLeftElement>
-                <Input
-                  onChange={(value) => setGlobalFilter(String(value))}
-                  placeholder="Start typing"
-                  value={globalFilter ?? ""}
-                />
-              </InputGroup>
-            </FormControl>
-            {/*
-            <FormControl marginTop={4}>
-              <FormLabel
-                fontSize="sm"
-                sx={{ fontWeight: 900, textTransform: "uppercase" }}
-              >
-                Show
-              </FormLabel>
-              <RadioGroup colorScheme="green" onChange={setValue} value={value}>
-                <Stack direction="column">
-                  <Radio value="all">All markets</Radio>
-                  <Radio value="open">
-                    Only markets accepting applications
-                  </Radio>
-                </Stack>
-              </RadioGroup>
-            </FormControl>
-            <FormControl marginTop={4}>
-              <FormLabel
-                fontSize="sm"
-                sx={{ fontWeight: 900, textTransform: "uppercase" }}
-              >
-                Market location
-              </FormLabel>
-              <CheckboxGroup colorScheme="green">
-                <Stack spacing={2} direction="column">
-                  <Checkbox value="DC">DC</Checkbox>
-                  <Checkbox value="MD">Maryland</Checkbox>
-                  <Checkbox value="VA">Virginia</Checkbox>
-                </Stack>
-              </CheckboxGroup>
-            </FormControl>
-            */}
-          </Flex>
-        </Box>
-        <Container maxW="container.2xl">
-          <Box
-            onScroll={(e) => fetchMore(e.target as HTMLDivElement)}
-            ref={tableContainerRef}
-            sx={{
-              height: "80vh",
-              maxWidth: "3000px !important;",
-              overflow: "auto",
-            }}
-          >
-            <Table variant="simple">
-              <Thead sx={{ position: "sticky", top: 0, zIndex: 5 }}>
-                {table.getHeaderGroups().map((headerGroup) => (
-                  <Tr key={headerGroup.id} background={"gray.100"}>
-                    {headerGroup.headers.map((header) => {
-                      // see https://tanstack.com/table/v8/docs/api/core/column-def#meta to type this correctly
-                      const meta: any = header.column.columnDef.meta;
-                      return (
-                        <Th
-                          key={header.id}
-                          onClick={header.column.getToggleSortingHandler()}
-                          isNumeric={meta?.isNumeric}
-                          sx={{
-                            color: "gray.900",
-                            fontFamily: "Outfit, sans-serif",
-                          }}
-                        >
-                          {flexRender(
-                            header.column.columnDef.header,
-                            header.getContext(),
-                          )}
+          <Table variant="simple">
+            <Thead sx={{ position: "sticky", top: 0, zIndex: 5 }}>
+              {table.getHeaderGroups().map((headerGroup) => (
+                <Tr key={headerGroup.id} background={"gray.100"}>
+                  {headerGroup.headers.map((header) => {
+                    // see https://tanstack.com/table/v8/docs/api/core/column-def#meta to type this correctly
+                    const meta: any = header.column.columnDef.meta;
+                    return (
+                      <Th
+                        key={header.id}
+                        // onClick={header.column.getToggleSortingHandler()}
+                        isNumeric={meta?.isNumeric}
+                        sx={{
+                          color: "gray.900",
+                          fontFamily: "Outfit, sans-serif",
+                        }}
+                      >
+                        {flexRender(
+                          header.column.columnDef.header,
+                          header.getContext(),
+                        )}
 
-                          <chakra.span pl="4">
+                        {/* <chakra.span pl="4">
                             {header.column.getIsSorted() ? (
                               header.column.getIsSorted() === "desc" ? (
                                 <TriangleDownIcon aria-label="sorted descending" />
@@ -337,45 +279,45 @@ export function DataTable<Data extends object>({
                                 <TriangleUpIcon aria-label="sorted ascending" />
                               )
                             ) : null}
-                          </chakra.span>
-                        </Th>
+                          </chakra.span> */}
+                      </Th>
+                    );
+                  })}
+                </Tr>
+              ))}
+            </Thead>
+            <Tbody>
+              {paddingTop > 0 && (
+                <tr>
+                  <td style={{ height: `${paddingTop}px` }} />
+                </tr>
+              )}
+              {virtualRows.map((virtualRow) => {
+                const row = rows[virtualRow.index] as Row<any>;
+                return (
+                  <Tr key={row.id}>
+                    {row.getVisibleCells().map((cell) => {
+                      // see https://tanstack.com/table/v8/docs/api/core/column-def#meta to type this correctly
+                      const meta: any = cell.column.columnDef.meta;
+
+                      return (
+                        <Td key={cell.id} isNumeric={meta?.isNumeric}>
+                          {flexRender(
+                            cell.column.columnDef.cell,
+                            cell.getContext(),
+                          )}
+                        </Td>
                       );
                     })}
                   </Tr>
-                ))}
-              </Thead>
-              <Tbody>
-                {paddingTop > 0 && (
-                  <tr>
-                    <td style={{ height: `${paddingTop}px` }} />
-                  </tr>
-                )}
-                {virtualRows.map((virtualRow) => {
-                  const row = rows[virtualRow.index] as Row<any>;
-                  return (
-                    <Tr key={row.id}>
-                      {row.getVisibleCells().map((cell) => {
-                        // see https://tanstack.com/table/v8/docs/api/core/column-def#meta to type this correctly
-                        const meta: any = cell.column.columnDef.meta;
-
-                        return (
-                          <Td key={cell.id} isNumeric={meta?.isNumeric}>
-                            {flexRender(
-                              cell.column.columnDef.cell,
-                              cell.getContext(),
-                            )}
-                          </Td>
-                        );
-                      })}
-                    </Tr>
-                  );
-                })}
-                {paddingBottom > 0 && (
-                  <tr>
-                    <td style={{ height: `${paddingBottom}px` }} />
-                  </tr>
-                )}
-                {/* {table.getRowModel().rows.map((row) => (
+                );
+              })}
+              {paddingBottom > 0 && (
+                <tr>
+                  <td style={{ height: `${paddingBottom}px` }} />
+                </tr>
+              )}
+              {/* {table.getRowModel().rows.map((row) => (
               <Tr key={row.id}>
                 {row.getVisibleCells().map((cell) => {
                   // see https://tanstack.com/table/v8/docs/api/core/column-def#meta to type this correctly
@@ -389,14 +331,13 @@ export function DataTable<Data extends object>({
                 })}
               </Tr>
             ))} */}
-              </Tbody>
-            </Table>
-          </Box>
-          <div>
-            Fetched {flatData.length} of {totalDBRowCount} applications
-          </div>
-        </Container>
-      </Flex>
+            </Tbody>
+          </Table>
+        </Box>
+        <div>
+          Fetched {flatData.length} of {totalDBRowCount} applications
+        </div>
+      </Container>
     </>
   );
 }

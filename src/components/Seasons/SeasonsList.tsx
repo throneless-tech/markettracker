@@ -3,7 +3,7 @@
 
 import React, { useEffect, useState } from "react";
 import { useAuth } from "payload/components/utilities";
-import { useHistory } from "react-router-dom";
+import { Redirect, useHistory } from "react-router-dom";
 import qs from "qs";
 import type { Vendor } from "payload/generated-types";
 
@@ -52,12 +52,23 @@ export const SeasonsList: React.FC<any> = ({ data }) => {
   const [applications, setApplications] = useState([]);
 
   // filter settings
-  const [value, setValue] = React.useState('all')
+  const [value, setValue] = React.useState("all");
 
   // tab settings
   const handleTabsChange = (index) => {
     setTabIndex(index);
   };
+
+  useEffect(() => {
+    if (history.location.search.indexOf("tab") > -1) {
+      let index = history.location.search.indexOf("tab") + 4;
+      index = Number(history.location.search.charAt(index));
+      index = index - 1;
+      setTabIndex(index);
+    }
+  }, []);
+
+  useEffect(() => {}, [tabIndex]);
 
   useEffect(() => {
     const vendor: Vendor = user.vendor;
@@ -103,15 +114,6 @@ export const SeasonsList: React.FC<any> = ({ data }) => {
       );
     }
   }, [data]);
-
-  useEffect(() => {
-    if (history.location.search.indexOf("tab") > -1) {
-      let index = history.location.search.indexOf("tab") + 4;
-      index = Number(history.location.search.charAt(index));
-      index = index - 1;
-      setTabIndex(index);
-    }
-  }, []);
 
   return (
     seasons &&
@@ -290,8 +292,12 @@ export const SeasonsList: React.FC<any> = ({ data }) => {
                 </Container>
               ) : (
                 <Container sx={{ maxWidth: "unset" }}>
-                  <Flex justify={"center"} marginTop={8} wrap={{ base: "wrap", lg: "nowrap" }}>
-                    <Box p={4} marginRight={4} minW={230} marginBottom={{ base: 4, lg: 0 }} bg={'gray.100'}>
+                  <Flex
+                    justify={"center"}
+                    marginTop={8}
+                    wrap={{ base: "wrap", lg: "nowrap" }}
+                  >
+                    {/* <Box p={4} marginRight={4} minW={230} marginBottom={{ base: 4, lg: 0 }} bg={'gray.100'}>
                       <Heading as='h2' size='xl' sx={{ fontWeight: 600 }}>
                         Filter
                       </Heading>
@@ -326,7 +332,7 @@ export const SeasonsList: React.FC<any> = ({ data }) => {
                         </FormControl>
                       </Flex>
                     </Box>
-                    <Spacer />
+                    <Spacer /> */}
                     <HStack align={"flex-start"} wrap={"wrap"} spacing={6}>
                       {seasons &&
                         seasons.length &&
@@ -337,8 +343,6 @@ export const SeasonsList: React.FC<any> = ({ data }) => {
                   </Flex>
                 </Container>
               )}
-
-              <FooterAdmin />
             </TabPanel>
             <TabPanel>
               {user.role == "vendor" ? (
@@ -370,10 +374,17 @@ export const SeasonsList: React.FC<any> = ({ data }) => {
                   </HStack>
                 </Container>
               ) : (
-                <ApplicationsList isTab={true} />
+                <>
+                  {/* <ApplicationsList isTab={true} /> */}
+                  {tabIndex == 1 ? (
+                    <Redirect
+                      to={{
+                        pathname: "/admin/collections/applications",
+                      }}
+                    />
+                  ) : null}
+                </>
               )}
-
-              <FooterAdmin />
             </TabPanel>
             <TabPanel>
               {/* <TableContainer>
@@ -443,6 +454,7 @@ export const SeasonsList: React.FC<any> = ({ data }) => {
             </TabPanel>
           </TabPanels>
         </Tabs>
+        <FooterAdmin />
       </>
     )
   );
