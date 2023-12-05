@@ -57,16 +57,19 @@ export const CheckboxField: FC<Props> = ({
     path,
     validate: memoizedValidate,
   });
+  // console.log('check group val: ', value);
 
   return (
-    <FormControl>
+    <FormControl my={4}>
       <FormLabel>{label + (required ? " (Required)" : "")}</FormLabel>
       {description ? <FormHelperText>{description}</FormHelperText> : ""}
       <ErrorTooltip message={errorMessage} showError={showError}>
-        <CheckboxGroup onChange={setValue} value={value}>
+        <CheckboxGroup colorScheme={"green"} onChange={setValue} value={value}>
           <Stack direction={layout === "vertical" ? "column" : "row"}>
             {options?.map((option) => (
-              <Checkbox value={option.value}>{option.label}</Checkbox>
+              <Checkbox key={option.value} value={option.value}>
+                {option.label}
+              </Checkbox>
             ))}
           </Stack>
         </CheckboxGroup>

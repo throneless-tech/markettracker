@@ -345,7 +345,12 @@ export const MarketsEdit: React.FC<any> = (props) => {
                             >
                               Review market applications
                             </Button>
-                            <Button size="md" borderColor={"gray.700"}>
+                            <Button
+                              as="a"
+                              href="/admin/collections/seasons/create"
+                              size="md"
+                              borderColor={"gray.700"}
+                            >
                               Create a new season
                             </Button>
                           </HStack>

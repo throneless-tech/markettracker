@@ -37,7 +37,11 @@ type Day =
 type Size = "flagship" | "large" | "medium" | "small" | "stand";
 type Focus = "neighborhood" | "downtown" | "grocery" | "prepared";
 
-export const MarketField: FC<Props> = ({ path, isSubmitted = false, setThisMarket }) => {
+export const MarketField: FC<Props> = ({
+  path,
+  isSubmitted = false,
+  setThisMarket,
+}) => {
   const { submit, validateForm } = useForm();
   const { value } = useField<string>({ path });
   const [name, setName] = useState<string>();
@@ -100,13 +104,12 @@ export const MarketField: FC<Props> = ({ path, isSubmitted = false, setThisMarke
 
   useEffect(() => {
     if (!isSubmitted) return;
-
     const sendData = async () => {
       // const validate = await validateForm();
       // if (!validate) {
       //   console.log(validate);
       // }
-      if (value) { 
+      if (value) {
         try {
           const response = await fetch(`/api/markets/${value}`, {
             method: "PATCH",
@@ -138,7 +141,7 @@ export const MarketField: FC<Props> = ({ path, isSubmitted = false, setThisMarke
         }
       } else {
         try {
-          const req = await fetch('/api/markets', {
+          const req = await fetch("/api/markets", {
             method: "POST",
             credentials: "include",
             headers: {
@@ -158,18 +161,18 @@ export const MarketField: FC<Props> = ({ path, isSubmitted = false, setThisMarke
               visitors,
               description,
             }),
-          })
-          const data = await req.json()          
+          });
+          const data = await req.json();
           setMarket(data.doc);
           setThisMarket(data.doc);
         } catch (err) {
-          console.log(err)
+          console.log(err);
         }
       }
     };
 
     sendData();
-    
+
     // submit();
   }, [isSubmitted]);
 
@@ -183,97 +186,97 @@ export const MarketField: FC<Props> = ({ path, isSubmitted = false, setThisMarke
           onChange={(e) => setName(e.target.value)}
         />
       </FormControl>
-        <Stack spacing={2} marginTop={4}>
-          <FormControl>
-            <FormLabel as="div" textStyle="bodyMain" fontWeight={500}>
-              Market address (required)
-            </FormLabel>
+      <Stack spacing={2} marginTop={4}>
+        <FormControl>
+          <FormLabel as="div" textStyle="bodyMain" fontWeight={500}>
+            Market address (required)
+          </FormLabel>
           {/* <ErrorTooltip message={errorMessage} showError={showError}> */}
-            <Input
-              placeholder="Street"
-              value={street}
-              onChange={(e) => setStreet(e.target.value)}
-              isRequired
-            />
+          <Input
+            placeholder="Street"
+            value={street}
+            onChange={(e) => setStreet(e.target.value)}
+            isRequired
+          />
           {/* </ErrorTooltip> */}
-          </FormControl>
-          <Flex gap={2}>
-            <Input
-              placeholder="City"
-              flex={6}
-              value={city}
-              onChange={(e) => setCity(e.target.value)}
-              isRequired
-            />
-            <Select
-              placeholder="State"
-              flex={2}
-              value={state}
-              onChange={(e) => setState(e.target.value)}
-              isRequired
-            >
-              <option value="AK">AK</option>
-              <option value="AL">AL</option>
-              <option value="AR">AR</option>
-              <option value="AZ">AZ</option>
-              <option value="CA">CA</option>
-              <option value="CO">CO</option>
-              <option value="CT">CT</option>
-              <option value="DC">DC</option>
-              <option value="DE">DE</option>
-              <option value="FL">FL</option>
-              <option value="GA">GA</option>
-              <option value="HI">HI</option>
-              <option value="IA">IA</option>
-              <option value="ID">ID</option>
-              <option value="IL">IL</option>
-              <option value="IN">IN</option>
-              <option value="KS">KS</option>
-              <option value="KY">KY</option>
-              <option value="LA">LA</option>
-              <option value="MA">MA</option>
-              <option value="MD">MD</option>
-              <option value="ME">ME</option>
-              <option value="MI">MI</option>
-              <option value="MN">MN</option>
-              <option value="MO">MO</option>
-              <option value="MS">MS</option>
-              <option value="MT">MT</option>
-              <option value="NC">NC</option>
-              <option value="ND">ND</option>
-              <option value="NE">NE</option>
-              <option value="NH">NH</option>
-              <option value="NJ">NJ</option>
-              <option value="NM">NM</option>
-              <option value="NV">NV</option>
-              <option value="NY">NY</option>
-              <option value="OH">OH</option>
-              <option value="OK">OK</option>
-              <option value="OR">OR</option>
-              <option value="PA">PA</option>
-              <option value="RI">RI</option>
-              <option value="SC">SC</option>
-              <option value="SD">SD</option>
-              <option value="TN">TN</option>
-              <option value="TX">TX</option>
-              <option value="UT">UT</option>
-              <option value="VA">VA</option>
-              <option value="VT">VT</option>
-              <option value="WA">WA</option>
-              <option value="WI">WI</option>
-              <option value="WV">WV</option>
-              <option value="WY">WY</option>
-            </Select>
-            <Input
-              placeholder="Zipcode"
-              flex={3}
-              type="number"
-              value={zipcode}
-              onChange={(e) => setZipcode(e.target.value)}
-              isRequired
-            />
-          </Flex>
-        </Stack>
+        </FormControl>
+        <Flex gap={2}>
+          <Input
+            placeholder="City"
+            flex={6}
+            value={city}
+            onChange={(e) => setCity(e.target.value)}
+            isRequired
+          />
+          <Select
+            placeholder="State"
+            flex={2}
+            value={state}
+            onChange={(e) => setState(e.target.value)}
+            isRequired
+          >
+            <option value="AK">AK</option>
+            <option value="AL">AL</option>
+            <option value="AR">AR</option>
+            <option value="AZ">AZ</option>
+            <option value="CA">CA</option>
+            <option value="CO">CO</option>
+            <option value="CT">CT</option>
+            <option value="DC">DC</option>
+            <option value="DE">DE</option>
+            <option value="FL">FL</option>
+            <option value="GA">GA</option>
+            <option value="HI">HI</option>
+            <option value="IA">IA</option>
+            <option value="ID">ID</option>
+            <option value="IL">IL</option>
+            <option value="IN">IN</option>
+            <option value="KS">KS</option>
+            <option value="KY">KY</option>
+            <option value="LA">LA</option>
+            <option value="MA">MA</option>
+            <option value="MD">MD</option>
+            <option value="ME">ME</option>
+            <option value="MI">MI</option>
+            <option value="MN">MN</option>
+            <option value="MO">MO</option>
+            <option value="MS">MS</option>
+            <option value="MT">MT</option>
+            <option value="NC">NC</option>
+            <option value="ND">ND</option>
+            <option value="NE">NE</option>
+            <option value="NH">NH</option>
+            <option value="NJ">NJ</option>
+            <option value="NM">NM</option>
+            <option value="NV">NV</option>
+            <option value="NY">NY</option>
+            <option value="OH">OH</option>
+            <option value="OK">OK</option>
+            <option value="OR">OR</option>
+            <option value="PA">PA</option>
+            <option value="RI">RI</option>
+            <option value="SC">SC</option>
+            <option value="SD">SD</option>
+            <option value="TN">TN</option>
+            <option value="TX">TX</option>
+            <option value="UT">UT</option>
+            <option value="VA">VA</option>
+            <option value="VT">VT</option>
+            <option value="WA">WA</option>
+            <option value="WI">WI</option>
+            <option value="WV">WV</option>
+            <option value="WY">WY</option>
+          </Select>
+          <Input
+            placeholder="Zipcode"
+            flex={3}
+            type="number"
+            value={zipcode}
+            onChange={(e) => setZipcode(e.target.value)}
+            isRequired
+          />
+        </Flex>
+      </Stack>
       <FormControl marginTop={4}>
         <FormLabel as="div" textStyle="bodyMain" fontWeight={500}>
           Market day (required)

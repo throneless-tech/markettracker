@@ -52,11 +52,12 @@ export const YesNoField: FC<Props> = ({
   });
 
   return (
-    <FormControl>
+    <FormControl my={4}>
       <FormLabel>{label + (required ? " (Required)" : "")}</FormLabel>
       {description ? <FormHelperText>{description}</FormHelperText> : ""}
       <ErrorTooltip message={errorMessage} showError={showError}>
         <RadioGroup
+          colorScheme={"green"}
           onChange={(newValue) => setValue(newValue === "true")}
           value={value ? "true" : "false"}
         >

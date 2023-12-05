@@ -120,7 +120,7 @@ export const SeasonsEdit: React.FC<any> = (props) => {
 
   const submitForm = async () => {
     setIsSubmitted(true);
-    submit();
+    // submit();
   };
 
   useEffect(() => {
@@ -150,7 +150,7 @@ export const SeasonsEdit: React.FC<any> = (props) => {
     }
   }, [operators]);
 
-  console.log("history state: ", history.location.state);
+  // console.log("history state: ", history.location.state);
 
   // id will be undefined on the create form
   if (!id) {

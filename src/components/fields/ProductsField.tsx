@@ -76,28 +76,28 @@ export const ProductsField: FC<Props> = ({
   }, []);
 
   useEffect(() => {
-    if (value) {
-      console.log("***value", value);
-      setCurrent(value);
+    if (current) {
+      // console.log("***current", current);
+      setCurrent(current);
     }
-  }, [value]);
+  }, [current]);
 
   const onChangeHandler = (newValue) => {
     if (onChange) {
-      console.log("***newValue1", newValue);
+      // console.log("***newValue1", newValue);
       setCurrent(newValue);
       if (useObjects) {
         return onChange(newValue.map((id) => index.get(id)));
       }
       return onChange(newValue);
     }
-    console.log("***newValue2", newValue);
+    // console.log("***newValue2", newValue);
     return setCurrent(newValue);
   };
 
   return (
     allProducts && (
-      <FormControl>
+      <FormControl my={4}>
         {label ? (
           <FormLabel>{label + (required ? " (Required)" : "")}</FormLabel>
         ) : null}
@@ -116,7 +116,7 @@ export const ProductsField: FC<Props> = ({
               return (
                 <Stack spacing={4} key={category}>
                   <Heading
-                    as="h2"
+                    as="div"
                     fontFamily={"font.body"}
                     textStyle="h4"
                     size="xs"
