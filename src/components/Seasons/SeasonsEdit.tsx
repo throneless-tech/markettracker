@@ -124,7 +124,7 @@ export const SeasonsEdit: React.FC<any> = (props) => {
   };
 
   useEffect(() => {
-    if (operators && !isLoaded) {
+    if (!isLoaded) {
       const query = {
         role: {
           equals: "operator",
@@ -142,13 +142,14 @@ export const SeasonsEdit: React.FC<any> = (props) => {
         let newContacts = await response.json();
 
         newContacts = newContacts.docs;
+        console.log("***newContacts:", newContacts);
         setUsers(newContacts);
         setIsLoaded(true);
       };
 
       getOps();
     }
-  }, [operators]);
+  }, []);
 
   // console.log("history state: ", history.location.state);
 
@@ -565,7 +566,7 @@ export const SeasonsEdit: React.FC<any> = (props) => {
                                     value={operators}
                                   >
                                     {users?.length && (
-                                      <HStack spacing={4}>
+                                      <Stack spacing={4}>
                                         {users.map((user) => (
                                           <Checkbox
                                             key={user.id}
@@ -580,7 +581,7 @@ export const SeasonsEdit: React.FC<any> = (props) => {
                                             </Tag>
                                           </Checkbox>
                                         ))}
-                                      </HStack>
+                                      </Stack>
                                     )}
                                   </CheckboxGroup>{" "}
                                 </Stack>
@@ -812,7 +813,7 @@ export const SeasonsEdit: React.FC<any> = (props) => {
                     </HStack>
                     <HStack marginTop={2}>
                       {users.reduce((acc, user) => {
-                        if (operators.includes(user.id)) {
+                        if (operators && operators.includes(user.id)) {
                           acc.push(
                             <>
                               {user.name}

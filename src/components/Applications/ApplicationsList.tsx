@@ -57,13 +57,13 @@ export const ApplicationsList: React.FC<any> = () => {
   const [isFetching, setIsFetching] = useState<boolean>(false);
   const lastRef = React.useRef<HTMLDivElement>(null);
 
-
   // table
   const columns: ColumnDef<Application>[] = [
     {
       header: "Vendor name",
       accessorKey: "vendorName",
-      filterFn: 'fuzzy',
+      filterFn: "fuzzy",
+      enableSorting: false,
       cell: (info) => {
         const value: any = info.getValue();
         // console.log("***info.getValue()", value);
@@ -73,6 +73,7 @@ export const ApplicationsList: React.FC<any> = () => {
     {
       header: "Vendor type",
       accessorKey: "vendorType",
+      enableSorting: false,
       cell: (info) => {
         const value: any = info.getValue();
         return <span>{value}</span>;
@@ -99,6 +100,7 @@ export const ApplicationsList: React.FC<any> = () => {
     {
       header: "Market name",
       accessorKey: "seasonName",
+      enableSorting: false,
       cell: (info) => {
         const value: any = info.getValue();
         return <span>{value}</span>;
@@ -107,6 +109,7 @@ export const ApplicationsList: React.FC<any> = () => {
     {
       header: "# of applications",
       accessorKey: "numberOfApplications",
+      enableSorting: false,
       cell: (info) => {
         const value: any = info.getValue();
         return <span>{value}</span>;
@@ -115,6 +118,7 @@ export const ApplicationsList: React.FC<any> = () => {
     {
       header: "# of markets",
       accessorKey: "numberOfMarkets",
+      enableSorting: false,
       cell: (info) => {
         const value: any = info.getValue();
         return <span>{value}</span>;
@@ -123,6 +127,7 @@ export const ApplicationsList: React.FC<any> = () => {
     {
       header: "Priority group",
       accessorKey: "vendorDemographics",
+      enableSorting: false,
       cell: (demoCell) => {
         const demos: any = demoCell.getValue();
         return demos && typeof demos === "object"
@@ -151,6 +156,7 @@ export const ApplicationsList: React.FC<any> = () => {
     {
       header: "Standing",
       accessorKey: "vendorStanding",
+      enableSorting: false,
       cell: (standingCell) => {
         const standing: any = standingCell.getValue();
         return <Tag>{standing ? standing : "Good"}</Tag>;
@@ -164,6 +170,7 @@ export const ApplicationsList: React.FC<any> = () => {
     {
       header: "Grade (AVG)",
       accessorKey: "reviewScore",
+      enableSorting: false,
       cell: (info) => {
         const value: any = info.getValue();
         return <span>{value}</span>;
@@ -172,6 +179,7 @@ export const ApplicationsList: React.FC<any> = () => {
     {
       header: "Application status",
       accessorKey: "status",
+      enableSorting: false,
       // cell not included because it is defined as editable in ../DataTable.tsx
     },
   ];
@@ -203,13 +211,13 @@ export const ApplicationsList: React.FC<any> = () => {
       if (isFetching) return;
       const searchParams = new URLSearchParams(search);
       const queries = [];
-      const id = season?.id ? season.id : "";
-      if (id !== "") {
-        queries.push({ season: { equals: id } });
+      const seasonId = searchParams.get("season");
+      if (seasonId) {
+        queries.push({ season: { equals: seasonId } });
       }
       const searchQuery = searchParams.get("search");
       if (searchQuery) {
-        queries.push({ name: { like: searchQuery } });
+        queries.push({ "vendor.name": { like: searchQuery } });
       }
       const accepting = searchParams.get("accepting");
       if (accepting === "true") {
@@ -253,7 +261,7 @@ export const ApplicationsList: React.FC<any> = () => {
         );
       }
       setIsFetching(true);
-      // console.log("***stringifiedQuery", stringifiedQuery);
+      //console.log("***stringifiedQuery", stringifiedQuery);
       // console.log("***applications", applications);
       try {
         const res = await fetch(
@@ -261,7 +269,7 @@ export const ApplicationsList: React.FC<any> = () => {
         );
         if (!res.ok) throw new Error(res.statusText);
         const newApplications = await res.json();
-        // console.log("***newApplications", newApplications);
+        console.log("***newApplications", newApplications);
         return newApplications;
       } catch (err) {
         console.error(err);

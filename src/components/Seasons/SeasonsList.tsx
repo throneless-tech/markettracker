@@ -52,7 +52,7 @@ export const SeasonsList: React.FC<any> = ({ data }) => {
   const [applications, setApplications] = useState([]);
 
   // filter settings
-  const [value, setValue] = React.useState('all')
+  const [value, setValue] = React.useState("all");
 
   // tab settings
   const handleTabsChange = (index) => {
@@ -290,7 +290,12 @@ export const SeasonsList: React.FC<any> = ({ data }) => {
                 </Container>
               ) : (
                 <Container sx={{ maxWidth: "unset" }}>
-                  <Flex justify={"center"} marginTop={8} wrap={{ base: "wrap", lg: "nowrap" }}>
+                  <Flex
+                    justify={"center"}
+                    marginTop={8}
+                    wrap={{ base: "wrap", lg: "nowrap" }}
+                  >
+                    {/*
                     <Box p={4} marginRight={4} minW={230} marginBottom={{ base: 4, lg: 0 }} bg={'gray.100'}>
                       <Heading as='h2' size='xl' sx={{ fontWeight: 600 }}>
                         Filter
@@ -326,6 +331,7 @@ export const SeasonsList: React.FC<any> = ({ data }) => {
                         </FormControl>
                       </Flex>
                     </Box>
+                      */}
                     <Spacer />
                     <HStack align={"flex-start"} wrap={"wrap"} spacing={6}>
                       {seasons &&

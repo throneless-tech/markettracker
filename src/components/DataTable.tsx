@@ -1,4 +1,5 @@
 import * as React from "react";
+import { useHistory } from "react-router-dom";
 import {
   Box,
   Checkbox,
@@ -39,8 +40,8 @@ import {
   RankingInfo,
   rankItem,
   compareItems,
-} from '@tanstack/match-sorter-utils'
-import { useVirtual } from 'react-virtual'
+} from "@tanstack/match-sorter-utils";
+import { useVirtual } from "react-virtual";
 
 import type { Application } from "payload/generated-types";
 
@@ -57,27 +58,27 @@ export type DataTableProps<Data extends object> = {
   page?: number;
 };
 
-declare module '@tanstack/table-core' {
+declare module "@tanstack/table-core" {
   interface FilterFns {
-    fuzzy: FilterFn<unknown>
+    fuzzy: FilterFn<unknown>;
   }
   interface FilterMeta {
-    itemRank: RankingInfo
+    itemRank: RankingInfo;
   }
 }
 
 const fuzzyFilter: FilterFn<any> = (row, columnId, value, addMeta) => {
   // Rank the item
-  const itemRank = rankItem(row.getValue(columnId), value)
+  const itemRank = rankItem(row.getValue(columnId), value);
 
   // Store the itemRank info
   addMeta({
     itemRank,
-  })
+  });
 
   // Return if the item should be filtered in/out
-  return itemRank.passed
-}
+  return itemRank.passed;
+};
 
 const onChange = async (newStatus: string, id: string) => {
   try {
@@ -138,15 +139,26 @@ export function DataTable<Data extends object>({
   limit = 10,
   page = 1,
 }: DataTableProps<Data>) {
-
+  const history = useHistory();
   // filter settings
   const [value, setValue] = React.useState("all");
-  const [globalFilter, setGlobalFilter] = React.useState('')
+  const [globalFilter, setGlobalFilter] = React.useState("");
 
   //we need a reference to the scrolling element for logic down below
   const tableContainerRef = React.useRef<HTMLDivElement>(null);
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const isVisible = useOnScreen(tableContainerRef);
+  const [searchBox, setSearchBox] = React.useState("");
+
+  const searchViaBox = (e) => {
+    if (e.key == "Enter" && e.code == "Enter") {
+      history.push({
+        pathname: `/admin/collections/applications`,
+        search: `?limit=10&search=${searchBox}`,
+      });
+      history.go(0);
+    }
+  };
 
   //react-query has an useInfiniteQuery hook just for this situation!
   const { data, fetchNextPage, hasNextPage, isFetching } = useInfiniteQuery({
@@ -176,7 +188,8 @@ export function DataTable<Data extends object>({
         //once the user has scrolled within 300px of the bottom of the table, fetch more data if there is any
         if (
           scrollHeight - scrollTop - clientHeight < 300 &&
-          hasNextPage && !isFetching &&
+          hasNextPage &&
+          !isFetching &&
           totalFetched < totalDBRowCount
         ) {
           fetchNextPage({ cancelRefetch: false });
@@ -194,8 +207,7 @@ export function DataTable<Data extends object>({
     if (isVisible) {
       fetchMore(tableContainerRef.current);
     }
-  }, [fetchMore])
-
+  }, [fetchMore]);
 
   const table = useReactTable({
     data: flatData,
@@ -216,20 +228,20 @@ export function DataTable<Data extends object>({
     // debugTable: true,
   });
 
-  const { rows } = table.getRowModel()
+  const { rows } = table.getRowModel();
 
   //Virtualizing is optional, but might be necessary if we are going to potentially have hundreds or thousands of rows
   const rowVirtualizer = useVirtual({
     parentRef: tableContainerRef,
     size: rows.length,
     overscan: 10,
-  })
-  const { virtualItems: virtualRows, totalSize } = rowVirtualizer
-  const paddingTop = virtualRows.length > 0 ? virtualRows?.[0]?.start || 0 : 0
+  });
+  const { virtualItems: virtualRows, totalSize } = rowVirtualizer;
+  const paddingTop = virtualRows.length > 0 ? virtualRows?.[0]?.start || 0 : 0;
   const paddingBottom =
     virtualRows.length > 0
       ? totalSize - (virtualRows?.[virtualRows.length - 1]?.end || 0)
-      : 0
+      : 0;
 
   return (
     <>
@@ -250,19 +262,21 @@ export function DataTable<Data extends object>({
                 fontSize="sm"
                 sx={{ fontWeight: 900, textTransform: "uppercase" }}
               >
-                Search for market
+                Search for vendor
               </FormLabel>
               <InputGroup>
                 <InputLeftElement pointerEvents="none">
                   <Search2Icon color="gray.300" />
                 </InputLeftElement>
                 <Input
-                  onChange={value => setGlobalFilter(String(value))}
+                  onChange={(e) => setSearchBox(e.target.value)}
+                  onKeyDown={searchViaBox}
                   placeholder="Start typing"
-                  value={globalFilter ?? ''}
+                  value={searchBox}
                 />
               </InputGroup>
             </FormControl>
+            {/*
             <FormControl marginTop={4}>
               <FormLabel
                 fontSize="sm"
@@ -270,11 +284,7 @@ export function DataTable<Data extends object>({
               >
                 Show
               </FormLabel>
-              <RadioGroup
-                colorScheme="green"
-                onChange={setValue}
-                value={value}
-              >
+              <RadioGroup colorScheme="green" onChange={setValue} value={value}>
                 <Stack direction="column">
                   <Radio value="all">All markets</Radio>
                   <Radio value="open">
@@ -298,13 +308,18 @@ export function DataTable<Data extends object>({
                 </Stack>
               </CheckboxGroup>
             </FormControl>
+            */}
           </Flex>
         </Box>
         <Container maxW="container.2xl">
           <Box
-            onScroll={e => fetchMore(e.target as HTMLDivElement)}
+            onScroll={(e) => fetchMore(e.target as HTMLDivElement)}
             ref={tableContainerRef}
-            sx={{ height: "80vh", maxWidth: "3000px !important;", overflow: "auto" }}
+            sx={{
+              height: "80vh",
+              maxWidth: "3000px !important;",
+              overflow: "auto",
+            }}
           >
             <Table variant="simple">
               <Thead sx={{ position: "sticky", top: 0, zIndex: 5 }}>
@@ -318,7 +333,10 @@ export function DataTable<Data extends object>({
                           key={header.id}
                           onClick={header.column.getToggleSortingHandler()}
                           isNumeric={meta?.isNumeric}
-                          sx={{ color: "gray.900", fontFamily: "Outfit, sans-serif" }}
+                          sx={{
+                            color: "gray.900",
+                            fontFamily: "Outfit, sans-serif",
+                          }}
                         >
                           {flexRender(
                             header.column.columnDef.header,
@@ -346,22 +364,25 @@ export function DataTable<Data extends object>({
                     <td style={{ height: `${paddingTop}px` }} />
                   </tr>
                 )}
-                {virtualRows.map(virtualRow => {
-                  const row = rows[virtualRow.index] as Row<any>
+                {virtualRows.map((virtualRow) => {
+                  const row = rows[virtualRow.index] as Row<any>;
                   return (
                     <Tr key={row.id}>
-                      {row.getVisibleCells().map(cell => {
+                      {row.getVisibleCells().map((cell) => {
                         // see https://tanstack.com/table/v8/docs/api/core/column-def#meta to type this correctly
                         const meta: any = cell.column.columnDef.meta;
 
                         return (
                           <Td key={cell.id} isNumeric={meta?.isNumeric}>
-                            {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                            {flexRender(
+                              cell.column.columnDef.cell,
+                              cell.getContext(),
+                            )}
                           </Td>
                         );
                       })}
                     </Tr>
-                  )
+                  );
                 })}
                 {paddingBottom > 0 && (
                   <tr>
