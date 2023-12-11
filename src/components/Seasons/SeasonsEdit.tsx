@@ -115,6 +115,7 @@ export const SeasonsEdit: React.FC<any> = (props) => {
 
   const { value: vendors } = useRelation<Vendor[]>({
     path: "vendors",
+    limit: 9999,
   });
   const [users, setUsers] = useState<User[]>([]);
 

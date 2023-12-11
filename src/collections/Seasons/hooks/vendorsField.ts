@@ -26,6 +26,7 @@ export const afterReadVendorsField: CollectionAfterReadHook = async (args) => {
         },
       ],
     },
+    limit: 9999,
     context: {
       skipTrigger: true,
     },
