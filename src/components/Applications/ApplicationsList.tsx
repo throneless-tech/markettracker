@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { useHistory, useLocation } from "react-router-dom";
+import { Link as ReactRouterLink } from "react-router-dom";
 import qs from "qs";
 
 // Chakra imports
@@ -14,6 +15,7 @@ import {
   FormLabel,
   Heading,
   HStack,
+  Link as ChakraLink,
   Input,
   InputGroup,
   InputLeftElement,
@@ -32,6 +34,10 @@ import { ColumnDef, RowData } from "@tanstack/react-table";
 
 // components
 import { DataTable } from "../DataTable";
+import { SeasonsTabs } from "../Seasons/SeasonsTabs";
+
+// chakra icons
+import { Search2Icon } from "@chakra-ui/icons";
 
 // local icons
 import StarIcon from "../../assets/icons/star.js";
@@ -51,6 +57,7 @@ declare module "@tanstack/react-table" {
 }
 
 export const ApplicationsList: React.FC<any> = () => {
+  const history = useHistory();
   const { search } = useLocation();
   const [applications, setApplications] = useState<ApplicationStats[]>([]);
   const [season, setSeason] = useState<Season>();
@@ -63,7 +70,7 @@ export const ApplicationsList: React.FC<any> = () => {
       header: "Vendor name",
       accessorKey: "vendorName",
       filterFn: "fuzzy",
-      enableSorting: false,
+      // enableSorting: false,
       cell: (info) => {
         const value: any = info.getValue();
         // console.log("***info.getValue()", value);
@@ -73,7 +80,7 @@ export const ApplicationsList: React.FC<any> = () => {
     {
       header: "Vendor type",
       accessorKey: "vendorType",
-      enableSorting: false,
+      // enableSorting: false,
       cell: (info) => {
         const value: any = info.getValue();
         return <span>{value}</span>;
@@ -280,9 +287,24 @@ export const ApplicationsList: React.FC<any> = () => {
     [applications],
   );
 
+  // table sorting
+  const [value, setValue] = React.useState("all");
+  const [searchBox, setSearchBox] = React.useState("");
+
+  const searchViaBox = (e) => {
+    if (e.key == "Enter" && e.code == "Enter") {
+      history.push({
+        pathname: `/admin/collections/applications`,
+        search: `?limit=10&search=${searchBox}`,
+      });
+      history.go(0);
+    }
+  };
+
   if (applications) {
     return (
       <>
+        <SeasonsTabs selected="applications" />
         {season && season.market && typeof season.market === "object" ? (
           <Container maxW="container.xl">
             <Flex>
@@ -320,7 +342,76 @@ export const ApplicationsList: React.FC<any> = () => {
             <Divider color="gray.900" borderBottomWidth={2} opacity={1} />
           </Container>
         ) : null}
-        <DataTable columns={columns} fetchData={getApplications} />
+        <Flex wrap={{ base: "wrap", lg: "nowrap" }}>
+          <Box
+            p={4}
+            minWidth={230}
+            width={{ base: "100%", lg: 260 }}
+            marginBottom={{ base: 4, lg: 0 }}
+            bg={"gray.100"}
+          >
+            <Heading as="h2" size="xl" sx={{ fontWeight: 600 }}>
+              Filter
+            </Heading>
+            <Flex wrap={"wrap"}>
+              <FormControl>
+                <FormLabel
+                  fontSize="sm"
+                  sx={{ fontWeight: 900, textTransform: "uppercase" }}
+                >
+                  Search for vendor
+                </FormLabel>
+                <InputGroup>
+                  <InputLeftElement pointerEvents="none">
+                    <Search2Icon color="gray.300" />
+                  </InputLeftElement>
+                  <Input
+                    onChange={(e) => setSearchBox(e.target.value)}
+                    onKeyDown={searchViaBox}
+                    placeholder="Start typing"
+                    value={searchBox}
+                  />
+                </InputGroup>
+              </FormControl>
+              <FormControl marginTop={4}>
+                <FormLabel
+                  fontSize="sm"
+                  sx={{ fontWeight: 900, textTransform: "uppercase" }}
+                >
+                  Show
+                </FormLabel>
+                <RadioGroup
+                  colorScheme="green"
+                  onChange={setValue}
+                  value={value}
+                >
+                  <Stack direction="column">
+                    <Radio value="all">All markets</Radio>
+                    <Radio value="open">
+                      Only markets accepting applications
+                    </Radio>
+                  </Stack>
+                </RadioGroup>
+              </FormControl>
+              <FormControl marginTop={4}>
+                <FormLabel
+                  fontSize="sm"
+                  sx={{ fontWeight: 900, textTransform: "uppercase" }}
+                >
+                  Market location
+                </FormLabel>
+                <CheckboxGroup colorScheme="green">
+                  <Stack spacing={2} direction="column">
+                    <Checkbox value="DC">DC</Checkbox>
+                    <Checkbox value="MD">Maryland</Checkbox>
+                    <Checkbox value="VA">Virginia</Checkbox>
+                  </Stack>
+                </CheckboxGroup>
+              </FormControl>
+            </Flex>
+          </Box>
+          <DataTable columns={columns} fetchData={getApplications} />
+        </Flex>
       </>
     );
   }

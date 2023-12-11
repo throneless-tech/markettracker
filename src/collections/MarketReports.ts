@@ -1,7 +1,21 @@
 import { CollectionConfig } from "payload/types";
+import { withFormContext } from "../utils/withFormContext";
+import { MarketReportsList } from "../components/MarketReports/MarketReportsList";
 
 export const MarketReports: CollectionConfig = {
   slug: "market-reports",
+  admin: {
+    components: {
+      views: {
+        // Edit: withFormContext(MarketReportsEdit),
+        List: withFormContext(MarketReportsList),
+      },
+    },
+    pagination: {
+      defaultLimit: 20,
+    },
+    useAsTitle: "name",
+  },
   fields: [
     {
       name: "market",
