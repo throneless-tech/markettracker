@@ -22,6 +22,7 @@ import {
   Th,
   Td,
   chakra,
+  Link,
 } from "@chakra-ui/react";
 import { TriangleDownIcon, TriangleUpIcon } from "@chakra-ui/icons";
 import {
@@ -287,6 +288,8 @@ export function DataTable<Data extends object>({
                   {row.getVisibleCells().map((cell) => {
                     // see https://tanstack.com/table/v8/docs/api/core/column-def#meta to type this correctly
                     const meta: any = cell.column.columnDef.meta;
+                    const context = cell.getContext();
+                    const id = context.row.original.id;
 
                     return (
                       <Td key={cell.id} isNumeric={meta?.isNumeric}>
