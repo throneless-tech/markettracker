@@ -73,10 +73,10 @@ export const SeasonCard: React.FC<any> = (props) => {
       ) : null}
       <Box
         backgroundColor={
-          season.isAccepting
+          season.isAccepting || status == "approved"
             ? "green.600"
-            : isApplication
-            ? "yellow.700"
+            : isApplication && status == "pending"
+            ? "yellow.600"
             : "gray.700"
         }
         padding={4}
@@ -229,36 +229,34 @@ export const SeasonCard: React.FC<any> = (props) => {
             Accepting applications
           </Text>
         </Center>
-        {season.isAccepting == true ? (
-          user.role == "vendor" ? (
-            <Center marginBottom={2}>
-              <Button
-                isDisabled={isApplication}
-                rightIcon={isApplication ? null : <ArrowForwardIcon />}
-                variant={"solid"}
-                onClick={(e) => {
-                  e.preventDefault;
-                  applyToSeason(season);
-                }}
-              >
-                {isApplication ? status : "Apply"}
-              </Button>
-            </Center>
-          ) : (
-            <Center marginBottom={2}>
-              <Button
-                rightIcon={<ArrowForwardIcon />}
-                variant={"solid"}
-                onClick={(e) => {
-                  e.preventDefault;
-                  viewSeasonApplications(season);
-                }}
-              >
-                View applications
-              </Button>
-            </Center>
-          )
-        ) : null}
+        {user.role == "vendor" ? (
+          <Center marginBottom={2}>
+            <Button
+              isDisabled={isApplication}
+              rightIcon={isApplication ? null : <ArrowForwardIcon />}
+              variant={"solid"}
+              onClick={(e) => {
+                e.preventDefault;
+                applyToSeason(season);
+              }}
+            >
+              {isApplication ? status : "Apply"}
+            </Button>
+          </Center>
+        ) : (
+          <Center marginBottom={2}>
+            <Button
+              rightIcon={<ArrowForwardIcon />}
+              variant={"solid"}
+              onClick={(e) => {
+                e.preventDefault;
+                viewSeasonApplications(season);
+              }}
+            >
+              View applications
+            </Button>
+          </Center>
+        )}
         <Center>
           <Button
             rightIcon={<ArrowForwardIcon />}
