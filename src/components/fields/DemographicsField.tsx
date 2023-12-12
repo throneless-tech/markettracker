@@ -38,7 +38,7 @@ export const DemographicsField: FC<Props> = () => {
   });
 
   return (
-    <Container maxW={"lg"}>
+    <Container fontSize={"small"} maxW={"lg"}>
       <Flex align="center" justify="flex-start" marginTop={8}>
         <Heading
           as="h2"

@@ -56,7 +56,9 @@ export const TextField: FC<Props> = ({
 
   return (
     <FormControl>
-      <FormLabel>{label + (required ? " (Required)" : "")}</FormLabel>
+      <FormLabel fontSize={"small"}>
+        {label + (required ? " (Required)" : "")}
+      </FormLabel>
       {description ? <FormHelperText>{description}</FormHelperText> : ""}
       <ErrorTooltip message={errorMessage} showError={showError}>
         <Input

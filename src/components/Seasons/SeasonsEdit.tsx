@@ -266,7 +266,7 @@ export const SeasonsEdit: React.FC<any> = (props) => {
               <DateField label="Start date" path="marketDates.startDate" />
               <DateField label="End date" path="marketDates.endDate" />
             </HStack>
-            <HStack>
+            <HStack spacing={4}>
               <TimeField label="Start time" path="marketTime.startTime" />
               <TimeField label="End time" path="marketTime.endTime" />
             </HStack>
@@ -791,7 +791,7 @@ export const SeasonsEdit: React.FC<any> = (props) => {
                                 >
                                   Select a start and end time for the season
                                 </Text>
-                                <HStack spacing={2} marginTop={2}>
+                                <HStack spacing={4} marginTop={2}>
                                   <Stack>
                                     <Text
                                       textStyle="bodyMain"

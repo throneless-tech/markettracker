@@ -72,6 +72,14 @@ export const Vendors: CollectionConfig = {
           label: "Under review",
           value: "underReview",
         },
+        {
+          label: "Ineligible",
+          value: "ineligible",
+        },
+        {
+          label: "Inactive",
+          value: "inactive",
+        },
       ],
     },
     {

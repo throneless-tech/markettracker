@@ -1,4 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
+import qs from "qs";
+import { useInView } from "react-intersection-observer";
 import { useAuth } from "payload/components/utilities";
 
 import {
@@ -13,16 +15,65 @@ import {
   Text,
 } from "@chakra-ui/react";
 
+//types
+import type { Season } from "payload/generated-types";
+
 //components
 import { SeasonCard } from "./SeasonCard";
 import { VendorsApplicationsView } from "../Vendors/VendorsApplicationsView";
 
 export const SeasonsTab: React.FC<any> = ({
   applications,
-  seasons,
+  // seasons: initialSeasons,
   viewMarkets,
 }) => {
+  // const [seasons, setSeasons] = useState<Season[]>(
+  //   initialSeasons?.length ? initialSeasons : [],
+  // );
+  const [seasons, setSeasons] = useState<Season[]>([]);
+  const [isFetching, setIsFetching] = useState<boolean>(false);
+  const [page, setPage] = useState<number>(1);
+  const { ref, inView } = useInView({});
   const { user } = useAuth();
+
+  const getSeasons = useCallback(async () => {
+    // const query = {
+    //   standing: {
+    //     not_equals: "underReview",
+    //   },
+    // };
+    if (isFetching) return;
+    const stringifiedQuery = qs.stringify(
+      {
+        //where: query,
+        page,
+      },
+      { addQueryPrefix: true },
+    );
+    setIsFetching(true);
+    try {
+      const res = await fetch(
+        `/api/seasons${stringifiedQuery ? stringifiedQuery : ""}`,
+      );
+      if (!res.ok) throw new Error(res.statusText);
+      const newSeasons = await res.json();
+      setSeasons(seasons.concat(newSeasons.docs));
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setIsFetching(false);
+    }
+  }, [seasons]);
+
+  useEffect(() => {
+    getSeasons();
+  }, [page]);
+
+  useEffect(() => {
+    if (inView) {
+      setPage((prevState) => prevState + 1);
+    }
+  }, [inView]);
 
   return (
     <>
@@ -174,8 +225,12 @@ export const SeasonsTab: React.FC<any> = ({
             <HStack align={"flex-start"} wrap={"wrap"} spacing={6}>
               {seasons &&
                 seasons.length &&
-                seasons.map((season) => (
-                  <SeasonCard key={season.id} season={season} />
+                seasons.map((season, idx) => (
+                  <SeasonCard
+                    key={season.id}
+                    season={season}
+                    ref={idx === seasons.length - 1 ? ref : null}
+                  />
                 ))}
             </HStack>
           </Flex>

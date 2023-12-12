@@ -72,14 +72,34 @@ export const ApplicationsList: React.FC<any> = () => {
   // table
   const columns: ColumnDef<Application>[] = [
     {
+      accessorKey: "id",
+      cell: (info) => {
+        const value: any = info.getValue();
+        return <span>{value}</span>;
+      },
+    },
+    {
       header: "Vendor name",
       accessorKey: "vendorName",
       filterFn: "fuzzy",
       // enableSorting: false,
       cell: (info) => {
         const value: any = info.getValue();
+        const app: Application = info.row.original;
         // console.log("***info.getValue()", value);
-        return <span>{value}</span>;
+        return (
+          <span>
+            <ChakraLink
+              as={ReactRouterLink}
+              to={{
+                pathname: `/admin/collections/reviews/create`,
+                state: season ? { ...app, season } : app,
+              }}
+            >
+              {value}
+            </ChakraLink>
+          </span>
+        );
       },
     },
     {

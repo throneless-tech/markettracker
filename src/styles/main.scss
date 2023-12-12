@@ -209,4 +209,20 @@ p {
   .react-datepicker__day--outside-month {
     border: none;
   }
+
+  .react-datepicker__time-container {
+    border: 1px solid #a3a3a3;
+    width: 185px;
+  }
+
+  .react-datepicker__time-box {
+    width: 155px;
+  }
+}
+
+.react-datepicker-wrapper {
+  .react-datepicker__input-container input {
+    border: 2px solid #a3a3a3;
+    padding: 2px;
+  }
 }

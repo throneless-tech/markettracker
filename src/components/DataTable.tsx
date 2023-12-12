@@ -125,6 +125,7 @@ const defaultColumn: Partial<ColumnDef<Application>> = {
         <option value="pending">Pending</option>
         <option value="approved">Approved</option>
         <option value="rejected">Rejected</option>
+        <option value="withdrawn">Withdrawn</option>
       </Select>
     );
   },
@@ -203,6 +204,11 @@ export function DataTable<Data extends object>({
     state: {
       globalFilter,
       sorting,
+    },
+    initialState: {
+      columnVisibility: {
+        id: false,
+      },
     },
     onGlobalFilterChange: setGlobalFilter,
     globalFilterFn: fuzzyFilter,
