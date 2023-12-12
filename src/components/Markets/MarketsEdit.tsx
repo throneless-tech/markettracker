@@ -992,11 +992,11 @@ export const MarketsEdit: React.FC<any> = (props) => {
                                           },
                                         ])
                                       }
-                                      dayClassName={(date) =>
-                                        date.getDate() < Math.random() * 31
-                                          ? "random"
-                                          : undefined
-                                      }
+                                      // dayClassName={(date) =>
+                                      //   date.getDate() < Math.random() * 31
+                                      //     ? "random"
+                                      //     : undefined
+                                      // }
                                     />
                                   </Stack>
                                   <Stack>

@@ -90,6 +90,7 @@ export const ApplicationsEdit: React.FC<any> = (props) => {
   const [doSubmit, setDoSubmit] = useState(false);
   const [available, setAvailable] = useState<Contact[]>([]);
   const [market, setMarket] = useState(null);
+  const [vendors, setVendors] = useState([]);
   const [markets, setMarkets] = useState([]);
   const [seasons, setSeasons] = useState([]);
   const [seasonIsDisabled, setSeasonIsDisabled] = useState(true);
@@ -153,7 +154,11 @@ export const ApplicationsEdit: React.FC<any> = (props) => {
   useEffect(() => {
     if (doSubmit) {
       submit();
-      history.push("/admin/collections/seasons");
+      if (user.vendor) {
+        history.push("/admin/collections/seasons");
+      } else {
+        history.push("/admin/collections/applications");
+      }
     }
   }, [doSubmit]);
 
@@ -189,7 +194,7 @@ export const ApplicationsEdit: React.FC<any> = (props) => {
       datesArray.push({ date: dateString });
       selectedDatesArray = [date, ...selectedDates];
     }
-    console.log("***datesArray:", datesArray);
+    // console.log("***datesArray:", datesArray);
     setDates(datesArray);
     setSelectedDates(selectedDatesArray);
   };
@@ -307,6 +312,11 @@ export const ApplicationsEdit: React.FC<any> = (props) => {
   //   return typeof season.market === "object";
   // };
 
+  const selectVendor = (id) => {
+    const thisVendor = vendors.find((v) => v.id == id);
+    setVendor(thisVendor);
+  };
+
   const selectMarket = (id) => {
     const thisMarket = markets.find((m) => m.id == id);
     setMarket(thisMarket);
@@ -326,16 +336,40 @@ export const ApplicationsEdit: React.FC<any> = (props) => {
         },
         { addQueryPrefix: true },
       );
-      console.log(stringifiedQuery);
 
       const response = await fetch(`/api/seasons${stringifiedQuery}`);
       const theseSeasons = await response.json();
-      console.log(theseSeasons);
 
       setSeasons(theseSeasons.docs);
     };
 
     getSeasons();
+    setSeasonIsDisabled(false);
+  };
+
+  const selectSeason = (id) => {
+    const thisSeason = seasons.find((s) => s.id == id);
+    setSeason(thisSeason);
+
+    let firstDate = new Date(thisSeason.marketDates.startDate);
+    let lastDate = new Date(thisSeason.marketDates.endDate);
+    setStartDate(new Date(thisSeason.marketDates.startDate));
+    setEndDate(new Date(thisSeason.marketDates.endDate));
+
+    let calLength = monthDiff(firstDate, lastDate);
+    setNumMonths(calLength);
+
+    let days = [];
+    let objectDaysArray = [];
+
+    for (var d = firstDate; d <= lastDate; d.setDate(d.getDate() + 1)) {
+      if (thisSeason.market.days.includes(dayNames[d.getDay()])) {
+        days.push(new Date(d));
+        objectDaysArray.push({ date: new Date(d) });
+      }
+    }
+    setMarketDatesObjects(objectDaysArray);
+    setMarketDates(days);
   };
 
   useEffect(() => {
@@ -346,9 +380,17 @@ export const ApplicationsEdit: React.FC<any> = (props) => {
     };
 
     getMarkets();
+
+    const getVendors = async () => {
+      const response = await fetch(`/api/vendors?depth=2&limit=9999`);
+      const theseVendors = await response.json();
+      setVendors(theseVendors.docs);
+    };
+
+    getVendors();
   }, []);
 
-  useEffect(() => {}, [market]);
+  useEffect(() => {}, [market, season, vendor]);
 
   useEffect(() => {}, [markets]);
 
@@ -814,6 +856,32 @@ export const ApplicationsEdit: React.FC<any> = (props) => {
                 textTransform={"uppercase"}
                 width={"300px"}
               >
+                Select a vendor
+              </Text>
+              <Divider sx={{ borderColor: "gray.600", borderBottomWidth: 2 }} />
+            </HStack>
+            <HStack marginTop={4}>
+              <Select
+                placeholder="Select a vendor"
+                onChange={(e) => selectVendor(e.target.value)}
+              >
+                {vendors.length
+                  ? vendors.map((vendor) => (
+                      <option key={vendor.id} value={vendor.id}>
+                        {vendor.name}
+                      </option>
+                    ))
+                  : null}
+              </Select>
+            </HStack>
+            <HStack marginTop={4}>
+              <Text
+                color={"gray.700"}
+                fontSize={"2xl"}
+                fontWeight={700}
+                textTransform={"uppercase"}
+                width={"300px"}
+              >
                 Select a market
               </Text>
               <Divider sx={{ borderColor: "gray.600", borderBottomWidth: 2 }} />
@@ -848,11 +916,12 @@ export const ApplicationsEdit: React.FC<any> = (props) => {
               <Select
                 placeholder="Select a season"
                 isDisabled={seasonIsDisabled}
+                onChange={(e) => selectSeason(e.target.value)}
               >
-                {markets.length
-                  ? markets.map((market) => (
-                      <option key={market.id} value={market.id}>
-                        {market.name}
+                {seasons.length
+                  ? seasons.map((season) => (
+                      <option key={season.id} value={season.id}>
+                        {season.name}
                       </option>
                     ))
                   : null}
@@ -871,8 +940,8 @@ export const ApplicationsEdit: React.FC<any> = (props) => {
               <Divider sx={{ borderColor: "gray.600", borderBottomWidth: 2 }} />
             </HStack>
             <Text color={"gray.600"} marginTop={4} fontSize={"md"}>
-              Select all the dates you would like to apply to MARKET NAME this
-              season
+              Select all the dates you would like to apply to{" "}
+              {season ? season.name : "this market"} this season
             </Text>
             <Wrap spacing={8} marginY={8}>
               <Checkbox
@@ -925,8 +994,8 @@ export const ApplicationsEdit: React.FC<any> = (props) => {
                 inline
                 dayClassName={(date) => {
                   let dateFound = null;
-                  if (dates) {
-                    dateFound = dates.find((item) => {
+                  if (season && marketDates) {
+                    dateFound = marketDates.find((item) => {
                       return item.date === date.toISOString();
                     });
                   }
@@ -958,8 +1027,8 @@ export const ApplicationsEdit: React.FC<any> = (props) => {
               <Divider sx={{ borderColor: "gray.600", borderBottomWidth: 2 }} />
             </HStack>
             <Text color={"gray.600"} marginTop={4} fontSize={"md"}>
-              Select the products you would like to sell at MARKET NAME this
-              season
+              Select the products you would like to sell at{" "}
+              {season ? season.name : "this market"} this season
             </Text>
             <ProductsField
               path="products"
@@ -974,6 +1043,7 @@ export const ApplicationsEdit: React.FC<any> = (props) => {
               market?
             </Text>
             <RadioGroup
+              colorScheme={"green"}
               marginTop={2}
               onChange={(newValue) => setIsCSA(newValue === "true")}
               value={typeof isCSA === "boolean" ? isCSA.toString() : undefined}
@@ -996,8 +1066,8 @@ export const ApplicationsEdit: React.FC<any> = (props) => {
               <Divider sx={{ borderColor: "gray.600", borderBottomWidth: 2 }} />
             </HStack>
             <Text color={"gray.600"} marginTop={4} fontSize={"md"}>
-              Select anyone who will be staffing your booth at MARKET NAME this
-              season.
+              Select anyone who will be staffing your booth at{" "}
+              {season ? season.name : "this market"} this season.
             </Text>
             <CheckboxGroup
               onChange={(newValue) => setContacts(newValue)}
