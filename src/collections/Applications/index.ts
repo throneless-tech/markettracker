@@ -90,6 +90,24 @@ export const Applications: CollectionConfig = {
       },
     },
     {
+      name: "schedule",
+      type: "select",
+      options: [
+        {
+          label: "Fulltime",
+          value: "fulltime",
+        },
+        {
+          label: "Parttime",
+          value: "parttime",
+        },
+        {
+          label: "Popup",
+          value: "popup",
+        },
+      ],
+    },
+    {
       name: "dates",
       label: "Market Dates",
       type: "array",
