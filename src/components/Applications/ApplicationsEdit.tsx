@@ -1094,7 +1094,13 @@ export const ApplicationsEdit: React.FC<any> = (props) => {
                 >
                   Submit application now
                 </Button>
-                <Button variant={"outline"}>Cancel</Button>
+                <Button
+                  as={"a"}
+                  href="/admin/collections/applications"
+                  variant={"outline"}
+                >
+                  Cancel
+                </Button>
               </HStack>
             </Center>
           </Container>

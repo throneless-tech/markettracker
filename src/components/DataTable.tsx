@@ -185,7 +185,7 @@ export function DataTable<Data extends object>({
 
   // console.log("***flatData:", flatData);
   // console.log("***data:", data);
-  console.log("global filter:", globalFilter);
+  // console.log("global filter:", globalFilter);
 
   React.useEffect(() => {
     if (isVisible) {

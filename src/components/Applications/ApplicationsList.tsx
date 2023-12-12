@@ -65,7 +65,9 @@ export const ApplicationsList: React.FC<any> = () => {
   const [applications, setApplications] = useState<ApplicationStats[]>([]);
   const [season, setSeason] = useState<Season>();
   const [isFetching, setIsFetching] = useState<boolean>(false);
-  const lastRef = React.useRef<HTMLDivElement>(null);
+  const [isAcceptingSearch, setIsAcceptingSearch] = useState("all");
+  const [locationSearch, setLocationSearch] = useState([]);
+  const [searchBox, setSearchBox] = useState("");
 
   // table
   const columns: ColumnDef<Application>[] = [
@@ -279,7 +281,7 @@ export const ApplicationsList: React.FC<any> = () => {
         );
         if (!res.ok) throw new Error(res.statusText);
         const newApplications = await res.json();
-        console.log("***newApplications", newApplications);
+        // console.log("***newApplications", newApplications);
         return newApplications;
       } catch (err) {
         console.error(err);
@@ -291,10 +293,31 @@ export const ApplicationsList: React.FC<any> = () => {
   );
 
   // table sorting
-  const [value, setValue] = React.useState("all");
-  const [searchBox, setSearchBox] = React.useState("");
 
-  const searchViaBox = (e) => {
+  const searchViaFilters = (e) => {
+    if (e.type == "click") {
+      const queries = [];
+      if (isAcceptingSearch === "open") {
+        queries.push({ "season.isAccepting": { equals: true } });
+      }
+      if (locationSearch.length) {
+        queries.push({ "season.address.state": { in: locationSearch } });
+      }
+
+      const stringifiedQuery = qs.stringify(
+        {
+          where: queries,
+        },
+        { addQueryPrefix: false },
+      );
+
+      history.push({
+        pathname: `/admin/collections/applications`,
+        search: `?limit=10&search=${searchBox}&${stringifiedQuery}`,
+      });
+      history.go(0);
+    }
+
     if (e.key == "Enter" && e.code == "Enter") {
       history.push({
         pathname: `/admin/collections/applications`,
@@ -303,6 +326,12 @@ export const ApplicationsList: React.FC<any> = () => {
       history.go(0);
     }
   };
+
+  // table filters
+
+  useEffect(() => {}, []);
+
+  useEffect(() => {}, [isAcceptingSearch, locationSearch]);
 
   if (applications) {
     return (
@@ -371,7 +400,7 @@ export const ApplicationsList: React.FC<any> = () => {
                     </InputLeftElement>
                     <Input
                       onChange={(e) => setSearchBox(e.target.value)}
-                      onKeyDown={searchViaBox}
+                      onKeyDown={searchViaFilters}
                       placeholder="Start typing"
                       value={searchBox}
                     />
@@ -386,8 +415,8 @@ export const ApplicationsList: React.FC<any> = () => {
                   </FormLabel>
                   <RadioGroup
                     colorScheme="green"
-                    onChange={setValue}
-                    value={value}
+                    onChange={(val) => setIsAcceptingSearch(val)}
+                    value={isAcceptingSearch}
                   >
                     <Stack direction="column">
                       <Radio value="all">All markets</Radio>
@@ -404,7 +433,10 @@ export const ApplicationsList: React.FC<any> = () => {
                   >
                     Market location
                   </FormLabel>
-                  <CheckboxGroup colorScheme="green">
+                  <CheckboxGroup
+                    colorScheme="green"
+                    onChange={(val) => setLocationSearch(val)}
+                  >
                     <Stack spacing={2} direction="column">
                       <Checkbox value="DC">DC</Checkbox>
                       <Checkbox value="MD">Maryland</Checkbox>
@@ -412,6 +444,18 @@ export const ApplicationsList: React.FC<any> = () => {
                     </Stack>
                   </CheckboxGroup>
                 </FormControl>
+                <Stack marginTop={6} spacing={4}>
+                  <Button onClick={searchViaFilters} variant={"solid"}>
+                    Search
+                  </Button>
+                  <Button
+                    as="a"
+                    href="/admin/collections/applications"
+                    variant={"outline"}
+                  >
+                    Clear search
+                  </Button>
+                </Stack>
               </Flex>
             </Box>
             <Box>
