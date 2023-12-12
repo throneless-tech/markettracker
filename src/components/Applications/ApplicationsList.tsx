@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useState } from "react";
 import { useHistory, useLocation } from "react-router-dom";
 import { Link as ReactRouterLink } from "react-router-dom";
 import qs from "qs";
+import { useAuth } from "payload/components/utilities";
 
 // Chakra imports
 import {
@@ -59,6 +60,7 @@ declare module "@tanstack/react-table" {
 
 export const ApplicationsList: React.FC<any> = () => {
   const history = useHistory();
+  const { user } = useAuth();
   const { search } = useLocation();
   const [applications, setApplications] = useState<ApplicationStats[]>([]);
   const [season, setSeason] = useState<Season>();
@@ -343,91 +345,93 @@ export const ApplicationsList: React.FC<any> = () => {
             <Divider color="gray.900" borderBottomWidth={2} opacity={1} />
           </Container>
         ) : null}
-        <Flex wrap={{ base: "wrap", lg: "nowrap" }}>
-          <Box
-            p={4}
-            minWidth={230}
-            width={{ base: "100%", lg: 260 }}
-            marginBottom={{ base: 4, lg: 0 }}
-            bg={"gray.100"}
-          >
-            <Heading as="h2" size="xl" sx={{ fontWeight: 600 }}>
-              Filter
-            </Heading>
-            <Flex wrap={"wrap"}>
-              <FormControl>
-                <FormLabel
-                  fontSize="sm"
-                  sx={{ fontWeight: 900, textTransform: "uppercase" }}
-                >
-                  Search for vendor
-                </FormLabel>
-                <InputGroup>
-                  <InputLeftElement pointerEvents="none">
-                    <Search2Icon color="gray.300" />
-                  </InputLeftElement>
-                  <Input
-                    onChange={(e) => setSearchBox(e.target.value)}
-                    onKeyDown={searchViaBox}
-                    placeholder="Start typing"
-                    value={searchBox}
-                  />
-                </InputGroup>
-              </FormControl>
-              <FormControl marginTop={4}>
-                <FormLabel
-                  fontSize="sm"
-                  sx={{ fontWeight: 900, textTransform: "uppercase" }}
-                >
-                  Show
-                </FormLabel>
-                <RadioGroup
-                  colorScheme="green"
-                  onChange={setValue}
-                  value={value}
-                >
-                  <Stack direction="column">
-                    <Radio value="all">All markets</Radio>
-                    <Radio value="open">
-                      Only markets accepting applications
-                    </Radio>
-                  </Stack>
-                </RadioGroup>
-              </FormControl>
-              <FormControl marginTop={4}>
-                <FormLabel
-                  fontSize="sm"
-                  sx={{ fontWeight: 900, textTransform: "uppercase" }}
-                >
-                  Market location
-                </FormLabel>
-                <CheckboxGroup colorScheme="green">
-                  <Stack spacing={2} direction="column">
-                    <Checkbox value="DC">DC</Checkbox>
-                    <Checkbox value="MD">Maryland</Checkbox>
-                    <Checkbox value="VA">Virginia</Checkbox>
-                  </Stack>
-                </CheckboxGroup>
-              </FormControl>
-            </Flex>
-          </Box>
-          <Box>
-            <Box marginBottom={3} textAlign={"right"}>
-              <Button
-                as="a"
-                href="/admin/collections/applications/create"
-                colorScheme="teal"
-                variant="outline"
-                marginBottom={2}
-                marginRight={4}
-                marginTop={4}
-              >
-                Create new application
-              </Button>
+        {user.role != "vendor" ? (
+          <Flex wrap={{ base: "wrap", lg: "nowrap" }}>
+            <Box
+              p={4}
+              minWidth={230}
+              width={{ base: "100%", lg: 260 }}
+              marginBottom={{ base: 4, lg: 0 }}
+              bg={"gray.100"}
+            >
+              <Heading as="h2" size="xl" sx={{ fontWeight: 600 }}>
+                Filter
+              </Heading>
+              <Flex wrap={"wrap"}>
+                <FormControl>
+                  <FormLabel
+                    fontSize="sm"
+                    sx={{ fontWeight: 900, textTransform: "uppercase" }}
+                  >
+                    Search for vendor
+                  </FormLabel>
+                  <InputGroup>
+                    <InputLeftElement pointerEvents="none">
+                      <Search2Icon color="gray.300" />
+                    </InputLeftElement>
+                    <Input
+                      onChange={(e) => setSearchBox(e.target.value)}
+                      onKeyDown={searchViaBox}
+                      placeholder="Start typing"
+                      value={searchBox}
+                    />
+                  </InputGroup>
+                </FormControl>
+                <FormControl marginTop={4}>
+                  <FormLabel
+                    fontSize="sm"
+                    sx={{ fontWeight: 900, textTransform: "uppercase" }}
+                  >
+                    Show
+                  </FormLabel>
+                  <RadioGroup
+                    colorScheme="green"
+                    onChange={setValue}
+                    value={value}
+                  >
+                    <Stack direction="column">
+                      <Radio value="all">All markets</Radio>
+                      <Radio value="open">
+                        Only markets accepting applications
+                      </Radio>
+                    </Stack>
+                  </RadioGroup>
+                </FormControl>
+                <FormControl marginTop={4}>
+                  <FormLabel
+                    fontSize="sm"
+                    sx={{ fontWeight: 900, textTransform: "uppercase" }}
+                  >
+                    Market location
+                  </FormLabel>
+                  <CheckboxGroup colorScheme="green">
+                    <Stack spacing={2} direction="column">
+                      <Checkbox value="DC">DC</Checkbox>
+                      <Checkbox value="MD">Maryland</Checkbox>
+                      <Checkbox value="VA">Virginia</Checkbox>
+                    </Stack>
+                  </CheckboxGroup>
+                </FormControl>
+              </Flex>
             </Box>
-            <DataTable columns={columns} fetchData={getApplications} />
-          </Box>
-        </Flex>
+            <Box>
+              <Box marginBottom={3} textAlign={"right"}>
+                <Button
+                  as="a"
+                  href="/admin/collections/applications/create"
+                  colorScheme="teal"
+                  variant="outline"
+                  marginBottom={2}
+                  marginRight={4}
+                  marginTop={4}
+                >
+                  Create new application
+                </Button>
+              </Box>
+              <DataTable columns={columns} fetchData={getApplications} />
+            </Box>
+          </Flex>
+        ) : null}
       </>
     );
   }
