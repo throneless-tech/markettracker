@@ -366,7 +366,17 @@ export const SeasonsEdit: React.FC<any> = (props) => {
                             >
                               Review market applications
                             </Button>
-                            <Button size="md" borderColor={"gray.700"}>
+                            <Button
+                              size="md"
+                              borderColor={"gray.700"}
+                              as="a"
+                              onClick={() =>
+                                history.push({
+                                  pathname: `/admin/collections/seasons/create`,
+                                  state: market,
+                                })
+                              }
+                            >
                               Create a new season
                             </Button>
                           </HStack>
