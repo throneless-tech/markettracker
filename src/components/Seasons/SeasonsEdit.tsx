@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useAuth } from "payload/components/utilities";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
@@ -9,7 +9,7 @@ import qs from "qs";
 // Payload imports
 import type { Product, User, Vendor } from "payload/generated-types";
 import { useDocumentInfo } from "payload/components/utilities";
-import { useField, useForm } from "payload/components/forms";
+import { useField, useForm, useFormFields } from "payload/components/forms";
 import { useRelation } from "../../utils/useRelation";
 import { MarketField } from "../fields/MarketsField";
 
@@ -60,6 +60,11 @@ import { FooterAdmin } from "../FooterAdmin";
 import { ProductsField } from "../fields/ProductsField";
 import { SeasonField } from "../fields/SeasonsField";
 import type { Market } from "payload/generated-types";
+import { TextField } from "../fields/TextField";
+import { YesNoField } from "../fields/YesNoField";
+import { CheckboxField } from "../fields/CheckboxField";
+import { DateField } from "../fields/DateField";
+import { TimeField } from "../fields/TimeField";
 
 // utils
 import formatDate from "../../utils/formatDate";
@@ -117,12 +122,78 @@ export const SeasonsEdit: React.FC<any> = (props) => {
     path: "vendors",
     limit: 9999,
   });
+
+  // const { value: marketId, setValue: setMarketId } = useField<string>({
+  //   path: "market",
+  // });
+
+  const [marketId, setMarketId] = useState<string>("");
   const [users, setUsers] = useState<User[]>([]);
+  const fields = useFormFields(([fields]) => fields);
+
+  const saveSeason = useCallback(async () => {
+    try {
+      const response = await fetch("/api/seasons", {
+        method: "POST",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name: fields.name.value,
+          isAccepting: fields.isAccepting.value,
+          market: marketId,
+          operators: fields.operators.value,
+          marketDates: {
+            startDate: fields["marketDates.startDate"].value,
+            endDate: fields["marketDates.endDate"].value,
+          },
+          marketTime: {
+            startTime: fields["marketTime.startTime"].value,
+            endTime: fields["marketTime.endTime"].value,
+          },
+          productGaps: fields.productGaps.value,
+        }),
+      });
+      if (!response.ok) {
+        throw new Error(response.statusText);
+      }
+      history.push("/admin/collections/seasons");
+    } catch (error) {
+      console.error(error);
+    }
+  }, [fields, marketId]);
 
   const submitForm = async () => {
     setIsSubmitted(true);
-    // submit();
+    console.log("***fields", fields);
+    //submit();
+    await saveSeason();
   };
+
+  const [available, setAvailable] = useState<User[]>([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch(`/api/users?where[role]=operator`);
+        if (!response.ok) {
+          throw new Error(response.statusText);
+        }
+        const data = await response.json();
+        setAvailable(data.docs);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    console.log("***data", history.location.state);
+    if (history.location.state) {
+      setMarketId((history.location.state as Market).id);
+      console.log("***market state", marketId);
+    }
+
+    fetchData();
+  }, []);
 
   useEffect(() => {
     if (!isLoaded) {
@@ -164,7 +235,49 @@ export const SeasonsEdit: React.FC<any> = (props) => {
           </Heading>
           <Divider color="gray.900" borderBottomWidth={2} opacity={1} />
           <Container maxW={"2xl"} my={4}>
-            <SeasonField path="market" isSubmitted={isSubmitted} />
+            <TextField
+              label="Season name"
+              path="name"
+              required
+              minLength={5}
+              admin={{
+                placeholder: "Start typing...",
+                description: "For example, Winter 2024 - Dupont",
+              }}
+            />
+            <YesNoField
+              label="Accepting applications"
+              path="isAccepting"
+              required
+            />
+            <CheckboxField
+              label="Market operators"
+              path="operators"
+              options={available.map((op) => {
+                return { label: op.name, value: op.id };
+              })}
+              admin={{
+                description:
+                  "Select which operators will be onsite and supervising during the market",
+                layout: "vertical",
+              }}
+            />
+            <HStack>
+              <DateField label="Start date" path="marketDates.startDate" />
+              <DateField label="End date" path="marketDates.endDate" />
+            </HStack>
+            <HStack>
+              <TimeField label="Start time" path="marketTime.startTime" />
+              <TimeField label="End time" path="marketTime.endTime" />
+            </HStack>
+            <Box mt={4}>
+              <ProductsField
+                label="Product gaps"
+                path="productGaps"
+                useObjects={true}
+              />
+            </Box>
+
             <HStack justify={"center"} marginTop={4} spacing={2}>
               <Button
                 rightIcon={<ArrowForwardIcon />}

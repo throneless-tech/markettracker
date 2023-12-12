@@ -59,7 +59,9 @@ export const YesNoField: FC<Props> = ({
         <RadioGroup
           colorScheme={"green"}
           onChange={(newValue) => setValue(newValue === "true")}
-          value={value ? "true" : "false"}
+          value={
+            typeof value === "boolean" ? (value ? "true" : "false") : undefined
+          }
         >
           <Stack direction={layout === "vertical" ? "column" : "row"}>
             <Radio value="true">Yes</Radio>
