@@ -194,7 +194,7 @@ export const ApplicationsEdit: React.FC<any> = (props) => {
       datesArray.push({ date: dateString });
       selectedDatesArray = [date, ...selectedDates];
     }
-    // console.log("***datesArray:", datesArray);
+    console.log("***datesArray:", datesArray);
     setDates(datesArray);
     setSelectedDates(selectedDatesArray);
   };
@@ -710,6 +710,8 @@ export const ApplicationsEdit: React.FC<any> = (props) => {
                 dayClassName={(date) => {
                   let dateFound = null;
                   if (dates) {
+                    console.log("***dates", dates);
+                    console.log("***item", item);
                     dateFound = dates.find((item) => {
                       return item.date === date.toISOString();
                     });
@@ -993,13 +995,14 @@ export const ApplicationsEdit: React.FC<any> = (props) => {
                 inline
                 dayClassName={(date) => {
                   let dateFound = null;
-                  if (season && marketDates) {
-                    dateFound = marketDates.find((item) => {
+                  if (season && dates) {
+                    dateFound = dates.find((item) => {
                       return item.date === date.toISOString();
                     });
                   }
 
                   if (dateFound) {
+                    console.log("***found date", date);
                     return "vendor-select";
                   } else {
                     return "";
