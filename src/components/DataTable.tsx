@@ -125,6 +125,7 @@ const defaultColumn: Partial<ColumnDef<Application>> = {
         <option value="pending">Pending</option>
         <option value="approved">Approved</option>
         <option value="rejected">Rejected</option>
+        <option value="withdrawn">Withdrawn</option>
       </Select>
     );
   },

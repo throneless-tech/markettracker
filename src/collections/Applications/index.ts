@@ -79,6 +79,10 @@ export const Applications: CollectionConfig = {
           label: "Pending",
           value: "pending",
         },
+        {
+          label: "Withdrawn",
+          value: "withdrawn",
+        },
       ],
       access: {
         create: ({ req }) => req.user.role !== "vendor",

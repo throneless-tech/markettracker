@@ -118,6 +118,8 @@ export const VendorsEdit: React.FC<any> = ({ data: vendor }) => {
                     <option value="bad">Bad</option>
                     <option value="conditional">Conditional</option>
                     <option value="underReview">Under Review</option>
+                    <option value="ineligible">Ineligible</option>
+                    <option value="inactive">Inactive</option>
                   </Select>
                 </HStack>
               </Flex>
