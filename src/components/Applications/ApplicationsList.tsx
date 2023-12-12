@@ -6,6 +6,7 @@ import qs from "qs";
 // Chakra imports
 import {
   Box,
+  Button,
   Checkbox,
   CheckboxGroup,
   Container,
@@ -410,7 +411,22 @@ export const ApplicationsList: React.FC<any> = () => {
               </FormControl>
             </Flex>
           </Box>
-          <DataTable columns={columns} fetchData={getApplications} />
+          <Box>
+            <Box marginBottom={3} textAlign={"right"}>
+              <Button
+                as="a"
+                href="/admin/collections/applications/create"
+                colorScheme="teal"
+                variant="outline"
+                marginBottom={2}
+                marginRight={4}
+                marginTop={4}
+              >
+                Create new application
+              </Button>
+            </Box>
+            <DataTable columns={columns} fetchData={getApplications} />
+          </Box>
         </Flex>
       </>
     );

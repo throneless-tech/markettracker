@@ -78,7 +78,7 @@ export const VendorsAppTab: React.FC<any> = () => {
   return (
     vendors?.length && (
       <>
-        <Container maxW="container.xl" marginY={12}>
+        <Container maxW="container.xl" marginBottom={12} marginTop={6}>
           <TableContainer
             sx={{
               maxHeight: "60vh",
