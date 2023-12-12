@@ -323,9 +323,7 @@ export const ApplicationsEdit: React.FC<any> = (props) => {
 
     const marketQuery = {
       market: {
-        id: {
-          equals: thisMarket.id,
-        },
+        equals: thisMarket.id,
       },
     };
 
@@ -333,6 +331,7 @@ export const ApplicationsEdit: React.FC<any> = (props) => {
       const stringifiedQuery = qs.stringify(
         {
           where: marketQuery,
+          limit: 9999,
         },
         { addQueryPrefix: true },
       );
@@ -1086,19 +1085,6 @@ export const ApplicationsEdit: React.FC<any> = (props) => {
                 </HStack>
               ) : null}
             </CheckboxGroup>
-
-            <Button
-              onClick={onOpen}
-              marginTop={4}
-              rightIcon={<ArrowForwardIcon />}
-            >
-              Add a contact
-            </Button>
-            <ContactsModal
-              isOpen={isOpen}
-              onSave={onSaveContact}
-              onClose={onClose}
-            />
             <Center marginY={8}>
               <HStack spacing={4}>
                 <Button
