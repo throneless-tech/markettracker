@@ -12,7 +12,10 @@ export const afterChangeAddToApplication: CollectionAfterChangeHook = async ({
   console.log("***doc", doc);
   if (operation === "create") {
     const application = await payload.findByID({
-      id: doc.application.id,
+      id:
+        typeof doc.application === "object"
+          ? doc.application.id
+          : doc.application,
       collection: "applications",
       depth: 0,
     });
@@ -27,7 +30,10 @@ export const afterChangeAddToApplication: CollectionAfterChangeHook = async ({
       }
     }
     await payload.update({
-      id: doc.application.id,
+      id:
+        typeof doc.application === "object"
+          ? doc.application.id
+          : doc.application,
       collection: "applications",
       depth: 0,
       data: {
@@ -40,7 +46,10 @@ export const afterChangeAddToApplication: CollectionAfterChangeHook = async ({
 export const afterDeleteRemoveFromApplication: CollectionAfterDeleteHook =
   async ({ doc }) => {
     const application = await payload.findByID({
-      id: doc.application.id,
+      id:
+        typeof doc.application === "object"
+          ? doc.application.id
+          : doc.application,
       collection: "applications",
       depth: 0,
     });
@@ -60,7 +69,10 @@ export const afterDeleteRemoveFromApplication: CollectionAfterDeleteHook =
         ) as string[];
       }
       await payload.update({
-        id: doc.application.id,
+        id:
+          typeof doc.application === "object"
+            ? doc.application.id
+            : doc.application,
         collection: "applications",
         depth: 0,
         data: {
