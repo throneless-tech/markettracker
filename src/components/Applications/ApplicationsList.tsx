@@ -46,6 +46,7 @@ import StarIcon from "../../assets/icons/star.js";
 
 // types
 import type { Application, Product, Season } from "payload/generated-types";
+import { FooterAdmin } from "../FooterAdmin";
 
 type ApplicationStats = Application & {
   gapsMet: any[];
@@ -397,11 +398,13 @@ export const ApplicationsList: React.FC<any> = () => {
         {user.role != "vendor" ? (
           <Flex wrap={{ base: "wrap", lg: "nowrap" }}>
             <Box
-              p={4}
-              minWidth={230}
-              width={{ base: "100%", lg: 260 }}
-              marginBottom={{ base: 4, lg: 0 }}
               bg={"gray.100"}
+              // flexGrow={1}
+              p={4}
+              marginBottom={{ base: 4, lg: 0 }}
+              maxW={260}
+              minWidth={{ base: "100%", lg: 230 }}
+              width={"100%"}
             >
               <Heading as="h2" size="xl" sx={{ fontWeight: 600 }}>
                 Filter
@@ -478,7 +481,11 @@ export const ApplicationsList: React.FC<any> = () => {
                 </Stack>
               </Flex>
             </Box>
-            <Box>
+            <Box
+              sx={{
+                maxWidth: { base: 400, sm: 600, md: 900, lg: 1200, xl: 1660 },
+              }}
+            >
               <Box marginBottom={3} textAlign={"right"}>
                 <Button
                   as="a"
@@ -492,10 +499,18 @@ export const ApplicationsList: React.FC<any> = () => {
                   Create new application
                 </Button>
               </Box>
-              <DataTable columns={columns} fetchData={getApplications} />
+              <Box
+                sx={{
+                  overflowX: "scroll",
+                  overflowY: "auto",
+                }}
+              >
+                <DataTable columns={columns} fetchData={getApplications} />
+              </Box>
             </Box>
           </Flex>
         ) : null}
+        <FooterAdmin />
       </>
     );
   }

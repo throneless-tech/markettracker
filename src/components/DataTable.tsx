@@ -241,7 +241,8 @@ export function DataTable<Data extends object>({
         sx={{
           height: "80vh",
           maxWidth: "3000px !important;",
-          overflow: "auto",
+          overflowX: "scroll",
+          overflowY: "auto",
         }}
       >
         <Table variant="simple">
