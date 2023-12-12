@@ -7,7 +7,12 @@ import { Box, HStack, Link as ChakraLink } from "@chakra-ui/react";
 export const SeasonsTabs: React.FC<any> = ({ selected }) => {
   return (
     <Box as="nav" aria-label="Component navigation" bg={"gray.50"}>
-      <HStack as="ul" listStyleType="none" borderBottomWidth="1px">
+      <HStack
+        as="ul"
+        listStyleType="none"
+        borderBottomWidth="1px"
+        marginBottom={0}
+      >
         <Box as="li">
           <ChakraLink as={ReactRouterLink} to="/admin/collections/seasons">
             <Box

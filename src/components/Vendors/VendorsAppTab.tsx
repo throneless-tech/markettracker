@@ -5,8 +5,6 @@ import { useInView } from "react-intersection-observer";
 import qs from "qs";
 
 import {
-  Button,
-  Box,
   Container,
   Link,
   Table,
@@ -81,19 +79,6 @@ export const VendorsAppTab: React.FC<any> = () => {
     vendors?.length && (
       <>
         <Container maxW="container.xl" marginBottom={12} marginTop={6}>
-          <Box marginBottom={3} textAlign={"right"}>
-            <Button
-              as="a"
-              href="/admin/collections/applications/create"
-              colorScheme="teal"
-              variant="outline"
-              marginBottom={6}
-              marginLeft={"auto"}
-              marginRight={0}
-            >
-              Create new application
-            </Button>
-          </Box>
           <TableContainer
             sx={{
               maxHeight: "60vh",

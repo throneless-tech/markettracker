@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { useHistory, useLocation } from "react-router-dom";
 import DatePicker from "react-datepicker";
+import qs from "qs";
 
 // Payload imports
 import { useAuth, useDocumentInfo } from "payload/components/utilities";
@@ -26,37 +27,18 @@ import {
   Container,
   Divider,
   Flex,
-  FormControl,
-  FormHelperText,
-  FormLabel,
   Heading,
   HStack,
   Image,
-  Input,
-  Modal,
-  ModalBody,
-  ModalCloseButton,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
-  ModalOverlay,
   Radio,
   RadioGroup,
   Select,
   Spacer,
   Stack,
-  Tab,
-  TabIndicator,
-  TabList,
-  TabPanel,
-  TabPanels,
-  Tabs,
   Tag,
   Text,
-  Textarea,
   useDisclosure,
   Wrap,
-  WrapItem,
 } from "@chakra-ui/react";
 
 // components
@@ -107,6 +89,10 @@ export const ApplicationsEdit: React.FC<any> = (props) => {
   const [selectAllDates, setSelectAllDates] = useState(false);
   const [doSubmit, setDoSubmit] = useState(false);
   const [available, setAvailable] = useState<Contact[]>([]);
+  const [market, setMarket] = useState(null);
+  const [markets, setMarkets] = useState([]);
+  const [seasons, setSeasons] = useState([]);
+  const [seasonIsDisabled, setSeasonIsDisabled] = useState(true);
 
   const handleContactNameChange = (event) => setContactName(event.target.value);
   const handleContactEmailChange = (event) =>
@@ -320,6 +306,51 @@ export const ApplicationsEdit: React.FC<any> = (props) => {
   // ): season is Market => {
   //   return typeof season.market === "object";
   // };
+
+  const selectMarket = (id) => {
+    const thisMarket = markets.find((m) => m.id == id);
+    setMarket(thisMarket);
+
+    const marketQuery = {
+      market: {
+        id: {
+          equals: thisMarket.id,
+        },
+      },
+    };
+
+    const getSeasons = async () => {
+      const stringifiedQuery = qs.stringify(
+        {
+          where: marketQuery,
+        },
+        { addQueryPrefix: true },
+      );
+      console.log(stringifiedQuery);
+
+      const response = await fetch(`/api/seasons${stringifiedQuery}`);
+      const theseSeasons = await response.json();
+      console.log(theseSeasons);
+
+      setSeasons(theseSeasons.docs);
+    };
+
+    getSeasons();
+  };
+
+  useEffect(() => {
+    const getMarkets = async () => {
+      const response = await fetch(`/api/markets?depth=2&limit=20`);
+      const theseMarkets = await response.json();
+      setMarkets(theseMarkets.docs);
+    };
+
+    getMarkets();
+  }, []);
+
+  useEffect(() => {}, [market]);
+
+  useEffect(() => {}, [markets]);
 
   // id will be undefined on the create form
   if (
@@ -724,7 +755,6 @@ export const ApplicationsEdit: React.FC<any> = (props) => {
                 </HStack>
               )}
             </CheckboxGroup>
-
             <Button
               onClick={onOpen}
               marginTop={4}
@@ -767,239 +797,67 @@ export const ApplicationsEdit: React.FC<any> = (props) => {
         <Box>
           <Container maxW="container.xl">
             <Heading as="h2" sx={{ textTransform: "uppercase" }} marginTop={4}>
-              Market application
+              Create vendor application
             </Heading>
-            <Box>
-              <Box background="green.600" padding={6}>
-                <Flex borderBottom={"2px solid #F6F5F4"} paddingBottom={6}>
-                  <HStack>
-                    <Text
-                      as={"span"}
-                      color={"gray.50"}
-                      fontFamily={"Zilla Slab"}
-                      fontSize="3xl"
-                      fontWeight={700}
-                      textTransform={"uppercase"}
-                    >
-                      market name
-                    </Text>
-                  </HStack>
-                  <Spacer />
-                  <HStack>
-                    <Text
-                      color={"gray.50"}
-                      fontSize="sm"
-                      fontWeight={700}
-                      textAlign={"right"}
-                      textStyle="bodyMain"
-                      textTransform={"uppercase"}
-                      width={28}
-                    >
-                      Accepting applications
-                    </Text>
-                    <StarIcon height={8} width={8} />
-                  </HStack>
-                </Flex>
-                <Flex marginTop={4}>
-                  <HStack>
-                    {/* {shadowSeason.marketTime &&
-                      shadowSeason.market &&
-                      typeof shadowSeason.market === "object" ? (
-                      <Text
-                        as={"span"}
-                        color={"gray.50"}
-                        fontSize="2xl"
-                        fontWeight={700}
-                        textStyle="bodyMain"
-                        sx={{ textTransform: "capitalize" }}
-                      >
-                        {shadowSeason.market.days.map((day, index) => {
-                          if (
-                            index ==
-                            (shadowSeason.market as Market).days.length - 1
-                          ) {
-                            return day;
-                          } else {
-                            return `${day}, `;
-                          }
-                        })}{" "}
-                        {formatTime(shadowSeason.marketTime.startTime)}-
-                        {formatTime(shadowSeason.marketTime.endTime)}
-                      </Text>
-                    ) : null} */}
-                    {/* <Text
-                      textStyle="bodyMain"
-                      as={"span"}
-                      color={"gray.50"}
-                      fontSize="2xl"
-                    >
-                      {shadowSeason.market.address.street}
-                      {", "}
-                      {shadowSeason.market.address.city}
-                      {", "}
-                      {shadowSeason.market.address.state}
-                      {", "}
-                      {shadowSeason.market.address.zipcode}
-                    </Text> */}
-                  </HStack>
-                  {/* {shadowSeason.market.contact ? (
-                    <>
-                      <Spacer />
-                      <HStack>
-                        <Text
-                          as={"span"}
-                          color={"gray.50"}
-                          fontSize="2xl"
-                          fontWeight={700}
-                          textStyle="bodyMain"
-                        >
-                          Operator:
-                        </Text>
-                        <Text
-                          textStyle="bodyMain"
-                          as={"span"}
-                          color={"gray.50"}
-                          fontSize="2xl"
-                        >
-                          {(shadowSeason.market.contact as Contact).name}
-                        </Text>
-                        <Text
-                          textStyle="bodyMain"
-                          as={"span"}
-                          color={"gray.50"}
-                          fontSize="2xl"
-                        >
-                          {(shadowSeason.market.contact as Contact).phone}
-                        </Text>
-                      </HStack>
-                    </>
-                  ) : null} */}
-                </Flex>
-              </Box>
-              <Box background={"#90B132"} borderBottomRadius="8px" padding={4}>
-                <Text marginTop={4} fontSize={"xl"}>
-                  description
-                </Text>
-                <HStack sx={{ flexWrap: "wrap" }}>
-                  <Text
-                    fontSize={"sm"}
-                    textTransform={"uppercase"}
-                    fontWeight={700}
-                    textStyle="bodyMain"
-                  >
-                    Market needs:
-                  </Text>
-                  {/* {shadowSeason.productGaps &&
-                    shadowSeason.productGaps.length ? (
-                    shadowSeason.productGaps.map((product) => (
-                      <Tag bg={"gray.50"} fontWeight={700}>
-                        {product.product}
-                      </Tag>
-                    ))
-                  ) : (
-                    <Tag bg={"gray.50"} fontWeight={700}>
-                      TBA
-                    </Tag>
-                  )} */}
-                </HStack>
-              </Box>
-            </Box>
           </Container>
           <Container marginTop={8} maxW={"container.lg"}>
-            <HStack>
-              <Text
-                color={"gray.700"}
-                fontSize={"2xl"}
-                fontWeight={700}
-                textTransform={"uppercase"}
-                width={56}
-              >
-                Market size
-              </Text>
-              <Text
-                color={"gray.600"}
-                fontFamily={"Zilla Slab"}
-                fontSize={"2xl"}
-                fontWeight={700}
-                textTransform={"uppercase"}
-              >
-                Market size
-              </Text>
-              <Divider sx={{ borderColor: "gray.600", borderBottomWidth: 2 }} />
-            </HStack>
-            <Text color={"gray.600"} marginTop={4} fontSize={"md"}>
-              Market size description
-              {/* {shadowSeason.market.size == "flagship"
-                ? "Daily sales for the entire market are upwards of $150,000. This market can support upwards of 20 produce vendors, 14 prepared food vendors, 9 baked goods vendors, 6 alcohol vendors, 5 dairy vendors, and 2 to 4 vendors from each additional category."
-                : shadowSeason.market.size == "large"
-                  ? "Daily sales for large markets range from $20,000 to $70,000. They can support average numbers of 8 produce vendors, 8 prepared food vendors, 5 baked goods vendors, 3 alcohol vendors, and 1 to 2 vendors from each additional category."
-                  : shadowSeason.market.size == "medium"
-                    ? "Daily sales for medium markets range from $10,000 to $19,000. They can support average numbers of 5 prepared food vendors, 4 produce vendors, and 1 to 2 vendors from each additional category."
-                    : shadowSeason.market.size == "small"
-                      ? "Daily sales for small markets range from $1,500 to $9,000. They can support average numbers of 4 produce vendors, 4 prepared food vendors, and 1 to 2 vendors from each additional category with some product category gaps."
-                      : "These markets are limited to one produce vendor for retail and wholesale sales."} */}
-            </Text>
-            <HStack marginTop={4}>
-              <Text as={"span"} color={"blue.500"} fontWeight={700}>
-                0
-              </Text>
-              <Text as={"span"} color={"blue.500"}>
-                visitors per market
-              </Text>
-              <Text as={"span"} color={"gray.400"}>
-                (avg)
-              </Text>
-            </HStack>
-            <HStack marginTop={4}>
-              <Text
-                color={"gray.700"}
-                fontSize={"2xl"}
-                fontWeight={700}
-                textTransform={"uppercase"}
-                width={"720px"}
-              >
-                Vendors scheduled for this market
-              </Text>
-              <Divider sx={{ borderColor: "gray.600", borderBottomWidth: 2 }} />
-            </HStack>
-            <HStack marginTop={2}>
-              {/* <Tag bg={"gray.50"}>Vendor 1</Tag> */}
-            </HStack>
-            <HStack marginTop={4}>
-              <Text
-                color={"gray.700"}
-                fontSize={"2xl"}
-                fontWeight={700}
-                textTransform={"uppercase"}
-                width={"220px"}
-              >
-                Stats & info
-              </Text>
-              <Divider sx={{ borderColor: "gray.600", borderBottomWidth: 2 }} />
-            </HStack>
-            <Image
-              src={stats1}
-              alt="A sample of a pie chart showing product make up, to be filled in with an interactive graph in the future."
-            />
-            <Image
-              src={stats2}
-              alt="A sample of a bar graph showing monthly sales compared over the years, to be filled in with an interactive graph in the future."
-            />
-            <Image
-              src={stats3}
-              alt="A sample of a bar graph showing weekly sales by product type, to be filled in with an interactive graph in the future."
-            />
-            <Image
-              src={stats4}
-              alt="A sample of a bar graph showing monthly sales by vendor, to be filled in with an interactive graph in the future."
-            />
-            <Box background="green.600" padding={2} margin={4}>
+            <Box background="green.600" padding={2} marginY={4}>
               <Text color="gray.50">
-                Fill out the information below to apply to market name - market
-                days
-                {/* {shadowSeason.market.name} ({shadowSeason.market.days[0]}) */}
+                Fill out the information below to apply to a market.
               </Text>
             </Box>
+            <HStack marginTop={4}>
+              <Text
+                color={"gray.700"}
+                fontSize={"2xl"}
+                fontWeight={700}
+                textTransform={"uppercase"}
+                width={"300px"}
+              >
+                Select a market
+              </Text>
+              <Divider sx={{ borderColor: "gray.600", borderBottomWidth: 2 }} />
+            </HStack>
+            <HStack marginTop={4}>
+              <Select
+                placeholder="Select a market"
+                onChange={(e) => selectMarket(e.target.value)}
+              >
+                {markets.length
+                  ? markets.map((market) => (
+                      <option key={market.id} value={market.id}>
+                        {market.name}
+                      </option>
+                    ))
+                  : null}
+              </Select>
+            </HStack>
+            <HStack marginTop={4}>
+              <Text
+                color={"gray.700"}
+                fontSize={"2xl"}
+                fontWeight={700}
+                textTransform={"uppercase"}
+                width={"300px"}
+              >
+                Select a season
+              </Text>
+              <Divider sx={{ borderColor: "gray.600", borderBottomWidth: 2 }} />
+            </HStack>
+            <HStack marginTop={4}>
+              <Select
+                placeholder="Select a season"
+                isDisabled={seasonIsDisabled}
+              >
+                {markets.length
+                  ? markets.map((market) => (
+                      <option key={market.id} value={market.id}>
+                        {market.name}
+                      </option>
+                    ))
+                  : null}
+              </Select>
+            </HStack>
             <HStack marginTop={4}>
               <Text
                 color={"gray.700"}
@@ -1145,7 +1003,7 @@ export const ApplicationsEdit: React.FC<any> = (props) => {
               onChange={(newValue) => setContacts(newValue)}
               value={contacts}
             >
-              {available && available.length && (
+              {available && available.length ? (
                 <HStack spacing={4}>
                   {available.map((contact) => (
                     <Checkbox key={contact.id} value={contact.id}>
@@ -1156,7 +1014,7 @@ export const ApplicationsEdit: React.FC<any> = (props) => {
                     </Checkbox>
                   ))}
                 </HStack>
-              )}
+              ) : null}
             </CheckboxGroup>
 
             <Button
@@ -1171,14 +1029,6 @@ export const ApplicationsEdit: React.FC<any> = (props) => {
               onSave={onSaveContact}
               onClose={onClose}
             />
-            <Divider
-              sx={{ borderColor: "gray.600", borderBottomWidth: 2, marginY: 8 }}
-            />
-            <Text fontSize={"xl"} textAlign={"center"}>
-              Applications will be reviewed until all spaces have been filled.
-              You will be notified by email once your application has been
-              reviewed.
-            </Text>
             <Center marginY={8}>
               <HStack spacing={4}>
                 <Button
