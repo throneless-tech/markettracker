@@ -55,7 +55,9 @@ export const RadioField: FC<Props> = ({
 
   return (
     <FormControl>
-      <FormLabel>{label + (required ? " (Required)" : "")}</FormLabel>
+      <FormLabel fontSize={"small"}>
+        {label + (required ? " (Required)" : "")}
+      </FormLabel>
       {description ? <FormHelperText>{description}</FormHelperText> : ""}
       <ErrorTooltip message={errorMessage} showError={showError}>
         <RadioGroup onChange={setValue} value={value}>

@@ -178,7 +178,7 @@ export const MarketField: FC<Props> = ({
 
   return (
     <>
-      <FormControl>
+      <FormControl fontSize={"small"}>
         <FormLabel>Market name (required)</FormLabel>
         <Input
           placeholder="Start typing..."

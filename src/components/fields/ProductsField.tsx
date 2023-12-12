@@ -99,7 +99,9 @@ export const ProductsField: FC<Props> = ({
     allProducts && (
       <FormControl my={4}>
         {label ? (
-          <FormLabel>{label + (required ? " (Required)" : "")}</FormLabel>
+          <FormLabel fontSize={"small"}>
+            {label + (required ? " (Required)" : "")}
+          </FormLabel>
         ) : null}
         {description ? <FormHelperText>{description}</FormHelperText> : null}
         <CheckboxGroup

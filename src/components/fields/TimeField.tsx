@@ -7,7 +7,7 @@ import { date } from "payload/dist/fields/validations";
 import DatePicker from "react-datepicker";
 
 // Chakra imports
-import { Container, Text } from "@chakra-ui/react";
+import { Box, Text } from "@chakra-ui/react";
 
 // Local imports
 import { ErrorTooltip } from "../ErrorTooltip";
@@ -49,8 +49,8 @@ export const TimeField: FC<Props> = ({
   });
 
   return (
-    <Container>
-      <Text as="div" fontWeight="medium" fontSize="medium" marginTop={6}>
+    <Box>
+      <Text as="div" fontWeight="medium" fontSize="small" marginTop={6}>
         {label}
       </Text>
       {description ? (
@@ -78,6 +78,6 @@ export const TimeField: FC<Props> = ({
           }
         />
       </ErrorTooltip>
-    </Container>
+    </Box>
   );
 };
