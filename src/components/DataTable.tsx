@@ -204,6 +204,11 @@ export function DataTable<Data extends object>({
       globalFilter,
       sorting,
     },
+    initialState: {
+      columnVisibility: {
+        id: false,
+      },
+    },
     onGlobalFilterChange: setGlobalFilter,
     globalFilterFn: fuzzyFilter,
     onSortingChange: setSorting,

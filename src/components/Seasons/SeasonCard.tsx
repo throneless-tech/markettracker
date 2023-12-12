@@ -1,4 +1,4 @@
-import React from "react";
+import React, { forwardRef } from "react";
 import { useHistory } from "react-router-dom";
 import { useAuth } from "payload/components/utilities";
 
@@ -24,7 +24,7 @@ import { MarketIcon } from "../../assets/icons/market";
 import { ProfileIcon } from "../../assets/icons/profile";
 import StarIcon from "../../assets/icons/star.js";
 
-export const SeasonCard: React.FC<any> = (props) => {
+export const SeasonCard: React.FC<any> = forwardRef<any, any>((props, ref) => {
   const { user } = useAuth();
   const history = useHistory();
   const { season, isApplication, status } = props;
@@ -59,6 +59,7 @@ export const SeasonCard: React.FC<any> = (props) => {
       borderWidth={2}
       maxWidth={348}
       sx={{ position: "relative" }}
+      ref={ref}
     >
       {season.isAccepting ? (
         <Box
@@ -275,4 +276,4 @@ export const SeasonCard: React.FC<any> = (props) => {
       </Box>
     </Box>
   );
-};
+});
