@@ -13,7 +13,7 @@ import { withFormContext } from "../../utils/withFormContext";
 
 export const Applications: CollectionConfig = {
   slug: "applications",
-  defaultSort: "updatedAt",
+  defaultSort: "createdAt",
   admin: {
     components: {
       views: {

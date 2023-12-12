@@ -12,11 +12,13 @@ interface Return<T> {
 
 type Options = {
   path: string;
+  limit?: number;
   options?: RequestInit;
 };
 
 export function useRelation<T = unknown>({
   path,
+  limit,
   options = {},
 }: Options): Return<T> {
   const doc = useDocumentInfo();
@@ -37,6 +39,7 @@ export function useRelation<T = unknown>({
         const stringifiedQuery = qs.stringify(
           {
             where: query,
+            limit: limit ? limit : undefined,
           },
           { addQueryPrefix: true },
         );

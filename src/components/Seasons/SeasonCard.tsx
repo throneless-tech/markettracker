@@ -97,13 +97,17 @@ export const SeasonCard: React.FC<any> = (props) => {
               {season.name}
             </Text>
             <Text>
-              {season.market.address.street}
+              {season.market?.address?.street
+                ? season.market.address.street
+                : ""}
               {", "}
-              {season.market.address.city}
+              {season.market?.address?.city ? season.market.address.city : ""}
               {", "}
-              {season.market.address.state}
+              {season.market?.address?.state ? season.market.address.state : ""}
               {", "}
-              {season.market.address.zipcode}
+              {season.market?.address?.zipcode
+                ? season.market.address.zipcode
+                : ""}
             </Text>
           </Stack>
         </HStack>
