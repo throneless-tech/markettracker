@@ -711,7 +711,6 @@ export const ApplicationsEdit: React.FC<any> = (props) => {
                   let dateFound = null;
                   if (dates) {
                     console.log("***dates", dates);
-                    console.log("***item", item);
                     dateFound = dates.find((item) => {
                       return item.date === date.toISOString();
                     });

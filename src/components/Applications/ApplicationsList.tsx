@@ -74,37 +74,40 @@ export const ApplicationsList: React.FC<any> = () => {
   const [seasons, setSeasons] = useState([]);
 
   // vendor seasons to apply for
-  useEffect(() => {}, [])
+  useEffect(() => {}, []);
 
   useEffect(() => {
-    if (user.vendor) {
-      const vendor: Vendor = user.vendor;
+    if (user.role !== "vendor" || !user.vendor) return;
 
-      const query = {
-        "application.vendor": {
-          not_equals: vendor.id,
+    const query = {
+      applications: {
+        vendor: {
+          not_equals:
+            user.vendor && typeof user.vendor === "object"
+              ? (user.vendor as Vendor).id
+              : user.vendor,
         },
-      };
+      },
+    };
 
-      const getSeasons = async () => {
-        const stringifiedQuery = qs.stringify(
-          {
-            where: query, // ensure that `qs` adds the `where` property, too!
-            depth: 1,
-          },
-          { addQueryPrefix: true },
-        );
+    const getSeasons = async () => {
+      const stringifiedQuery = qs.stringify(
+        {
+          where: query, // ensure that `qs` adds the `where` property, too!
+          depth: 1,
+        },
+        { addQueryPrefix: true },
+      );
 
-        const response = await fetch(`/api/seasons${stringifiedQuery}`);
-        let theseSeasons = await response.json();
-        console.log(theseSeasons);
-        
-        setSeasons(theseSeasons.docs);
-      }
+      const response = await fetch(`/api/seasons${stringifiedQuery}`);
+      let theseSeasons = await response.json();
+      console.log(theseSeasons);
 
-      getSeasons();
-    }
-  }, [])
+      setSeasons(theseSeasons.docs);
+    };
+
+    getSeasons();
+  }, []);
 
   // table
   const columns: ColumnDef<Application>[] = [
@@ -393,9 +396,7 @@ export const ApplicationsList: React.FC<any> = () => {
   if (applications) {
     return (
       <>
-        {user.role == "vendor" ? null : (
-          <SeasonsTabs selected="applications" />
-        )}
+        {user.role == "vendor" ? null : <SeasonsTabs selected="applications" />}
         {season && season.market && typeof season.market === "object" ? (
           <Container maxW="container.xl">
             <Flex>
@@ -434,151 +435,145 @@ export const ApplicationsList: React.FC<any> = () => {
           </Container>
         ) : null}
         {user.role == "vendor" ? (
-          (
-            <Container sx={{ maxWidth: "unset" }}>
-              <HStack align={"flex-start"} marginTop={8} spacing={8}>
-                {/* <Stack backgroundColor={'gray.50'} padding={4} width={230}>
+          <Container sx={{ maxWidth: "unset" }}>
+            <HStack align={"flex-start"} marginTop={8} spacing={8}>
+              {/* <Stack backgroundColor={'gray.50'} padding={4} width={230}>
           <Text>
             Filter
           </Text>
         </Stack> */}
-                <HStack align={"flex-start"} wrap={"wrap"} spacing={6}>
-                  {seasons?.length &&
-                    seasons.reduce((acc, season) => {
-                      if (
-                        !applications?.length ||
-                        !applications.findIndex(
-                          (app) =>
-                            app.season !== season.id &&
-                            app.season?.id !== season.id,
-                        )
-                      ) {
-                        acc.push(
-                          <SeasonCard key={season.id} season={season} />,
-                        );
-                      }
-                      return acc;
-                    }, [])}
-                </HStack>
+              <HStack align={"flex-start"} wrap={"wrap"} spacing={6}>
+                {seasons?.length &&
+                  seasons.reduce((acc, season) => {
+                    if (
+                      !applications?.length ||
+                      !applications.findIndex(
+                        (app) =>
+                          app.season !== season.id &&
+                          (app.season as Season).id !== season.id,
+                      )
+                    ) {
+                      acc.push(<SeasonCard key={season.id} season={season} />);
+                    }
+                    return acc;
+                  }, [])}
               </HStack>
-            </Container>
-          )
+            </HStack>
+          </Container>
         ) : (
-          (
-            <Flex wrap={{ base: "wrap", lg: "nowrap" }}>
-              <Box
-                bg={"gray.100"}
-                // flexGrow={1}
-                p={4}
-                marginBottom={{ base: 4, lg: 0 }}
-                maxW={260}
-                minWidth={{ base: "100%", lg: 230 }}
-                width={"100%"}
-              >
-                <Heading as="h2" size="xl" sx={{ fontWeight: 600 }}>
-                  Filter
-                </Heading>
-                <Flex wrap={"wrap"}>
-                  <FormControl>
-                    <FormLabel
-                      fontSize="sm"
-                      sx={{ fontWeight: 900, textTransform: "uppercase" }}
-                    >
-                      Search for vendor
-                    </FormLabel>
-                    <InputGroup>
-                      <InputLeftElement pointerEvents="none">
-                        <Search2Icon color="gray.300" />
-                      </InputLeftElement>
-                      <Input
-                        onChange={(e) => setSearchBox(e.target.value)}
-                        onKeyDown={searchViaFilters}
-                        placeholder="Start typing"
-                        value={searchBox}
-                      />
-                    </InputGroup>
-                  </FormControl>
-                  <FormControl marginTop={4}>
-                    <FormLabel
-                      fontSize="sm"
-                      sx={{ fontWeight: 900, textTransform: "uppercase" }}
-                    >
-                      Show
-                    </FormLabel>
-                    <RadioGroup
-                      colorScheme="green"
-                      onChange={(val) => setIsAcceptingSearch(val)}
-                      value={isAcceptingSearch}
-                    >
-                      <Stack direction="column">
-                        <Radio value="all">All markets</Radio>
-                        <Radio value="open">
-                          Only markets accepting applications
-                        </Radio>
-                      </Stack>
-                    </RadioGroup>
-                  </FormControl>
-                  <FormControl marginTop={4}>
-                    <FormLabel
-                      fontSize="sm"
-                      sx={{ fontWeight: 900, textTransform: "uppercase" }}
-                    >
-                      Market location
-                    </FormLabel>
-                    <CheckboxGroup
-                      colorScheme="green"
-                      onChange={(val) => setLocationSearch(val)}
-                    >
-                      <Stack spacing={2} direction="column">
-                        <Checkbox value="DC">DC</Checkbox>
-                        <Checkbox value="MD">Maryland</Checkbox>
-                        <Checkbox value="VA">Virginia</Checkbox>
-                      </Stack>
-                    </CheckboxGroup>
-                  </FormControl>
-                  <Stack marginTop={6} spacing={4}>
-                    <Button onClick={searchViaFilters} variant={"solid"}>
-                      Search
-                    </Button>
-                    <Button
-                      as="a"
-                      href="/admin/collections/applications"
-                      variant={"outline"}
-                    >
-                      Clear search
-                    </Button>
-                  </Stack>
-                </Flex>
+          <Flex wrap={{ base: "wrap", lg: "nowrap" }}>
+            <Box
+              bg={"gray.100"}
+              // flexGrow={1}
+              p={4}
+              marginBottom={{ base: 4, lg: 0 }}
+              maxW={260}
+              minWidth={{ base: "100%", lg: 230 }}
+              width={"100%"}
+            >
+              <Heading as="h2" size="xl" sx={{ fontWeight: 600 }}>
+                Filter
+              </Heading>
+              <Flex wrap={"wrap"}>
+                <FormControl>
+                  <FormLabel
+                    fontSize="sm"
+                    sx={{ fontWeight: 900, textTransform: "uppercase" }}
+                  >
+                    Search for vendor
+                  </FormLabel>
+                  <InputGroup>
+                    <InputLeftElement pointerEvents="none">
+                      <Search2Icon color="gray.300" />
+                    </InputLeftElement>
+                    <Input
+                      onChange={(e) => setSearchBox(e.target.value)}
+                      onKeyDown={searchViaFilters}
+                      placeholder="Start typing"
+                      value={searchBox}
+                    />
+                  </InputGroup>
+                </FormControl>
+                <FormControl marginTop={4}>
+                  <FormLabel
+                    fontSize="sm"
+                    sx={{ fontWeight: 900, textTransform: "uppercase" }}
+                  >
+                    Show
+                  </FormLabel>
+                  <RadioGroup
+                    colorScheme="green"
+                    onChange={(val) => setIsAcceptingSearch(val)}
+                    value={isAcceptingSearch}
+                  >
+                    <Stack direction="column">
+                      <Radio value="all">All markets</Radio>
+                      <Radio value="open">
+                        Only markets accepting applications
+                      </Radio>
+                    </Stack>
+                  </RadioGroup>
+                </FormControl>
+                <FormControl marginTop={4}>
+                  <FormLabel
+                    fontSize="sm"
+                    sx={{ fontWeight: 900, textTransform: "uppercase" }}
+                  >
+                    Market location
+                  </FormLabel>
+                  <CheckboxGroup
+                    colorScheme="green"
+                    onChange={(val) => setLocationSearch(val)}
+                  >
+                    <Stack spacing={2} direction="column">
+                      <Checkbox value="DC">DC</Checkbox>
+                      <Checkbox value="MD">Maryland</Checkbox>
+                      <Checkbox value="VA">Virginia</Checkbox>
+                    </Stack>
+                  </CheckboxGroup>
+                </FormControl>
+                <Stack marginTop={6} spacing={4}>
+                  <Button onClick={searchViaFilters} variant={"solid"}>
+                    Search
+                  </Button>
+                  <Button
+                    as="a"
+                    href="/admin/collections/applications"
+                    variant={"outline"}
+                  >
+                    Clear search
+                  </Button>
+                </Stack>
+              </Flex>
+            </Box>
+            <Box
+              sx={{
+                maxWidth: { base: 400, sm: 600, md: 900, lg: 1200, xl: 1660 },
+              }}
+            >
+              <Box marginBottom={3} textAlign={"right"}>
+                <Button
+                  as="a"
+                  href="/admin/collections/applications/create"
+                  colorScheme="teal"
+                  variant="outline"
+                  marginBottom={2}
+                  marginRight={4}
+                  marginTop={4}
+                >
+                  Create new application
+                </Button>
               </Box>
               <Box
                 sx={{
-                  maxWidth: { base: 400, sm: 600, md: 900, lg: 1200, xl: 1660 },
+                  overflowX: "scroll",
+                  overflowY: "auto",
                 }}
               >
-                <Box marginBottom={3} textAlign={"right"}>
-                  <Button
-                    as="a"
-                    href="/admin/collections/applications/create"
-                    colorScheme="teal"
-                    variant="outline"
-                    marginBottom={2}
-                    marginRight={4}
-                    marginTop={4}
-                  >
-                    Create new application
-                  </Button>
-                </Box>
-                <Box
-                  sx={{
-                    overflowX: "scroll",
-                    overflowY: "auto",
-                  }}
-                >
-                  <DataTable columns={columns} fetchData={getApplications} />
-                </Box>
+                <DataTable columns={columns} fetchData={getApplications} />
               </Box>
-            </Flex>
-          ) 
+            </Box>
+          </Flex>
         )}
         <FooterAdmin />
       </>
