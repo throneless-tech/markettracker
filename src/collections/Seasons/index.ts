@@ -10,9 +10,9 @@ import {
   beforeValidateProductGaps,
 } from "./hooks/populateProductGaps";
 import {
-  afterReadOperators,
-  beforeValidateOperators,
-} from "./hooks/populateOperators";
+  afterReadApplications,
+  beforeValidateApplications,
+} from "./hooks/populateApplications";
 import { afterReadVendorsField } from "./hooks/vendorsField";
 
 export const Seasons: CollectionConfig = {
@@ -30,15 +30,15 @@ export const Seasons: CollectionConfig = {
     beforeChange: [createSlugField],
     afterChange: [createCollectionSeason],
     afterRead: [
+      afterReadApplications,
       afterReadMarket,
       afterReadProductGaps,
-      // afterReadOperators,
       afterReadVendorsField,
     ],
     beforeValidate: [
+      beforeValidateApplications,
       beforeValidateMarket,
       beforeValidateProductGaps,
-      // beforeValidateOperators,
     ],
   },
   fields: [

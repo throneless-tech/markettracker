@@ -3,29 +3,12 @@
 
 import React, { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
-import { Link as ReactRouterLink } from "react-router-dom";
 import { useAuth } from "payload/components/utilities";
 import type { Vendor } from "payload/generated-types";
 import qs from "qs";
 
-import {
-  Box,
-  Container,
-  HStack,
-  Link as ChakraLink,
-  LinkProps,
-  Tab,
-  TabIndicator,
-  TabList,
-  TabPanel,
-  TabPanels,
-  Tabs,
-} from "@chakra-ui/react";
-
 //components
-import { ApplicationsList } from "../Applications/ApplicationsList";
 import { FooterAdmin } from "../FooterAdmin";
-import { SeasonCard } from "./SeasonCard";
 import { SeasonsTab } from "./SeasonsTab";
 import { SeasonsTabs } from "./SeasonsTabs";
 
@@ -36,11 +19,6 @@ export const SeasonsList: React.FC<any> = ({ data }) => {
   const [seasons, setSeasons] = useState([]);
   const [viewMarkets, setViewMarkets] = useState(false);
   const [applications, setApplications] = useState([]);
-
-  // tab settings
-  const handleTabsChange = (index) => {
-    setTabIndex(index);
-  };
 
   useEffect(() => {
     const vendor: Vendor = user.vendor;
@@ -100,58 +78,14 @@ export const SeasonsList: React.FC<any> = ({ data }) => {
     seasons &&
     seasons.length && (
       <>
+      {user.role == "vendor" ? null : (
         <SeasonsTabs selected="seasons" />
+      )}
         <SeasonsTab
           applications={applications}
           seasons={seasons}
           viewMarkets={viewMarkets}
         />
-        <Tabs
-          defaultIndex={tabIndex}
-          index={tabIndex}
-          onChange={handleTabsChange}
-          position="relative"
-          variant="unstyled"
-          colorScheme="teal"
-        >
-          <TabPanels>
-            <TabPanel></TabPanel>
-            <TabPanel>
-              {user.role == "vendor" ? (
-                <Container sx={{ maxWidth: "unset" }}>
-                  <HStack align={"flex-start"} marginTop={8} spacing={8}>
-                    {/* <Stack backgroundColor={'gray.50'} padding={4} width={230}>
-          <Text>
-            Filter
-          </Text>
-        </Stack> */}
-                    <HStack align={"flex-start"} wrap={"wrap"} spacing={6}>
-                      {seasons?.length &&
-                        seasons.reduce((acc, season) => {
-                          if (
-                            !applications?.length ||
-                            !applications.findIndex(
-                              (app) =>
-                                app.season !== season.id &&
-                                app.season?.id !== season.id,
-                            )
-                          ) {
-                            acc.push(
-                              <SeasonCard key={season.id} season={season} />,
-                            );
-                          }
-                          return acc;
-                        }, [])}
-                    </HStack>
-                  </HStack>
-                </Container>
-              ) : (
-                <ApplicationsList />
-              )}
-            </TabPanel>
-            <TabPanel />
-          </TabPanels>
-        </Tabs>
         <FooterAdmin />
       </>
     )
