@@ -81,7 +81,7 @@ export const ApplicationsList: React.FC<any> = () => {
     let vendorApps = [];
     let allSeasons = [];
 
-    const query = {
+    const appsQuery = {
       vendor: {
         equals:
           user.vendor && typeof user.vendor === "object"
@@ -90,29 +90,36 @@ export const ApplicationsList: React.FC<any> = () => {
       },
     };
 
+    const seasonsQuery = {
+      isAccepting: {
+        equals: true,
+      },
+    };
+
     const getDocuments = async () => {
-      const appsQuery = qs.stringify(
+      const appsStringQuery = qs.stringify(
         {
-          where: query, // ensure that `qs` adds the `where` property, too!
+          where: appsQuery,
           depth: 1,
         },
         { addQueryPrefix: true },
       );
-      const seasonsQuery = qs.stringify(
+      const seasonsStringQuery = qs.stringify(
         {
+          where: seasonsQuery,
           depth: 1,
           limit: 20,
         },
         { addQueryPrefix: true },
       );
 
-      const appsResponse = await fetch(`/api/applications${appsQuery}`);
+      const appsResponse = await fetch(`/api/applications${appsStringQuery}`);
       let theseApplications = await appsResponse.json();
       console.log(theseApplications);
 
       vendorApps = theseApplications.docs;
 
-      const seasonsResponse = await fetch(`/api/seasons${seasonsQuery}`);
+      const seasonsResponse = await fetch(`/api/seasons${seasonsStringQuery}`);
       let allSeasons = await seasonsResponse.json();
 
       allSeasons = allSeasons.docs;
