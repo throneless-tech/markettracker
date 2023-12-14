@@ -261,8 +261,11 @@ export const ApplicationsList: React.FC<any> = () => {
     },
     {
       header: "Reviewers",
-      accessorKey: "", // FIXME
-      cell: () => <span>0/2 reviewers</span>,
+      accessorKey: "reviews",
+      cell: (info) => {
+        const value: any = info.getValue();
+        return <span>{value?.length ? value.length : 0}/2 reviewers</span>;
+      },
     },
     {
       header: "Grade (AVG)",
