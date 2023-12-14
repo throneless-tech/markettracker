@@ -78,35 +78,53 @@ export const ApplicationsList: React.FC<any> = () => {
 
   useEffect(() => {
     if (user.role !== "vendor" || !user.vendor) return;
+    let vendorApps = [];
+    let allSeasons = [];
 
     const query = {
-      applications: {
-        vendor: {
-          not_equals:
-            user.vendor && typeof user.vendor === "object"
-              ? (user.vendor as Vendor).id
-              : user.vendor,
-        },
+      vendor: {
+        equals:
+          user.vendor && typeof user.vendor === "object"
+            ? (user.vendor as Vendor).id
+            : user.vendor,
       },
     };
 
-    const getSeasons = async () => {
-      const stringifiedQuery = qs.stringify(
+    const getDocuments = async () => {
+      const appsQuery = qs.stringify(
         {
           where: query, // ensure that `qs` adds the `where` property, too!
           depth: 1,
         },
         { addQueryPrefix: true },
       );
+      const seasonsQuery = qs.stringify(
+        {
+          depth: 1,
+          limit: 20,
+        },
+        { addQueryPrefix: true },
+      );
 
-      const response = await fetch(`/api/seasons${stringifiedQuery}`);
-      let theseSeasons = await response.json();
-      console.log(theseSeasons);
+      const appsResponse = await fetch(`/api/applications${appsQuery}`);
+      let theseApplications = await appsResponse.json();
+      console.log(theseApplications);
 
-      setSeasons(theseSeasons.docs);
+      vendorApps = theseApplications.docs;
+
+      const seasonsResponse = await fetch(`/api/seasons${seasonsQuery}`);
+      let allSeasons = await seasonsResponse.json();
+
+      allSeasons = allSeasons.docs;
+
+      let theseSeasons = allSeasons.filter(
+        (season) => !vendorApps.some((app) => season.id === app.season.id),
+      );
+
+      setSeasons(theseSeasons);
     };
 
-    getSeasons();
+    getDocuments();
   }, []);
 
   // table
@@ -436,7 +454,7 @@ export const ApplicationsList: React.FC<any> = () => {
         ) : null}
         {user.role == "vendor" ? (
           <Container sx={{ maxWidth: "unset" }}>
-            <HStack align={"flex-start"} marginTop={8} spacing={8}>
+            <HStack align={"flex-start"} marginY={8} spacing={8}>
               {/* <Stack backgroundColor={'gray.50'} padding={4} width={230}>
           <Text>
             Filter
