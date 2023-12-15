@@ -146,10 +146,10 @@ export const Applications: CollectionConfig = {
       name: "numberOfMarkets",
       type: "number",
     },
-    {
-      name: "reviewScore",
-      type: "number",
-    },
+    // {
+    //   name: "reviewScore",
+    //   type: "number",
+    // },
     {
       name: "vendorName",
       type: "text",

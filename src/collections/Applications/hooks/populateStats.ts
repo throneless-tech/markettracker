@@ -11,7 +11,6 @@ export const afterReadStats: CollectionAfterReadHook = async ({
   if (context.skipTrigger) return;
   let vendor = doc.vendor;
   if (typeof vendor !== "object") {
-    console.log("***populateStats vendor", vendor);
     vendor = await payload.findByID({
       id: doc.vendor && doc.vendor.id ? doc.vendor.id : doc.vendor,
       collection: "vendors",
@@ -29,13 +28,20 @@ export const afterReadStats: CollectionAfterReadHook = async ({
   });
 
   let reviewScore = 0;
-  if (doc.reviews && doc.reviews.length && typeof doc.reviews[0] === "string") {
-    const reviews = await payload.find({
-      collection: "reviews",
-      depth: 0,
-      where: { id: { in: doc.reviews.join(",") } },
-    });
-    const total = reviews.docs.reduce((acc, review) => {
+  if (doc.reviews?.length) {
+    let reviews = [];
+
+    if (typeof doc.reviews[0] === "string") {
+      const data = await payload.find({
+        collection: "reviews",
+        depth: 0,
+        where: { id: { in: doc.reviews.join(",") } },
+      });
+      reviews = data.docs;
+    } else if (typeof doc.reviews[0] === "object") {
+      reviews = doc.reviews;
+    }
+    const total = reviews.reduce((acc, review) => {
       acc =
         acc +
         review.vendorScore +
@@ -51,7 +57,6 @@ export const afterReadStats: CollectionAfterReadHook = async ({
 
   let season = doc.season;
   if (season && typeof season !== "object") {
-    console.log("***populateStats season", season);
     season = await payload.findByID({
       id: doc.season,
       collection: "seasons",

@@ -98,9 +98,12 @@ export const ReviewsEdit: React.FC<any> = () => {
   };
 
   useEffect(() => {
+    const trySubmit = async () => {
+      await submit();
+      history.push("/admin/collections/applications?limit=10");
+    };
     if (doSubmit) {
-      submit();
-      history.push("/admin/collections/seasons?tab=2");
+      trySubmit();
     }
   }, [doSubmit]);
 
