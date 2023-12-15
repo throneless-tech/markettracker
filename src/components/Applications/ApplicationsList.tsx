@@ -3,7 +3,6 @@ import { useHistory, useLocation } from "react-router-dom";
 import { Link as ReactRouterLink } from "react-router-dom";
 import qs from "qs";
 import { useAuth } from "payload/components/utilities";
-import type { Vendor } from "payload/generated-types";
 
 // Chakra imports
 import {
@@ -47,7 +46,12 @@ import { Search2Icon } from "@chakra-ui/icons";
 import StarIcon from "../../assets/icons/star.js";
 
 // types
-import type { Application, Product, Season } from "payload/generated-types";
+import type {
+  Application,
+  Product,
+  Season,
+  Vendor,
+} from "payload/generated-types";
 import { FooterAdmin } from "../FooterAdmin";
 
 type ApplicationStats = Application & {
@@ -390,7 +394,7 @@ export const ApplicationsList: React.FC<any> = () => {
         queries.push({ "season.isAccepting": { equals: true } });
       }
       if (locationSearch.length) {
-        queries.push({ "season.address.state": { in: locationSearch } });
+        queries.push({ "season.market.address.state": { in: locationSearch } });
       }
 
       const stringifiedQuery = qs.stringify(

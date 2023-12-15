@@ -146,9 +146,11 @@ export function DataTable<Data extends object>({
 
   //we must flatten the array of arrays from the useInfiniteQuery hook
   const flatData = React.useMemo(
-    () => data?.pages?.flatMap((page) => page.docs) ?? [],
+    () => data?.pages?.flatMap((page) => page && page.docs) ?? [],
     [data],
   );
+  console.log("flat data: ", flatData);
+
   const totalDBRowCount = data?.pages?.[0]?.totalDocs ?? 0;
   const totalFetched = flatData.length;
 
@@ -276,28 +278,32 @@ export function DataTable<Data extends object>({
                 <td style={{ height: `${paddingTop}px` }} />
               </tr>
             )}
-            {virtualRows.map((virtualRow) => {
-              const row = rows[virtualRow.index] as Row<any>;
-              return (
-                <Tr key={row.id}>
-                  {row.getVisibleCells().map((cell) => {
-                    // see https://tanstack.com/table/v8/docs/api/core/column-def#meta to type this correctly
-                    const meta: any = cell.column.columnDef.meta;
-                    const context = cell.getContext();
-                    const id = context.row.original.id;
+            {virtualRows.length > 1
+              ? virtualRows.map((virtualRow) => {
+                  const row = rows[virtualRow.index] as Row<any>;
+                  console.log("virtual rows:  ", virtualRows);
 
-                    return (
-                      <Td key={cell.id} isNumeric={meta?.isNumeric}>
-                        {flexRender(
-                          cell.column.columnDef.cell,
-                          cell.getContext(),
-                        )}
-                      </Td>
-                    );
-                  })}
-                </Tr>
-              );
-            })}
+                  return (
+                    <Tr key={row.id}>
+                      {row.getVisibleCells().map((cell) => {
+                        // see https://tanstack.com/table/v8/docs/api/core/column-def#meta to type this correctly
+                        const meta: any = cell.column.columnDef.meta;
+                        // const context = cell.getContext();
+                        // const id = context?.row?.original?.id;
+
+                        return (
+                          <Td key={cell.id} isNumeric={meta?.isNumeric}>
+                            {flexRender(
+                              cell.column.columnDef.cell,
+                              cell.getContext(),
+                            )}
+                          </Td>
+                        );
+                      })}
+                    </Tr>
+                  );
+                })
+              : null}
             {paddingBottom > 0 && (
               <tr>
                 <td style={{ height: `${paddingBottom}px` }} />
