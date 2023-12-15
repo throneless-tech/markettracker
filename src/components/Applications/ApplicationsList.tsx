@@ -323,10 +323,19 @@ export const ApplicationsList: React.FC<any> = () => {
       const searchQuery = searchParams.get("search");
       if (searchQuery) {
         queries.push({ "vendor.name": { like: searchQuery } });
+        setSearchBox(searchQuery);
       }
       const accepting = searchParams.get("accepting");
       if (accepting === "true") {
         queries.push({ "season.isAccepting": { equals: true } });
+        setIsAcceptingSearch("open");
+      } else {
+        setIsAcceptingSearch("all");
+      }
+      const location = searchParams.get("location");
+      if (location) {
+        queries.push({ "season.market.address.state": { in: location } });
+        setLocationSearch(location.split(","));
       }
       let sort: string;
       if (sorting?.length) {
@@ -388,25 +397,24 @@ export const ApplicationsList: React.FC<any> = () => {
   // table sorting
 
   const searchViaFilters = (e) => {
+    const query = new URLSearchParams("limit=10");
+
+    if (searchBox) {
+      query.append("search", searchBox);
+    }
+
+    if (locationSearch.length) {
+      query.append("location", locationSearch.join(","));
+    }
+
+    if (isAcceptingSearch === "open") {
+      query.append("accepting", "true");
+    }
+
     if (e.type == "click") {
-      const queries = [];
-      if (isAcceptingSearch === "open") {
-        queries.push({ "season.isAccepting": { equals: true } });
-      }
-      if (locationSearch.length) {
-        queries.push({ "season.market.address.state": { in: locationSearch } });
-      }
-
-      const stringifiedQuery = qs.stringify(
-        {
-          where: queries,
-        },
-        { addQueryPrefix: false },
-      );
-
       history.push({
         pathname: `/admin/collections/applications`,
-        search: `?limit=10&search=${searchBox}&${stringifiedQuery}`,
+        search: `?${query.toString()}`,
       });
       history.go(0);
     }
@@ -414,7 +422,7 @@ export const ApplicationsList: React.FC<any> = () => {
     if (e.key == "Enter" && e.code == "Enter") {
       history.push({
         pathname: `/admin/collections/applications`,
-        search: `?limit=10&search=${searchBox}`,
+        search: `?${query.toString()}`,
       });
       history.go(0);
     }
@@ -557,6 +565,7 @@ export const ApplicationsList: React.FC<any> = () => {
                   <CheckboxGroup
                     colorScheme="green"
                     onChange={(val) => setLocationSearch(val)}
+                    value={locationSearch}
                   >
                     <Stack spacing={2} direction="column">
                       <Checkbox value="DC">DC</Checkbox>
@@ -571,7 +580,7 @@ export const ApplicationsList: React.FC<any> = () => {
                   </Button>
                   <Button
                     as="a"
-                    href="/admin/collections/applications"
+                    href="/admin/collections/applications?limit=10"
                     variant={"outline"}
                   >
                     Clear search
