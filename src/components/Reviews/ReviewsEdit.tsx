@@ -135,8 +135,8 @@ export const ReviewsEdit: React.FC<any> = () => {
 
   useEffect(() => {
     if (
-      shadowApp?.season?.marketDates.startDate &&
-      shadowApp?.season?.marketDates.endDate
+      shadowApp?.season?.marketDates?.startDate &&
+      shadowApp?.season?.marketDates?.endDate
     ) {
       console.log("***shadowApp.season", shadowApp.season);
       let calLength = monthDiff(
