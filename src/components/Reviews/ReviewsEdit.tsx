@@ -100,7 +100,8 @@ export const ReviewsEdit: React.FC<any> = () => {
   useEffect(() => {
     const trySubmit = async () => {
       await submit();
-      history.push("/admin/collections/applications?limit=10");
+      //history.push("/admin/collections/applications?limit=10");
+      history.goBack();
     };
     if (doSubmit) {
       trySubmit();

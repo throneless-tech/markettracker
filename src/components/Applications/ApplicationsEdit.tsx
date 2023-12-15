@@ -119,6 +119,9 @@ export const ApplicationsEdit: React.FC<any> = (props) => {
   const { value: vendor, setValue: setVendor } = useField<Vendor>({
     path: "vendor",
   });
+  const { value: schedule, setValue: setSchedule } = useField<string>({
+    path: "schedule",
+  });
 
   const [shadowSeason, setShadowSeason] = useState<Season>();
 
@@ -730,6 +733,20 @@ export const ApplicationsEdit: React.FC<any> = (props) => {
                 monthsShown={numMonths + 1}
               />
             </Wrap>
+            <Text marginTop={4}>
+              How would you characterize your market attendance?
+            </Text>
+            <RadioGroup
+              marginTop={2}
+              onChange={(newValue) => setSchedule(newValue)}
+              value={schedule}
+            >
+              <HStack spacing={4}>
+                <Radio value="fulltime">Full-time</Radio>
+                <Radio value="parttime">Part-time</Radio>
+                <Radio value="popup">Pop-up</Radio>
+              </HStack>
+            </RadioGroup>
             <HStack marginTop={4}>
               <Text
                 color={"gray.700"}
@@ -1015,6 +1032,21 @@ export const ApplicationsEdit: React.FC<any> = (props) => {
                 monthsShown={numMonths + 1}
               />
             </Wrap>
+            <Text marginTop={4}>
+              How would you characterize your market attendance?
+            </Text>
+            <RadioGroup
+              colorScheme={"green"}
+              marginTop={2}
+              onChange={(newValue) => setSchedule(newValue)}
+              value={schedule}
+            >
+              <HStack spacing={4}>
+                <Radio value="fulltime">Full-time</Radio>
+                <Radio value="parttime">Part-time</Radio>
+                <Radio value="popup">Pop-up</Radio>
+              </HStack>
+            </RadioGroup>
             <HStack marginTop={4}>
               <Text
                 color={"gray.700"}
