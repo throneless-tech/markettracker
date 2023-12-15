@@ -11,6 +11,7 @@ export const afterReadStats: CollectionAfterReadHook = async ({
   if (context.skipTrigger) return;
   let vendor = doc.vendor;
   if (typeof vendor !== "object") {
+    console.log("***populateStats vendor", vendor);
     vendor = await payload.findByID({
       id: doc.vendor && doc.vendor.id ? doc.vendor.id : doc.vendor,
       collection: "vendors",
@@ -50,6 +51,7 @@ export const afterReadStats: CollectionAfterReadHook = async ({
 
   let season = doc.season;
   if (season && typeof season !== "object") {
+    console.log("***populateStats season", season);
     season = await payload.findByID({
       id: doc.season,
       collection: "seasons",

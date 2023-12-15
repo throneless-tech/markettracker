@@ -63,7 +63,7 @@ export const SeasonsTab: React.FC<any> = ({
     } finally {
       setIsFetching(false);
     }
-  }, [seasons]);
+  }, [page, seasons]);
 
   useEffect(() => {
     getSeasons();
