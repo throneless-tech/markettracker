@@ -1,20 +1,8 @@
 import * as React from "react";
 import {
   Box,
-  Checkbox,
-  CheckboxGroup,
   Container,
-  Flex,
-  FormControl,
-  FormLabel,
-  Heading,
-  Input,
-  InputGroup,
-  InputLeftElement,
-  Radio,
-  RadioGroup,
   Select,
-  Stack,
   Table,
   Thead,
   Tbody,
@@ -22,7 +10,6 @@ import {
   Th,
   Td,
   chakra,
-  Link,
 } from "@chakra-ui/react";
 import { TriangleDownIcon, TriangleUpIcon } from "@chakra-ui/icons";
 import {
@@ -148,7 +135,7 @@ export function DataTable<Data extends object>({
   //react-query has an useInfiniteQuery hook just for this situation!
   const { data, fetchNextPage, hasNextPage, isFetching } = useInfiniteQuery({
     queryKey: ["table-data", sorting], //adding sorting state as key causes table to reset and fetch from new beginning upon sort
-    queryFn: async ({ pageParam }) => {
+    queryFn: async ({ pageParam = 1 }) => {
       const fetchedData = fetchData(pageParam, limit, sorting);
       return fetchedData;
     },
@@ -260,6 +247,7 @@ export function DataTable<Data extends object>({
                       sx={{
                         color: "gray.900",
                         fontFamily: "Outfit, sans-serif",
+                        minWidth: 150,
                       }}
                     >
                       {flexRender(
@@ -332,9 +320,9 @@ export function DataTable<Data extends object>({
           </Tbody>
         </Table>
       </Box>
-      <div>
+      {/* <div>
         Fetched {flatData.length} of {totalDBRowCount} applications
-      </div>
+      </div> */}
     </Container>
   );
 }

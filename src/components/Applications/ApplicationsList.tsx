@@ -33,7 +33,7 @@ import {
 } from "@chakra-ui/react";
 
 // for table sort
-import { ColumnDef, RowData } from "@tanstack/react-table";
+import { ColumnDef, RowData, SortingState } from "@tanstack/react-table";
 
 // components
 import { DataTable } from "../DataTable";
@@ -304,7 +304,11 @@ export const ApplicationsList: React.FC<any> = () => {
   }, []);
 
   const getApplications = useCallback(
-    async (page, limit, sorting) => {
+    async (page: number, limit: number, sorting: SortingState) => {
+      console.log("page: ", page);
+      console.log("limit: ", limit);
+      console.log("sorting: ", sorting);
+
       if (isFetching) return;
       const searchParams = new URLSearchParams(search);
       const queries = [];
@@ -328,7 +332,7 @@ export const ApplicationsList: React.FC<any> = () => {
       if (queries.length === 1) {
         stringifiedQuery = qs.stringify(
           {
-            where: queries[0], // ensure that `qs` adds the `where` property, too!
+            where: queries[0],
             depth: 0,
             page,
             sort,
@@ -358,7 +362,7 @@ export const ApplicationsList: React.FC<any> = () => {
         );
       }
       setIsFetching(true);
-      //console.log("***stringifiedQuery", stringifiedQuery);
+      // console.log("***stringifiedQuery", stringifiedQuery);
       // console.log("***applications", applications);
       try {
         const res = await fetch(
