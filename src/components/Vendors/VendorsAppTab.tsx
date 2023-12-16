@@ -135,24 +135,43 @@ export const VendorsAppTab: React.FC<any> = () => {
       enableSorting: false,
       cell: (demoCell) => {
         const demos: any = demoCell.getValue();
-        console.log("***demos", demos);
         return demos && typeof demos === "object"
           ? Object.entries(demos).map((key, _) => {
               if (key[1] == "yes") {
                 if (key[0] == "firstGeneration") {
-                  return <Tag key={key[0]}>First generation farmer</Tag>;
+                  return (
+                    <Tag key={key[0]} mb={1}>
+                      First generation farmer
+                    </Tag>
+                  );
                 }
                 if (key[0] == "veteranOwned") {
-                  return <Tag key={key[0]}>Veteran-owned</Tag>;
+                  return (
+                    <Tag key={key[0]} mb={1}>
+                      Veteran-owned
+                    </Tag>
+                  );
                 }
                 if (key[0] == "bipoc") {
-                  return <Tag key={key[0]}>BIPOC</Tag>;
+                  return (
+                    <Tag key={key[0]} mb={1}>
+                      BIPOC
+                    </Tag>
+                  );
                 }
                 if (key[0] == "immigrantOrRefugee") {
-                  return <Tag key={key[0]}>Immigrant or refugee</Tag>;
+                  return (
+                    <Tag key={key[0]} mb={1}>
+                      Immigrant or refugee
+                    </Tag>
+                  );
                 }
                 if (key[0] == "lgbtqia") {
-                  return <Tag key={key[0]}>LGBTQIA</Tag>;
+                  return (
+                    <Tag key={key[0]} mb={1}>
+                      LGBTQIA
+                    </Tag>
+                  );
                 }
               }
             })
@@ -176,7 +195,6 @@ export const VendorsAppTab: React.FC<any> = () => {
         const status: any = statusCell.getValue();
         return <Tag>{status ? status : "Good"}</Tag>;
       },
-      // cell not included because it is defined as editable in ../DataTable.tsx
     },
   ];
 
@@ -205,11 +223,11 @@ export const VendorsAppTab: React.FC<any> = () => {
     }
   };
 
-  const getVendors = useCallback(
+  const getNewVendors = useCallback(
     async (page: number, limit: number, sorting: SortingState) => {
-      console.log("page: ", page);
-      console.log("limit: ", limit);
-      console.log("sorting: ", sorting);
+      // console.log("page: ", page);
+      // console.log("limit: ", limit);
+      // console.log("sorting: ", sorting);
 
       if (isFetching) return;
       const searchParams = new URLSearchParams(search);
@@ -267,6 +285,7 @@ export const VendorsAppTab: React.FC<any> = () => {
         if (!res.ok) throw new Error(res.statusText);
         const newVendors = await res.json();
         console.log("vendors: ", newVendors);
+        setVendors(newVendors);
         return newVendors;
       } catch (err) {
         console.error(err);
@@ -274,15 +293,13 @@ export const VendorsAppTab: React.FC<any> = () => {
         setIsFetching(false);
       }
     },
-    [vendors, search],
+    [search],
   );
 
-  // useEffect(() => {
-  //   getVendors();
-  // }, []);
+  useEffect(() => {}, [vendors]);
 
   // useEffect(() => {
-  //   getVendors(1, 10, []);
+  //   getNewVendors(1, 10, []);
   // }, [page]);
 
   // useEffect(() => {
@@ -377,8 +394,11 @@ export const VendorsAppTab: React.FC<any> = () => {
                 overflowX: "scroll",
                 overflowY: "auto",
               }}
+              ref={ref}
             >
-              <DataTable columns={columns} fetchData={getVendors} />
+              {inView ? (
+                <DataTable columns={columns} fetchData={getNewVendors} />
+              ) : null}
             </Box>
           </Box>
         </Flex>

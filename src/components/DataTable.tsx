@@ -149,7 +149,6 @@ export function DataTable<Data extends object>({
     () => data?.pages?.flatMap((page) => page && page.docs) ?? [],
     [data],
   );
-  console.log("flat data: ", flatData);
 
   const totalDBRowCount = data?.pages?.[0]?.totalDocs ?? 0;
   const totalFetched = flatData.length;
@@ -281,8 +280,6 @@ export function DataTable<Data extends object>({
             {virtualRows.length > 1
               ? virtualRows.map((virtualRow) => {
                   const row = rows[virtualRow.index] as Row<any>;
-                  console.log("virtual rows:  ", virtualRows);
-
                   return (
                     <Tr key={row.id}>
                       {row.getVisibleCells().map((cell) => {
@@ -292,7 +289,11 @@ export function DataTable<Data extends object>({
                         // const id = context?.row?.original?.id;
 
                         return (
-                          <Td key={cell.id} isNumeric={meta?.isNumeric}>
+                          <Td
+                            key={cell.id}
+                            isNumeric={meta?.isNumeric}
+                            sx={{ minWidth: 150 }}
+                          >
                             {flexRender(
                               cell.column.columnDef.cell,
                               cell.getContext(),

@@ -135,7 +135,6 @@ export const VendorsTab: React.FC<any> = () => {
       enableSorting: false,
       cell: (demoCell) => {
         const demos: any = demoCell.getValue();
-        console.log("***demos", demos);
         return demos && typeof demos === "object"
           ? Object.entries(demos).map((key, _) => {
               if (key[1] == "yes") {
@@ -207,9 +206,9 @@ export const VendorsTab: React.FC<any> = () => {
 
   const getVendors = useCallback(
     async (page: number, limit: number, sorting: SortingState) => {
-      console.log("page: ", page);
-      console.log("limit: ", limit);
-      console.log("sorting: ", sorting);
+      // console.log("page: ", page);
+      // console.log("limit: ", limit);
+      // console.log("sorting: ", sorting);
 
       if (isFetching) return;
       const searchParams = new URLSearchParams(search);
@@ -265,6 +264,7 @@ export const VendorsTab: React.FC<any> = () => {
         if (!res.ok) throw new Error(res.statusText);
         const newVendors = await res.json();
         console.log("vendors: ", newVendors);
+        setVendors(newVendors);
         return newVendors;
       } catch (err) {
         console.error(err);
@@ -272,12 +272,10 @@ export const VendorsTab: React.FC<any> = () => {
         setIsFetching(false);
       }
     },
-    [vendors, search],
+    [search],
   );
 
-  // useEffect(() => {
-  //   getVendors();
-  // }, []);
+  useEffect(() => {}, [vendors]);
 
   // useEffect(() => {
   //   getVendors(1, 10, []);
@@ -375,8 +373,11 @@ export const VendorsTab: React.FC<any> = () => {
                 overflowX: "scroll",
                 overflowY: "auto",
               }}
+              ref={ref}
             >
-              <DataTable columns={columns} fetchData={getVendors} />
+              {inView ? (
+                <DataTable columns={columns} fetchData={getVendors} />
+              ) : null}
             </Box>
           </Box>
         </Flex>
