@@ -1,8 +1,8 @@
 "use client";
 
 import React, { useCallback, useEffect, useState } from "react";
+import { useHistory, useLocation } from "react-router-dom";
 import { useInView } from "react-intersection-observer";
-import { useHistory } from "react-router-dom";
 import { Link as ReactRouterLink } from "react-router-dom";
 import qs from "qs";
 
@@ -32,12 +32,7 @@ import {
 import { Search2Icon } from "@chakra-ui/icons";
 
 // types
-import type {
-  Application,
-  Product,
-  Season,
-  Vendor,
-} from "payload/generated-types";
+import type { Vendor } from "payload/generated-types";
 
 // icons
 import { GrayCheckIcon } from "../../assets/icons/gray-check";
@@ -58,6 +53,7 @@ declare module "@tanstack/react-table" {
 
 export const VendorsAppTab: React.FC<any> = () => {
   const history = useHistory();
+  const { search } = useLocation();
   const [vendors, setVendors] = useState<VendorStats[]>([]);
   const [isFetching, setIsFetching] = useState<boolean>(false);
   const [page, setPage] = useState<number>(1);
@@ -66,7 +62,7 @@ export const VendorsAppTab: React.FC<any> = () => {
   const [searchBox, setSearchBox] = useState("");
 
   // table
-  const columns: ColumnDef<Application>[] = [
+  const columns: ColumnDef<Vendor>[] = [
     {
       accessorKey: "id",
       cell: (info) => {
@@ -76,10 +72,11 @@ export const VendorsAppTab: React.FC<any> = () => {
     },
     {
       header: "Vendor name",
-      accessorKey: "vendorName",
+      accessorKey: "name",
       filterFn: "fuzzy",
       // enableSorting: false,
       cell: (info) => {
+        const vendor: Vendor = info.row.original;
         const value: any = info.getValue();
         // console.log("***info.getValue()", value);
         return (
@@ -87,7 +84,7 @@ export const VendorsAppTab: React.FC<any> = () => {
             <ChakraLink
               as={ReactRouterLink}
               to={{
-                pathname: `/admin/collections/vendors/{$value.id}`,
+                pathname: `/admin/collections/vendors/${vendor.id}`,
               }}
             >
               {value}
@@ -98,7 +95,7 @@ export const VendorsAppTab: React.FC<any> = () => {
     },
     {
       header: "Vendor type",
-      accessorKey: "vendorType",
+      accessorKey: "type",
       // enableSorting: false,
       cell: (info) => {
         const value: any = info.getValue();
@@ -115,20 +112,30 @@ export const VendorsAppTab: React.FC<any> = () => {
       },
     },
     {
-      header: "Region",
-      accessorKey: "address",
-      // enableSorting: false,
+      header: "# of markets",
+      accessorKey: "numberOfMarkets",
+      enableSorting: false,
       cell: (info) => {
         const value: any = info.getValue();
-        return <span>{value.state}</span>;
+        return <span>{value}</span>;
       },
     },
+    // {
+    //   header: "Region",
+    //   accessorKey: "address",
+    //   // enableSorting: false,
+    //   cell: (info) => {
+    //     const value: any = info.getValue();
+    //     return <span>{value.state}</span>;
+    //   },
+    // },
     {
       header: "Priority group",
-      accessorKey: "vendorDemographics",
+      accessorKey: "demographics",
       enableSorting: false,
       cell: (demoCell) => {
         const demos: any = demoCell.getValue();
+        console.log("***demos", demos);
         return demos && typeof demos === "object"
           ? Object.entries(demos).map((key, _) => {
               if (key[1] == "yes") {
@@ -152,10 +159,23 @@ export const VendorsAppTab: React.FC<any> = () => {
           : null;
       },
     },
+    // {
+    //   header: "Sales Report Status",
+    //   accessorKey: "vendorSalesReportStatus",
+    //   enableSorting: false,
+    //   cell: (statusCell) => {
+    //     const status: any = statusCell.getValue();
+    //     return <Tag>{status ? status : "Good"}</Tag>;
+    //   },
+    // },
     {
       header: "Standing",
-      accessorKey: "vendorStanding",
+      accessorKey: "standing",
       enableSorting: false,
+      cell: (statusCell) => {
+        const status: any = statusCell.getValue();
+        return <Tag>{status ? status : "Good"}</Tag>;
+      },
       // cell not included because it is defined as editable in ../DataTable.tsx
     },
   ];
@@ -163,126 +183,157 @@ export const VendorsAppTab: React.FC<any> = () => {
   // table sorting
 
   const searchViaFilters = (e) => {
+    const query = new URLSearchParams("limit=10");
+
+    if (searchBox) {
+      query.append("search", searchBox);
+    }
     if (e.type == "click") {
-      const queries = [];
-      // if (isAcceptingSearch === "open") {
-      //   queries.push({ "season.isAccepting": { equals: true } });
-      // }
-      if (locationSearch.length) {
-        queries.push({ "season.market.address.state": { in: locationSearch } });
-      }
-
-      const stringifiedQuery = qs.stringify(
-        {
-          where: queries,
-        },
-        { addQueryPrefix: false },
-      );
-
       history.push({
-        pathname: `/admin/collections/applications`,
-        search: `?limit=10&search=${searchBox}&${stringifiedQuery}`,
+        pathname: `/admin/collections/vendors`,
+        search: `?${query.toString()}`,
       });
       history.go(0);
     }
 
     if (e.key == "Enter" && e.code == "Enter") {
       history.push({
-        pathname: `/admin/collections/applications`,
-        search: `?limit=10&search=${searchBox}`,
+        pathname: `/admin/collections/vendors`,
+        search: `?${query.toString()}`,
       });
       history.go(0);
     }
   };
 
-  const getVendors = useCallback(async () => {
-    const query = {
-      standing: {
-        equals: "underReview",
-      },
-    };
-    if (isFetching) return;
-    const stringifiedQuery = qs.stringify(
-      {
-        where: query,
-        page,
-      },
-      { addQueryPrefix: true },
-    );
-    setIsFetching(true);
-    try {
-      const res = await fetch(
-        `/api/vendors${stringifiedQuery ? stringifiedQuery : ""}`,
-      );
-      if (!res.ok) throw new Error(res.statusText);
-      const newVendors = await res.json();
-      setVendors(vendors.concat(newVendors.docs));
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setIsFetching(false);
-    }
-  }, [vendors]);
+  const getVendors = useCallback(
+    async (page: number, limit: number, sorting: SortingState) => {
+      console.log("page: ", page);
+      console.log("limit: ", limit);
+      console.log("sorting: ", sorting);
 
-  useEffect(() => {
-    getVendors();
-  }, []);
+      if (isFetching) return;
+      const searchParams = new URLSearchParams(search);
+      const queries = [];
+      queries.push({ standing: { equals: "underReview" } });
+      const searchQuery = searchParams.get("search");
+      if (searchQuery) {
+        queries.push({ name: { like: searchQuery } });
+        setSearchBox(searchQuery);
+      }
+      let sort: string;
+      if (sorting?.length) {
+        sort = `${sorting[0].desc ? "-" : ""}${sorting[0].id}`;
+      }
+      let stringifiedQuery: string;
+      if (queries.length === 1) {
+        stringifiedQuery = qs.stringify(
+          {
+            where: queries[0],
+            depth: 0,
+            page,
+            limit,
+            sort,
+          },
+          { addQueryPrefix: true },
+        );
+      } else if (queries.length > 1) {
+        stringifiedQuery = qs.stringify(
+          {
+            where: {
+              and: queries,
+            },
+            depth: 0,
+            page,
+            limit,
+            sort,
+          },
+          { addQueryPrefix: true },
+        );
+      } else {
+        stringifiedQuery = qs.stringify(
+          {
+            page,
+            limit,
+            sort,
+          },
+          { addQueryPrefix: true },
+        );
+      }
+      setIsFetching(true);
+      try {
+        const res = await fetch(
+          `/api/vendors${stringifiedQuery ? stringifiedQuery : ""}`,
+        );
+        if (!res.ok) throw new Error(res.statusText);
+        const newVendors = await res.json();
+        console.log("vendors: ", newVendors);
+        return newVendors;
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setIsFetching(false);
+      }
+    },
+    [vendors, search],
+  );
 
-  useEffect(() => {
-    getVendors();
-  }, [page]);
+  // useEffect(() => {
+  //   getVendors();
+  // }, []);
 
-  useEffect(() => {
-    if (inView) {
-      setPage((prevState) => prevState + 1);
-    }
-  }, [inView]);
+  // useEffect(() => {
+  //   getVendors(1, 10, []);
+  // }, [page]);
+
+  // useEffect(() => {
+  //   if (inView) {
+  //     setPage((prevState) => prevState + 1);
+  //   }
+  // }, [inView]);
 
   return (
     <>
-      {vendors?.length ? (
-        <>
-          <Container maxW="container.xl">
-            <Heading as="h2" sx={{ textTransform: "uppercase" }}>
-              Vendors
+      <Container maxW="container.xl">
+        <Heading as="h2" sx={{ textTransform: "uppercase" }}>
+          Vendors
+        </Heading>
+        <Divider color="gray.900" borderBottomWidth={2} opacity={1} />
+      </Container>
+      <Container sx={{ maxWidth: "unset" }}>
+        <Flex wrap={{ base: "wrap", lg: "nowrap" }}>
+          <Box
+            bg={"gray.100"}
+            // flexGrow={1}
+            p={4}
+            marginBottom={{ base: 4, lg: 0 }}
+            maxW={260}
+            minWidth={{ base: "100%", lg: 230 }}
+            width={"100%"}
+          >
+            <Heading as="h2" size="xl" sx={{ fontWeight: 600 }}>
+              Filter
             </Heading>
-            <Divider color="gray.900" borderBottomWidth={2} opacity={1} />
-          </Container>
-          <Container sx={{ maxWidth: "unset" }}>
-            <Flex wrap={{ base: "wrap", lg: "nowrap" }}>
-              <Box
-                bg={"gray.100"}
-                // flexGrow={1}
-                p={4}
-                marginBottom={{ base: 4, lg: 0 }}
-                maxW={260}
-                minWidth={{ base: "100%", lg: 230 }}
-                width={"100%"}
-              >
-                <Heading as="h2" size="xl" sx={{ fontWeight: 600 }}>
-                  Filter
-                </Heading>
-                <Flex wrap={"wrap"}>
-                  <FormControl>
-                    <FormLabel
-                      fontSize="sm"
-                      sx={{ fontWeight: 900, textTransform: "uppercase" }}
-                    >
-                      Search for vendor
-                    </FormLabel>
-                    <InputGroup>
-                      <InputLeftElement pointerEvents="none">
-                        <Search2Icon color="gray.300" />
-                      </InputLeftElement>
-                      <Input
-                        onChange={(e) => setSearchBox(e.target.value)}
-                        onKeyDown={searchViaFilters}
-                        placeholder="Start typing"
-                        value={searchBox}
-                      />
-                    </InputGroup>
-                  </FormControl>
-                  {/* <FormControl marginTop={4}>
+            <Flex wrap={"wrap"}>
+              <FormControl>
+                <FormLabel
+                  fontSize="sm"
+                  sx={{ fontWeight: 900, textTransform: "uppercase" }}
+                >
+                  Search for vendor
+                </FormLabel>
+                <InputGroup>
+                  <InputLeftElement pointerEvents="none">
+                    <Search2Icon color="gray.300" />
+                  </InputLeftElement>
+                  <Input
+                    onChange={(e) => setSearchBox(e.target.value)}
+                    onKeyDown={searchViaFilters}
+                    placeholder="Start typing"
+                    value={searchBox}
+                  />
+                </InputGroup>
+              </FormControl>
+              {/* <FormControl marginTop={4}>
                   <FormLabel
                     fontSize="sm"
                     sx={{ fontWeight: 900, textTransform: "uppercase" }}
@@ -302,56 +353,36 @@ export const VendorsAppTab: React.FC<any> = () => {
                     </Stack>
                   </RadioGroup>
                 </FormControl> */}
-                  <FormControl marginTop={4}>
-                    <FormLabel
-                      fontSize="sm"
-                      sx={{ fontWeight: 900, textTransform: "uppercase" }}
-                    >
-                      Market location
-                    </FormLabel>
-                    <CheckboxGroup
-                      colorScheme="green"
-                      onChange={(val) => setLocationSearch(val)}
-                    >
-                      <Stack spacing={2} direction="column">
-                        <Checkbox value="DC">DC</Checkbox>
-                        <Checkbox value="MD">Maryland</Checkbox>
-                        <Checkbox value="VA">Virginia</Checkbox>
-                      </Stack>
-                    </CheckboxGroup>
-                  </FormControl>
-                  <Stack marginTop={6} spacing={4}>
-                    <Button onClick={searchViaFilters} variant={"solid"}>
-                      Search
-                    </Button>
-                    <Button
-                      as="a"
-                      href="/admin/collections/applications"
-                      variant={"outline"}
-                    >
-                      Clear search
-                    </Button>
-                  </Stack>
-                </Flex>
-              </Box>
-              <Box
-                sx={{
-                  maxWidth: { base: 400, sm: 600, md: 900, lg: 1200, xl: 1660 },
-                }}
-              >
-                <Box
-                  sx={{
-                    overflowX: "scroll",
-                    overflowY: "auto",
-                  }}
+              <Stack marginTop={6} spacing={4}>
+                <Button onClick={searchViaFilters} variant={"solid"}>
+                  Search
+                </Button>
+                <Button
+                  as="a"
+                  href="/admin/collections/vendors?limit=10"
+                  variant={"outline"}
                 >
-                  <DataTable columns={columns} fetchData={getVendors} />
-                </Box>
-              </Box>
+                  Clear search
+                </Button>
+              </Stack>
             </Flex>
-          </Container>
-        </>
-      ) : null}
+          </Box>
+          <Box
+            sx={{
+              maxWidth: { base: 400, sm: 600, md: 900, lg: 1200, xl: 1660 },
+            }}
+          >
+            <Box
+              sx={{
+                overflowX: "scroll",
+                overflowY: "auto",
+              }}
+            >
+              <DataTable columns={columns} fetchData={getVendors} />
+            </Box>
+          </Box>
+        </Flex>
+      </Container>
     </>
   );
 };
