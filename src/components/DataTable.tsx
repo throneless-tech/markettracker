@@ -1,20 +1,8 @@
 import * as React from "react";
 import {
   Box,
-  Checkbox,
-  CheckboxGroup,
   Container,
-  Flex,
-  FormControl,
-  FormLabel,
-  Heading,
-  Input,
-  InputGroup,
-  InputLeftElement,
-  Radio,
-  RadioGroup,
   Select,
-  Stack,
   Table,
   Thead,
   Tbody,
@@ -22,7 +10,6 @@ import {
   Th,
   Td,
   chakra,
-  Link,
 } from "@chakra-ui/react";
 import { TriangleDownIcon, TriangleUpIcon } from "@chakra-ui/icons";
 import {
@@ -148,7 +135,7 @@ export function DataTable<Data extends object>({
   //react-query has an useInfiniteQuery hook just for this situation!
   const { data, fetchNextPage, hasNextPage, isFetching } = useInfiniteQuery({
     queryKey: ["table-data", sorting], //adding sorting state as key causes table to reset and fetch from new beginning upon sort
-    queryFn: async ({ pageParam }) => {
+    queryFn: async ({ pageParam = 1 }) => {
       const fetchedData = fetchData(pageParam, limit, sorting);
       return fetchedData;
     },
@@ -159,9 +146,11 @@ export function DataTable<Data extends object>({
 
   //we must flatten the array of arrays from the useInfiniteQuery hook
   const flatData = React.useMemo(
-    () => data?.pages?.flatMap((page) => page.docs) ?? [],
+    () => data?.pages?.flatMap((page) => page && page.docs) ?? [],
     [data],
   );
+  console.log("flat data: ", flatData);
+
   const totalDBRowCount = data?.pages?.[0]?.totalDocs ?? 0;
   const totalFetched = flatData.length;
 
@@ -260,6 +249,7 @@ export function DataTable<Data extends object>({
                       sx={{
                         color: "gray.900",
                         fontFamily: "Outfit, sans-serif",
+                        minWidth: 150,
                       }}
                     >
                       {flexRender(
@@ -288,28 +278,32 @@ export function DataTable<Data extends object>({
                 <td style={{ height: `${paddingTop}px` }} />
               </tr>
             )}
-            {virtualRows.map((virtualRow) => {
-              const row = rows[virtualRow.index] as Row<any>;
-              return (
-                <Tr key={row.id}>
-                  {row.getVisibleCells().map((cell) => {
-                    // see https://tanstack.com/table/v8/docs/api/core/column-def#meta to type this correctly
-                    const meta: any = cell.column.columnDef.meta;
-                    const context = cell.getContext();
-                    const id = context.row.original.id;
+            {virtualRows.length > 1
+              ? virtualRows.map((virtualRow) => {
+                  const row = rows[virtualRow.index] as Row<any>;
+                  console.log("virtual rows:  ", virtualRows);
 
-                    return (
-                      <Td key={cell.id} isNumeric={meta?.isNumeric}>
-                        {flexRender(
-                          cell.column.columnDef.cell,
-                          cell.getContext(),
-                        )}
-                      </Td>
-                    );
-                  })}
-                </Tr>
-              );
-            })}
+                  return (
+                    <Tr key={row.id}>
+                      {row.getVisibleCells().map((cell) => {
+                        // see https://tanstack.com/table/v8/docs/api/core/column-def#meta to type this correctly
+                        const meta: any = cell.column.columnDef.meta;
+                        // const context = cell.getContext();
+                        // const id = context?.row?.original?.id;
+
+                        return (
+                          <Td key={cell.id} isNumeric={meta?.isNumeric}>
+                            {flexRender(
+                              cell.column.columnDef.cell,
+                              cell.getContext(),
+                            )}
+                          </Td>
+                        );
+                      })}
+                    </Tr>
+                  );
+                })
+              : null}
             {paddingBottom > 0 && (
               <tr>
                 <td style={{ height: `${paddingBottom}px` }} />
@@ -332,9 +326,9 @@ export function DataTable<Data extends object>({
           </Tbody>
         </Table>
       </Box>
-      <div>
+      {/* <div>
         Fetched {flatData.length} of {totalDBRowCount} applications
-      </div>
+      </div> */}
     </Container>
   );
 }
