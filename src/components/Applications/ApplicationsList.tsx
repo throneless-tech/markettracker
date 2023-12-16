@@ -172,12 +172,14 @@ export const ApplicationsList: React.FC<any> = () => {
       },
     },
     {
-      header: "Vendor type",
-      accessorKey: "vendorType",
+      header: "Schedule",
+      accessorKey: "schedule",
       enableSorting: false,
       cell: (info) => {
         const value: any = info.getValue();
-        return <span>{value}</span>;
+        if (value) {
+          return <Tag>{value}</Tag>;
+        }
       },
     },
     {
