@@ -74,7 +74,7 @@ export const VendorsAppTab: React.FC<any> = () => {
       header: "Vendor name",
       accessorKey: "name",
       filterFn: "fuzzy",
-      // enableSorting: false,
+      enableSorting: false,
       cell: (info) => {
         const vendor: Vendor = info.row.original;
         const value: any = info.getValue();
@@ -96,7 +96,7 @@ export const VendorsAppTab: React.FC<any> = () => {
     {
       header: "Vendor type",
       accessorKey: "type",
-      // enableSorting: false,
+      enableSorting: false,
       cell: (info) => {
         const value: any = info.getValue();
         return <span>{value}</span>;

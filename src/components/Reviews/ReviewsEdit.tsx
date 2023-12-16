@@ -110,26 +110,39 @@ export const ReviewsEdit: React.FC<any> = () => {
 
   useEffect(() => {
     const app: Application = history.location.state as Application;
-    const setShadow = async (id: string) => {
-      try {
-        const response = await fetch(`/api/vendors/${id}`, {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        });
-        if (!response.ok) throw new Error(response.statusText);
-        const data = await response.json();
-        setShadowApp({ ...app, vendor: data });
-      } catch (error) {
-        console.error(error.message);
+    const setShadow = async () => {
+      let vendor = app.vendor;
+      let season = app.season;
+      if (typeof vendor === "string") {
+        try {
+          const response = await fetch(`/api/vendors/${vendor}`, {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          });
+          if (!response.ok) throw new Error(response.statusText);
+          vendor = await response.json();
+        } catch (error) {
+          console.error(error.message);
+        }
       }
+      if (typeof season === "string") {
+        try {
+          const response = await fetch(`/api/seasons/${season}`, {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          });
+          if (!response.ok) throw new Error(response.statusText);
+          season = await response.json();
+        } catch (error) {
+          console.error(error.message);
+        }
+      }
+      setShadowApp({ ...app, vendor: vendor, season: season });
     };
     if (history.location.state) {
-      if (typeof app.vendor === "string") {
-        setShadow(app.vendor);
-      } else {
-        setShadowApp(history.location.state);
-      }
+      setShadow();
     }
 
     if (user) {
