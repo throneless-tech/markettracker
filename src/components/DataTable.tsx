@@ -222,7 +222,7 @@ export function DataTable<Data extends object>({
       : 0;
 
   return (
-    <Container maxW="container.2xl">
+    <Container maxW="container.2xl" width={"80vw"}>
       <Box
         onScroll={(e) => fetchMore(e.target as HTMLDivElement)}
         ref={tableContainerRef}
