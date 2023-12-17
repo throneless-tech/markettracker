@@ -140,28 +140,28 @@ export const VendorsAppTab: React.FC<any> = () => {
               if (key[1] == "yes") {
                 if (key[0] == "firstGeneration") {
                   return (
-                    <Tag key={key[0]} mb={1}>
+                    <Tag key={key[0]} mb={1} mr={1}>
                       First generation farmer
                     </Tag>
                   );
                 }
                 if (key[0] == "veteranOwned") {
                   return (
-                    <Tag key={key[0]} mb={1}>
+                    <Tag key={key[0]} mb={1} mr={1}>
                       Veteran-owned
                     </Tag>
                   );
                 }
                 if (key[0] == "bipoc") {
                   return (
-                    <Tag key={key[0]} mb={1}>
+                    <Tag key={key[0]} mb={1} mr={1}>
                       BIPOC
                     </Tag>
                   );
                 }
                 if (key[0] == "immigrantOrRefugee") {
                   return (
-                    <Tag key={key[0]} mb={1}>
+                    <Tag key={key[0]} mb={1} mr={1}>
                       Immigrant or refugee
                     </Tag>
                   );
