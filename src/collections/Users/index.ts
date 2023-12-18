@@ -7,11 +7,11 @@ import { emailRoute } from "../../routes/email";
 
 const roles = [
   {
-    label: "Admin",
+    label: "Administrator",
     value: "admin",
   },
   {
-    label: "Exec",
+    label: "Executive",
     value: "exec",
   },
   {
@@ -21,6 +21,10 @@ const roles = [
   {
     label: "Vendor",
     value: "vendor",
+  },
+  {
+    label: "Senior Staff",
+    value: "senior",
   },
 ];
 
