@@ -1290,7 +1290,13 @@ export const Steps: React.FC<any> = (props) => {
             </Text>
             <RadioGroup
               onChange={(newValue) => props.setGenerator(newValue === "true")}
-              value={props.generator}
+              value={
+                typeof props.generator === "boolean"
+                  ? props.generator
+                    ? "true"
+                    : "false"
+                  : undefined
+              }
             >
               <HStack spacing={6}>
                 <Radio value="true">Yes</Radio>
@@ -1304,7 +1310,13 @@ export const Steps: React.FC<any> = (props) => {
             </Text>
             <RadioGroup
               onChange={(newValue) => props.setVehicle(newValue === "true")}
-              value={props.vehicle}
+              value={
+                typeof props.vehicle === "boolean"
+                  ? props.vehicle
+                    ? "true"
+                    : "false"
+                  : undefined
+              }
             >
               <HStack spacing={6}>
                 <Radio value="true">Yes</Radio>
