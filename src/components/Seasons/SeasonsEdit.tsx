@@ -7,7 +7,7 @@ import { useHistory } from "react-router-dom";
 import qs from "qs";
 
 // Payload imports
-import type { Product, User, Vendor } from "payload/generated-types";
+import type { Product, Season, User, Vendor } from "payload/generated-types";
 import { useDocumentInfo } from "payload/components/utilities";
 import { useField, useForm, useFormFields } from "payload/components/forms";
 import { useRelation } from "../../utils/useRelation";
@@ -132,9 +132,18 @@ export const SeasonsEdit: React.FC<any> = (props) => {
   const fields = useFormFields(([fields]) => fields);
 
   const saveSeason = useCallback(async () => {
+    let method: string;
+    let endpoint: string;
+    if (id) {
+      method = "PATCH";
+      endpoint = `/api/seasons/${id}`;
+    } else {
+      method = "POST";
+      endpoint = `/api/seasons`;
+    }
     try {
-      const response = await fetch("/api/seasons", {
-        method: "POST",
+      const response = await fetch(endpoint, {
+        method: method,
         credentials: "include",
         headers: {
           "Content-Type": "application/json",
@@ -187,9 +196,12 @@ export const SeasonsEdit: React.FC<any> = (props) => {
       }
     };
     console.log("***data", history.location.state);
-    if (history.location.state) {
+    if ((history.location.state as Season).market) {
+      const market = (history.location.state as Season).market;
+      setMarketId(typeof market === "object" ? market.id : market);
+      console.log("***market state", history.location.state);
+    } else if (history.location.state) {
       setMarketId((history.location.state as Market).id);
-      console.log("***market state", marketId);
     }
 
     fetchData();
