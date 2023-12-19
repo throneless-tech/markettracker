@@ -743,6 +743,16 @@ export const Vendors: CollectionConfig = {
       ],
     },
     {
+      name: "notes",
+      label: "Notes",
+      type: "textarea",
+      access: {
+        create: ({ req }) => req.user.role !== "vendor",
+        read: ({ req }) => req.user.role !== "vendor",
+        update: ({ req }) => req.user.role !== "vendor",
+      },
+    },
+    {
       name: "applications",
       label: "All applications submitted to markets",
       type: "relationship",
