@@ -71,6 +71,7 @@ export const Register: React.FC<any> = () => {
   const [website, setWebsite] = useState();
   const [instagram, setInstagram] = useState();
   const [facebook, setFacebook] = useState();
+  const [twitter, setTwitter] = useState();
   const [store, setStore] = useState();
   const [otherSocial, setOtherSocial] = useState();
   const [pictures, setPictures] = useState();
@@ -390,6 +391,7 @@ export const Register: React.FC<any> = () => {
               setStreet={setStreet}
               setStructure={setStructure}
               setTent={setTent}
+              setTwitter={setTwitter}
               setType={setType}
               setUserName={setUserName}
               setVehicle={setVehicle}

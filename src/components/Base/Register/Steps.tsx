@@ -551,7 +551,7 @@ export const Steps: React.FC<any> = (props) => {
               flex={2}
               isRequired
             >
-              <option value="farm">Farm</option>
+              <option value="farmer">Farm</option>
               <option value="producer">Producer</option>
             </Select>
             <Text as="div" color="gray.500">
@@ -591,18 +591,20 @@ export const Steps: React.FC<any> = (props) => {
               onChange={(newValue) => props.setGrowingPractices(newValue)}
             >
               <Stack>
-                <Checkbox value="organicManagement">
+                <Checkbox value="organic_management">
                   Organic Management
                 </Checkbox>
-                <Checkbox value="certifiedNaturallyGrown">
+                <Checkbox value="certified_naturally_grown">
                   Certified Naturally Grown
                 </Checkbox>
-                <Checkbox value="IntegratedPestManagement">
+                <Checkbox value="ipm">
                   Integrated Pest Management (IPM)
                 </Checkbox>
-                <Checkbox value="certifiedOrganic">Certified Organic</Checkbox>
-                <Checkbox value="gmoUse">GMO Use</Checkbox>
-                <Checkbox value="growthHormoneUse">Growth Hormone Use</Checkbox>
+                <Checkbox value="certified_organic">Certified Organic</Checkbox>
+                <Checkbox value="gmo_use">GMO Use</Checkbox>
+                <Checkbox value="growth_hormone_use">
+                  Growth Hormone Use
+                </Checkbox>
               </Stack>
             </CheckboxGroup>
           </Stack>
@@ -1093,13 +1095,13 @@ export const Steps: React.FC<any> = (props) => {
             Is the business owner a first generation farmer?
           </Text>
           <RadioGroup
-            onChange={(newValue) => props.setfirstGeneration(newValue)}
+            onChange={(newValue) => props.setFirstGeneration(newValue)}
             marginTop={2}
           >
             <HStack spacing={4}>
-              <Radio value={"true"}>Yes</Radio>
-              <Radio value={"false"}>No</Radio>
-              <Radio value="NA">Prefer not to answer</Radio>
+              <Radio value={"yes"}>Yes</Radio>
+              <Radio value={"no"}>No</Radio>
+              <Radio value="no_answer">Prefer not to answer</Radio>
             </HStack>
           </RadioGroup>
           <Text as="div" textStyle="bodyMain" fontWeight={500} marginTop={8}>
@@ -1110,9 +1112,9 @@ export const Steps: React.FC<any> = (props) => {
             marginTop={2}
           >
             <HStack spacing={4}>
-              <Radio value={"true"}>Yes</Radio>
-              <Radio value={"false"}>No</Radio>
-              <Radio value="NA">Prefer not to answer</Radio>
+              <Radio value={"yes"}>Yes</Radio>
+              <Radio value={"no"}>No</Radio>
+              <Radio value="no_answer">Prefer not to answer</Radio>
             </HStack>
           </RadioGroup>
           <Text as="div" textStyle="bodyMain" fontWeight={500} marginTop={8}>
@@ -1124,9 +1126,9 @@ export const Steps: React.FC<any> = (props) => {
             marginTop={2}
           >
             <HStack spacing={4}>
-              <Radio value={"true"}>Yes</Radio>
-              <Radio value={"false"}>No</Radio>
-              <Radio value="NA">Prefer not to answer</Radio>
+              <Radio value={"yes"}>Yes</Radio>
+              <Radio value={"no"}>No</Radio>
+              <Radio value="no_answer">Prefer not to answer</Radio>
             </HStack>
           </RadioGroup>
           <Text as="div" textStyle="bodyMain" fontWeight={500} marginTop={8}>
@@ -1137,9 +1139,9 @@ export const Steps: React.FC<any> = (props) => {
             marginTop={2}
           >
             <HStack spacing={4}>
-              <Radio value={"true"}>Yes</Radio>
-              <Radio value={"false"}>No</Radio>
-              <Radio value="NA">Prefer not to answer</Radio>
+              <Radio value={"yes"}>Yes</Radio>
+              <Radio value={"no"}>No</Radio>
+              <Radio value="no_answer">Prefer not to answer</Radio>
             </HStack>
           </RadioGroup>
           <Text as="div" textStyle="bodyMain" fontWeight={500} marginTop={8}>
@@ -1151,9 +1153,9 @@ export const Steps: React.FC<any> = (props) => {
             marginTop={2}
           >
             <HStack spacing={4}>
-              <Radio value={"true"}>Yes</Radio>
-              <Radio value={"false"}>No</Radio>
-              <Radio value="NA">Prefer not to answer</Radio>
+              <Radio value={"yes"}>Yes</Radio>
+              <Radio value={"no"}>No</Radio>
+              <Radio value="no_answer">Prefer not to answer</Radio>
             </HStack>
           </RadioGroup>
           <Text as="div" textStyle="bodyMain" fontWeight={500} marginTop={8}>
