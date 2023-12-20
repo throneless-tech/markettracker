@@ -631,6 +631,14 @@ export const SeasonsEdit: React.FC<any> = (props) => {
                                 }}
                               />
                               <Container>
+                                <FormControl fontSize={"small"}>
+                                  <FormLabel>Season name (required)</FormLabel>
+                                  <Input
+                                    placeholder="Start typing..."
+                                    value={name}
+                                    onChange={(e) => setName(e.target.value)}
+                                  />
+                                </FormControl>
                                 <Flex
                                   align="center"
                                   justify="space-between"
