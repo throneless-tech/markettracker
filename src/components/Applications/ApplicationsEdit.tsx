@@ -795,7 +795,8 @@ export const ApplicationsEdit: React.FC<any> = (props) => {
             </HStack>
             <Text color={"gray.600"} marginTop={4} fontSize={"md"}>
               Select anyone who will be staffing your booth at{" "}
-              {shadowSeason.market.name} this season.
+              {shadowSeason.market.name} this season. You can add staff via your
+              profile page.
             </Text>
             <CheckboxGroup
               onChange={(newValue) => setContacts(newValue)}
@@ -814,6 +815,7 @@ export const ApplicationsEdit: React.FC<any> = (props) => {
                 </HStack>
               )}
             </CheckboxGroup>
+            {/*
             <Button
               onClick={onOpen}
               marginTop={4}
@@ -821,6 +823,7 @@ export const ApplicationsEdit: React.FC<any> = (props) => {
             >
               Add a contact
             </Button>
+            */}
             <ContactsModal
               isOpen={isOpen}
               onSave={onSaveContact}
