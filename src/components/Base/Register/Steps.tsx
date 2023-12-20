@@ -957,6 +957,7 @@ export const Steps: React.FC<any> = (props) => {
               <Radio value={"false"}>No</Radio>
             </Stack>
           </RadioGroup>
+          {/*
           <Flex align="center" justify="flex-start" marginTop={8}>
             <Heading
               as="h2"
@@ -986,6 +987,7 @@ export const Steps: React.FC<any> = (props) => {
           >
             Add a contact
           </Button>
+          */}
           <Modal isOpen={isOpen} onClose={onClose} size={"xl"}>
             <ModalOverlay />
             <ModalContent background={"gray.600"} color={"gray.50"}>
