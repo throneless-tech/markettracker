@@ -376,7 +376,7 @@ export const ApplicationsEdit: React.FC<any> = (props) => {
 
   useEffect(() => {
     const getMarkets = async () => {
-      const response = await fetch(`/api/markets?depth=2&limit=20`);
+      const response = await fetch(`/api/markets?depth=1&limit=9999`);
       const theseMarkets = await response.json();
       setMarkets(theseMarkets.docs);
     };
@@ -384,7 +384,7 @@ export const ApplicationsEdit: React.FC<any> = (props) => {
     getMarkets();
 
     const getVendors = async () => {
-      const response = await fetch(`/api/vendors?depth=2&limit=9999`);
+      const response = await fetch(`/api/vendors?depth=0&limit=9999`);
       const theseVendors = await response.json();
       setVendors(theseVendors.docs);
     };

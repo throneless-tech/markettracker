@@ -1041,6 +1041,7 @@ export const Steps: React.FC<any> = (props) => {
               </ModalFooter>
             </ModalContent>
           </Modal>
+          {/*
           <Flex align="center" justify="flex-start" marginTop={8}>
             <Heading
               as="h2"
@@ -1071,6 +1072,7 @@ export const Steps: React.FC<any> = (props) => {
           <Text as="div" color="gray.500">
             Add a statement of explanantion
           </Text>
+          */}
           <Input type="file" />
           <Flex align="center" justify="flex-start" marginTop={8}>
             <Heading
