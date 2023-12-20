@@ -569,9 +569,10 @@ export const Steps: React.FC<any> = (props) => {
               flex={2}
               isRequired
             >
-              <option value="farm">LLC</option>
-              <option value="soleProprietor">Sole proprietor</option>
+              <option value="llc">LLC</option>
+              <option value="sole_proprietor">Sole proprietor</option>
               <option value="nonprofit">Nonprofit</option>
+              <option value="other">Other</option>
             </Select>
             <Text as="div" color="gray.500">
               Select which type of legal entity your business is registered as
@@ -1074,8 +1075,8 @@ export const Steps: React.FC<any> = (props) => {
           <Text as="div" color="gray.500">
             Add a statement of explanantion
           </Text>
-          */}
           <Input type="file" />
+          */}
           <Flex align="center" justify="flex-start" marginTop={8}>
             <Heading
               as="h2"
@@ -1253,6 +1254,7 @@ export const Steps: React.FC<any> = (props) => {
               placeholder="Start typing..."
             />
           </Stack>
+          {/*
           <Stack marginTop={4}>
             <Text as="div" textStyle="bodyMain" fontWeight={500}>
               Upload recent images of your market set up. If you are new, please
@@ -1260,6 +1262,7 @@ export const Steps: React.FC<any> = (props) => {
             </Text>
             <Input type="file" />
           </Stack>
+          */}
           <Flex align="center" justify="flex-start" marginTop={8}>
             <Heading
               as="h2"
