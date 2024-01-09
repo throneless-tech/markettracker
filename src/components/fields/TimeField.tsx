@@ -50,9 +50,13 @@ export const TimeField: FC<Props> = ({
 
   return (
     <Box>
-      <Text as="div" fontWeight="medium" fontSize="small" marginTop={6}>
-        {label}
-      </Text>
+      {label ? (
+        <Text as="div" fontWeight="medium" fontSize="small" marginTop={6}>
+          {label}
+        </Text>
+      ) : (
+        ""
+      )}
       {description ? (
         <Text
           textStyle="bodyMain"

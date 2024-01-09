@@ -389,7 +389,7 @@ export const ApplicationsList: React.FC<any> = () => {
         if (!res.ok) throw new Error(res.statusText);
         const newApplications = await res.json();
         console.log("***newApplications", newApplications);
-        return newApplications;
+        return newApplications.docs;
       } catch (err) {
         console.error(err);
       } finally {

@@ -17,6 +17,11 @@ import { afterReadVendorsField } from "./hooks/vendorsField";
 
 export const Seasons: CollectionConfig = {
   slug: "seasons",
+  access: {
+    create: ({ req }) => req.user.role === "admin",
+    update: ({ req }) => req.user.role === "admin",
+    delete: ({ req }) => req.user.role === "admin",
+  },
   admin: {
     useAsTitle: "name",
     components: {

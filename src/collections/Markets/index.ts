@@ -9,6 +9,11 @@ import {
 
 export const Markets: CollectionConfig = {
   slug: "markets",
+  access: {
+    create: ({ req }) => req.user.role === "admin",
+    update: ({ req }) => req.user.role === "admin",
+    delete: ({ req }) => req.user.role === "admin",
+  },
   admin: {
     components: {
       views: {

@@ -22,8 +22,6 @@ import {
   Heading,
   HStack,
   Link,
-  NumberInput,
-  NumberInputField,
   Spacer,
   Stack,
   Tag,
@@ -33,6 +31,8 @@ import {
 } from "@chakra-ui/react";
 
 // components
+
+import { NumberField } from "../fields/NumberField";
 
 // utils
 
@@ -54,30 +54,29 @@ export const ReviewsEdit: React.FC<any> = () => {
   const { id } = useDocumentInfo();
   const [numMonths, setNumMonths] = useState(1);
 
-  const { value: application, setValue: setApplication } =
-    useField<Application>({
-      path: "application",
-    });
-  const { value: reviewer, setValue: setReviewer } = useField<User>({
+  const { setValue: setApplication } = useField<Application>({
+    path: "application",
+  });
+  const { setValue: setReviewer } = useField<User>({
     path: "reviewer",
   });
-  const { value: vendorScore, setValue: setVendorScore } = useField<number>({
+  const { value: vendorScore } = useField<number>({
     path: "vendorScore",
   });
 
-  const { value: productScore, setValue: setProductScore } = useField<number>({
+  const { value: productScore } = useField<number>({
     path: "productScore",
   });
-  const { value: demoScore, setValue: setDemoScore } = useField<number>({
+  const { value: demoScore } = useField<number>({
     path: "demographicScore",
   });
-  const { value: satScore, setValue: setSatScore } = useField<number>({
+  const { value: satScore } = useField<number>({
     path: "saturationScore",
   });
-  const { value: setupScore, setValue: setSetupScore } = useField<number>({
+  const { value: setupScore } = useField<number>({
     path: "setupScore",
   });
-  const { value: attendScore, setValue: setAttendScore } = useField<number>({
+  const { value: attendScore } = useField<number>({
     path: "attendanceScore",
   });
   const { value: notes, setValue: setNotes } = useField<string>({
@@ -320,16 +319,7 @@ export const ReviewsEdit: React.FC<any> = () => {
             </Text>
             <FormControl marginBottom={8}>
               <HStack alignItems={"center"} spacing={3}>
-                <NumberInput
-                  colorScheme="green"
-                  min={0}
-                  max={5}
-                  sx={{ width: 16 }}
-                  value={vendorScore}
-                  onChange={(newValue) => setVendorScore(Number(newValue))}
-                >
-                  <NumberInputField />
-                </NumberInput>
+                <NumberField min={0} max={5} path="vendorScore" />
                 <Stack>
                   <FormLabel
                     sx={{
@@ -346,16 +336,7 @@ export const ReviewsEdit: React.FC<any> = () => {
             </FormControl>
             <FormControl marginBottom={8}>
               <HStack alignItems={"center"} spacing={3}>
-                <NumberInput
-                  colorScheme="green"
-                  min={0}
-                  max={5}
-                  sx={{ width: 16 }}
-                  value={productScore}
-                  onChange={(newValue) => setProductScore(Number(newValue))}
-                >
-                  <NumberInputField />
-                </NumberInput>
+                <NumberField min={0} max={5} path="productScore" />
                 <Stack>
                   <FormLabel
                     sx={{
@@ -376,16 +357,7 @@ export const ReviewsEdit: React.FC<any> = () => {
             </FormControl>
             <FormControl marginBottom={8}>
               <HStack alignItems={"center"} spacing={3}>
-                <NumberInput
-                  colorScheme="green"
-                  min={0}
-                  max={5}
-                  sx={{ width: 16 }}
-                  value={demoScore}
-                  onChange={(newValue) => setDemoScore(Number(newValue))}
-                >
-                  <NumberInputField />
-                </NumberInput>
+                <NumberField min={0} max={5} path="demographicScore" />
                 <Stack>
                   <FormLabel
                     sx={{
@@ -425,16 +397,7 @@ export const ReviewsEdit: React.FC<any> = () => {
             </FormControl>
             <FormControl marginBottom={8}>
               <HStack alignItems={"center"} spacing={3}>
-                <NumberInput
-                  colorScheme="green"
-                  min={0}
-                  max={5}
-                  sx={{ width: 16 }}
-                  value={satScore}
-                  onChange={(newValue) => setSatScore(Number(newValue))}
-                >
-                  <NumberInputField />
-                </NumberInput>
+                <NumberField min={0} max={5} path="saturationScore" />
                 <Stack>
                   <FormLabel
                     sx={{
@@ -454,16 +417,7 @@ export const ReviewsEdit: React.FC<any> = () => {
             </FormControl>
             <FormControl marginBottom={8}>
               <HStack alignItems={"center"} spacing={3}>
-                <NumberInput
-                  colorScheme="green"
-                  min={0}
-                  max={5}
-                  sx={{ width: 16 }}
-                  value={setupScore}
-                  onChange={(newValue) => setSetupScore(Number(newValue))}
-                >
-                  <NumberInputField />
-                </NumberInput>
+                <NumberField min={0} max={5} path="setupScore" />
                 <Stack>
                   <FormLabel
                     sx={{
@@ -491,16 +445,7 @@ export const ReviewsEdit: React.FC<any> = () => {
             </FormControl>
             <FormControl marginBottom={8}>
               <HStack alignItems={"center"} spacing={3}>
-                <NumberInput
-                  colorScheme="green"
-                  min={0}
-                  max={5}
-                  sx={{ width: 16 }}
-                  value={attendScore}
-                  onChange={(newValue) => setAttendScore(Number(newValue))}
-                >
-                  <NumberInputField />
-                </NumberInput>
+                <NumberField min={0} max={5} path="attendanceScore" />
                 <Stack>
                   <FormLabel
                     sx={{

@@ -4,6 +4,12 @@ import { MarketReportsList } from "../components/MarketReports/MarketReportsList
 
 export const MarketReports: CollectionConfig = {
   slug: "market-reports",
+  access: {
+    create: ({ req }) => req.user.role === ("manager" || "senior" || "admin"),
+    read: ({ req }) => req.user.role === ("manager" || "senior" || "admin"),
+    update: ({ req }) => req.user.role === "admin",
+    delete: ({ req }) => req.user.role === "admin",
+  },
   admin: {
     components: {
       views: {

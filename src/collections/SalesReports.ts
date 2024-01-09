@@ -3,6 +3,13 @@ import CustomSalesReportsList from "../components/SalesReports/CustomSalesReport
 
 export const SalesReports: CollectionConfig = {
   slug: "sales-reports",
+  access: {
+    create: ({ req }) => req.user.role !== "exec",
+    read: ({ req }) => req.user.role === ("senior" || "exec" || "admin"),
+    update: ({ req }) =>
+      req.user.role === ("vendor" || "senior" || "exec" || "admin"),
+    delete: ({ req }) => req.user.role === "admin",
+  },
   admin: {
     components: {
       views: {

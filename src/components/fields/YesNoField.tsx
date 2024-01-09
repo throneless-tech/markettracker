@@ -53,9 +53,13 @@ export const YesNoField: FC<Props> = ({
 
   return (
     <FormControl my={4}>
-      <FormLabel fontSize={"small"}>
-        {label + (required ? " (Required)" : "")}
-      </FormLabel>
+      {label ? (
+        <FormLabel fontSize={"small"}>
+          {label + (required ? " (Required)" : "")}
+        </FormLabel>
+      ) : (
+        ""
+      )}
       {description ? <FormHelperText>{description}</FormHelperText> : ""}
       <ErrorTooltip message={errorMessage} showError={showError}>
         <RadioGroup

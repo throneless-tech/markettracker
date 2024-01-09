@@ -19,6 +19,13 @@ import { validateRoute } from "../../routes/validate";
 export const Vendors: CollectionConfig = {
   slug: "vendors",
   defaultSort: "name",
+  access: {
+    create: ({ req }) => req.user.role === ("vendor" || "senior" || "admin"),
+    read: ({ req, id }) => req.user.role !== "vendor" || req.user.vendor === id,
+    update: ({ req, id }) =>
+      req.user.role === ("senior" || "admin") || req.user.vendor === id,
+    delete: ({ req }) => req.user.role === "admin",
+  },
   admin: {
     components: {
       views: {

@@ -392,10 +392,6 @@ export const ApplicationsEdit: React.FC<any> = (props) => {
     getVendors();
   }, []);
 
-  useEffect(() => {}, [market, season, vendor]);
-
-  useEffect(() => {}, [markets]);
-
   // id will be undefined on the create form
   if (
     !id &&

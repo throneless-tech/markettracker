@@ -22,6 +22,12 @@ export const Reviews: CollectionConfig = {
     beforeChange: [createReviewer],
     beforeValidate: [beforeValidateApplication],
   },
+  access: {
+    create: ({ req }) => req.user.role === ("manager" || "senior" || "admin"),
+    read: ({ req }) => req.user.role === ("manager" || "senior" || "admin"),
+    update: ({ req }) => req.user.role === "admin",
+    delete: ({ req }) => req.user.role === "admin",
+  },
   admin: {
     components: {
       views: {

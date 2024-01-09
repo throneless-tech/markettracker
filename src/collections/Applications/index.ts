@@ -14,6 +14,12 @@ import { withFormContext } from "../../utils/withFormContext";
 export const Applications: CollectionConfig = {
   slug: "applications",
   defaultSort: "createdAt",
+  access: {
+    create: ({ req }) => req.user.role === ("vendor" || "senior" || "admin"),
+    //read: ({ req, data }) => req.user.role !== "vendor",
+    update: ({ req }) => req.user.role === ("senior" || "admin"),
+    delete: ({ req }) => req.user.role === "admin",
+  },
   admin: {
     components: {
       views: {
@@ -35,7 +41,7 @@ export const Applications: CollectionConfig = {
       //required: true,
       access: {
         create: ({ req }) => req.user.role !== "vendor",
-        update: ({ req }) => req.user.role !== "vendor",
+        //update: ({ req }) => req.user.role !== "vendor",
       },
       hooks: {
         beforeChange: [createFieldVendor],
@@ -57,8 +63,8 @@ export const Applications: CollectionConfig = {
       hasMany: true,
       access: {
         create: () => false,
-        read: ({ req }) => req.user.role !== "vendor",
-        update: ({ req }) => req.user.role !== "vendor",
+        //read: ({ req }) => req.user.role !== "vendor",
+        //update: ({ req }) => req.user.role !== "vendor",
       },
     },
     {
@@ -86,7 +92,7 @@ export const Applications: CollectionConfig = {
       ],
       access: {
         create: ({ req }) => req.user.role !== "vendor",
-        update: ({ req }) => req.user.role !== "vendor",
+        //update: ({ req }) => req.user.role !== "vendor",
       },
     },
     {

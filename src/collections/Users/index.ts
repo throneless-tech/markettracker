@@ -30,6 +30,12 @@ const roles = [
 
 export const Users: CollectionConfig = {
   slug: "users",
+  access: {
+    //create: ({ req }) => req.user.role === "admin",
+    create: () => true,
+    update: ({ req }) => req.user.role === "admin",
+    delete: ({ req }) => req.user.role === "admin",
+  },
   admin: {
     useAsTitle: "name",
     // components: {
@@ -45,10 +51,6 @@ export const Users: CollectionConfig = {
       },
     },
     useAPIKey: true,
-  },
-  access: {
-    // Anyone can create a user
-    create: () => true,
   },
   fields: [
     {
