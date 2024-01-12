@@ -1,7 +1,7 @@
 // @ts-nocheck
 "use client";
 import React, { useEffect, useState } from "react";
-import { useHistory, useLocation } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import DatePicker from "react-datepicker";
 import qs from "qs";
 
@@ -43,7 +43,8 @@ import {
 
 // components
 import { ProductsField } from "../fields/ProductsField";
-import { ContactsModal } from "../Contacts/ContactsModal";
+import { CheckboxField } from "../fields/CheckboxField";
+import { YesNoField } from "../fields/YesNoField";
 
 // utils
 import formatTime from "../../utils/formatTime.js";
@@ -70,16 +71,11 @@ const dayNames = [
   "sunday",
 ];
 
-export const ApplicationsEdit: React.FC<any> = (props) => {
+export const ApplicationsEdit: React.FC<any> = () => {
   const { user } = useAuth();
   const history: any = useHistory();
   const { submit } = useForm();
   const { id } = useDocumentInfo();
-  const { isOpen, onOpen, onClose } = useDisclosure();
-  const [contactName, setContactName] = useState("");
-  const [contactEmail, setContactEmail] = useState("");
-  const [contactPhone, setContactPhone] = useState("");
-  const [contactType, setContactType] = useState([]);
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
   const [numMonths, setNumMonths] = useState(1);
@@ -94,13 +90,6 @@ export const ApplicationsEdit: React.FC<any> = (props) => {
   const [markets, setMarkets] = useState([]);
   const [seasons, setSeasons] = useState([]);
   const [seasonIsDisabled, setSeasonIsDisabled] = useState(true);
-
-  const handleContactNameChange = (event) => setContactName(event.target.value);
-  const handleContactEmailChange = (event) =>
-    setContactEmail(event.target.value);
-  const handleContactPhoneChange = (event) =>
-    setContactPhone(event.target.value);
-  const handleContactTypeChange = (newValue) => setContactType(newValue);
 
   const { value: isCSA, setValue: setIsCSA } = useField<boolean>({
     path: "isCSA",
@@ -125,28 +114,6 @@ export const ApplicationsEdit: React.FC<any> = (props) => {
 
   const [shadowSeason, setShadowSeason] = useState<Season>();
 
-  const onCloseThankYou = () => {
-    history.push("/admin/collections/seasons");
-  };
-
-  const onSave = () => {
-    const contact = {
-      name: contactName,
-      email: contactEmail,
-      phone: contactPhone,
-      type: contactType,
-    };
-
-    let allContacts = [];
-
-    contacts
-      ? (allContacts = [contact, ...contacts])
-      : (allContacts = [contact]);
-
-    setContacts(allContacts);
-    onClose();
-  };
-
   const submitForm = () => {
     if (!id && shadowSeason && shadowSeason.id) {
       setSeason(shadowSeason);
@@ -164,8 +131,6 @@ export const ApplicationsEdit: React.FC<any> = (props) => {
       }
     }
   }, [doSubmit]);
-
-  useEffect(() => {}, [contactName, contactEmail, contactPhone, contactType]);
 
   const monthDiff = (d1, d2) => {
     let months;
@@ -197,7 +162,6 @@ export const ApplicationsEdit: React.FC<any> = (props) => {
       datesArray.push({ date: dateString });
       selectedDatesArray = [date, ...selectedDates];
     }
-    console.log("***datesArray:", datesArray);
     setDates(datesArray);
     setSelectedDates(selectedDatesArray);
   };
@@ -259,61 +223,6 @@ export const ApplicationsEdit: React.FC<any> = (props) => {
       setAvailable(user.vendor.contacts);
     }
   }, [user]);
-
-  const onSaveContact = ({ data, isError }) => {
-    if (typeof data === "object" && !isError && user.vendor.id) {
-      const newContacts = [
-        ...available.filter((contact) => contact.id !== data.id),
-        data,
-      ];
-      const updateContacts = async () => {
-        try {
-          const res = await fetch(`/api/vendors/${user.vendor.id}`, {
-            method: "PATCH",
-            credentials: "include",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              contacts: newContacts.map((contact) => contact.id),
-            }),
-          });
-          if (!res.ok) throw new Error(res.statusText);
-        } catch (err) {
-          console.error(err.message);
-        }
-      };
-      setAvailable(newContacts);
-      updateContacts();
-      onClose();
-    } else if (isError) {
-      console.error(data);
-    }
-  };
-
-  // useEffect(() => {
-  //   if (id) {
-  //     const getApplication = async () => {
-  //       const response = await fetch(`/api/applications/${id}?depth=2`);
-  //       const thisApplication = await response.json();
-  //       console.log(thisApplication);
-  //       setApplication(thisApplication);
-  //     };
-
-  //     getApplication();
-
-  //     if (data) {
-  //       setName(data.name);
-  //       setApplication(data);
-  //     }
-  //   }
-  // }, []);
-
-  // const isPopulated = (
-  //   season: { market: string | Market },
-  // ): season is Market => {
-  //   return typeof season.market === "object";
-  // };
 
   const selectVendor = (id) => {
     const thisVendor = vendors.find((v) => v.id == id);
@@ -709,7 +618,6 @@ export const ApplicationsEdit: React.FC<any> = (props) => {
                 dayClassName={(date) => {
                   let dateFound = null;
                   if (dates) {
-                    console.log("***dates", dates);
                     dateFound = dates.find((item) => {
                       return item.date === date.toISOString();
                     });
@@ -763,20 +671,13 @@ export const ApplicationsEdit: React.FC<any> = (props) => {
               path="products"
               products={(user.vendor as Vendor).products as Product[]}
             />
-            <Text marginTop={4}>
-              Do you intend to sell and coordinate CSA share pickups at the
-              market?
-            </Text>
-            <RadioGroup
-              marginTop={2}
-              onChange={(newValue) => setIsCSA(newValue === "true")}
-              value={typeof isCSA === "boolean" ? isCSA.toString() : undefined}
-            >
-              <Stack spacing={2}>
-                <Radio value="true">Yes</Radio>
-                <Radio value="false">No</Radio>
-              </Stack>
-            </RadioGroup>
+            <YesNoField
+              path="isCSA"
+              admin={{
+                description:
+                  "Do you intend to sell and coordinate CSA share pickups at the market?",
+              }}
+            />
             <HStack marginTop={4}>
               <Text
                 color={"gray.700"}
@@ -811,20 +712,6 @@ export const ApplicationsEdit: React.FC<any> = (props) => {
                 </HStack>
               )}
             </CheckboxGroup>
-            {/*
-            <Button
-              onClick={onOpen}
-              marginTop={4}
-              rightIcon={<ArrowForwardIcon />}
-            >
-              Add a contact
-            </Button>
-            */}
-            <ContactsModal
-              isOpen={isOpen}
-              onSave={onSaveContact}
-              onClose={onClose}
-            />
             <Divider
               sx={{ borderColor: "gray.600", borderBottomWidth: 2, marginY: 8 }}
             />
@@ -1017,7 +904,6 @@ export const ApplicationsEdit: React.FC<any> = (props) => {
                   }
 
                   if (dateFound) {
-                    console.log("***found date", date);
                     return "vendor-select";
                   } else {
                     return "";
