@@ -4,10 +4,11 @@ import qs from "qs";
 // components
 import { SalesReportsTabs } from "./SalesReportsTabs";
 import { Dropdown } from "../Dropdown";
+import { MonthDropdown } from "../MonthDropdown";
 import { GreenCheckIcon } from "../../assets/icons/green-check";
 // payload
 import { useAuth } from "payload/components/utilities";
-import { SalesReport, Vendor } from "payload/generated-types";
+import { Market, SalesReport, Vendor } from "payload/generated-types";
 
 // Chakra imports
 import {
@@ -28,7 +29,6 @@ import {
   Tr,
   Th,
   Td,
-  TableCaption,
   TableContainer,
 } from "@chakra-ui/react";
 
@@ -37,6 +37,7 @@ import { FooterAdmin } from "../FooterAdmin";
 const CustomSalesReportsList: React.FC<any> = () => {
   const { user } = useAuth();
   const [reports, setReports] = useState<SalesReport[]>([]);
+  const [markets, setMarkets] = useState<Market[]>([]);
 
   const getSalesReports = async () => {
     const salesReportsQuery = {
@@ -59,16 +60,63 @@ const CustomSalesReportsList: React.FC<any> = () => {
     const json = await response.json();
     const reports = json ? json.docs : [];
 
+    console.log("reports ->", reports);
+
     setReports(reports);
+  };
+
+  const getSeasons = async () => {
+    const marketsQuery = {
+      vendor: {
+        equals:
+          user.vendor && typeof user.vendor === "object"
+            ? (user.vendor as Vendor).id
+            : user.vendor,
+      },
+      status: {
+        equals: "approved",
+      },
+    };
+
+    const stringQuery = qs.stringify(
+      {
+        where: marketsQuery,
+        depth: 1,
+      },
+      { addQueryPrefix: true },
+    );
+
+    const response = await fetch(`/api/applications${stringQuery}`);
+    const json = await response.json();
+    const applications = json ? json.docs : [];
+    const seasons = [];
+
+    applications.map((app) => seasons.push(app.season));
+
+    const dedup = new Map();
+
+    seasons.forEach((season) => {
+      dedup.set(season.id, season);
+    });
+
+    const deduped = Array.from(dedup.values());
+
+    const markets = [];
+
+    deduped.map((season) => markets.push(season.market));
+
+    setMarkets(markets);
   };
 
   useEffect(() => {
     getSalesReports();
+    getSeasons();
   }, []);
 
   useEffect(() => {
     console.log("these are the reports", reports);
-  }, [reports]);
+    console.log("these are the markets", markets);
+  }, [reports, markets]);
 
   return (
     <>
@@ -104,7 +152,7 @@ const CustomSalesReportsList: React.FC<any> = () => {
           <GridItem>
             <Spacer />
             <Box>
-              <Dropdown />
+              <MonthDropdown />
             </Box>
           </GridItem>
           <GridItem>
@@ -153,7 +201,7 @@ const CustomSalesReportsList: React.FC<any> = () => {
                         </Td>
                         <Td>Invoice date</Td>
                         <Td>
-                          <Button>View sales report</Button>
+                          <Button>View report</Button>
                         </Td>
                       </Tr>
                     );
