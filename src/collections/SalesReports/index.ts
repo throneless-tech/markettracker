@@ -1,6 +1,9 @@
 import { CollectionConfig } from "payload/types";
+
 import CustomSalesReportsList from "../../components/SalesReports/CustomSalesReportsList";
 import CustomSalesReportsEdit from "../../components/SalesReports/CustomSalesReportsEdit";
+
+import { reportMonth } from "./populateMonth";
 
 export const SalesReports: CollectionConfig = {
   slug: "sales-reports",
@@ -8,7 +11,7 @@ export const SalesReports: CollectionConfig = {
   admin: {
     components: {
       views: {
-        Edit: CustomSalesReportsEdit,
+        // Edit: CustomSalesReportsEdit,
         List: CustomSalesReportsList,
       },
     },
@@ -83,4 +86,7 @@ export const SalesReports: CollectionConfig = {
       },
     },
   ],
+  hooks: {
+    afterRead: [reportMonth],
+  },
 };

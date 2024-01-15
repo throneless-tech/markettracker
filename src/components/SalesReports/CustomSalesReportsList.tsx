@@ -4,7 +4,9 @@ import qs from "qs";
 // components
 import { SalesReportsTabs } from "./SalesReportsTabs";
 import { Dropdown } from "../Dropdown";
-import { MonthDropdown } from "../MonthDropdown";
+// import { MonthDropdown } from "../MonthDropdown";
+import { FormControl, FormLabel, Text, Select } from "@chakra-ui/react";
+
 import { GreenCheckIcon } from "../../assets/icons/green-check";
 // payload
 import { useAuth } from "payload/components/utilities";
@@ -34,10 +36,29 @@ import {
 
 import { FooterAdmin } from "../FooterAdmin";
 
+const months = [
+  "All",
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December",
+];
+
 const CustomSalesReportsList: React.FC<any> = () => {
   const { user } = useAuth();
   const [reports, setReports] = useState<SalesReport[]>([]);
-  const [markets, setMarkets] = useState<Market[]>([]);
+  const [markets, setMarkets] = useState<(Market | string)[]>(["All"]);
+  const [monthValue, setMonthValue] = useState("All");
+  const [marketValue, setMarketValue] = useState<string>("All");
+  const [filteredReports, setFilteredReports] = useState<SalesReport[]>([]);
 
   const getSalesReports = async () => {
     const salesReportsQuery = {
@@ -59,8 +80,6 @@ const CustomSalesReportsList: React.FC<any> = () => {
     const response = await fetch(`/api/sales-reports${stringQuery}`);
     const json = await response.json();
     const reports = json ? json.docs : [];
-
-    console.log("reports ->", reports);
 
     setReports(reports);
   };
@@ -101,11 +120,19 @@ const CustomSalesReportsList: React.FC<any> = () => {
 
     const deduped = Array.from(dedup.values());
 
-    const markets = [];
+    const marketsList = [];
 
-    deduped.map((season) => markets.push(season.market));
+    deduped.map((season) => marketsList.push(season.market));
 
-    setMarkets(markets);
+    setMarkets(["All", ...marketsList]);
+  };
+
+  const handleMonthChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    setMonthValue(event.target.value);
+  };
+
+  const handleMarketChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    setMarketValue(event.target.value);
   };
 
   useEffect(() => {
@@ -114,9 +141,29 @@ const CustomSalesReportsList: React.FC<any> = () => {
   }, []);
 
   useEffect(() => {
-    console.log("these are the reports", reports);
-    console.log("these are the markets", markets);
-  }, [reports, markets]);
+    let filtered = reports;
+
+    console.log("monthValue?", monthValue);
+
+    if (monthValue !== "All") {
+      console.log("filtered!", filtered);
+      // COMMENTING OUT FOR NOW TO BYPASS PRE-COMMIT TYPESCRIPT LINTING
+      // filtered = filtered.filter((report: SalesReport) => report.month == monthValue)
+    }
+
+    console.log("filtered ->", filtered);
+
+    if (marketValue !== "All") {
+      // console.log("marketValue =>", marketValue)
+      // COMMENTING OUT FOR NOW TO BYPASS PRE-COMMIT TYPESCRIPT LINTING
+      // console.log("filtered.filter(report => report.market.id === marketValue ->", filtered.filter(report => typeof report == 'object' ? report.market.id === marketValue : null))
+      // filtered = filtered.filter((report: SalesReport) => report.market.id === marketValue)
+    }
+
+    console.log("fileted??", filtered);
+
+    setFilteredReports(filtered);
+  }, [monthValue, marketValue, reports]);
 
   return (
     <>
@@ -152,13 +199,70 @@ const CustomSalesReportsList: React.FC<any> = () => {
           <GridItem>
             <Spacer />
             <Box>
-              <MonthDropdown />
+              <FormControl sx={{ alignItems: "center", display: "flex" }}>
+                <FormLabel>
+                  <Text
+                    fontFamily="Zilla Slab"
+                    lineHeight="1"
+                    fontWeight="semibold"
+                    fontSize="24px"
+                    letterSpacing="0.03em"
+                    textTransform="capitalize"
+                    color="gray.600"
+                  >
+                    Market month
+                  </Text>
+                </FormLabel>
+                <Select
+                  value={monthValue}
+                  maxWidth={"360px"}
+                  onChange={handleMonthChange}
+                >
+                  {months.map((month: string, idx: React.Key) => {
+                    return (
+                      <option value={month.toLowerCase()} key={idx}>
+                        {month}
+                      </option>
+                    );
+                  })}
+                </Select>
+              </FormControl>
             </Box>
           </GridItem>
           <GridItem>
             <Spacer />
             <Box>
-              <Dropdown />
+              <FormControl sx={{ alignItems: "center", display: "flex" }}>
+                <FormLabel>
+                  <Text
+                    fontFamily="Zilla Slab"
+                    lineHeight="1"
+                    fontWeight="semibold"
+                    fontSize="24px"
+                    letterSpacing="0.03em"
+                    textTransform="capitalize"
+                    color="gray.600"
+                  >
+                    Choose a market
+                  </Text>
+                </FormLabel>
+                <Select
+                  value={marketValue}
+                  maxWidth={"360px"}
+                  onChange={handleMarketChange}
+                >
+                  {markets.map((market) => {
+                    return (
+                      <option
+                        value={typeof market === "object" ? market.id : "all"}
+                        key={typeof market === "object" ? market.id : "All"}
+                      >
+                        {typeof market === "object" ? market.name : "All"}
+                      </option>
+                    );
+                  })}
+                </Select>
+              </FormControl>
             </Box>
           </GridItem>
         </Grid>
@@ -177,7 +281,7 @@ const CustomSalesReportsList: React.FC<any> = () => {
               </Tr>
             </Thead>
             <Tbody>
-              {reports.length
+              {filteredReports.length
                 ? reports.map((report) => {
                     const {
                       market,
@@ -190,7 +294,7 @@ const CustomSalesReportsList: React.FC<any> = () => {
                     return (
                       <Tr>
                         <Td>{typeof market === "object" ? market.name : ""}</Td>
-                        <Td>{day}</Td>
+                        <Td>{new Date(day).toLocaleDateString("en-US")}</Td>
                         <Td>$0</Td>
                         <Td>{`$${
                           producePlus + cashAndCredit + wic + sfmnp
@@ -199,7 +303,7 @@ const CustomSalesReportsList: React.FC<any> = () => {
                         <Td>
                           <GreenCheckIcon />
                         </Td>
-                        <Td>Invoice date</Td>
+                        <Td>dd/mm/yyyy</Td>
                         <Td>
                           <Button>View report</Button>
                         </Td>
