@@ -2,8 +2,10 @@
 // import React, { useEffect, useState } from "react";
 import React from "react";
 import { useAuth } from "payload/components/utilities";
+import { NumberField } from "../fields/NumberField";
 import { Dropdown } from "../Dropdown";
 import { FooterAdmin } from "../FooterAdmin";
+import { useField, useForm } from "payload/components/forms";
 import {
   Box,
   Button,
@@ -28,6 +30,13 @@ import {
 
 const CustomSalesReportsEdit: React.FC<any> = () => {
   const { user } = useAuth();
+  const { submit } = useForm();
+  const { value: market, setValue: setMarket } = useField<string>({
+    path: "market ",
+  });
+  const { value: vendor, setValue: setVendor } = useField<string>({
+    path: "vendor",
+  });
 
   return (
     <>
@@ -52,62 +61,58 @@ const CustomSalesReportsEdit: React.FC<any> = () => {
           <FormControl isRequired>
             <Grid templateColumns="repeat(2, 5fr)" gap={4}>
               <GridItem>
-                <FormLabel>Cash and credit sales (required)</FormLabel>
-                <Input
-                  //   value=
-                  //   onChange={}
-                  isRequired
-                  placeholder="Cash and credit sales"
+                <NumberField
+                  path="cashAndCredit"
+                  label="Cash and credit sales"
+                  required
+                  admin={{
+                    description: "Enter the sum total of Cash and Credit sales",
+                    placeholder: "Cash and credit sales",
+                  }}
                 />
-                <FormHelperText>
-                  Enter the sum total of Cash and Credit sales
-                </FormHelperText>
               </GridItem>
               <GridItem w="100%" h="10">
-                <FormLabel>Produce Plus sales (required)</FormLabel>
-                <Input
-                  //   value={}
-                  //   onChange={}
-                  isRequired
-                  placeholder="Produce plus sales"
-                  //   type="email"
+                <NumberField
+                  path="producePlus"
+                  label="Produce Plus sales"
+                  required
+                  admin={{
+                    description: "Enter the sum total of Produce Plus sales",
+                    placeholder: "Produce plus sales",
+                  }}
                 />
-                <FormHelperText>
-                  Enter the sum total of Produce Plus sales
-                </FormHelperText>
               </GridItem>
             </Grid>
             <Grid templateColumns="repeat(2, 5fr)" gap={4}>
               <GridItem>
-                <FormLabel>SFMNP sales (required)</FormLabel>
-                <Input
-                  //   value=
-                  //   onChange={}
-                  isRequired
-                  placeholder="SFMNP sales"
+                <NumberField
+                  path="sfmnp"
+                  label="SFMNP sales"
+                  required
+                  admin={{
+                    description:
+                      "Enter the sum total of Seniors Farmers' Market Nutrition Program sales",
+                    placeholder: "SFMNP sales",
+                  }}
                 />
-                <FormHelperText>
-                  Enter the sum total of Seniors Farmers' Market Nutrition
-                  Program sales
-                </FormHelperText>
               </GridItem>
               <GridItem>
-                <FormLabel>WIC sales (required)</FormLabel>
-                <Input
-                  //   value={}
-                  //   onChange={}
-                  placeholder="WIC sales"
-                  //   type="email"
-                  isRequired
+                <NumberField
+                  path="wic"
+                  label="WIC sales"
+                  required
+                  admin={{
+                    description:
+                      "Enter the sum total of Special Supplemental Nutrition Program for Women, Infants, and Children (WIC) sales",
+                    placeholder: "WIC sales",
+                  }}
                 />
-                <FormHelperText>
-                  Enter the sum total of Special Supplemental Nutrition Program
-                  for Women, Infants, and Children (WIC) sales
-                </FormHelperText>
               </GridItem>
             </Grid>
             <Center marginTop={6}>
-              <Button>Confirm and Submit Sales Report</Button>
+              <Button onClick={async () => await submit()}>
+                Confirm and Submit Sales Report
+              </Button>
             </Center>
           </FormControl>
         </Container>
