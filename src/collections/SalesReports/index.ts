@@ -1,13 +1,17 @@
 import { CollectionConfig } from "payload/types";
-import CustomSalesReportsList from "../components/SalesReports/CustomSalesReportsList";
-import CustomSalesReportsEdit from "../components/SalesReports/CustomSalesReportsEdit";
+
+import CustomSalesReportsList from "../../components/SalesReports/CustomSalesReportsList";
+import CustomSalesReportsEdit from "../../components/SalesReports/CustomSalesReportsEdit";
+
+import { reportMonth } from "./populateMonth";
 
 export const SalesReports: CollectionConfig = {
   slug: "sales-reports",
+  defaultSort: "day",
   admin: {
     components: {
       views: {
-        Edit: CustomSalesReportsEdit,
+        // Edit: CustomSalesReportsEdit,
         List: CustomSalesReportsList,
       },
     },
@@ -82,4 +86,7 @@ export const SalesReports: CollectionConfig = {
       },
     },
   ],
+  hooks: {
+    afterRead: [reportMonth],
+  },
 };

@@ -117,9 +117,11 @@ export const ApplicationsList: React.FC<any> = () => {
         { addQueryPrefix: true },
       );
 
+      console.log(`api/applications${appsStringQuery}`);
+
       const appsResponse = await fetch(`/api/applications${appsStringQuery}`);
       let theseApplications = await appsResponse.json();
-      console.log(theseApplications);
+      console.log("these applications", theseApplications);
 
       vendorApps = theseApplications.docs;
 
