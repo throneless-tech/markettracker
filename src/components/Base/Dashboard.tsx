@@ -14,7 +14,9 @@ import {
   Stack,
   Wrap,
 } from "@chakra-ui/react";
-import { Card } from "../Card";
+import { CardMarket } from "../CardMarket";
+import { CardSalesDue } from "../CardSalesDue";
+import { CardSalesSubmitted } from "../CardSalesSubmitted";
 import { Standing } from "../Standing";
 import { Stats } from "../Stats";
 
@@ -85,9 +87,9 @@ export const Dashboard: React.FC<any> = () => {
           justify={{ base: "center", xl: "space-between" }}
           spacing={4}
         >
-          <Card icon="market" title="My Upcoming Markets" />
-          <Card icon="sales" title="Sales Reports Due" />
-          <Card icon="sales" title="Sales Reports Submitted" />
+          <CardMarket markets={user.vendor} />
+          <CardSalesDue />
+          <CardSalesSubmitted />
         </Wrap>
         <Stack spacing={8}>
           <Stats />

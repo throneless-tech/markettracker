@@ -4,11 +4,12 @@ import { MarketIcon } from "../assets/icons/market";
 import { SalesIcon } from "../assets/icons/sales";
 
 interface CardProps {
-  title: string;
-  icon?: string;
+  markets?: Array<any>;
 }
 
-export const Card: FC<CardProps> = ({ title, icon }) => {
+export const CardMarket: FC<CardProps> = ({ markets }) => {
+  console.log(markets);
+  
   return (
     <Box
       padding="16px"
@@ -21,29 +22,16 @@ export const Card: FC<CardProps> = ({ title, icon }) => {
       background="#F6F5F4"
     >
       <Stack paddingBottom="8px" maxWidth="100%" direction="row">
-        {icon == "market" ? (
-          <MarketIcon
-            sx={{
-              fill: "none",
-              height: "24px",
-              width: "24px",
-              "& path": {
-                stroke: "teal.300 !important",
-              },
-            }}
-          />
-        ) : icon == "sales" ? (
-          <SalesIcon
-            sx={{
-              fill: "none",
-              height: "24px",
-              width: "24px",
-              "& path": {
-                stroke: "teal.300 !important",
-              },
-            }}
-          />
-        ) : null}
+        <MarketIcon
+          sx={{
+            fill: "none",
+            height: "24px",
+            width: "24px",
+            "& path": {
+              stroke: "teal.300 !important",
+            },
+          }}
+        />
         <Heading
           as="h2"
           lineHeight="1"
@@ -54,7 +42,7 @@ export const Card: FC<CardProps> = ({ title, icon }) => {
           color="#534C46"
           flex="1"
         >
-          {title}
+          My Upcoming Markets
         </Heading>
       </Stack>
       <Text
