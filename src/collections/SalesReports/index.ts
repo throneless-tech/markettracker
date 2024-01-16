@@ -1,4 +1,5 @@
 import { CollectionConfig } from "payload/types";
+import { withFormContext } from "../../utils/withFormContext";
 
 import CustomSalesReportsList from "../../components/SalesReports/CustomSalesReportsList";
 import CustomSalesReportsEdit from "../../components/SalesReports/CustomSalesReportsEdit";
@@ -11,7 +12,7 @@ export const SalesReports: CollectionConfig = {
   admin: {
     components: {
       views: {
-        // Edit: CustomSalesReportsEdit,
+        Edit: withFormContext(CustomSalesReportsEdit),
         List: CustomSalesReportsList,
       },
     },

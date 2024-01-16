@@ -52,13 +52,17 @@ const months = [
   "December",
 ];
 
+type SalesReportMonth = SalesReport & { month: string };
+
 const CustomSalesReportsList: React.FC<any> = () => {
   const { user } = useAuth();
-  const [reports, setReports] = useState<SalesReport[]>([]);
+  const [reports, setReports] = useState<SalesReportMonth[]>([]);
   const [markets, setMarkets] = useState<(Market | string)[]>(["All"]);
   const [monthValue, setMonthValue] = useState("All");
   const [marketValue, setMarketValue] = useState<string>("All");
-  const [filteredReports, setFilteredReports] = useState<SalesReport[]>([]);
+  const [filteredReports, setFilteredReports] = useState<SalesReportMonth[]>(
+    [],
+  );
 
   const getSalesReports = async () => {
     const salesReportsQuery = {
@@ -145,12 +149,18 @@ const CustomSalesReportsList: React.FC<any> = () => {
 
     if (monthValue.toLowerCase() !== "all") {
       // COMMENTING OUT FOR NOW TO BYPASS PRE-COMMIT TYPESCRIPT LINTING
-      // filtered = filtered.filter((report: SalesReport) => report.month == monthValue)
+      filtered = filtered.filter(
+        (report: SalesReportMonth) => report.month == monthValue,
+      );
     }
 
     if (marketValue.toLowerCase() !== "all") {
       // COMMENTING OUT FOR NOW TO BYPASS PRE-COMMIT TYPESCRIPT LINTING
-      // filtered = filtered.filter((report: SalesReport) => report.market.id === marketValue)
+      filtered = filtered.filter((report: SalesReportMonth) =>
+        typeof report.market === "object"
+          ? report.market.id === marketValue
+          : report.market === marketValue,
+      );
     }
 
     setFilteredReports(filtered);
