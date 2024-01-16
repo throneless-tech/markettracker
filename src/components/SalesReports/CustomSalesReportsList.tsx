@@ -143,31 +143,22 @@ const CustomSalesReportsList: React.FC<any> = () => {
   useEffect(() => {
     let filtered = reports;
 
-    console.log("monthValue?", monthValue);
-
-    if (monthValue !== "All") {
-      console.log("filtered!", filtered);
+    if (monthValue.toLowerCase() !== "all") {
       // COMMENTING OUT FOR NOW TO BYPASS PRE-COMMIT TYPESCRIPT LINTING
       // filtered = filtered.filter((report: SalesReport) => report.month == monthValue)
     }
 
-    console.log("filtered ->", filtered);
-
-    if (marketValue !== "All") {
-      // console.log("marketValue =>", marketValue)
+    if (marketValue.toLowerCase() !== "all") {
       // COMMENTING OUT FOR NOW TO BYPASS PRE-COMMIT TYPESCRIPT LINTING
-      // console.log("filtered.filter(report => report.market.id === marketValue ->", filtered.filter(report => typeof report == 'object' ? report.market.id === marketValue : null))
       // filtered = filtered.filter((report: SalesReport) => report.market.id === marketValue)
     }
-
-    console.log("fileted??", filtered);
 
     setFilteredReports(filtered);
   }, [monthValue, marketValue, reports]);
 
   return (
     <>
-      <SalesReportsTabs selected="salesReports" />;
+      <SalesReportsTabs selected="salesReports" />
       <Container maxW="container.xl">
         <Flex my={6} justify="space-between" flexWrap={"wrap"}>
           <Box>
@@ -254,7 +245,7 @@ const CustomSalesReportsList: React.FC<any> = () => {
                   {markets.map((market) => {
                     return (
                       <option
-                        value={typeof market === "object" ? market.id : "all"}
+                        value={typeof market === "object" ? market.id : "All"}
                         key={typeof market === "object" ? market.id : "All"}
                       >
                         {typeof market === "object" ? market.name : "All"}
@@ -282,7 +273,7 @@ const CustomSalesReportsList: React.FC<any> = () => {
             </Thead>
             <Tbody>
               {filteredReports.length
-                ? reports.map((report) => {
+                ? filteredReports.map((report) => {
                     const {
                       market,
                       day,
