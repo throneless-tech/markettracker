@@ -33,6 +33,7 @@ export const SeasonsList: React.FC<any> = ({ data }) => {
           {
             where: query, // ensure that `qs` adds the `where` property, too!
             depth: 1,
+            limit: 100,
           },
           { addQueryPrefix: true },
         );
@@ -78,9 +79,7 @@ export const SeasonsList: React.FC<any> = ({ data }) => {
     seasons &&
     seasons.length && (
       <>
-      {user.role == "vendor" ? null : (
-        <SeasonsTabs selected="seasons" />
-      )}
+        {user.role == "vendor" ? null : <SeasonsTabs selected="seasons" />}
         <SeasonsTab
           applications={applications}
           seasons={seasons}
