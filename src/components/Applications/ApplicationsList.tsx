@@ -74,15 +74,16 @@ export const ApplicationsList: React.FC<any> = () => {
   const [isFetching, setIsFetching] = useState<boolean>(false);
   const [isAcceptingSearch, setIsAcceptingSearch] = useState("all");
   const [locationSearch, setLocationSearch] = useState([]);
-  const [isScheduleSearch, setIsScheduleSearch] = useState("all");
+  const [isScheduleSearch, setIsScheduleSearch] = useState("");
+  const [isStandingSearch, setIsStandingSearch] = useState("");
   const [priorityGroupSearch, setPriorityGroupSearch] = useState([]);
   const [productGapSearch, setProductGapSearch] = useState([]);
-  const [isApplicationStatus, setIsApplicationStatus] = useState("all");
+  const [isApplicationStatus, setIsApplicationStatus] = useState("");
   const [searchBox, setSearchBox] = useState("");
   const [seasons, setSeasons] = useState([]);
 
   // vendor seasons to apply for
-  useEffect(() => { }, []);
+  useEffect(() => {}, []);
 
   useEffect(() => {
     if (user.role !== "vendor" || !user.vendor) return;
@@ -239,24 +240,24 @@ export const ApplicationsList: React.FC<any> = () => {
         const demos: any = demoCell.getValue();
         return demos && typeof demos === "object"
           ? Object.entries(demos).map((key, _) => {
-            if (key[1] == "yes") {
-              if (key[0] == "firstGeneration") {
-                return <Tag>First generation farmer</Tag>;
+              if (key[1] == "yes") {
+                if (key[0] == "firstGeneration") {
+                  return <Tag>First generation farmer</Tag>;
+                }
+                if (key[0] == "veteranOwned") {
+                  return <Tag>Veteran-owned</Tag>;
+                }
+                if (key[0] == "bipoc") {
+                  return <Tag>BIPOC</Tag>;
+                }
+                if (key[0] == "immigrantOrRefugee") {
+                  return <Tag>Immigrant or refugee</Tag>;
+                }
+                if (key[0] == "lgbtqia") {
+                  return <Tag>LGBTQIA</Tag>;
+                }
               }
-              if (key[0] == "veteranOwned") {
-                return <Tag>Veteran-owned</Tag>;
-              }
-              if (key[0] == "bipoc") {
-                return <Tag>BIPOC</Tag>;
-              }
-              if (key[0] == "immigrantOrRefugee") {
-                return <Tag>Immigrant or refugee</Tag>;
-              }
-              if (key[0] == "lgbtqia") {
-                return <Tag>LGBTQIA</Tag>;
-              }
-            }
-          })
+            })
           : null;
       },
     },
@@ -350,6 +351,22 @@ export const ApplicationsList: React.FC<any> = () => {
       if (productGaps) {
         queries.push({ "season.market.productGaps": { in: productGaps } });
       }
+      const schedule = searchParams.get("schedule");
+      if (schedule) {
+        queries.push({ schedule: { equals: schedule } });
+      }
+      const vendorDemographics = searchParams.get("vendorDemos");
+      if (vendorDemographics) {
+        queries.push({ "vendor.demographics": { in: vendorDemographics } });
+      }
+      const vendorStanding = searchParams.get("vendorStanding");
+      if (vendorStanding) {
+        queries.push({ "vendor.standing": { equals: vendorStanding } });
+      }
+      const status = searchParams.get("status");
+      if (status) {
+        queries.push({ status: { equals: status } });
+      }
       let sort: string;
       if (sorting?.length) {
         sort = `${sorting[0].desc ? "-" : ""}${sorting[0].id}`;
@@ -428,6 +445,22 @@ export const ApplicationsList: React.FC<any> = () => {
       query.append("productGaps", productGapSearch.join(","));
     }
 
+    if (isScheduleSearch.length) {
+      query.append("schedule", isScheduleSearch);
+    }
+
+    if (isStandingSearch.length) {
+      query.append("vendorStanding", isStandingSearch);
+    }
+
+    if (priorityGroupSearch.length) {
+      query.append("vendorDemographics", priorityGroupSearch.join(","));
+    }
+
+    if (isApplicationStatus.length) {
+      query.append("status", isApplicationStatus);
+    }
+
     if (e.type == "click") {
       history.push({
         pathname: `/admin/collections/applications`,
@@ -447,9 +480,9 @@ export const ApplicationsList: React.FC<any> = () => {
 
   // table filters
 
-  useEffect(() => { }, []);
+  useEffect(() => {}, []);
 
-  useEffect(() => { }, [isAcceptingSearch, locationSearch]);
+  useEffect(() => {}, [isAcceptingSearch, locationSearch]);
 
   if (applications) {
     return (
@@ -605,76 +638,112 @@ export const ApplicationsList: React.FC<any> = () => {
                   >
                     <Stack direction="column">
                       <Radio value="fulltime">Full time</Radio>
-                        <Radio value="partime">Part time</Radio>
-                        <Radio value="popup">Popup</Radio>
+                      <Radio value="partime">Part time</Radio>
+                      <Radio value="popup">Popup</Radio>
                     </Stack>
                   </RadioGroup>
                 </FormControl>
-                  <FormControl marginTop={4}>
-                    <FormLabel
-                      fontSize="sm"
-                      sx={{ fontWeight: 900, textTransform: "uppercase" }}
-                    >
-                      Priority group
-                    </FormLabel>
-                    <CheckboxGroup
-                      colorScheme="green"
-                      onChange={(val) => setPriorityGroupSearch(val)}
-                      value={priorityGroupSearch}
-                    >
-                      <Stack spacing={2} direction="column">
-                        <Checkbox value="DC">DC</Checkbox>
-                        <Checkbox value="MD">Maryland</Checkbox>
-                        <Checkbox value="VA">Virginia</Checkbox>
-                      </Stack>
-                    </CheckboxGroup>
-                  </FormControl>
-                  <FormControl marginTop={4}>
-                    <FormLabel
-                      fontSize="sm"
-                      sx={{ fontWeight: 900, textTransform: "uppercase" }}
-                    >
-                      Product gaps
-                    </FormLabel>
-                    <CheckboxGroup
-                      colorScheme="green"
-                      onChange={(val) => setProductGapSearch(val)}
-                      value={productGapSearch}
-                    >
-                      <Stack spacing={2} direction="column">
-                        <Checkbox value="meat">Meat</Checkbox>
-                        <Checkbox value="dairy">Dairy</Checkbox>
-                        <Checkbox value="produce">Produce</Checkbox>
-                        <Checkbox value="plants">Plants</Checkbox>
-                        <Checkbox value="dried_goods">Dried goods</Checkbox>
-                        <Checkbox value="value_added_products">Value-added products</Checkbox>
-                        <Checkbox value="baked_goods">Baked goods</Checkbox>
-                        <Checkbox value="prepared_food">Prepared food</Checkbox>
-                        <Checkbox value="beverages">Beverages</Checkbox>
-                        <Checkbox value="non_food">Non-food</Checkbox>
-                      </Stack>
-                    </CheckboxGroup>
-                  </FormControl>
-                  <FormControl marginTop={4}>
-                    <FormLabel
-                      fontSize="sm"
-                      sx={{ fontWeight: 900, textTransform: "uppercase" }}
-                    >
-                      Application status
-                    </FormLabel>
-                    <RadioGroup
-                      colorScheme="green"
-                      onChange={(val) => setIsApplicationStatus(val)}
-                      value={isApplicationStatus}
-                    >
-                      <Stack direction="column">
-                        <Radio value="approved">Approved</Radio>
-                        <Radio value="rejected">Rejected</Radio>
-                        <Radio value="pending">Pending</Radio>
-                        <Radio value="withdrawn">Withdrawn</Radio>
-                      </Stack>
-                    </RadioGroup>
-                  </FormControl>
+                <FormControl marginTop={4}>
+                  <FormLabel
+                    fontSize="sm"
+                    sx={{ fontWeight: 900, textTransform: "uppercase" }}
+                  >
+                    Priority group
+                  </FormLabel>
+                  <CheckboxGroup
+                    colorScheme="green"
+                    onChange={(val) => setPriorityGroupSearch(val)}
+                    value={priorityGroupSearch}
+                  >
+                    <Stack spacing={2} direction="column">
+                      <Checkbox value="firstGeneration">
+                        First-generation farmer
+                      </Checkbox>
+                      <Checkbox value="veteranOwned">Veteran owned</Checkbox>
+                      <Checkbox value="bipoc">
+                        Black, Indigenous, and/or Person of Color
+                      </Checkbox>
+                      <Checkbox value="immigrantOrRefugee">
+                        Immigrant or refugee
+                      </Checkbox>
+                      <Checkbox value="lgbtqia">
+                        Lesbian, Gay, Bisexual, Transgender, Queer, Intersex,
+                        Asexual, Plus
+                      </Checkbox>
+                      <Checkbox value="other">Other</Checkbox>
+                    </Stack>
+                  </CheckboxGroup>
+                </FormControl>
+                <FormControl marginTop={4}>
+                  <FormLabel
+                    fontSize="sm"
+                    sx={{ fontWeight: 900, textTransform: "uppercase" }}
+                  >
+                    Vendor standing
+                  </FormLabel>
+                  <RadioGroup
+                    colorScheme="green"
+                    onChange={(val) => setIsStandingSearch(val)}
+                    value={isStandingSearch}
+                  >
+                    <Stack direction="column">
+                      <Radio value="good">Good</Radio>
+                      <Radio value="conditional">Conditional</Radio>
+                      <Radio value="bad">Bad</Radio>
+                      <Radio value="underReview">Under review</Radio>
+                      <Radio value="ineligible">Ineligible</Radio>
+                      <Radio value="inactive">Inactive</Radio>
+                    </Stack>
+                  </RadioGroup>
+                </FormControl>
+                <FormControl marginTop={4}>
+                  <FormLabel
+                    fontSize="sm"
+                    sx={{ fontWeight: 900, textTransform: "uppercase" }}
+                  >
+                    Product gaps
+                  </FormLabel>
+                  <CheckboxGroup
+                    colorScheme="green"
+                    onChange={(val) => setProductGapSearch(val)}
+                    value={productGapSearch}
+                  >
+                    <Stack spacing={2} direction="column">
+                      <Checkbox value="meat">Meat</Checkbox>
+                      <Checkbox value="dairy">Dairy</Checkbox>
+                      <Checkbox value="produce">Produce</Checkbox>
+                      <Checkbox value="plants">Plants</Checkbox>
+                      <Checkbox value="dried_goods">Dried goods</Checkbox>
+                      <Checkbox value="value_added_products">
+                        Value-added products
+                      </Checkbox>
+                      <Checkbox value="baked_goods">Baked goods</Checkbox>
+                      <Checkbox value="prepared_food">Prepared food</Checkbox>
+                      <Checkbox value="beverages">Beverages</Checkbox>
+                      <Checkbox value="non_food">Non-food</Checkbox>
+                    </Stack>
+                  </CheckboxGroup>
+                </FormControl>
+                <FormControl marginTop={4}>
+                  <FormLabel
+                    fontSize="sm"
+                    sx={{ fontWeight: 900, textTransform: "uppercase" }}
+                  >
+                    Application status
+                  </FormLabel>
+                  <RadioGroup
+                    colorScheme="green"
+                    onChange={(val) => setIsApplicationStatus(val)}
+                    value={isApplicationStatus}
+                  >
+                    <Stack direction="column">
+                      <Radio value="approved">Approved</Radio>
+                      <Radio value="rejected">Rejected</Radio>
+                      <Radio value="pending">Pending</Radio>
+                      <Radio value="withdrawn">Withdrawn</Radio>
+                    </Stack>
+                  </RadioGroup>
+                </FormControl>
                 <Stack marginTop={6} spacing={4}>
                   <Button onClick={searchViaFilters} variant={"solid"}>
                     Search

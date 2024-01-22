@@ -88,7 +88,11 @@ export const Dashboard: React.FC<any> = () => {
           justify={{ base: "center", xl: "space-between" }}
           spacing={4}
         >
-          <CardMarket applications={(user.vendor as Vendor).applications} />
+          <CardMarket
+            applications={
+              user.vendor ? (user.vendor as Vendor).applications : null
+            }
+          />
           <CardSalesDue />
           <CardSalesSubmitted />
         </Wrap>

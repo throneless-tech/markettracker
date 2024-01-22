@@ -228,7 +228,7 @@ export function DataTable<Data extends object>({
         onScroll={(e) => fetchMore(e.target as HTMLDivElement)}
         ref={tableContainerRef}
         sx={{
-          height: "80vh",
+          height: "100vh",
           maxWidth: "3000px !important;",
           overflowX: "scroll",
           overflowY: "auto",
@@ -278,34 +278,36 @@ export function DataTable<Data extends object>({
                 <td style={{ height: `${paddingTop}px` }} />
               </tr>
             )}
-            {virtualRows.length > 1
-              ? virtualRows.map((virtualRow) => {
-                  const row = rows[virtualRow.index] as Row<any>;
-                  return (
-                    <Tr key={row.id}>
-                      {row.getVisibleCells().map((cell) => {
-                        // see https://tanstack.com/table/v8/docs/api/core/column-def#meta to type this correctly
-                        const meta: any = cell.column.columnDef.meta;
-                        // const context = cell.getContext();
-                        // const id = context?.row?.original?.id;
+            {virtualRows.length > 1 ? (
+              virtualRows.map((virtualRow) => {
+                const row = rows[virtualRow.index] as Row<any>;
+                return (
+                  <Tr key={row.id}>
+                    {row.getVisibleCells().map((cell) => {
+                      // see https://tanstack.com/table/v8/docs/api/core/column-def#meta to type this correctly
+                      const meta: any = cell.column.columnDef.meta;
+                      // const context = cell.getContext();
+                      // const id = context?.row?.original?.id;
 
-                        return (
-                          <Td
-                            key={cell.id}
-                            isNumeric={meta?.isNumeric}
-                            sx={{ minWidth: 150 }}
-                          >
-                            {flexRender(
-                              cell.column.columnDef.cell,
-                              cell.getContext(),
-                            )}
-                          </Td>
-                        );
-                      })}
-                    </Tr>
-                  );
-                })
-              : <Text>No results found.</Text>}
+                      return (
+                        <Td
+                          key={cell.id}
+                          isNumeric={meta?.isNumeric}
+                          sx={{ minWidth: 150 }}
+                        >
+                          {flexRender(
+                            cell.column.columnDef.cell,
+                            cell.getContext(),
+                          )}
+                        </Td>
+                      );
+                    })}
+                  </Tr>
+                );
+              })
+            ) : (
+              <Text>No results found.</Text>
+            )}
             {paddingBottom > 0 && (
               <tr>
                 <td style={{ height: `${paddingBottom}px` }} />

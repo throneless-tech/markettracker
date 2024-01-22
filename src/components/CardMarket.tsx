@@ -87,61 +87,63 @@ export const CardMarket: FC<CardProps> = ({ applications }) => {
           My Upcoming Markets
         </Heading>
       </Stack>
-      <Text
-        lineHeight="1.6"
-        fontWeight="semibold"
-        fontSize="10px"
-        textTransform="uppercase"
-        textDecoration="underline"
-        color="#000000"
-        textAlign="end"
-      >
-        Market Date
-      </Text>
       {approvedApps.length ? (
-        <Stack justify="flex-start" align="flex-start" spacing={4}>
-          {approvedApps.map((app) => (
-            <Flex minWidth="404px" paddingY={1} width="100%" direction="row">
-              <Text
-                fontFamily="Outfit"
-                lineHeight="1.14"
-                fontWeight="semibold"
-                fontSize="14px"
-                textTransform="capitalize"
-                color="#000000"
-              >
-                {app.season.name} [{marketDay(app.season.marketDates.startDate)}
-                ]
-              </Text>
-              <Spacer
-                sx={{ position: "relative" }}
-                _before={{
-                  borderBottom: "1px dotted black",
-                  borderWidth: "2px",
-                  bottom: 0,
-                  content: '" "',
-                  display: "block",
-                  left: "50%",
-                  position: "absolute",
-                  top: "50%",
-                  transform: "translate(-50%, -50%)",
-                  width: "90%",
-                }}
-              />
-              <Text
-                fontFamily="Outfit"
-                lineHeight="1.14"
-                fontWeight="regular"
-                fontSize="14px"
-                textTransform="capitalize"
-                color="#000000"
-                textAlign="end"
-              >
-                {nextMarketDate(app.season.marketDates.startDate)}
-              </Text>
-            </Flex>
-          ))}
-        </Stack>
+        <>
+          <Text
+            lineHeight="1.6"
+            fontWeight="semibold"
+            fontSize="10px"
+            textTransform="uppercase"
+            textDecoration="underline"
+            color="#000000"
+            textAlign="end"
+          >
+            Market Date
+          </Text>
+          <Stack justify="flex-start" align="flex-start" spacing={4}>
+            {approvedApps.map((app) => (
+              <Flex minWidth="404px" paddingY={1} width="100%" direction="row">
+                <Text
+                  fontFamily="Outfit"
+                  lineHeight="1.14"
+                  fontWeight="semibold"
+                  fontSize="14px"
+                  textTransform="capitalize"
+                  color="#000000"
+                >
+                  {app.season.name} [
+                  {marketDay(app.season.marketDates.startDate)}]
+                </Text>
+                <Spacer
+                  sx={{ position: "relative" }}
+                  _before={{
+                    borderBottom: "1px dotted black",
+                    borderWidth: "2px",
+                    bottom: 0,
+                    content: '" "',
+                    display: "block",
+                    left: "50%",
+                    position: "absolute",
+                    top: "50%",
+                    transform: "translate(-50%, -50%)",
+                    width: "90%",
+                  }}
+                />
+                <Text
+                  fontFamily="Outfit"
+                  lineHeight="1.14"
+                  fontWeight="regular"
+                  fontSize="14px"
+                  textTransform="capitalize"
+                  color="#000000"
+                  textAlign="end"
+                >
+                  {nextMarketDate(app.season.marketDates.startDate)}
+                </Text>
+              </Flex>
+            ))}
+          </Stack>
+        </>
       ) : (
         <Text>No upcoming markets.</Text>
       )}
