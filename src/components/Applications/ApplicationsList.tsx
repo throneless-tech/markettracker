@@ -349,15 +349,42 @@ export const ApplicationsList: React.FC<any> = () => {
       }
       const productGaps = searchParams.get("productGaps");
       if (productGaps) {
-        queries.push({ "season.market.productGaps": { in: productGaps } });
+        queries.push({ "season.productGaps": { in: productGaps } });
       }
       const schedule = searchParams.get("schedule");
       if (schedule) {
         queries.push({ schedule: { equals: schedule } });
       }
-      const vendorDemographics = searchParams.get("vendorDemos");
+      const vendorDemographics = searchParams.get("vendorDemographics");
       if (vendorDemographics) {
-        queries.push({ "vendor.demographics": { in: vendorDemographics } });
+        const demosArray = vendorDemographics.split(",");
+
+        demosArray.map((demo) => {
+          if (demo === "firstGeneration") {
+            queries.push({
+              "vendor.demographics.firstGeneration": { equals: "yes" },
+            });
+          }
+          if (demo === "veteranOwned") {
+            queries.push({
+              "vendor.demographics.veteranOwned": { equals: "yes" },
+            });
+          }
+          if (demo === "bipoc") {
+            queries.push({ "vendor.demographics.bipoc": { equals: "yes" } });
+          }
+          if (demo === "immigrantOrRefugee") {
+            queries.push({
+              "vendor.demographics.immigrantOrRefugee": { equals: "yes" },
+            });
+          }
+          if (demo === "lgbtqia") {
+            queries.push({ "vendor.demographics.lgbtqia": { equals: "yes" } });
+          }
+          if (demo === "other") {
+            queries.push({ "vendor.demographics.other": { exists: true } });
+          }
+        });
       }
       const vendorStanding = searchParams.get("vendorStanding");
       if (vendorStanding) {
