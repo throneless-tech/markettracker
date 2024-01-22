@@ -22,6 +22,7 @@ import { Stats } from "../Stats";
 
 // components
 import { FooterAdmin } from "../FooterAdmin";
+import { Vendor } from "payload/generated-types";
 
 export const Dashboard: React.FC<any> = () => {
   const { user } = useAuth();
@@ -87,7 +88,7 @@ export const Dashboard: React.FC<any> = () => {
           justify={{ base: "center", xl: "space-between" }}
           spacing={4}
         >
-          <CardMarket markets={user.vendor} />
+          <CardMarket applications={(user.vendor as Vendor).applications} />
           <CardSalesDue />
           <CardSalesSubmitted />
         </Wrap>

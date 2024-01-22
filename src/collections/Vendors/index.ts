@@ -761,11 +761,7 @@ export const Vendors: CollectionConfig = {
     },
   ],
   hooks: {
-    afterRead: [
-      // afterReadApplications,
-      afterReadContacts,
-      afterReadStats
-    ],
+    afterRead: [afterReadApplications, afterReadContacts, afterReadStats],
     beforeValidate: [
       beforeValidateContacts,
       beforeValidateUser,

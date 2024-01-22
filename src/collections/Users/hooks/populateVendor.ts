@@ -7,13 +7,16 @@ import { Contact } from "payload/generated-types";
 import { usePayloadAPI } from "payload/dist/exports/components/hooks";
 
 export const afterReadVendor: CollectionAfterReadHook = async ({
+  context,
   doc, // full document data
 }) => {
+  if (context.skipTrigger) return;
   if (typeof doc.vendor === "string") {
     const vendor = await payload.findByID({
       collection: "vendors",
       id: doc.vendor,
-      depth: 0,
+      depth: 1,
+      context: { skipTrigger: true },
     });
     return {
       ...doc,

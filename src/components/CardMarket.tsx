@@ -1,15 +1,57 @@
 import React, { FC } from "react";
 import { Box, Flex, Heading, Spacer, Stack, Text } from "@chakra-ui/react";
 import { MarketIcon } from "../assets/icons/market";
-import { SalesIcon } from "../assets/icons/sales";
 
 interface CardProps {
-  markets?: Array<any>;
+  applications?: Array<any>;
 }
 
-export const CardMarket: FC<CardProps> = ({ markets }) => {
-  console.log(markets);
-  
+const dayNames = [
+  "Sunday",
+  "Monday",
+  "Tuesday",
+  "Wednesday",
+  "Thursday",
+  "Friday",
+  "Saturday",
+];
+
+export const CardMarket: FC<CardProps> = ({ applications }) => {
+  const [approvedApps, setApprovedApps] = React.useState([]);
+
+  const options: any = {
+    year: "numeric",
+    month: "numeric",
+    day: "numeric",
+  };
+
+  const marketDay = (stringDate) => {
+    const date = new Date(stringDate);
+    const dayNum = date.getDay();
+    return dayNames[dayNum];
+  };
+
+  const nextMarketDate = (stringDate) => {
+    let today = new Date();
+    const date = new Date(stringDate);
+    const dayNum = date.getDay();
+
+    today.setDate(today.getDate() + ((dayNum + (7 - today.getDay())) % 7));
+
+    return today.toLocaleDateString("en-US", options);
+  };
+
+  React.useEffect(() => {
+    if (applications && applications.length) {
+      const selectApplications = applications.filter(
+        (application) => application.status === "approved",
+      );
+      console.log(selectApplications);
+
+      setApprovedApps(selectApplications);
+    }
+  }, [applications]);
+
   return (
     <Box
       padding="16px"
@@ -56,51 +98,53 @@ export const CardMarket: FC<CardProps> = ({ markets }) => {
       >
         Market Date
       </Text>
-      <Stack justify="flex-start" align="flex-start" spacing={4}>
-        <Flex
-          minWidth="404px"
-          paddingY={1}
-          width="100%"
-          direction="row"
-        >
-          <Text
-            fontFamily="Outfit"
-            lineHeight="1.14"
-            fontWeight="semibold"
-            fontSize="14px"
-            textTransform="capitalize"
-            color="#000000"
-          >
-            Columbia Heights [Saturday]
-          </Text>
-          <Spacer
-            sx={{ position: "relative" }}
-            _before={{
-              borderBottom: "1px dotted black",
-              borderWidth: "2px",
-              bottom: 0,
-              content: '" "',
-              display: "block",
-              left: "50%",
-              position: "absolute",
-              top: "50%",
-              transform: "translate(-50%, -50%)",
-              width: "90%",
-            }}
-          />
-          <Text
-            fontFamily="Outfit"
-            lineHeight="1.14"
-            fontWeight="regular"
-            fontSize="14px"
-            textTransform="capitalize"
-            color="#000000"
-            textAlign="end"
-          >
-            12/10/22
-          </Text>
-        </Flex>
-      </Stack>
+      {approvedApps.length ? (
+        <Stack justify="flex-start" align="flex-start" spacing={4}>
+          {approvedApps.map((app) => (
+            <Flex minWidth="404px" paddingY={1} width="100%" direction="row">
+              <Text
+                fontFamily="Outfit"
+                lineHeight="1.14"
+                fontWeight="semibold"
+                fontSize="14px"
+                textTransform="capitalize"
+                color="#000000"
+              >
+                {app.season.name} [{marketDay(app.season.marketDates.startDate)}
+                ]
+              </Text>
+              <Spacer
+                sx={{ position: "relative" }}
+                _before={{
+                  borderBottom: "1px dotted black",
+                  borderWidth: "2px",
+                  bottom: 0,
+                  content: '" "',
+                  display: "block",
+                  left: "50%",
+                  position: "absolute",
+                  top: "50%",
+                  transform: "translate(-50%, -50%)",
+                  width: "90%",
+                }}
+              />
+              <Text
+                fontFamily="Outfit"
+                lineHeight="1.14"
+                fontWeight="regular"
+                fontSize="14px"
+                textTransform="capitalize"
+                color="#000000"
+                textAlign="end"
+              >
+                {nextMarketDate(app.season.marketDates.startDate)}
+              </Text>
+            </Flex>
+          ))}
+        </Stack>
+      ) : (
+        <Text>No upcoming markets.</Text>
+      )}
     </Box>
   );
 };
