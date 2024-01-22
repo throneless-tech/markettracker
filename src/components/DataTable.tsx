@@ -9,6 +9,7 @@ import {
   Tr,
   Th,
   Td,
+  Text,
   chakra,
 } from "@chakra-ui/react";
 import { TriangleDownIcon, TriangleUpIcon } from "@chakra-ui/icons";
@@ -304,7 +305,7 @@ export function DataTable<Data extends object>({
                     </Tr>
                   );
                 })
-              : null}
+              : <Text>No results found.</Text>}
             {paddingBottom > 0 && (
               <tr>
                 <td style={{ height: `${paddingBottom}px` }} />

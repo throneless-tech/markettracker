@@ -6,9 +6,10 @@ import {
 import type { Application } from "payload/generated-types";
 
 export const afterReadApplications: CollectionAfterReadHook = async ({
+  context,
   doc, // full document data
 }) => {
-  console.log("doc.applications", doc.applications);
+  if (context.skipTrigger) return;
   if (
     doc.applications &&
     doc.applications.length &&

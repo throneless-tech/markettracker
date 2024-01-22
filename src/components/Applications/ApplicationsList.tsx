@@ -74,11 +74,15 @@ export const ApplicationsList: React.FC<any> = () => {
   const [isFetching, setIsFetching] = useState<boolean>(false);
   const [isAcceptingSearch, setIsAcceptingSearch] = useState("all");
   const [locationSearch, setLocationSearch] = useState([]);
+  const [isScheduleSearch, setIsScheduleSearch] = useState("all");
+  const [priorityGroupSearch, setPriorityGroupSearch] = useState([]);
+  const [productGapSearch, setProductGapSearch] = useState([]);
+  const [isApplicationStatus, setIsApplicationStatus] = useState("all");
   const [searchBox, setSearchBox] = useState("");
   const [seasons, setSeasons] = useState([]);
 
   // vendor seasons to apply for
-  useEffect(() => {}, []);
+  useEffect(() => { }, []);
 
   useEffect(() => {
     if (user.role !== "vendor" || !user.vendor) return;
@@ -235,24 +239,24 @@ export const ApplicationsList: React.FC<any> = () => {
         const demos: any = demoCell.getValue();
         return demos && typeof demos === "object"
           ? Object.entries(demos).map((key, _) => {
-              if (key[1] == "yes") {
-                if (key[0] == "firstGeneration") {
-                  return <Tag>First generation farmer</Tag>;
-                }
-                if (key[0] == "veteranOwned") {
-                  return <Tag>Veteran-owned</Tag>;
-                }
-                if (key[0] == "bipoc") {
-                  return <Tag>BIPOC</Tag>;
-                }
-                if (key[0] == "immigrantOrRefugee") {
-                  return <Tag>Immigrant or refugee</Tag>;
-                }
-                if (key[0] == "lgbtqia") {
-                  return <Tag>LGBTQIA</Tag>;
-                }
+            if (key[1] == "yes") {
+              if (key[0] == "firstGeneration") {
+                return <Tag>First generation farmer</Tag>;
               }
-            })
+              if (key[0] == "veteranOwned") {
+                return <Tag>Veteran-owned</Tag>;
+              }
+              if (key[0] == "bipoc") {
+                return <Tag>BIPOC</Tag>;
+              }
+              if (key[0] == "immigrantOrRefugee") {
+                return <Tag>Immigrant or refugee</Tag>;
+              }
+              if (key[0] == "lgbtqia") {
+                return <Tag>LGBTQIA</Tag>;
+              }
+            }
+          })
           : null;
       },
     },
@@ -342,6 +346,10 @@ export const ApplicationsList: React.FC<any> = () => {
         queries.push({ "season.market.address.state": { in: location } });
         setLocationSearch(location.split(","));
       }
+      const productGaps = searchParams.get("productGaps");
+      if (productGaps) {
+        queries.push({ "season.market.productGaps": { in: productGaps } });
+      }
       let sort: string;
       if (sorting?.length) {
         sort = `${sorting[0].desc ? "-" : ""}${sorting[0].id}`;
@@ -388,7 +396,7 @@ export const ApplicationsList: React.FC<any> = () => {
         );
         if (!res.ok) throw new Error(res.statusText);
         const newApplications = await res.json();
-        console.log("***newApplications", newApplications);
+        // console.log("***newApplications", newApplications);
         return newApplications;
       } catch (err) {
         console.error(err);
@@ -416,6 +424,10 @@ export const ApplicationsList: React.FC<any> = () => {
       query.append("accepting", "true");
     }
 
+    if (productGapSearch.length) {
+      query.append("productGaps", productGapSearch.join(","));
+    }
+
     if (e.type == "click") {
       history.push({
         pathname: `/admin/collections/applications`,
@@ -435,9 +447,9 @@ export const ApplicationsList: React.FC<any> = () => {
 
   // table filters
 
-  useEffect(() => {}, []);
+  useEffect(() => { }, []);
 
-  useEffect(() => {}, [isAcceptingSearch, locationSearch]);
+  useEffect(() => { }, [isAcceptingSearch, locationSearch]);
 
   if (applications) {
     return (
@@ -579,6 +591,90 @@ export const ApplicationsList: React.FC<any> = () => {
                     </Stack>
                   </CheckboxGroup>
                 </FormControl>
+                <FormControl marginTop={4}>
+                  <FormLabel
+                    fontSize="sm"
+                    sx={{ fontWeight: 900, textTransform: "uppercase" }}
+                  >
+                    Schedule
+                  </FormLabel>
+                  <RadioGroup
+                    colorScheme="green"
+                    onChange={(val) => setIsScheduleSearch(val)}
+                    value={isScheduleSearch}
+                  >
+                    <Stack direction="column">
+                      <Radio value="fulltime">Full time</Radio>
+                        <Radio value="partime">Part time</Radio>
+                        <Radio value="popup">Popup</Radio>
+                    </Stack>
+                  </RadioGroup>
+                </FormControl>
+                  <FormControl marginTop={4}>
+                    <FormLabel
+                      fontSize="sm"
+                      sx={{ fontWeight: 900, textTransform: "uppercase" }}
+                    >
+                      Priority group
+                    </FormLabel>
+                    <CheckboxGroup
+                      colorScheme="green"
+                      onChange={(val) => setPriorityGroupSearch(val)}
+                      value={priorityGroupSearch}
+                    >
+                      <Stack spacing={2} direction="column">
+                        <Checkbox value="DC">DC</Checkbox>
+                        <Checkbox value="MD">Maryland</Checkbox>
+                        <Checkbox value="VA">Virginia</Checkbox>
+                      </Stack>
+                    </CheckboxGroup>
+                  </FormControl>
+                  <FormControl marginTop={4}>
+                    <FormLabel
+                      fontSize="sm"
+                      sx={{ fontWeight: 900, textTransform: "uppercase" }}
+                    >
+                      Product gaps
+                    </FormLabel>
+                    <CheckboxGroup
+                      colorScheme="green"
+                      onChange={(val) => setProductGapSearch(val)}
+                      value={productGapSearch}
+                    >
+                      <Stack spacing={2} direction="column">
+                        <Checkbox value="meat">Meat</Checkbox>
+                        <Checkbox value="dairy">Dairy</Checkbox>
+                        <Checkbox value="produce">Produce</Checkbox>
+                        <Checkbox value="plants">Plants</Checkbox>
+                        <Checkbox value="dried_goods">Dried goods</Checkbox>
+                        <Checkbox value="value_added_products">Value-added products</Checkbox>
+                        <Checkbox value="baked_goods">Baked goods</Checkbox>
+                        <Checkbox value="prepared_food">Prepared food</Checkbox>
+                        <Checkbox value="beverages">Beverages</Checkbox>
+                        <Checkbox value="non_food">Non-food</Checkbox>
+                      </Stack>
+                    </CheckboxGroup>
+                  </FormControl>
+                  <FormControl marginTop={4}>
+                    <FormLabel
+                      fontSize="sm"
+                      sx={{ fontWeight: 900, textTransform: "uppercase" }}
+                    >
+                      Application status
+                    </FormLabel>
+                    <RadioGroup
+                      colorScheme="green"
+                      onChange={(val) => setIsApplicationStatus(val)}
+                      value={isApplicationStatus}
+                    >
+                      <Stack direction="column">
+                        <Radio value="approved">Approved</Radio>
+                        <Radio value="rejected">Rejected</Radio>
+                        <Radio value="pending">Pending</Radio>
+                        <Radio value="withdrawn">Withdrawn</Radio>
+                      </Stack>
+                    </RadioGroup>
+                  </FormControl>
                 <Stack marginTop={6} spacing={4}>
                   <Button onClick={searchViaFilters} variant={"solid"}>
                     Search
