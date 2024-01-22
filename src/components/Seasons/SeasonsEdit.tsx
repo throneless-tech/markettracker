@@ -543,7 +543,7 @@ export const SeasonsEdit: React.FC<any> = (props) => {
                         borderBottomRadius="8px"
                         padding={4}
                       >
-                        <HStack>
+                        <HStack wrap={"wrap"}>
                           <Text
                             fontSize={"sm"}
                             textTransform={"uppercase"}
