@@ -49,7 +49,7 @@ const monthDiff = (d1, d2) => {
 };
 
 const dayDiff = (d1, d2) => {
-  return Math.round((d2 - d1) / (7 * 24 * 60 * 60 * 1000));
+  return Math.ceil((d2 - d1) / (7 * 24 * 60 * 60 * 1000));
 };
 
 export const ReviewsEdit: React.FC<any> = () => {
@@ -210,7 +210,7 @@ export const ReviewsEdit: React.FC<any> = () => {
     }
   }, [shadowApp]);
 
-  // console.log("***shadowApp", shadowApp);
+  console.log("***shadowApp", shadowApp);
 
   if (
     shadowApp &&
