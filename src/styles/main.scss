@@ -157,9 +157,6 @@ p {
     display: none;
   }
 
-  .react-datepicker__navigation--next {
-  }
-
   .react-datepicker__header {
     background-color: #fff;
     border-bottom: none;
@@ -224,5 +221,23 @@ p {
   .react-datepicker__input-container input {
     border: 2px solid #a3a3a3;
     padding: 2px;
+  }
+}
+
+.seasons-create-dates {
+  .react-datepicker {
+    .react-datepicker__navigation {
+      display: flex;
+
+      &.react-datepicker__navigation--previous {
+        left: 0;
+        top: 8px;
+      }
+
+      &.react-datepicker__navigation--next {
+        right: 18px;
+        top: 6px;
+      }
+    }
   }
 }
