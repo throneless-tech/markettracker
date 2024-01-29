@@ -39,12 +39,17 @@ import {
 // icons
 
 // images
+
 const monthDiff = (d1, d2) => {
   let months;
   months = (d2.getFullYear() - d1.getFullYear()) * 12;
   months -= d1.getMonth();
   months += d2.getMonth();
   return months <= 0 ? 0 : months;
+};
+
+const dayDiff = (d1, d2) => {
+  return Math.round((d2 - d1) / (7 * 24 * 60 * 60 * 1000) + 1);
 };
 
 export const ReviewsEdit: React.FC<any> = () => {
@@ -87,10 +92,11 @@ export const ReviewsEdit: React.FC<any> = () => {
   const [shadowApp, setShadowApp] = useState(null);
   const [shadowReviewer, setShadowReviewer] = useState(null);
   const [doSubmit, setDoSubmit] = useState(false);
+  const [seasonDaysLength, setSeasonDaysLength] = useState(0);
 
   const submitForm = () => {
     if (!id && shadowApp && shadowApp.id) {
-      console.log("***Setting shadow app", shadowApp);
+      // console.log("***Setting shadow app", shadowApp);
       setApplication(shadowApp);
       setReviewer(shadowReviewer);
     }
@@ -155,12 +161,18 @@ export const ReviewsEdit: React.FC<any> = () => {
       shadowApp?.season?.marketDates?.startDate &&
       shadowApp?.season?.marketDates?.endDate
     ) {
-      console.log("***shadowApp.season", shadowApp.season);
+      // console.log("***shadowApp.season", shadowApp.season);
       let calLength = monthDiff(
         new Date(shadowApp.season.marketDates.startDate),
         new Date(shadowApp.season.marketDates.endDate),
       );
       setNumMonths(calLength);
+
+      let daysLength = dayDiff(
+        new Date(shadowApp.season.marketDates.startDate),
+        new Date(shadowApp.season.marketDates.endDate),
+      );
+      setSeasonDaysLength(daysLength);
     }
 
     const setProducts = async (ids: string[]) => {
@@ -513,7 +525,7 @@ export const ReviewsEdit: React.FC<any> = () => {
                   </FormLabel>
                   <FormHelperText>
                     {shadowApp.vendor.name} plans to attend{" "}
-                    {shadowApp.dates.length}/13 market days
+                    {shadowApp.dates.length}/{seasonDaysLength} market days
                     <Wrap>
                       <DatePicker
                         inline
