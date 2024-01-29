@@ -141,7 +141,7 @@ export function DataTable<Data extends object>({
       return fetchedData;
     },
     initialPageParam: page,
-    getNextPageParam: (_lastGroup, groups) => groups.length,
+    getNextPageParam: (_lastGroup, groups) => groups.length + 1,
     refetchOnWindowFocus: false,
   });
 
