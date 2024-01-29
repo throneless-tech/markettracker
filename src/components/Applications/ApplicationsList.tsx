@@ -350,10 +350,12 @@ export const ApplicationsList: React.FC<any> = () => {
       const productGaps = searchParams.get("productGaps");
       if (productGaps) {
         queries.push({ "season.productGaps": { in: productGaps } });
+        setProductGapSearch(productGaps.split(","));
       }
       const schedule = searchParams.get("schedule");
       if (schedule) {
         queries.push({ schedule: { equals: schedule } });
+        setIsScheduleSearch(schedule);
       }
       const vendorDemographics = searchParams.get("vendorDemographics");
       if (vendorDemographics) {
@@ -385,14 +387,18 @@ export const ApplicationsList: React.FC<any> = () => {
             queries.push({ "vendor.demographics.other": { exists: true } });
           }
         });
+
+        setPriorityGroupSearch(demosArray);
       }
       const vendorStanding = searchParams.get("vendorStanding");
       if (vendorStanding) {
         queries.push({ "vendor.standing": { equals: vendorStanding } });
+        setIsStandingSearch(vendorStanding);
       }
       const status = searchParams.get("status");
       if (status) {
         queries.push({ status: { equals: status } });
+        setIsApplicationStatus(status);
       }
       let sort: string;
       if (sorting?.length) {
