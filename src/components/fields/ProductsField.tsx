@@ -125,7 +125,7 @@ export const ProductsField: FC<Props> = ({
                   >
                     {category}
                   </Heading>
-                  <Stack>
+                  <Stack direction={["column", "row"]} spacing={2}>
                     {products.map((product) => (
                       <Checkbox value={product.id} key={product.id}>
                         {product.product}

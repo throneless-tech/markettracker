@@ -38,7 +38,7 @@ import type { Vendor } from "payload/generated-types";
 import { GrayCheckIcon } from "../../assets/icons/gray-check";
 
 // components
-import { DataTable } from "../DataTable";
+import { DataTable } from "../DataTableVendors";
 
 type VendorStats = Vendor & {
   numberOfApplications: number;
@@ -213,7 +213,7 @@ export const VendorsTab: React.FC<any> = () => {
       if (isFetching) return;
       const searchParams = new URLSearchParams(search);
       const queries = [];
-      queries.push({ standing: { not_equals: "underReview" } });
+      // queries.push({ standing: { not_equals: "underReview" } });
       const searchQuery = searchParams.get("search");
       if (searchQuery) {
         queries.push({ name: { like: searchQuery } });
@@ -263,7 +263,7 @@ export const VendorsTab: React.FC<any> = () => {
         );
         if (!res.ok) throw new Error(res.statusText);
         const newVendors = await res.json();
-        console.log("vendors: ", newVendors);
+        // console.log("vendors: ", newVendors);
         setVendors(newVendors);
         return newVendors;
       } catch (err) {

@@ -35,7 +35,7 @@ import {
 import { ColumnDef, RowData, SortingState } from "@tanstack/react-table";
 
 // components
-import { DataTable } from "../DataTable";
+import { DataTable } from "../DataTableApplications";
 import { SeasonCard } from "../Seasons/SeasonCard";
 import { SeasonsTabs } from "../Seasons/SeasonsTabs";
 
@@ -319,9 +319,9 @@ export const ApplicationsList: React.FC<any> = () => {
 
   const getApplications = useCallback(
     async (page: number, limit: number, sorting: SortingState) => {
-      console.log("page: ", page);
-      console.log("limit: ", limit);
-      console.log("sorting: ", sorting);
+      // console.log("page: ", page);
+      // console.log("limit: ", limit);
+      // console.log("sorting: ", sorting);
 
       if (isFetching) return;
       const searchParams = new URLSearchParams(search);

@@ -31,7 +31,7 @@ import {
 } from "@tanstack/match-sorter-utils";
 import { useVirtual } from "react-virtual";
 
-import type { Application } from "payload/generated-types";
+import type { Vendor } from "payload/generated-types";
 
 // utils + react hooks
 import useOnScreen from "../utils/useOnScreenHook";
@@ -67,7 +67,7 @@ const fuzzyFilter: FilterFn<any> = (row, columnId, value, addMeta) => {
 
 const onChange = async (newStatus: string, id: string) => {
   try {
-    const res = await fetch(`/api/applications/${id}`, {
+    const res = await fetch(`/api/vendors/${id}`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
@@ -82,7 +82,7 @@ const onChange = async (newStatus: string, id: string) => {
   }
 };
 
-const defaultColumn: Partial<ColumnDef<Application>> = {
+const defaultColumn: Partial<ColumnDef<Vendor>> = {
   cell: ({ getValue, row: { index, original }, column: { id }, table }) => {
     const initialValue = getValue();
     const appId: any = original.id;
@@ -278,7 +278,7 @@ export function DataTable<Data extends object>({
                 <td style={{ height: `${paddingTop}px` }} />
               </tr>
             )}
-            {virtualRows.length > 1 ? (
+            {virtualRows.length >= 1 ? (
               virtualRows.map((virtualRow) => {
                 const row = rows[virtualRow.index] as Row<any>;
                 return (
@@ -331,7 +331,7 @@ export function DataTable<Data extends object>({
         </Table>
       </Box>
       {/* <div>
-        Fetched {flatData.length} of {totalDBRowCount} applications
+        Fetched {flatData.length} of {totalDBRowCount} vendors
       </div> */}
     </Container>
   );
