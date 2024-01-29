@@ -3,7 +3,6 @@ import { HStack, Text, Tag } from "@chakra-ui/react";
 
 export const Standing: React.FC<any> = (props) => {
   const { user } = props;
-  console.log(user);
   return (
     <HStack
       padding={6}

@@ -543,7 +543,7 @@ export const SeasonsEdit: React.FC<any> = (props) => {
                         borderBottomRadius="8px"
                         padding={4}
                       >
-                        <HStack>
+                        <HStack wrap={"wrap"}>
                           <Text
                             fontSize={"sm"}
                             textTransform={"uppercase"}
@@ -984,7 +984,7 @@ export const SeasonsEdit: React.FC<any> = (props) => {
                         sx={{ borderColor: "gray.600", borderBottomWidth: 2 }}
                       />
                     </HStack>
-                    <HStack marginTop={2}>
+                    <HStack marginTop={2} wrap={"wrap"}>
                       {vendors?.length &&
                         vendors.map((vendor) => (
                           <>

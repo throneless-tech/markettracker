@@ -6,9 +6,10 @@ import {
 import type { Application } from "payload/generated-types";
 
 export const afterReadApplications: CollectionAfterReadHook = async ({
+  context,
   doc, // full document data
 }) => {
-  console.log("doc.applications", doc.applications);
+  if (context.skipTrigger) return;
   if (
     doc.applications &&
     doc.applications.length &&
@@ -16,17 +17,19 @@ export const afterReadApplications: CollectionAfterReadHook = async ({
   ) {
     const applications = await payload.find({
       collection: "applications",
-      depth: 0,
+      depth: 1,
       where: { id: { in: doc.applications.join(",") } },
+      context: { skipTrigger: true },
     });
     return { ...doc, applications: applications.docs };
   } else if (!doc.applications || !doc.applications.length) {
     const applications = await payload.find({
       collection: "applications",
-      depth: 0,
+      depth: 1,
       where: { vendor: { equals: doc.id } },
+      context: { skipTrigger: true },
     });
-    console.log("***applications:", applications.docs);
+    // console.log("***applications:", applications.docs);
     return { ...doc, applications: applications.docs };
   }
   return doc;

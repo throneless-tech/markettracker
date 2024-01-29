@@ -38,7 +38,7 @@ import type { Vendor } from "payload/generated-types";
 import { GrayCheckIcon } from "../../assets/icons/gray-check";
 
 // components
-import { DataTable } from "../DataTable";
+import { DataTable } from "../DataTableApplications";
 
 type VendorStats = Vendor & {
   numberOfApplications: number;
