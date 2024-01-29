@@ -241,3 +241,10 @@ p {
     }
   }
 }
+
+.datepicker-wrap {
+  .react-datepicker {
+    display: flex;
+    flex-wrap: wrap;
+  }
+}

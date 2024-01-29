@@ -49,7 +49,7 @@ const monthDiff = (d1, d2) => {
 };
 
 const dayDiff = (d1, d2) => {
-  return Math.round((d2 - d1) / (7 * 24 * 60 * 60 * 1000) + 1);
+  return Math.round((d2 - d1) / (7 * 24 * 60 * 60 * 1000));
 };
 
 export const ReviewsEdit: React.FC<any> = () => {
@@ -210,7 +210,7 @@ export const ReviewsEdit: React.FC<any> = () => {
     }
   }, [shadowApp]);
 
-  console.log("***shadowApp", shadowApp);
+  // console.log("***shadowApp", shadowApp);
 
   if (
     shadowApp &&
@@ -331,7 +331,7 @@ export const ReviewsEdit: React.FC<any> = () => {
               least qualified, 5 being most qualified.
             </Text>
             <FormControl marginBottom={8}>
-              <HStack alignItems={"center"} spacing={3}>
+              <HStack alignItems={"top"} spacing={3}>
                 <NumberInput
                   colorScheme="green"
                   min={0}
@@ -357,7 +357,7 @@ export const ReviewsEdit: React.FC<any> = () => {
               </HStack>
             </FormControl>
             <FormControl marginBottom={8}>
-              <HStack alignItems={"center"} spacing={3}>
+              <HStack alignItems={"top"} spacing={3}>
                 <NumberInput
                   colorScheme="green"
                   min={0}
@@ -387,7 +387,7 @@ export const ReviewsEdit: React.FC<any> = () => {
               </HStack>
             </FormControl>
             <FormControl marginBottom={8}>
-              <HStack alignItems={"center"} spacing={3}>
+              <HStack alignItems={"top"} spacing={3}>
                 <NumberInput
                   colorScheme="green"
                   min={0}
@@ -436,7 +436,7 @@ export const ReviewsEdit: React.FC<any> = () => {
               </HStack>
             </FormControl>
             <FormControl marginBottom={8}>
-              <HStack alignItems={"center"} spacing={3}>
+              <HStack alignItems={"top"} spacing={3}>
                 <NumberInput
                   colorScheme="green"
                   min={0}
@@ -465,7 +465,7 @@ export const ReviewsEdit: React.FC<any> = () => {
               </HStack>
             </FormControl>
             <FormControl marginBottom={8}>
-              <HStack alignItems={"center"} spacing={3}>
+              <HStack alignItems={"top"} spacing={3}>
                 <NumberInput
                   colorScheme="green"
                   min={0}
@@ -502,7 +502,7 @@ export const ReviewsEdit: React.FC<any> = () => {
               </HStack>
             </FormControl>
             <FormControl marginBottom={8}>
-              <HStack alignItems={"center"} spacing={3}>
+              <HStack alignItems={"top"} spacing={3}>
                 <NumberInput
                   colorScheme="green"
                   min={0}
@@ -511,7 +511,7 @@ export const ReviewsEdit: React.FC<any> = () => {
                   value={attendScore}
                   onChange={(newValue) => setAttendScore(Number(newValue))}
                 >
-                  <NumberInputField />
+                  <NumberInputField sx={{ width: 16 }} />
                 </NumberInput>
                 <Stack>
                   <FormLabel
@@ -526,7 +526,7 @@ export const ReviewsEdit: React.FC<any> = () => {
                   <FormHelperText>
                     {shadowApp.vendor.name} plans to attend{" "}
                     {shadowApp.dates.length}/{seasonDaysLength} market days
-                    <Wrap>
+                    <Wrap className="datepicker-wrap">
                       <DatePicker
                         inline
                         readOnly={true}
@@ -535,7 +535,12 @@ export const ReviewsEdit: React.FC<any> = () => {
                           let dateFound = null;
                           if (shadowApp.dates) {
                             dateFound = shadowApp.dates.find((item) => {
-                              return item.date === date.toISOString();
+                              if (item.date) {
+                                return (
+                                  item.date.substring(0, 10) ===
+                                  date.toISOString().substring(0, 10)
+                                );
+                              }
                             });
                           }
 
