@@ -159,9 +159,9 @@ export function DataTable<Data extends object>({
     (tableContainerRef?: HTMLDivElement | null) => {
       if (tableContainerRef) {
         const { scrollHeight, scrollTop, clientHeight } = tableContainerRef;
-        //once the user has scrolled within 300px of the bottom of the table, fetch more data if there is any
+        //once the user has scrolled within 10px of the bottom of the table, fetch more data if there is any
         if (
-          scrollHeight - scrollTop - clientHeight < 300 &&
+          scrollHeight - scrollTop - clientHeight < 10 &&
           hasNextPage &&
           !isFetching &&
           totalFetched < totalDBRowCount
@@ -228,10 +228,12 @@ export function DataTable<Data extends object>({
         onScroll={(e) => fetchMore(e.target as HTMLDivElement)}
         ref={tableContainerRef}
         sx={{
+          containIntrinsicHeight: "100vh",
           height: "100vh",
           maxWidth: "3000px !important;",
+          overflowAnchor: "none !important",
           overflowX: "scroll",
-          overflowY: "auto",
+          overflowY: "scroll",
         }}
       >
         <Table variant="simple">
@@ -305,6 +307,8 @@ export function DataTable<Data extends object>({
                   </Tr>
                 );
               })
+            ) : isFetching ? (
+              <Text>Loading...</Text>
             ) : (
               <Text>No results found.</Text>
             )}

@@ -148,6 +148,8 @@ p {
   font-family: "Outfit", sans-serif;
 }
 
+/* react datepicker */
+
 .react-datepicker {
   border: none;
   font-family: "Outfit", sans-serif;
@@ -247,4 +249,9 @@ p {
     display: flex;
     flex-wrap: wrap;
   }
+}
+/* react table */
+.ReactTable .rt-table .rt-thead {
+  min-width: 0px !important;
+  overflow: hidden !important;
 }
