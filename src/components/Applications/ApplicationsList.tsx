@@ -83,7 +83,7 @@ export const ApplicationsList: React.FC<any> = () => {
   const [seasons, setSeasons] = useState([]);
 
   // vendor seasons to apply for
-  useEffect(() => {}, []);
+  useEffect(() => {}, [season]);
 
   useEffect(() => {
     if (user.role !== "vendor" || !user.vendor) return;
@@ -122,7 +122,11 @@ export const ApplicationsList: React.FC<any> = () => {
         { addQueryPrefix: true },
       );
 
-      const appsResponse = await fetch(`/api/applications${appsStringQuery}`);
+      const appsResponse = await fetch(
+        `/api/applications${appsStringQuery}${
+          season ? `&season=${season.id}` : ""
+        }`,
+      );
       let theseApplications = await appsResponse.json();
       console.log(theseApplications);
 
@@ -491,7 +495,9 @@ export const ApplicationsList: React.FC<any> = () => {
   // table sorting
 
   const searchViaFilters = (e) => {
-    const query = new URLSearchParams("limit=10");
+    const query = new URLSearchParams(
+      `limit=10${season ? `&season=${season.id}` : ""}`,
+    );
 
     if (searchBox) {
       query.append("search", searchBox);
@@ -542,9 +548,9 @@ export const ApplicationsList: React.FC<any> = () => {
     }
   };
 
-  // table filters
+  // table filters=
 
-  useEffect(() => {}, []);
+  console.log(season);
 
   useEffect(() => {}, [isAcceptingSearch, locationSearch]);
 
@@ -814,7 +820,9 @@ export const ApplicationsList: React.FC<any> = () => {
                   </Button>
                   <Button
                     as="a"
-                    href="/admin/collections/applications?limit=10"
+                    href={`/admin/collections/applications?limit=10${
+                      season ? `&season=${season.id}` : ""
+                    }`}
                     variant={"outline"}
                   >
                     Clear search
