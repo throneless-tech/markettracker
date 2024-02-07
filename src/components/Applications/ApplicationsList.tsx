@@ -238,27 +238,35 @@ export const ApplicationsList: React.FC<any> = () => {
       enableSorting: false,
       cell: (demoCell) => {
         const demos: any = demoCell.getValue();
-        return demos && typeof demos === "object"
-          ? Object.entries(demos).map((key, _) => {
-              if (key[1] == "yes") {
-                if (key[0] == "firstGeneration") {
-                  return <Tag>First generation farmer</Tag>;
-                }
-                if (key[0] == "veteranOwned") {
-                  return <Tag>Veteran-owned</Tag>;
-                }
-                if (key[0] == "bipoc") {
-                  return <Tag>BIPOC</Tag>;
-                }
-                if (key[0] == "immigrantOrRefugee") {
-                  return <Tag>Immigrant or refugee</Tag>;
-                }
-                if (key[0] == "lgbtqia") {
-                  return <Tag>LGBTQIA</Tag>;
-                }
-              }
-            })
-          : null;
+        return (
+          <Wrap spacing={1} maxW={170}>
+            {demos && typeof demos === "object"
+              ? Object.entries(demos).map((key, _) => {
+                  if (key[1] == "yes") {
+                    if (key[0] == "firstGeneration") {
+                      return <Tag key={key[0]}>First generation farmer</Tag>;
+                    }
+                    if (key[0] == "veteranOwned") {
+                      return <Tag key={key[0]}>Veteran-owned</Tag>;
+                    }
+                    if (key[0] == "bipoc") {
+                      return <Tag key={key[0]}>BIPOC</Tag>;
+                    }
+                    if (key[0] == "immigrantOrRefugee") {
+                      return (
+                        <Tag padding={1} key={key[0]}>
+                          Immigrant or refugee
+                        </Tag>
+                      );
+                    }
+                    if (key[0] == "lgbtqia") {
+                      return <Tag key={key[0]}>LGBTQIA</Tag>;
+                    }
+                  }
+                })
+              : null}
+          </Wrap>
+        );
       },
     },
     {
@@ -267,7 +275,19 @@ export const ApplicationsList: React.FC<any> = () => {
       enableSorting: false,
       cell: (standingCell) => {
         const standing: any = standingCell.getValue();
-        return <Tag>{standing ? standing : "Good"}</Tag>;
+        return (
+          <Tag textTransform="capitalize">
+            {standing == "underReview"
+              ? "Under review"
+              : standing == "approvedWithEdits"
+              ? "Approved with edits"
+              : standing == "tentativelyApproved"
+              ? "Tentatively approved"
+              : standing == "tentativelyRejected"
+              ? "Tentatively rejected"
+              : standing}
+          </Tag>
+        );
       },
     },
     {
@@ -344,60 +364,71 @@ export const ApplicationsList: React.FC<any> = () => {
       }
       const location = searchParams.get("location");
       if (location) {
-        queries.push({ "season.market.address.state": { in: location } });
+        queries.push({
+          or: [{ "season.market.address.state": { in: location } }],
+        });
         setLocationSearch(location.split(","));
       }
       const productGaps = searchParams.get("productGaps");
       if (productGaps) {
-        queries.push({ "season.productGaps": { in: productGaps } });
+        queries.push({ or: [{ "season.productGaps": { in: productGaps } }] });
         setProductGapSearch(productGaps.split(","));
       }
       const schedule = searchParams.get("schedule");
       if (schedule) {
-        queries.push({ schedule: { in: schedule } });
+        queries.push({ or: [{ schedule: { in: schedule } }] });
         setIsScheduleSearch(schedule.split(","));
       }
       const vendorDemographics = searchParams.get("vendorDemographics");
       if (vendorDemographics) {
         const demosArray = vendorDemographics.split(",");
+        const theseQueries = [];
 
         demosArray.map((demo) => {
           if (demo === "firstGeneration") {
-            queries.push({
+            theseQueries.push({
               "vendor.demographics.firstGeneration": { equals: "yes" },
             });
           }
           if (demo === "veteranOwned") {
-            queries.push({
+            theseQueries.push({
               "vendor.demographics.veteranOwned": { equals: "yes" },
             });
           }
           if (demo === "bipoc") {
-            queries.push({ "vendor.demographics.bipoc": { equals: "yes" } });
+            theseQueries.push({
+              "vendor.demographics.bipoc": { equals: "yes" },
+            });
           }
           if (demo === "immigrantOrRefugee") {
-            queries.push({
+            theseQueries.push({
               "vendor.demographics.immigrantOrRefugee": { equals: "yes" },
             });
           }
           if (demo === "lgbtqia") {
-            queries.push({ "vendor.demographics.lgbtqia": { equals: "yes" } });
+            theseQueries.push({
+              "vendor.demographics.lgbtqia": { equals: "yes" },
+            });
           }
           if (demo === "other") {
-            queries.push({ "vendor.demographics.other": { exists: true } });
+            theseQueries.push({
+              "vendor.demographics.other": { exists: true },
+            });
           }
         });
+
+        queries.push({ or: theseQueries });
 
         setPriorityGroupSearch(demosArray);
       }
       const vendorStanding = searchParams.get("vendorStanding");
       if (vendorStanding) {
-        queries.push({ "vendor.standing": { in: vendorStanding } });
+        queries.push({ or: [{ "vendor.standing": { in: vendorStanding } }] });
         setIsStandingSearch(vendorStanding.split(","));
       }
       const status = searchParams.get("status");
       if (status) {
-        queries.push({ status: { in: status } });
+        queries.push({ or: [{ status: { in: status } }] });
         setIsApplicationStatus(status.split(","));
       }
       let sort: string;
@@ -419,7 +450,7 @@ export const ApplicationsList: React.FC<any> = () => {
         stringifiedQuery = qs.stringify(
           {
             where: {
-              or: queries,
+              and: queries,
             },
             depth: 0,
             page,
