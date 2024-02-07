@@ -107,6 +107,7 @@ export const ReviewsEdit: React.FC<any> = () => {
         review.vendorScore;
 
       total += thisScore;
+      total = total / reviews.length;
     });
     return total;
   };
