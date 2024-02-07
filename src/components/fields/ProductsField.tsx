@@ -116,16 +116,26 @@ export const ProductsField: FC<Props> = ({
           <Wrap marginTop={4} spacing={8}>
             {Object.entries(allProducts).map(([category, products]) => {
               return (
-                <Stack spacing={4} key={category}>
+                <Stack spacing={8} key={category}>
                   <Heading
                     as="div"
                     fontFamily={"font.body"}
                     textStyle="h4"
                     size="xs"
                   >
-                    {category}
+                    {category == "non_food"
+                      ? "Non-food"
+                      : category == "prepared_food"
+                      ? "Prepared food"
+                      : category == "baked_goods"
+                      ? "Baked goods"
+                      : category == "value_added_products"
+                      ? "Value-added products"
+                      : category == "dried_goods"
+                      ? "Dried goods"
+                      : category}
                   </Heading>
-                  <Stack direction={["column", "row"]} spacing={2}>
+                  <Stack spacing={2}>
                     {products.map((product) => (
                       <Checkbox value={product.id} key={product.id}>
                         {product.product}
