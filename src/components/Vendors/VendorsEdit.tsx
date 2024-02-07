@@ -1,9 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import qs from "qs";
 
 // Payload imports
-import { useDocumentInfo } from "payload/components/utilities";
 import { useField, useForm } from "payload/components/forms";
 
 // Chakra imports
@@ -47,8 +45,13 @@ import {
   VisuallyHidden,
 } from "@chakra-ui/react";
 
+// types
+import { Vendor } from "payload/generated-types";
+
 // components
-import { Card } from "../Card";
+import { CardMarket } from "../CardMarket";
+import { CardSalesDue } from "../CardSalesDue";
+import { CardSalesSubmitted } from "../CardSalesSubmitted";
 import { ProductsCell } from "../cells/ProductsCell";
 
 export const VendorsEdit: React.FC<any> = ({ data: vendor }) => {
@@ -246,9 +249,13 @@ export const VendorsEdit: React.FC<any> = ({ data: vendor }) => {
                   justify={{ base: "center", xl: "space-between" }}
                   spacing={4}
                 >
-                  <Card icon="market" title="My Upcoming Markets" />
-                  <Card icon="sales" title="Sales Reports Due" />
-                  <Card icon="sales" title="Sales Reports Submitted" />
+                  <CardMarket
+                    applications={
+                      vendor ? (vendor as Vendor).applications : null
+                    }
+                  />
+                  <CardSalesDue />
+                  <CardSalesSubmitted />
                 </Wrap>
               </TabPanel>
               <TabPanel>Sales reports coming soon.</TabPanel>

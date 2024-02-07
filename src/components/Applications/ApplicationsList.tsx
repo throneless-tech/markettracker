@@ -74,11 +74,11 @@ export const ApplicationsList: React.FC<any> = () => {
   const [isFetching, setIsFetching] = useState<boolean>(false);
   const [isAcceptingSearch, setIsAcceptingSearch] = useState("all");
   const [locationSearch, setLocationSearch] = useState([]);
-  const [isScheduleSearch, setIsScheduleSearch] = useState("");
-  const [isStandingSearch, setIsStandingSearch] = useState("");
+  const [isScheduleSearch, setIsScheduleSearch] = useState([]);
+  const [isStandingSearch, setIsStandingSearch] = useState([]);
   const [priorityGroupSearch, setPriorityGroupSearch] = useState([]);
   const [productGapSearch, setProductGapSearch] = useState([]);
-  const [isApplicationStatus, setIsApplicationStatus] = useState("");
+  const [isApplicationStatus, setIsApplicationStatus] = useState([]);
   const [searchBox, setSearchBox] = useState("");
   const [seasons, setSeasons] = useState([]);
 
@@ -354,8 +354,8 @@ export const ApplicationsList: React.FC<any> = () => {
       }
       const schedule = searchParams.get("schedule");
       if (schedule) {
-        queries.push({ schedule: { equals: schedule } });
-        setIsScheduleSearch(schedule);
+        queries.push({ schedule: { in: schedule } });
+        setIsScheduleSearch(schedule.split(","));
       }
       const vendorDemographics = searchParams.get("vendorDemographics");
       if (vendorDemographics) {
@@ -392,13 +392,13 @@ export const ApplicationsList: React.FC<any> = () => {
       }
       const vendorStanding = searchParams.get("vendorStanding");
       if (vendorStanding) {
-        queries.push({ "vendor.standing": { equals: vendorStanding } });
-        setIsStandingSearch(vendorStanding);
+        queries.push({ "vendor.standing": { in: vendorStanding } });
+        setIsStandingSearch(vendorStanding.split(","));
       }
       const status = searchParams.get("status");
       if (status) {
-        queries.push({ status: { equals: status } });
-        setIsApplicationStatus(status);
+        queries.push({ status: { in: status } });
+        setIsApplicationStatus(status.split(","));
       }
       let sort: string;
       if (sorting?.length) {
@@ -419,7 +419,7 @@ export const ApplicationsList: React.FC<any> = () => {
         stringifiedQuery = qs.stringify(
           {
             where: {
-              and: queries,
+              or: queries,
             },
             depth: 0,
             page,
@@ -479,11 +479,11 @@ export const ApplicationsList: React.FC<any> = () => {
     }
 
     if (isScheduleSearch.length) {
-      query.append("schedule", isScheduleSearch);
+      query.append("schedule", isScheduleSearch.join(","));
     }
 
     if (isStandingSearch.length) {
-      query.append("vendorStanding", isStandingSearch);
+      query.append("vendorStanding", isStandingSearch.join(","));
     }
 
     if (priorityGroupSearch.length) {
@@ -491,7 +491,7 @@ export const ApplicationsList: React.FC<any> = () => {
     }
 
     if (isApplicationStatus.length) {
-      query.append("status", isApplicationStatus);
+      query.append("status", isApplicationStatus.join(","));
     }
 
     if (e.type == "click") {
@@ -664,17 +664,17 @@ export const ApplicationsList: React.FC<any> = () => {
                   >
                     Schedule
                   </FormLabel>
-                  <RadioGroup
+                  <CheckboxGroup
                     colorScheme="green"
                     onChange={(val) => setIsScheduleSearch(val)}
                     value={isScheduleSearch}
                   >
-                    <Stack direction="column">
-                      <Radio value="fulltime">Full time</Radio>
-                      <Radio value="partime">Part time</Radio>
-                      <Radio value="popup">Popup</Radio>
+                    <Stack spacing={2} direction="column">
+                      <Checkbox value="fulltime">Full time</Checkbox>
+                      <Checkbox value="partime">Part time</Checkbox>
+                      <Checkbox value="popup">Popup</Checkbox>
                     </Stack>
-                  </RadioGroup>
+                  </CheckboxGroup>
                 </FormControl>
                 <FormControl marginTop={4}>
                   <FormLabel
@@ -714,20 +714,20 @@ export const ApplicationsList: React.FC<any> = () => {
                   >
                     Vendor standing
                   </FormLabel>
-                  <RadioGroup
+                  <CheckboxGroup
                     colorScheme="green"
                     onChange={(val) => setIsStandingSearch(val)}
                     value={isStandingSearch}
                   >
-                    <Stack direction="column">
-                      <Radio value="good">Good</Radio>
-                      <Radio value="conditional">Conditional</Radio>
-                      <Radio value="bad">Bad</Radio>
-                      <Radio value="underReview">Under review</Radio>
-                      <Radio value="ineligible">Ineligible</Radio>
-                      <Radio value="inactive">Inactive</Radio>
+                    <Stack spacing={2} direction="column">
+                      <Checkbox value="good">Good</Checkbox>
+                      <Checkbox value="conditional">Conditional</Checkbox>
+                      <Checkbox value="bad">Bad</Checkbox>
+                      <Checkbox value="underReview">Under review</Checkbox>
+                      <Checkbox value="ineligible">Ineligible</Checkbox>
+                      <Checkbox value="inactive">Inactive</Checkbox>
                     </Stack>
-                  </RadioGroup>
+                  </CheckboxGroup>
                 </FormControl>
                 <FormControl marginTop={4}>
                   <FormLabel
@@ -764,18 +764,18 @@ export const ApplicationsList: React.FC<any> = () => {
                   >
                     Application status
                   </FormLabel>
-                  <RadioGroup
+                  <CheckboxGroup
                     colorScheme="green"
                     onChange={(val) => setIsApplicationStatus(val)}
                     value={isApplicationStatus}
                   >
-                    <Stack direction="column">
-                      <Radio value="approved">Approved</Radio>
-                      <Radio value="rejected">Rejected</Radio>
-                      <Radio value="pending">Pending</Radio>
-                      <Radio value="withdrawn">Withdrawn</Radio>
+                    <Stack spacing={2} direction="column">
+                      <Checkbox value="approved">Approved</Checkbox>
+                      <Checkbox value="rejected">Rejected</Checkbox>
+                      <Checkbox value="pending">Pending</Checkbox>
+                      <Checkbox value="withdrawn">Withdrawn</Checkbox>
                     </Stack>
-                  </RadioGroup>
+                  </CheckboxGroup>
                 </FormControl>
                 <Stack marginTop={6} spacing={4}>
                   <Button onClick={searchViaFilters} variant={"solid"}>
