@@ -1,8 +1,10 @@
 "use client";
 import React, { useEffect, useState } from "react";
+import qs from "qs";
 
 // Payload imports
 import { useDocumentInfo } from "payload/components/utilities";
+import { useField, useForm } from "payload/components/forms";
 
 // Chakra imports
 import {
@@ -50,7 +52,11 @@ import { Card } from "../Card";
 import { ProductsCell } from "../cells/ProductsCell";
 
 export const VendorsEdit: React.FC<any> = ({ data: vendor }) => {
-  console.log("***vendor:", vendor);
+  // console.log("***vendor:", vendor);
+  const { submit } = useForm();
+  const { value: notes, setValue: setNotes } = useField<string>({
+    path: "notes",
+  });
   const [standing, setStanding] = useState<string>();
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
 
@@ -58,8 +64,11 @@ export const VendorsEdit: React.FC<any> = ({ data: vendor }) => {
     if (vendor?.standing && !isLoaded) {
       setIsLoaded(true);
       setStanding(vendor.standing);
+      setNotes(vendor.notes);
     }
   }, [vendor]);
+
+  useEffect(() => {}, [notes, standing]);
 
   const onChange = async (standing: string) => {
     try {
@@ -77,6 +86,17 @@ export const VendorsEdit: React.FC<any> = ({ data: vendor }) => {
     } catch (err) {
       console.error(err.message);
     }
+  };
+
+  const onChangeNotes = (notes: string) => {
+    setNotes(notes);
+  };
+
+  const updateNotes = async () => {
+    const trySubmit = async () => {
+      await submit();
+    };
+    trySubmit();
   };
 
   if (vendor) {
@@ -109,7 +129,7 @@ export const VendorsEdit: React.FC<any> = ({ data: vendor }) => {
                 <Spacer />
                 <HStack>
                   <Select
-                    value={standing}
+                    defaultValue={standing}
                     colorScheme="teal"
                     variant="filled"
                     onChange={(e) => onChange(e.target.value)}
@@ -1241,6 +1261,44 @@ export const VendorsEdit: React.FC<any> = ({ data: vendor }) => {
                         </h2>
                         <AccordionPanel>
                           <ProductsCell cellData={vendor.products} />
+                        </AccordionPanel>
+                      </>
+                    )}
+                  </AccordionItem>
+                  <AccordionItem sx={{ border: "1px solid #000", marginY: 8 }}>
+                    {({ isExpanded }) => (
+                      <>
+                        <h2>
+                          <AccordionButton>
+                            <Box as="span" flex="1" textAlign="left">
+                              <Text
+                                textStyle="bodyMain"
+                                sx={{
+                                  fontWeight: 900,
+                                  textTransform: "uppercase",
+                                }}
+                              >
+                                Notes
+                              </Text>
+                            </Box>
+                            {isExpanded ? (
+                              <Text textStyle="bodyMain">Hide information</Text>
+                            ) : (
+                              <Text textStyle="bodyMain">Show information</Text>
+                            )}
+                          </AccordionButton>
+                        </h2>
+                        <AccordionPanel>
+                          <Stack align="flex-end">
+                            <Textarea
+                              onChange={(e) => onChangeNotes(e.target.value)}
+                              placeholder="Start typing..."
+                              defaultValue={notes}
+                            />
+                            <Button onClick={updateNotes} variant="solid">
+                              Update note
+                            </Button>
+                          </Stack>
                         </AccordionPanel>
                       </>
                     )}

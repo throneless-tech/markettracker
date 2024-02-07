@@ -76,6 +76,18 @@ export const Applications: CollectionConfig = {
           value: "rejected",
         },
         {
+          label: "Approved with edits",
+          value: "approvedWithEdits",
+        },
+        {
+          label: "Tentatively approved",
+          value: "tentativelyApproved",
+        },
+        {
+          label: "Tentatively rejected",
+          value: "tentativelyRejected",
+        },
+        {
           label: "Pending",
           value: "pending",
         },

@@ -1,4 +1,5 @@
 import { CollectionConfig } from "payload/types";
+import { withFormContext } from "../../utils/withFormContext";
 import { VendorsEdit } from "../../components/Vendors/VendorsEdit";
 import { VendorsList } from "../../components/Vendors/VendorsList";
 //import { beforeReadHook } from "./hooks/beforeReadHook";
@@ -22,11 +23,18 @@ export const Vendors: CollectionConfig = {
   admin: {
     components: {
       views: {
-        Edit: VendorsEdit,
+        Edit: withFormContext(VendorsEdit),
         List: VendorsList,
       },
     },
     useAsTitle: "name",
+  },
+  versions: {
+    drafts: {
+      autosave: {
+        interval: 1500,
+      },
+    },
   },
   // hooks: {
   //   beforeRead: [beforeReadHook],

@@ -31,6 +31,7 @@ import {
   Textarea,
   Wrap,
 } from "@chakra-ui/react";
+import { Reviews } from "../../collections/Reviews";
 
 // components
 
@@ -93,6 +94,22 @@ export const ReviewsEdit: React.FC<any> = () => {
   const [shadowReviewer, setShadowReviewer] = useState(null);
   const [doSubmit, setDoSubmit] = useState(false);
   const [seasonDaysLength, setSeasonDaysLength] = useState(0);
+
+  const totalScoreSoFar = (reviews) => {
+    let total = 0;
+    reviews.map((review) => {
+      let thisScore =
+        review.attendanceScore +
+        review.demographicScore +
+        review.productScore +
+        review.saturationScore +
+        review.setupScore +
+        review.vendorScore;
+
+      total += thisScore;
+    });
+    return total;
+  };
 
   const submitForm = () => {
     if (!id && shadowApp && shadowApp.id) {
@@ -342,7 +359,7 @@ export const ReviewsEdit: React.FC<any> = () => {
                 >
                   <NumberInputField />
                 </NumberInput>
-                <Stack>
+                <Stack direction="row">
                   <FormLabel
                     sx={{
                       fontSize: 18,
@@ -352,7 +369,9 @@ export const ReviewsEdit: React.FC<any> = () => {
                   >
                     Vendor type
                   </FormLabel>
-                  <Text>{shadowApp.vendor.type}</Text>
+                  <Text fontWeight="bold" textTransform="capitalize">
+                    {shadowApp.vendor.type}
+                  </Text>
                 </Stack>
               </HStack>
             </FormControl>
@@ -526,40 +545,40 @@ export const ReviewsEdit: React.FC<any> = () => {
                   <FormHelperText>
                     {shadowApp.vendor.name} plans to attend{" "}
                     {shadowApp.dates.length}/{seasonDaysLength} market days
-                    <Wrap className="datepicker-wrap">
-                      <DatePicker
-                        inline
-                        readOnly={true}
-                        onChange={() => true}
-                        dayClassName={(date) => {
-                          let dateFound = null;
-                          if (shadowApp.dates) {
-                            dateFound = shadowApp.dates.find((item) => {
-                              if (item.date) {
-                                return (
-                                  item.date.substring(0, 10) ===
-                                  date.toISOString().substring(0, 10)
-                                );
-                              }
-                            });
-                          }
-
-                          if (dateFound) {
-                            return "vendor-select";
-                          } else {
-                            return "";
-                          }
-                        }}
-                        selected={null}
-                        includeDates={shadowApp.dates.map(
-                          (item) => new Date(item.date),
-                        )}
-                        minDate={shadowApp.startDate}
-                        maxDate={shadowApp.endDate}
-                        monthsShown={numMonths + 1}
-                      />
-                    </Wrap>
                   </FormHelperText>
+                  <Wrap className="datepicker-wrap">
+                    <DatePicker
+                      inline
+                      readOnly={true}
+                      onChange={() => true}
+                      dayClassName={(date) => {
+                        let dateFound = null;
+                        if (shadowApp.dates) {
+                          dateFound = shadowApp.dates.find((item) => {
+                            if (item.date) {
+                              return (
+                                item.date.substring(0, 10) ===
+                                date.toISOString().substring(0, 10)
+                              );
+                            }
+                          });
+                        }
+
+                        if (dateFound) {
+                          return "vendor-select";
+                        } else {
+                          return "";
+                        }
+                      }}
+                      selected={null}
+                      includeDates={shadowApp.dates.map(
+                        (item) => new Date(item.date),
+                      )}
+                      minDate={shadowApp.startDate}
+                      maxDate={shadowApp.endDate}
+                      monthsShown={numMonths + 1}
+                    />
+                  </Wrap>
                 </Stack>
               </HStack>
             </FormControl>
@@ -590,6 +609,46 @@ export const ReviewsEdit: React.FC<any> = () => {
               </Button>
             </Center>
           </Box>
+          {shadowApp.reviews && shadowApp.reviews.length ? (
+            <HStack marginTop={8} spacing={4} align={"stretch"}>
+              <Container background={"gray.50"} padding={4}>
+                <Heading size={"md"} color={"gray.600"} marginBottom={0}>
+                  Recorded reviews
+                </Heading>
+                <Stack>
+                  {shadowApp.reviews.map((review) => (
+                    <>
+                      <HStack marginTop={4} spacing={2}>
+                        <Text>
+                          Total score:{" "}
+                          {review.attendanceScore +
+                            review.demographicScore +
+                            review.productScore +
+                            review.saturationScore +
+                            review.setupScore +
+                            review.vendorScore}
+                        </Text>
+                        <Text>by {review.reviewer.name}</Text>
+                        <Text></Text>
+                      </HStack>
+                      <HStack>
+                        <Text>
+                          <span style={{ fontWeight: "bold" }}>Notes: </span>
+                          <span>{review.notes}</span>
+                        </Text>
+                      </HStack>
+                    </>
+                  ))}
+                </Stack>
+              </Container>
+              <Container background={"gray.50"} padding={4}>
+                <Heading size={"md"} color={"gray.600"}>
+                  Average grade
+                </Heading>
+                <Heading>{totalScoreSoFar(shadowApp.reviews)}</Heading>
+              </Container>
+            </HStack>
+          ) : null}
         </Container>
       </Box>
     );
