@@ -23,6 +23,7 @@ export const afterReadStats: CollectionAfterReadHook = async ({
     depth: 0,
     where: {
       vendor: { equals: vendor.id },
+      "season.marketDates.startDate": { greater_than: new Date() },
     },
     context: { skipTrigger: true },
   });
@@ -56,6 +57,7 @@ export const afterReadStats: CollectionAfterReadHook = async ({
   }
 
   let season = doc.season;
+
   if (season && typeof season !== "object") {
     season = await payload.findByID({
       id: doc.season,
@@ -64,6 +66,7 @@ export const afterReadStats: CollectionAfterReadHook = async ({
     });
   }
   let gaps = [];
+
   if (season && season.productGaps && doc.products && doc.products.length) {
     gaps = doc.products.reduce((acc, product) => {
       const productId =
@@ -79,6 +82,7 @@ export const afterReadStats: CollectionAfterReadHook = async ({
       return acc;
     }, []);
   }
+
   if (gaps.length) {
     const products = await payload.find({
       collection: "products",
@@ -87,6 +91,7 @@ export const afterReadStats: CollectionAfterReadHook = async ({
     });
     gaps = products.docs;
   }
+
   return {
     ...doc,
     vendorName: vendor.name,
