@@ -23,7 +23,7 @@ export const afterReadStats: CollectionAfterReadHook = async ({
     depth: 0,
     where: {
       vendor: { equals: vendor.id },
-      "season.marketDates.startDate": { greater_than: new Date() },
+      // "season.marketDates.startDate": { greater_than: new Date() },
     },
     context: { skipTrigger: true },
   });
