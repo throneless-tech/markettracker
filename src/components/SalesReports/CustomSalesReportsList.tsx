@@ -1,16 +1,19 @@
 import React, { useEffect, useState } from "react";
+import { useHistory } from "react-router-dom";
 import qs from "qs";
 
 // components
 import { SalesReportsTabs } from "./SalesReportsTabs";
 import { Dropdown } from "../Dropdown";
 // import { MonthDropdown } from "../MonthDropdown";
-import { FormControl, FormLabel, Text, Select } from "@chakra-ui/react";
 
 import { GreenCheckIcon } from "../../assets/icons/green-check";
 // payload
 import { useAuth } from "payload/components/utilities";
-import { Market, SalesReport, Vendor } from "payload/generated-types";
+import { Market, Season, SalesReport, Vendor } from "payload/generated-types";
+
+// utils
+import getSeasons from "../../utils/getSeasons";
 
 // Chakra imports
 import {
@@ -32,6 +35,10 @@ import {
   Th,
   Td,
   TableContainer,
+  FormControl,
+  FormLabel,
+  Text,
+  Select,
 } from "@chakra-ui/react";
 
 import { FooterAdmin } from "../FooterAdmin";
@@ -56,15 +63,20 @@ type SalesReportMonth = SalesReport & { month: string };
 
 const CustomSalesReportsList: React.FC<any> = () => {
   const { user } = useAuth();
+  const role = user.role;
+  const history = useHistory();
+
   const [reports, setReports] = useState<SalesReportMonth[]>([]);
-  const [markets, setMarkets] = useState<(Market | string)[]>(["All"]);
+  const [markets, setMarkets] = useState<(Season | string)[]>(["All"]);
   const [monthValue, setMonthValue] = useState("All");
   const [marketValue, setMarketValue] = useState<string>("All");
   const [filteredReports, setFilteredReports] = useState<SalesReportMonth[]>(
     [],
   );
+  const [vendors, setVendors] = useState(["All"]);
+  const [vendorValue, setVendorValue] = useState("All");
 
-  const getSalesReports = async () => {
+  const getVendorSalesReports = async () => {
     const salesReportsQuery = {
       vendor: {
         equals:
@@ -88,47 +100,26 @@ const CustomSalesReportsList: React.FC<any> = () => {
     setReports(reports);
   };
 
-  const getSeasons = async () => {
-    const marketsQuery = {
-      vendor: {
-        equals:
-          user.vendor && typeof user.vendor === "object"
-            ? (user.vendor as Vendor).id
-            : user.vendor,
-      },
-      status: {
-        equals: "approved",
-      },
-    };
+  const viewReport = (report) => {
+    history.push({
+      pathname: `/admin/collections/sales-reports/${report.id}`,
+      state: report,
+    });
+  };
 
+  const getSalesReports = async () => {
     const stringQuery = qs.stringify(
       {
-        where: marketsQuery,
         depth: 1,
       },
       { addQueryPrefix: true },
     );
 
-    const response = await fetch(`/api/applications${stringQuery}`);
+    const response = await fetch(`/api/sales-reports${stringQuery}`);
     const json = await response.json();
-    const applications = json ? json.docs : [];
-    const seasons = [];
+    const reports = json ? json.docs : [];
 
-    applications.map((app) => seasons.push(app.season));
-
-    const dedup = new Map();
-
-    seasons.forEach((season) => {
-      dedup.set(season.id, season);
-    });
-
-    const deduped = Array.from(dedup.values());
-
-    const marketsList = [];
-
-    deduped.map((season) => marketsList.push(season.market));
-
-    setMarkets(["All", ...marketsList]);
+    setReports(reports);
   };
 
   const handleMonthChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
@@ -139,32 +130,56 @@ const CustomSalesReportsList: React.FC<any> = () => {
     setMarketValue(event.target.value);
   };
 
+  const handleVendorChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    setVendorValue(event.target.value);
+  };
+
   useEffect(() => {
-    getSalesReports();
-    getSeasons();
+    role == "vendor" ? getVendorSalesReports() : getSalesReports();
   }, []);
+
+  // useEffect(() => {
+  //   if (reports.length) {
+  //     const dedupSeasons = new Map();
+  //     reports.map((report) => dedupSeasons.set(report.season.id, report.season));
+  //     const seasons = Array.from(dedupSeasons.values())
+
+  //     const dedupVendors = new Map()
+  //     reports.map(report => dedupVendors.set(report.vendor.id, report.vendor))
+  //     const vendorsList = Array.from(dedupVendors.values())
+
+  //     setVendors([...vendors, ...vendorsList])
+  //     setMarkets([...markets, ...seasons])
+  //   }
+  // }, [reports])
 
   useEffect(() => {
     let filtered = reports;
 
     if (monthValue.toLowerCase() !== "all") {
-      // COMMENTING OUT FOR NOW TO BYPASS PRE-COMMIT TYPESCRIPT LINTING
       filtered = filtered.filter(
         (report: SalesReportMonth) => report.month == monthValue,
       );
     }
 
     if (marketValue.toLowerCase() !== "all") {
-      // COMMENTING OUT FOR NOW TO BYPASS PRE-COMMIT TYPESCRIPT LINTING
       filtered = filtered.filter((report: SalesReportMonth) =>
-        typeof report.market === "object"
-          ? report.market.id === marketValue
-          : report.market === marketValue,
+        typeof report.season === "object"
+          ? report.season.id === marketValue
+          : report.season === marketValue,
+      );
+    }
+
+    if (vendorValue.toLowerCase() !== "all") {
+      filtered = filtered.filter((report: SalesReportMonth) =>
+        typeof report.vendor === "object"
+          ? report.vendor.id === vendorValue
+          : report.vendor === vendorValue,
       );
     }
 
     setFilteredReports(filtered);
-  }, [monthValue, marketValue, reports]);
+  }, [monthValue, marketValue, vendorValue, reports]);
 
   return (
     <>
@@ -176,24 +191,17 @@ const CustomSalesReportsList: React.FC<any> = () => {
               Sales Reports
             </Heading>
           </Box>
-          {user.role == "vendor" ? (
-            <>
-              <Spacer />
-              <HStack flexGrow={1} spacing={4} justify={"flex-end"}>
-                <Button as="a" href="/#FIXME">
-                  Download sales data
-                </Button>
-                <Button as="a" href="/admin/collections/sales-reports/create">
-                  Create a sales report
-                </Button>
-              </HStack>
-            </>
-          ) : (
-            <>
-              <Spacer />
-              Coming soon.
-            </>
-          )}
+          <>
+            <Spacer />
+            <HStack flexGrow={1} spacing={4} justify={"flex-end"}>
+              <Button as="a" href="/#FIXME">
+                Download sales data
+              </Button>
+              <Button as="a" href="/admin/collections/sales-reports/create">
+                Create a sales report
+              </Button>
+            </HStack>
+          </>
         </Flex>
         <Divider color="gray.900" borderBottomWidth={2} opacity={1} />
         <Grid templateColumns="repeat(2, 5fr)" gap={4} marginTop={10}>
@@ -266,17 +274,56 @@ const CustomSalesReportsList: React.FC<any> = () => {
               </FormControl>
             </Box>
           </GridItem>
+          {role !== "vendor" ? (
+            <GridItem>
+              <Spacer />
+              <Box>
+                <FormControl sx={{ alignItems: "center", display: "flex" }}>
+                  <FormLabel>
+                    <Text
+                      fontFamily="Zilla Slab"
+                      lineHeight="1"
+                      fontWeight="semibold"
+                      fontSize="24px"
+                      letterSpacing="0.03em"
+                      textTransform="capitalize"
+                      color="gray.600"
+                    >
+                      Choose a vendor
+                    </Text>
+                  </FormLabel>
+                  <Select
+                    value={vendorValue}
+                    maxWidth={"360px"}
+                    onChange={handleVendorChange}
+                  >
+                    {/* {vendors.map((vendor) => {
+                      return (
+                        <option
+                          value={typeof vendor === "object" ? vendor.id : "All"}
+                          key={typeof vendor === "object" ? vendor.id : "All"}
+                        >
+                          {typeof vendor === "object" ? vendor.name : "All"}
+                        </option>
+                      );
+                    })} */}
+                  </Select>
+                </FormControl>
+              </Box>
+            </GridItem>
+          ) : null}
         </Grid>
         <TableContainer>
           <Table variant="simple">
             <Thead>
               <Tr>
                 <Th>Market</Th>
+                <Th>Vendor</Th>
                 <Th>Date</Th>
                 <Th>Penalties/Credits</Th>
                 <Th>Sales Total</Th>
                 <Th>Coupon Total</Th>
-                <Th>Review Status</Th>
+                {/* <Th>Review Status</Th> */}
                 <Th>Invoice Date</Th>
                 <Th></Th>
               </Tr>
@@ -285,28 +332,55 @@ const CustomSalesReportsList: React.FC<any> = () => {
               {filteredReports.length
                 ? filteredReports.map((report) => {
                     const {
-                      market,
+                      season,
                       day,
                       producePlus,
                       cashAndCredit,
                       wic,
                       sfmnp,
+                      ebt,
+                      snapBonus,
+                      fmnpBonus,
+                      cardCoupon,
+                      marketGoods,
+                      gWorld,
                     } = report;
                     return (
                       <Tr>
-                        <Td>{typeof market === "object" ? market.name : ""}</Td>
+                        <Td>{typeof season === "object" ? season.name : ""}</Td>
+                        {/* <Td>{report.vendor.name}</Td> */}
                         <Td>{new Date(day).toLocaleDateString("en-US")}</Td>
                         <Td>$0</Td>
                         <Td>{`$${
                           producePlus + cashAndCredit + wic + sfmnp
                         }`}</Td>
-                        <Td>${`${producePlus + wic + sfmnp}`}</Td>
                         <Td>
-                          <GreenCheckIcon />
+                          $
+                          {`${
+                            producePlus +
+                            wic +
+                            sfmnp +
+                            ebt +
+                            snapBonus +
+                            fmnpBonus +
+                            cardCoupon +
+                            marketGoods +
+                            gWorld
+                          }`}
                         </Td>
+                        {/* <Td>
+                          <GreenCheckIcon />
+                        </Td> */}
                         <Td>dd/mm/yyyy</Td>
                         <Td>
-                          <Button>View report</Button>
+                          <Button
+                            onClick={(e) => {
+                              e.preventDefault;
+                              viewReport(report);
+                            }}
+                          >
+                            View report
+                          </Button>
                         </Td>
                       </Tr>
                     );

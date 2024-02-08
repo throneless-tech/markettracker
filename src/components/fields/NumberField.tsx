@@ -23,6 +23,7 @@ type Props = {
   max?: number;
   path: string;
   required?: boolean;
+  isDisabled?: boolean;
   type?: string;
   validate?: Validate;
   admin?: {
@@ -38,6 +39,7 @@ export const NumberField: FC<Props> = ({
   max,
   path,
   required,
+  isDisabled,
   validate = number,
   admin: { condition, description, placeholder } = {},
 }) => {
@@ -66,11 +68,12 @@ export const NumberField: FC<Props> = ({
       {description ? <FormHelperText>{description}</FormHelperText> : ""}
       <ErrorTooltip message={errorMessage} showError={showError}>
         <NumberInput
+          isDisabled={isDisabled}
           placeholder={placeholder}
           colorScheme="green"
-          min={0}
-          max={5}
-          sx={{ width: 16 }}
+          min={min}
+          max={max}
+          // sx={{ width: 16 }}
           value={value}
           onChange={(newValue) => setValue(Number(newValue))}
         >

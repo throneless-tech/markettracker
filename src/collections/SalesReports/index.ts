@@ -26,17 +26,24 @@ export const SalesReports: CollectionConfig = {
       hasMany: false,
       required: true,
     },
+    // {
+    //   name: "market",
+    //   type: "relationship",
+    //   relationTo: "markets",
+    //   hasMany: false,
+    //   required: true,
+    // },
     {
-      name: "market",
+      name: "season",
       type: "relationship",
-      relationTo: "markets",
+      relationTo: "seasons",
       hasMany: false,
       required: true,
     },
     {
       name: "day",
       type: "date",
-      required: true,
+      // required: true,
       admin: {
         date: {
           pickerAppearance: "dayOnly",
@@ -48,6 +55,7 @@ export const SalesReports: CollectionConfig = {
       label: "Cash & Credit Sales",
       type: "number",
       required: true,
+      defaultValue: 0,
       admin: {
         description: "Enter the sum total of Cash and Credit sales",
         placeholder: "$0",
@@ -57,7 +65,8 @@ export const SalesReports: CollectionConfig = {
       name: "producePlus",
       label: "Produce Plus Sales",
       type: "number",
-      required: true,
+      // required: true,
+      defaultValue: 0,
       admin: {
         description:
           "Enter the sum total of Produce Plus sales (only applies in DC)",
@@ -68,7 +77,8 @@ export const SalesReports: CollectionConfig = {
       name: "sfmnp",
       label: "SFMNP Sales",
       type: "number",
-      required: true,
+      // required: true,
+      defaultValue: 0,
       admin: {
         description:
           "Enter the sum total of Seniors Farmers' Market Nutrition Program sales",
@@ -79,10 +89,77 @@ export const SalesReports: CollectionConfig = {
       name: "wic",
       label: "WIC Sales",
       type: "number",
-      required: true,
+      // required: true,
+      defaultValue: 0,
       admin: {
         description:
           "Enter the sum total of Special Supplemental Nutrition Program for Women, Infants, and Children (WIC) sales",
+        placeholder: "$0",
+      },
+    },
+    {
+      name: "ebt",
+      label: "EBT/SNAP",
+      type: "number",
+      // required: true,
+      defaultValue: 0,
+      admin: {
+        description: "Enter the sum total of EBT/SNAP sales",
+        placeholder: "$0",
+      },
+    },
+    {
+      name: "snapBonus",
+      label: "SNAP Bonus",
+      type: "number",
+      // required: true,
+      defaultValue: 0,
+      admin: {
+        description: "Enter the sum total of SNAP Bonus sales",
+        placeholder: "$0",
+      },
+    },
+    {
+      name: "fmnpBonus",
+      label: "FMNP Bonus",
+      type: "number",
+      // required: true,
+      defaultValue: 0,
+      admin: {
+        description: "Enter the sum total of FMNP Bonus sales",
+        placeholder: "$0",
+      },
+    },
+    {
+      name: "cardCoupon",
+      label: "Credit card coupon",
+      type: "number",
+      // required: true,
+      defaultValue: 0,
+      admin: {
+        description: "Enter the sum total of credit card coupon sales",
+        placeholder: "$0",
+      },
+    },
+    {
+      name: "marketGoods",
+      label: "Market Goods coupon",
+      type: "number",
+      // required: true,
+      defaultValue: 0,
+      admin: {
+        description: "Enter the sum total of Market Goods coupon sales",
+        placeholder: "$0",
+      },
+    },
+    {
+      name: "gWorld",
+      label: "GWorld coupon",
+      type: "number",
+      // required: true,
+      defaultValue: 0,
+      admin: {
+        description: "Enter the sum total of GWorld coupon sales",
         placeholder: "$0",
       },
     },
