@@ -109,12 +109,12 @@ export const ReviewsEdit: React.FC<any> = () => {
       total += thisScore;
       total = total / reviews.length;
     });
-    return total;
+
+    return isNaN(total) ? 0 : total;
   };
 
   const submitForm = () => {
     if (!id && shadowApp && shadowApp.id) {
-      // console.log("***Setting shadow app", shadowApp);
       setApplication(shadowApp);
       setReviewer(shadowReviewer);
     }
@@ -124,7 +124,6 @@ export const ReviewsEdit: React.FC<any> = () => {
   useEffect(() => {
     const trySubmit = async () => {
       await submit();
-      //history.push("/admin/collections/applications?limit=10");
       history.goBack();
     };
     if (doSubmit) {
@@ -137,6 +136,7 @@ export const ReviewsEdit: React.FC<any> = () => {
     const setShadow = async () => {
       let vendor = app.vendor;
       let season = app.season;
+      let reviews = app.reviews;
       if (typeof vendor === "string") {
         try {
           const response = await fetch(`/api/vendors/${vendor}`, {
@@ -163,7 +163,30 @@ export const ReviewsEdit: React.FC<any> = () => {
           console.error(error.message);
         }
       }
-      setShadowApp({ ...app, vendor: vendor, season: season });
+      let theseReviews: Array<object> = [];
+      if (reviews.length && typeof reviews[0] === "string") {
+        reviews.map(async (review) => {
+          try {
+            const response = await fetch(`/api/reviews/${reviews[0]}`, {
+              headers: {
+                "Content-Type": "application/json",
+              },
+            });
+            if (!response.ok) throw new Error(response.statusText);
+            const res = await response.json();
+            console.log(res);
+            theseReviews.push(res);
+          } catch (error) {
+            console.error(error.message);
+          }
+        });
+      }
+      setShadowApp({
+        ...app,
+        vendor: vendor,
+        season: season,
+        reviews: theseReviews,
+      });
     };
     if (history.location.state) {
       setShadow();
@@ -619,25 +642,35 @@ export const ReviewsEdit: React.FC<any> = () => {
                 <Stack>
                   {shadowApp.reviews.map((review) => (
                     <>
-                      <HStack marginTop={4} spacing={2}>
-                        <Text>
-                          Total score:{" "}
-                          {review.attendanceScore +
-                            review.demographicScore +
-                            review.productScore +
-                            review.saturationScore +
-                            review.setupScore +
-                            review.vendorScore}
+                      {typeof review === "object" ? (
+                        <>
+                          <HStack marginTop={4} spacing={2}>
+                            <Text>
+                              Total score:{" "}
+                              {review.attendanceScore +
+                                review.demographicScore +
+                                review.productScore +
+                                review.saturationScore +
+                                review.setupScore +
+                                review.vendorScore}
+                            </Text>
+                            <Text>by {review.reviewer.name}</Text>
+                            <Text></Text>
+                          </HStack>
+                          <HStack>
+                            <Text>
+                              <span style={{ fontWeight: "bold" }}>
+                                Notes:{" "}
+                              </span>
+                              <span>{review.notes}</span>
+                            </Text>
+                          </HStack>
+                        </>
+                      ) : (
+                        <Text marginTop={8}>
+                          None yet. Be the first to leave a review.
                         </Text>
-                        <Text>by {review.reviewer.name}</Text>
-                        <Text></Text>
-                      </HStack>
-                      <HStack>
-                        <Text>
-                          <span style={{ fontWeight: "bold" }}>Notes: </span>
-                          <span>{review.notes}</span>
-                        </Text>
-                      </HStack>
+                      )}
                     </>
                   ))}
                 </Stack>

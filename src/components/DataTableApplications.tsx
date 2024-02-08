@@ -311,9 +311,17 @@ export function DataTable<Data extends object>({
                 );
               })
             ) : isFetching ? (
-              <Text>Loading...</Text>
+              <Tr>
+                <Td sx={{ borderBottom: "none" }}>
+                  <Text>Loading...</Text>
+                </Td>
+              </Tr>
             ) : (
-              <Text>No results found.</Text>
+              <Tr>
+                <Td sx={{ borderBottom: "none" }}>
+                  <Text>No results found.</Text>
+                </Td>
+              </Tr>
             )}
             {paddingBottom > 0 && (
               <tr>

@@ -550,8 +550,6 @@ export const ApplicationsList: React.FC<any> = () => {
 
   // table filters=
 
-  console.log(season);
-
   useEffect(() => {}, [isAcceptingSearch, locationSearch]);
 
   if (applications) {
