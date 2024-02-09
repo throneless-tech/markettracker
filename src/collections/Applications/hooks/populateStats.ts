@@ -22,15 +22,18 @@ export const afterReadStats: CollectionAfterReadHook = async ({
     collection: "applications",
     depth: 0,
     where: {
-      and: [
-        {
-          vendor: { equals: vendor.id },
-        },
-        {
-          "season.marketDates.startDate": { greater_than: new Date() },
-        },
-      ],
+      vendor: { equals: vendor.id },
     },
+    // where: {
+    //   and: [
+    //     {
+    //       vendor: { equals: vendor.id },
+    //     },
+    //     {
+    //       "season.marketDates.startDate": { greater_than: new Date() },
+    //     },
+    //   ],
+    // },
     context: { skipTrigger: true },
   });
 
