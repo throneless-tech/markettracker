@@ -136,7 +136,7 @@ export const ReviewsEdit: React.FC<any> = () => {
     const setShadow = async () => {
       let vendor = app.vendor;
       let season = app.season;
-      let reviews = app.reviews;
+      let reviews = app.reviews ? app.reviews : [];
       if (typeof vendor === "string") {
         try {
           const response = await fetch(`/api/vendors/${vendor}`, {
@@ -163,6 +163,7 @@ export const ReviewsEdit: React.FC<any> = () => {
           console.error(error.message);
         }
       }
+
       let theseReviews: Array<object> = [];
       if (reviews.length && typeof reviews[0] === "string") {
         reviews.map(async (review) => {
