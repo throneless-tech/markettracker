@@ -106,6 +106,7 @@ export const ApplicationsList: React.FC<any> = () => {
     };
 
     const getDocuments = async () => {
+      console.log("SEASON?", season);
       const appsStringQuery = qs.stringify(
         {
           where: appsQuery,
@@ -326,6 +327,8 @@ export const ApplicationsList: React.FC<any> = () => {
       seasonId = params.get("season");
     }
 
+    console.log("season?", season);
+
     if (seasonId && !season) {
       getSeason(seasonId);
     }
@@ -435,7 +438,7 @@ export const ApplicationsList: React.FC<any> = () => {
         queries.push({ or: [{ status: { in: status } }] });
         setIsApplicationStatus(status.split(","));
       }
-      let sort: string;
+      let sort = "-createdAt";
       if (sorting?.length) {
         sort = `${sorting[0].desc ? "-" : ""}${sorting[0].id}`;
       }
