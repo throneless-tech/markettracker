@@ -327,8 +327,6 @@ export const ApplicationsList: React.FC<any> = () => {
       seasonId = params.get("season");
     }
 
-    console.log("season?", season);
-
     if (seasonId && !season) {
       getSeason(seasonId);
     }
@@ -629,6 +627,7 @@ export const ApplicationsList: React.FC<any> = () => {
               // flexGrow={1}
               p={4}
               marginBottom={{ base: 4, lg: 0 }}
+              marginTop={{ base: 0, lg: 4 }}
               maxW={260}
               minWidth={{ base: "100%", lg: 230 }}
               width={"100%"}
@@ -656,45 +655,49 @@ export const ApplicationsList: React.FC<any> = () => {
                     />
                   </InputGroup>
                 </FormControl>
-                <FormControl marginTop={4}>
-                  <FormLabel
-                    fontSize="sm"
-                    sx={{ fontWeight: 900, textTransform: "uppercase" }}
-                  >
-                    Show
-                  </FormLabel>
-                  <RadioGroup
-                    colorScheme="green"
-                    onChange={(val) => setIsAcceptingSearch(val)}
-                    value={isAcceptingSearch}
-                  >
-                    <Stack direction="column">
-                      <Radio value="all">All markets</Radio>
-                      <Radio value="open">
-                        Only markets accepting applications
-                      </Radio>
-                    </Stack>
-                  </RadioGroup>
-                </FormControl>
-                <FormControl marginTop={4}>
-                  <FormLabel
-                    fontSize="sm"
-                    sx={{ fontWeight: 900, textTransform: "uppercase" }}
-                  >
-                    Market location
-                  </FormLabel>
-                  <CheckboxGroup
-                    colorScheme="green"
-                    onChange={(val) => setLocationSearch(val)}
-                    value={locationSearch}
-                  >
-                    <Stack spacing={2} direction="column">
-                      <Checkbox value="DC">DC</Checkbox>
-                      <Checkbox value="MD">Maryland</Checkbox>
-                      <Checkbox value="VA">Virginia</Checkbox>
-                    </Stack>
-                  </CheckboxGroup>
-                </FormControl>
+                {!season ? (
+                  <>
+                    <FormControl marginTop={4}>
+                      <FormLabel
+                        fontSize="sm"
+                        sx={{ fontWeight: 900, textTransform: "uppercase" }}
+                      >
+                        Show
+                      </FormLabel>
+                      <RadioGroup
+                        colorScheme="green"
+                        onChange={(val) => setIsAcceptingSearch(val)}
+                        value={isAcceptingSearch}
+                      >
+                        <Stack direction="column">
+                          <Radio value="all">All markets</Radio>
+                          <Radio value="open">
+                            Only markets accepting applications
+                          </Radio>
+                        </Stack>
+                      </RadioGroup>
+                    </FormControl>
+                    <FormControl marginTop={4}>
+                      <FormLabel
+                        fontSize="sm"
+                        sx={{ fontWeight: 900, textTransform: "uppercase" }}
+                      >
+                        Market location
+                      </FormLabel>
+                      <CheckboxGroup
+                        colorScheme="green"
+                        onChange={(val) => setLocationSearch(val)}
+                        value={locationSearch}
+                      >
+                        <Stack spacing={2} direction="column">
+                          <Checkbox value="DC">DC</Checkbox>
+                          <Checkbox value="MD">Maryland</Checkbox>
+                          <Checkbox value="VA">Virginia</Checkbox>
+                        </Stack>
+                      </CheckboxGroup>
+                    </FormControl>
+                  </>
+                ) : null}
                 <FormControl marginTop={4}>
                   <FormLabel
                     fontSize="sm"
