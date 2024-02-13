@@ -58,6 +58,7 @@ import stats1 from "../../assets/images/FF-sample-stats-1.jpg";
 import stats2 from "../../assets/images/FF-sample-stats-2.jpg";
 import stats3 from "../../assets/images/FF-sample-stats-3.jpg";
 import stats4 from "../../assets/images/FF-sample-stats-4.jpg";
+import { application } from "express";
 
 const dayNames = [
   "sunday",
@@ -96,13 +97,6 @@ export const ApplicationsEdit: React.FC<any> = (props) => {
   const [seasons, setSeasons] = useState([]);
   const [seasonIsDisabled, setSeasonIsDisabled] = useState(true);
 
-  const handleContactNameChange = (event) => setContactName(event.target.value);
-  const handleContactEmailChange = (event) =>
-    setContactEmail(event.target.value);
-  const handleContactPhoneChange = (event) =>
-    setContactPhone(event.target.value);
-  const handleContactTypeChange = (newValue) => setContactType(newValue);
-
   const { value: isCSA, setValue: setIsCSA } = useField<boolean>({
     path: "isCSA",
   });
@@ -126,27 +120,7 @@ export const ApplicationsEdit: React.FC<any> = (props) => {
 
   const [shadowSeason, setShadowSeason] = useState<Season>();
 
-  const onCloseThankYou = () => {
-    history.push("/admin/collections/seasons");
-  };
-
-  const onSave = () => {
-    const contact = {
-      name: contactName,
-      email: contactEmail,
-      phone: contactPhone,
-      type: contactType,
-    };
-
-    let allContacts = [];
-
-    contacts
-      ? (allContacts = [contact, ...contacts])
-      : (allContacts = [contact]);
-
-    setContacts(allContacts);
-    onClose();
-  };
+  console.log(dates);
 
   const submitForm = () => {
     if (!id && shadowSeason && shadowSeason.id) {
@@ -399,8 +373,11 @@ export const ApplicationsEdit: React.FC<any> = (props) => {
         const response = await fetch(`/api/seasons/${season}`);
         const seasonData = await response.json();
         setThisSeason(seasonData);
-        setStartDate(new Date(seasonData.marketDates.startDate));
-        setEndDate(new Date(seasonData.marketDates.EndDate));
+        const firstDate = new Date(seasonData.marketDates.startDate);
+        const lastDate = new Date(seasonData.marketDates.endDate);
+        setStartDate(firstDate);
+        setEndDate(lastDate);
+
         let calLength = monthDiff(firstDate, lastDate);
         setNumMonths(calLength);
       };
@@ -723,7 +700,7 @@ export const ApplicationsEdit: React.FC<any> = (props) => {
                 <Text>Selected</Text>
               </HStack>
             </Wrap>
-            <Wrap>
+            <HStack className="datepicker-wrap">
               <DatePicker
                 inline
                 dayClassName={(date) => {
@@ -746,7 +723,7 @@ export const ApplicationsEdit: React.FC<any> = (props) => {
                 maxDate={endDate}
                 monthsShown={numMonths + 1}
               />
-            </Wrap>
+            </HStack>
             <Text marginTop={4}>
               How would you characterize your market attendance?
             </Text>
