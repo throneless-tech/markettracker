@@ -1,6 +1,9 @@
 import qs from "qs";
 import useSWR from "swr";
+import useSWRMutation from "swr/mutation";
 import { toast } from "react-toastify";
+
+// TODO: Is there a way to use useSWRMutation for DELETE?
 
 interface FindParams {
   collection: string;
@@ -9,13 +12,43 @@ interface FindParams {
   limit?: number;
   page?: number;
   depth?: number;
+  shouldFetch?: boolean;
 }
 
-type FindByIdParams = FindParams & { id: string };
+interface FindByIdParams {
+  collection: string;
+  id: string;
+  shouldFetch?: boolean;
+}
 
-const fetcher = async (url) => {
-  const res = await fetch(url);
+interface CreateParams {
+  collection: string;
+}
+
+interface UpdateParams {
+  collection: string;
+  where: any;
+  body?: any;
+}
+
+interface UpdateByIdParams {
+  collection: string;
+  id: string;
+  body?: any;
+}
+
+// interface DeleteParams {
+//   collection: string;
+//   where: any;
+// }
+
+// interface DeleteByIdParams {
+//   collection: string;
+//   id: string;
+// }
+const fetcher = async (url: string, options: RequestInit) => {
   try {
+    const res = await fetch(url, options);
     let data: any;
     try {
       data = await res.json();
@@ -31,28 +64,35 @@ const fetcher = async (url) => {
     }
     return data;
   } catch (err) {
-    console.error("getData error:", err.message);
+    console.error("API error:", err.message);
     if (err.stack) {
-      console.debug("getData stack:", err.stack);
+      console.debug("API stack:", err.stack);
     }
     toast.error(err.message);
+    throw err;
   }
-
-  // If the status code is not in the range 200-299,
-  // we still try to parse and throw it.
-  // if (!res.ok) {
-  //   const error = new Error("An error occurred while fetching the data.");
-  //   // Attach extra info to the error object.
-  //   error.info = await res.json();
-  //   error.status = res.status;
-  //   throw error;
-  // }
-
-  // return res.json();
 };
 
-export const api = {
-  find: ({ collection, sort, where, limit, page, depth }: FindParams) => {
+const GET = async (url: string) => fetcher(url, { method: "GET" });
+
+const POST = async (url: string, { arg }: { arg: any }) =>
+  fetcher(url, { method: "POST", body: JSON.stringify(arg) });
+
+const PATCH = async (url: string, { arg }: { arg: any }) =>
+  fetcher(url, { method: "PATCH", body: JSON.stringify(arg) });
+
+// const DELETE = async (url: string) => fetcher(url, { method: "DELETE" });
+
+const API = {
+  find: ({
+    collection,
+    sort,
+    where,
+    limit,
+    page,
+    depth,
+    shouldFetch = true,
+  }: FindParams) => {
     const stringifiedQuery = qs.stringify(
       {
         sort,
@@ -64,8 +104,11 @@ export const api = {
       { addQueryPrefix: true },
     );
     const { data, error, isLoading } = useSWR(
-      `/api/${collection}${stringifiedQuery ? stringifiedQuery : ""}`,
-      fetcher,
+      () =>
+        collection && shouldFetch
+          ? `/api/${collection}${stringifiedQuery ? stringifiedQuery : ""}`
+          : null,
+      GET,
     );
 
     return {
@@ -74,18 +117,72 @@ export const api = {
       isLoading,
     };
   },
-  findById: ({
-    collection,
-    id,
-    sort,
-    where,
-    limit,
-    page,
-    depth,
-  }: FindByIdParams) => {},
-  create: ({ collection, data }) => {},
-  update: ({ collection, where }) => {},
-  updateById: ({ collection, id }) => {},
-  delete: ({ collection, where }) => {},
-  deleteById: ({ collection, id }) => {},
+  findById: ({ collection, id, shouldFetch = true }: FindByIdParams) => {
+    const { data, error, isLoading } = useSWR(
+      () =>
+        collection && id && shouldFetch ? `/api/${collection}/${id}` : null,
+      GET,
+    );
+
+    return {
+      data,
+      error,
+      isLoading,
+    };
+  },
+  create: ({ collection }: CreateParams) => {
+    const { data, error, trigger, reset, isMutating } = useSWRMutation(
+      () => (collection ? `/api/${collection}` : null),
+      POST,
+    );
+
+    return {
+      data,
+      error,
+      trigger,
+      reset,
+      isMutating,
+    };
+  },
+  update: ({ collection, where }: UpdateParams) => {
+    const stringifiedQuery = qs.stringify(
+      {
+        where,
+      },
+      { addQueryPrefix: true },
+    );
+    const { data, error, trigger, reset, isMutating } = useSWRMutation(
+      () =>
+        collection
+          ? `/api/${collection}${stringifiedQuery ? stringifiedQuery : ""}`
+          : null,
+      PATCH,
+    );
+
+    return {
+      data,
+      error,
+      trigger,
+      reset,
+      isMutating,
+    };
+  },
+  updateById: ({ collection, id }: UpdateByIdParams) => {
+    const { data, error, trigger, reset, isMutating } = useSWRMutation(
+      () => (collection && id ? `/api/${collection}/${id}` : null),
+      PATCH,
+    );
+
+    return {
+      data,
+      error,
+      trigger,
+      reset,
+      isMutating,
+    };
+  },
+  // delete: ({ collection, where }: DeleteParams) => {},
+  // deleteById: ({ collection, id }: DeleteByIdParams) => {},
 };
+
+export default API;
