@@ -10,7 +10,7 @@ import { afterReadStats } from "./hooks/populateStats";
 import { ApplicationsEdit } from "../../components/Applications/ApplicationsEdit";
 import { ApplicationsList } from "../../components/Applications/ApplicationsList";
 import { withFormContext } from "../../utils/withFormContext";
-import { beforeValidateReviews } from "./hooks/populateReviews";
+//import { beforeValidateReviews } from "./hooks/populateReviews";
 
 export const Applications: CollectionConfig = {
   slug: "applications",
@@ -186,7 +186,7 @@ export const Applications: CollectionConfig = {
       beforeValidateMarket,
       beforeValidateVendor,
       beforeValidateProducts,
-      beforeValidateReviews,
+      //beforeValidateReviews,
     ],
   },
 };

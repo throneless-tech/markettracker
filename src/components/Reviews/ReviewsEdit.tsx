@@ -6,7 +6,7 @@ import qs from "qs";
 
 // Payload imports
 import { useField, useForm } from "payload/components/forms";
-import type { Application, User } from "payload/generated-types";
+import type { Application, Review, User } from "payload/generated-types";
 import { useAuth, useDocumentInfo } from "payload/components/utilities";
 
 // Chakra imports
@@ -31,7 +31,6 @@ import {
   Textarea,
   Wrap,
 } from "@chakra-ui/react";
-import { Reviews } from "../../collections/Reviews";
 
 // components
 
@@ -164,7 +163,7 @@ export const ReviewsEdit: React.FC<any> = () => {
         }
       }
 
-      let theseReviews: Array<object> = [];
+      let theseReviews: Array<Review> = [];
       if (reviews.length && typeof reviews[0] === "string") {
         reviews.map(async (review) => {
           try {
@@ -181,6 +180,8 @@ export const ReviewsEdit: React.FC<any> = () => {
             console.error(error.message);
           }
         });
+      } else {
+        theseReviews = reviews as Review[];
       }
       setShadowApp({
         ...app,

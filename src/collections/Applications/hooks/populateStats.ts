@@ -35,9 +35,8 @@ export const afterReadStats: CollectionAfterReadHook = async ({
   });
 
   let reviewScore = 0;
+  let reviews = [];
   if (doc.reviews?.length) {
-    let reviews = [];
-
     if (typeof doc.reviews[0] === "string") {
       const data = await payload.find({
         collection: "reviews",
@@ -106,6 +105,7 @@ export const afterReadStats: CollectionAfterReadHook = async ({
     vendorDemographics: vendor.demographics,
     gapsMet: gaps,
     reviewScore,
+    reviews,
     seasonName: season && season.name ? season.name : "",
     numberOfApplications: applications.docs?.length
       ? applications.docs.length
