@@ -27,7 +27,7 @@ import StarIcon from "../../assets/icons/star.js";
 export const SeasonCard: React.FC<any> = forwardRef<any, any>((props, ref) => {
   const { user } = useAuth();
   const history = useHistory();
-  const { season, isApplication, status } = props;
+  const { appId, isApplication, season, status } = props;
 
   const viewSeason = (season) => {
     history.push({
@@ -36,11 +36,17 @@ export const SeasonCard: React.FC<any> = forwardRef<any, any>((props, ref) => {
     });
   };
 
-  const applyToSeason = (season) => {
-    history.push({
-      pathname: `/admin/collections/applications/create`,
-      state: season,
-    });
+  const applyToSeason = (season, status) => {
+    if (status) {
+      history.push({
+        pathname: `/admin/collections/applications/${appId}`,
+      });
+    } else {
+      history.push({
+        pathname: `/admin/collections/applications/create`,
+        state: season,
+      });
+    }
   };
 
   const viewSeasonApplications = (season) => {
@@ -237,15 +243,19 @@ export const SeasonCard: React.FC<any> = forwardRef<any, any>((props, ref) => {
         {user.role == "vendor" ? (
           <Center marginBottom={2}>
             <Button
-              isDisabled={isApplication}
-              rightIcon={isApplication ? null : <ArrowForwardIcon />}
+              isDisabled={status && status !== "pending"}
+              rightIcon={status !== "pending" ? null : <ArrowForwardIcon />}
               variant={"solid"}
               onClick={(e) => {
                 e.preventDefault;
-                applyToSeason(season);
+                applyToSeason(season, status);
               }}
             >
-              {isApplication ? status : "Apply"}
+              {status
+                ? status == "pending"
+                  ? "Edit application"
+                  : status
+                : "Apply"}
             </Button>
           </Center>
         ) : (

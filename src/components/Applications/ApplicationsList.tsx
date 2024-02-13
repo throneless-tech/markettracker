@@ -106,7 +106,6 @@ export const ApplicationsList: React.FC<any> = () => {
     };
 
     const getDocuments = async () => {
-      console.log("SEASON?", season);
       const appsStringQuery = qs.stringify(
         {
           where: appsQuery,
@@ -129,7 +128,6 @@ export const ApplicationsList: React.FC<any> = () => {
         }`,
       );
       let theseApplications = await appsResponse.json();
-      console.log(theseApplications);
 
       vendorApps = theseApplications.docs;
 

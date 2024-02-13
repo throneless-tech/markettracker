@@ -92,6 +92,7 @@ export const ApplicationsEdit: React.FC<any> = (props) => {
   const [market, setMarket] = useState(null);
   const [vendors, setVendors] = useState([]);
   const [markets, setMarkets] = useState([]);
+  const [thisSeason, setThisSeason] = useState(null);
   const [seasons, setSeasons] = useState([]);
   const [seasonIsDisabled, setSeasonIsDisabled] = useState(true);
 
@@ -392,12 +393,491 @@ export const ApplicationsEdit: React.FC<any> = (props) => {
     getVendors();
   }, []);
 
-  useEffect(() => {}, [market, season, vendor]);
+  useEffect(() => {
+    if (season) {
+      const getSeason = async () => {
+        const response = await fetch(`/api/seasons/${season}`);
+        const seasonData = await response.json();
+        setThisSeason(seasonData);
+        setStartDate(new Date(seasonData.marketDates.startDate));
+        setEndDate(new Date(seasonData.marketDates.EndDate));
+        let calLength = monthDiff(firstDate, lastDate);
+        setNumMonths(calLength);
+      };
 
-  useEffect(() => {}, [markets]);
+      getSeason();
+    }
+  }, [season]);
 
+  useEffect(() => {}, [
+    market,
+    season,
+    endDate,
+    startDate,
+    markets,
+    numMonths,
+    vendor,
+  ]);
+
+  if (id) {
+    if (thisSeason) {
+      return (
+        <Box>
+          <Container maxW="container.xl">
+            <Heading as="h2" sx={{ textTransform: "uppercase" }} marginTop={4}>
+              Market application
+            </Heading>
+            <Box>
+              <Box background="green.600" padding={6}>
+                <Flex borderBottom={"2px solid #F6F5F4"} paddingBottom={6}>
+                  <HStack>
+                    <Text
+                      as={"span"}
+                      color={"gray.50"}
+                      fontFamily={"Zilla Slab"}
+                      fontSize="3xl"
+                      fontWeight={700}
+                      textTransform={"uppercase"}
+                    >
+                      {thisSeason.market.name}
+                    </Text>
+                  </HStack>
+                  {thisSeason.isAccepting ? (
+                    <>
+                      <Spacer />
+                      <HStack>
+                        <Text
+                          color={"gray.50"}
+                          fontSize="sm"
+                          fontWeight={700}
+                          textAlign={"right"}
+                          textStyle="bodyMain"
+                          textTransform={"uppercase"}
+                          width={28}
+                        >
+                          Accepting applications
+                        </Text>
+                        <StarIcon height={8} width={8} />
+                      </HStack>
+                    </>
+                  ) : null}
+                </Flex>
+                <Flex marginTop={4}>
+                  <HStack>
+                    {thisSeason.marketTime &&
+                    thisSeason.market &&
+                    typeof thisSeason.market === "object" ? (
+                      <Text
+                        as={"span"}
+                        color={"gray.50"}
+                        fontSize="2xl"
+                        fontWeight={700}
+                        textStyle="bodyMain"
+                        sx={{ textTransform: "capitalize" }}
+                      >
+                        {thisSeason.market.days.map((day, index) => {
+                          if (
+                            index ==
+                            (thisSeason.market as Market).days.length - 1
+                          ) {
+                            return day;
+                          } else {
+                            return `${day}, `;
+                          }
+                        })}{" "}
+                        {formatTime(thisSeason.marketTime.startTime)}-
+                        {formatTime(thisSeason.marketTime.endTime)}
+                      </Text>
+                    ) : null}
+                    <Text
+                      textStyle="bodyMain"
+                      as={"span"}
+                      color={"gray.50"}
+                      fontSize="2xl"
+                    >
+                      {thisSeason.market.address.street}
+                      {", "}
+                      {thisSeason.market.address.city}
+                      {", "}
+                      {thisSeason.market.address.state}
+                      {", "}
+                      {thisSeason.market.address.zipcode}
+                    </Text>
+                  </HStack>
+                  {thisSeason.market.contact ? (
+                    <>
+                      <Spacer />
+                      <HStack>
+                        <Text
+                          as={"span"}
+                          color={"gray.50"}
+                          fontSize="2xl"
+                          fontWeight={700}
+                          textStyle="bodyMain"
+                        >
+                          Operator:
+                        </Text>
+                        <Text
+                          textStyle="bodyMain"
+                          as={"span"}
+                          color={"gray.50"}
+                          fontSize="2xl"
+                        >
+                          {(thisSeason.market.contact as Contact).name}
+                        </Text>
+                        <Text
+                          textStyle="bodyMain"
+                          as={"span"}
+                          color={"gray.50"}
+                          fontSize="2xl"
+                        >
+                          {(thisSeason.market.contact as Contact).phone}
+                        </Text>
+                      </HStack>
+                    </>
+                  ) : null}
+                </Flex>
+              </Box>
+              <Box background={"#90B132"} borderBottomRadius="8px" padding={4}>
+                <Text marginTop={4} fontSize={"xl"}>
+                  {thisSeason.market.description
+                    ? thisSeason.market.description
+                    : ""}
+                </Text>
+                <HStack sx={{ flexWrap: "wrap" }}>
+                  <Text
+                    fontSize={"sm"}
+                    textTransform={"uppercase"}
+                    fontWeight={700}
+                    textStyle="bodyMain"
+                  >
+                    Market needs:
+                  </Text>
+                  {thisSeason.productGaps && thisSeason.productGaps.length ? (
+                    thisSeason.productGaps.map((product) => (
+                      <Tag bg={"gray.50"} fontWeight={700}>
+                        {product.product}
+                      </Tag>
+                    ))
+                  ) : (
+                    <Tag bg={"gray.50"} fontWeight={700}>
+                      TBA
+                    </Tag>
+                  )}
+                </HStack>
+              </Box>
+            </Box>
+          </Container>
+          <Container marginTop={8} maxW={"container.lg"}>
+            <HStack>
+              <Text
+                color={"gray.700"}
+                fontSize={"2xl"}
+                fontWeight={700}
+                textTransform={"uppercase"}
+                width={56}
+              >
+                Market size
+              </Text>
+              <Text
+                color={"gray.600"}
+                fontFamily={"Zilla Slab"}
+                fontSize={"2xl"}
+                fontWeight={700}
+                textTransform={"uppercase"}
+              >
+                {thisSeason.market.size}
+              </Text>
+              <Divider sx={{ borderColor: "gray.600", borderBottomWidth: 2 }} />
+            </HStack>
+            <Text color={"gray.600"} marginTop={4} fontSize={"md"}>
+              {thisSeason.market.size == "flagship"
+                ? "Daily sales for the entire market are upwards of $150,000. This market can support upwards of 20 produce vendors, 14 prepared food vendors, 9 baked goods vendors, 6 alcohol vendors, 5 dairy vendors, and 2 to 4 vendors from each additional category."
+                : thisSeason.market.size == "large"
+                ? "Daily sales for large markets range from $20,000 to $70,000. They can support average numbers of 8 produce vendors, 8 prepared food vendors, 5 baked goods vendors, 3 alcohol vendors, and 1 to 2 vendors from each additional category."
+                : thisSeason.market.size == "medium"
+                ? "Daily sales for medium markets range from $10,000 to $19,000. They can support average numbers of 5 prepared food vendors, 4 produce vendors, and 1 to 2 vendors from each additional category."
+                : thisSeason.market.size == "small"
+                ? "Daily sales for small markets range from $1,500 to $9,000. They can support average numbers of 4 produce vendors, 4 prepared food vendors, and 1 to 2 vendors from each additional category with some product category gaps."
+                : "These markets are limited to one produce vendor for retail and wholesale sales."}
+            </Text>
+            <HStack marginTop={4}>
+              <Text as={"span"} color={"blue.500"} fontWeight={700}>
+                0
+              </Text>
+              <Text as={"span"} color={"blue.500"}>
+                visitors per market
+              </Text>
+              <Text as={"span"} color={"gray.400"}>
+                (avg)
+              </Text>
+            </HStack>
+            <HStack marginTop={4}>
+              <Text
+                color={"gray.700"}
+                fontSize={"2xl"}
+                fontWeight={700}
+                textTransform={"uppercase"}
+                width={"720px"}
+              >
+                Vendors scheduled for this market
+              </Text>
+              <Divider sx={{ borderColor: "gray.600", borderBottomWidth: 2 }} />
+            </HStack>
+            <HStack marginTop={2}>
+              {/* <Tag bg={"gray.50"}>Vendor 1</Tag> */}
+            </HStack>
+            <HStack marginTop={4}>
+              <Text
+                color={"gray.700"}
+                fontSize={"2xl"}
+                fontWeight={700}
+                textTransform={"uppercase"}
+                width={"220px"}
+              >
+                Stats & info
+              </Text>
+              <Divider sx={{ borderColor: "gray.600", borderBottomWidth: 2 }} />
+            </HStack>
+            <Image
+              src={stats1}
+              alt="A sample of a pie chart showing product make up, to be filled in with an interactive graph in the future."
+            />
+            <Image
+              src={stats2}
+              alt="A sample of a bar graph showing monthly sales compared over the years, to be filled in with an interactive graph in the future."
+            />
+            <Image
+              src={stats3}
+              alt="A sample of a bar graph showing weekly sales by product type, to be filled in with an interactive graph in the future."
+            />
+            <Image
+              src={stats4}
+              alt="A sample of a bar graph showing monthly sales by vendor, to be filled in with an interactive graph in the future."
+            />
+            <Box background="green.600" padding={2} margin={4}>
+              <Text color="gray.50">
+                Fill out the information below to apply to{" "}
+                {thisSeason.market.name} ({thisSeason.market.days[0]})
+              </Text>
+            </Box>
+            <HStack marginTop={4}>
+              <Text
+                color={"gray.700"}
+                fontSize={"2xl"}
+                fontWeight={700}
+                textTransform={"uppercase"}
+                width={"260px"}
+              >
+                Market dates
+              </Text>
+              <Divider sx={{ borderColor: "gray.600", borderBottomWidth: 2 }} />
+            </HStack>
+            <Text color={"gray.600"} marginTop={4} fontSize={"md"}>
+              Select all the dates you would like to apply to{" "}
+              {thisSeason.market.name} this season
+            </Text>
+            <Wrap spacing={8} marginY={8}>
+              <Checkbox
+                colorScheme={"green"}
+                onChange={updateSelectAll}
+                isChecked={selectAllDates}
+              >
+                Select all available
+              </Checkbox>
+              <Text fontSize="sm" fontWeight={700} textTransform="uppercase">
+                Legend:
+              </Text>
+              <HStack>
+                <Text color={"gray.600"} fontSize={"xl"}>
+                  1
+                </Text>
+                <Text>Not available</Text>
+              </HStack>
+              <HStack>
+                <Text
+                  borderColor={"green.600"}
+                  borderRadius={8}
+                  borderStyle={"solid"}
+                  borderWidth={"1.5px"}
+                  fontSize={"xl"}
+                  paddingX={3}
+                >
+                  1
+                </Text>
+                <Text>Available</Text>
+              </HStack>
+              <HStack>
+                <Text
+                  background={"green.600"}
+                  borderColor={"green.400"}
+                  borderRadius={8}
+                  borderStyle={"solid"}
+                  borderWidth={"1.5px"}
+                  color={"gray.50"}
+                  fontSize={"xl"}
+                  paddingX={3}
+                >
+                  1
+                </Text>
+                <Text>Selected</Text>
+              </HStack>
+            </Wrap>
+            <Wrap>
+              <DatePicker
+                inline
+                dayClassName={(date) => {
+                  let dateFound = null;
+                  if (marketDates) {
+                    dateFound = marketDates.find((item) => {
+                      return item.date === date.toISOString();
+                    });
+                  }
+                  if (dateFound) {
+                    return "vendor-select";
+                  } else {
+                    return "";
+                  }
+                }}
+                selected={null}
+                onChange={(date) => updateSelectedDates(date)}
+                includeDates={marketDates}
+                minDate={startDate}
+                maxDate={endDate}
+                monthsShown={numMonths + 1}
+              />
+            </Wrap>
+            <Text marginTop={4}>
+              How would you characterize your market attendance?
+            </Text>
+            <RadioGroup
+              marginTop={2}
+              onChange={(newValue) => setSchedule(newValue)}
+              value={schedule}
+            >
+              <HStack spacing={4}>
+                <Radio value="fulltime">Full-time</Radio>
+                <Radio value="parttime">Part-time</Radio>
+                <Radio value="popup">Pop-up</Radio>
+              </HStack>
+            </RadioGroup>
+            <HStack marginTop={4}>
+              <Text
+                color={"gray.700"}
+                fontSize={"2xl"}
+                fontWeight={700}
+                textTransform={"uppercase"}
+                width={"180px"}
+              >
+                Products
+              </Text>
+              <Divider sx={{ borderColor: "gray.600", borderBottomWidth: 2 }} />
+            </HStack>
+            <Text color={"gray.600"} marginTop={4} fontSize={"md"}>
+              Select the products you would like to sell at{" "}
+              {thisSeason.market.name} this season
+            </Text>
+            <ProductsField
+              path="products"
+              products={(user.vendor as Vendor).products as Product[]}
+            />
+            <Text marginTop={4}>
+              Do you intend to sell and coordinate CSA share pickups at the
+              market?
+            </Text>
+            <RadioGroup
+              marginTop={2}
+              onChange={(newValue) => setIsCSA(newValue === "true")}
+              value={typeof isCSA === "boolean" ? isCSA.toString() : undefined}
+            >
+              <Stack spacing={2}>
+                <Radio value="true">Yes</Radio>
+                <Radio value="false">No</Radio>
+              </Stack>
+            </RadioGroup>
+            <HStack marginTop={4}>
+              <Text
+                color={"gray.700"}
+                fontSize={"2xl"}
+                fontWeight={700}
+                textTransform={"uppercase"}
+                width={"120px"}
+              >
+                Staff
+              </Text>
+              <Divider sx={{ borderColor: "gray.600", borderBottomWidth: 2 }} />
+            </HStack>
+            <Text color={"gray.600"} marginTop={4} fontSize={"md"}>
+              Select anyone who will be staffing your booth at{" "}
+              {thisSeason.market.name} this season. You can add staff via your
+              profile page.
+            </Text>
+            <CheckboxGroup
+              onChange={(newValue) => setContacts(newValue)}
+              value={contacts}
+            >
+              {available && available.length && (
+                <HStack spacing={4}>
+                  {available.map((contact) => (
+                    <Checkbox key={contact.id} value={contact.id}>
+                      {contact.name}
+                      <Tag bg={"gray.50"} fontWeight={700}>
+                        {contact.type}
+                      </Tag>
+                    </Checkbox>
+                  ))}
+                </HStack>
+              )}
+            </CheckboxGroup>
+            {/*
+            <Button
+              onClick={onOpen}
+              marginTop={4}
+              rightIcon={<ArrowForwardIcon />}
+            >
+              Add a contact
+            </Button>
+            */}
+            <ContactsModal
+              isOpen={isOpen}
+              onSave={onSaveContact}
+              onClose={onClose}
+            />
+            <Divider
+              sx={{ borderColor: "gray.600", borderBottomWidth: 2, marginY: 8 }}
+            />
+            <Text fontSize={"xl"} textAlign={"center"}>
+              Applications will be reviewed until all spaces have been filled.
+              You will be notified by email once your application has been
+              reviewed.
+            </Text>
+            <Center marginY={8}>
+              <HStack spacing={4}>
+                <Button
+                  colorScheme="teal"
+                  variant={"solid"}
+                  onClick={submitForm}
+                >
+                  Submit application now
+                </Button>
+                <Button variant={"outline"}>Cancel</Button>
+              </HStack>
+            </Center>
+          </Container>
+        </Box>
+      );
+    } else {
+      return (
+        <Container marginTop={16}>
+          <AbsoluteCenter>
+            <Heading>Loading...</Heading>
+          </AbsoluteCenter>
+        </Container>
+      );
+    }
+  }
   // id will be undefined on the create form
-  if (
+  else if (
     !id &&
     shadowSeason &&
     shadowSeason.market &&
@@ -713,7 +1193,6 @@ export const ApplicationsEdit: React.FC<any> = (props) => {
                 dayClassName={(date) => {
                   let dateFound = null;
                   if (dates) {
-                    console.log("***dates", dates);
                     dateFound = dates.find((item) => {
                       return item.date === date.toISOString();
                     });
@@ -1146,7 +1625,7 @@ export const ApplicationsEdit: React.FC<any> = (props) => {
     );
   } else {
     return (
-      <Container>
+      <Container marginTop={12}>
         <AbsoluteCenter>
           <Text fontSize={"xl"} textAlign={"center"}>
             Applications will be reviewed until all spaces have been filled. You
