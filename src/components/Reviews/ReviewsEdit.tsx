@@ -123,7 +123,7 @@ export const ReviewsEdit: React.FC<any> = () => {
   useEffect(() => {
     const trySubmit = async () => {
       await submit();
-      history.goBack();
+      history.go(-2);
     };
     if (doSubmit) {
       trySubmit();

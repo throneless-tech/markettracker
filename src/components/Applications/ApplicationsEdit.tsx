@@ -120,8 +120,6 @@ export const ApplicationsEdit: React.FC<any> = (props) => {
 
   const [shadowSeason, setShadowSeason] = useState<Season>();
 
-  console.log(dates);
-
   const submitForm = () => {
     if (!id && shadowSeason && shadowSeason.id) {
       setSeason(shadowSeason);
@@ -172,7 +170,6 @@ export const ApplicationsEdit: React.FC<any> = (props) => {
       datesArray.push({ date: dateString });
       selectedDatesArray = [date, ...selectedDates];
     }
-    console.log("***datesArray:", datesArray);
     setDates(datesArray);
     setSelectedDates(selectedDatesArray);
   };
