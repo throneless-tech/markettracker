@@ -710,7 +710,7 @@ export const ApplicationsList: React.FC<any> = () => {
                   >
                     <Stack spacing={2} direction="column">
                       <Checkbox value="fulltime">Full time</Checkbox>
-                      <Checkbox value="partime">Part time</Checkbox>
+                      <Checkbox value="parttime">Part time</Checkbox>
                       <Checkbox value="popup">Popup</Checkbox>
                     </Stack>
                   </CheckboxGroup>
