@@ -1,14 +1,37 @@
 import { CollectionConfig } from "payload/types";
+import InvoicesList from "../components/Invoices/InvoicesList";
+
+const FullMonths = [
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December",
+];
 
 export const Invoices: CollectionConfig = {
   slug: "invoices",
-  fields: [
-    {
-      name: "id",
-      type: "text",
+  admin: {
+    components: {
+      views: {
+        List: InvoicesList,
+      },
     },
+  },
+  fields: [
+    // {
+    //   name: "id",
+    //   type: "text",
+    // },
     {
-      name: "amount",
+      name: "amountOwed",
       type: "number",
     },
     {
@@ -23,6 +46,16 @@ export const Invoices: CollectionConfig = {
     {
       name: "credit",
       type: "number",
+    },
+    {
+      name: "marketMonth",
+      type: "select",
+      options: FullMonths.map((month) => {
+        return {
+          label: month,
+          value: month,
+        };
+      }),
     },
     {
       name: "reports",
