@@ -74,7 +74,7 @@ const dayNames = [
 export const ApplicationsEdit: React.FC<any> = (props) => {
   const { user } = useAuth();
   const history: any = useHistory();
-  const { submit } = useForm();
+  const { getField, getData, submit } = useForm();
   const { id } = useDocumentInfo();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [contactName, setContactName] = useState("");
@@ -100,11 +100,11 @@ export const ApplicationsEdit: React.FC<any> = (props) => {
   const { value: isCSA, setValue: setIsCSA } = useField<boolean>({
     path: "isCSA",
   });
-  const { value: dates, setValue: setDates } = useField<
-    { date?: string; id?: string }[]
-  >({
+  const { setValue: setDates } = useField<{ date?: string; id?: string }[]>({
     path: "dates",
   });
+  const data = getData();
+  const dates = data.dates ? data.dates : [];
   const { value: contacts, setValue: setContacts } = useField<string[]>({
     path: "contacts",
   });
@@ -170,7 +170,7 @@ export const ApplicationsEdit: React.FC<any> = (props) => {
       datesArray.push({ date: dateString });
       selectedDatesArray = [date, ...selectedDates];
     }
-    setDates(datesArray);
+    // setDates(datesArray);
     setSelectedDates(selectedDatesArray);
   };
 
@@ -365,7 +365,7 @@ export const ApplicationsEdit: React.FC<any> = (props) => {
   }, []);
 
   useEffect(() => {
-    if (season) {
+    if (id && season) {
       const getSeason = async () => {
         const response = await fetch(`/api/seasons/${season}`);
         const seasonData = await response.json();
@@ -377,6 +377,18 @@ export const ApplicationsEdit: React.FC<any> = (props) => {
 
         let calLength = monthDiff(firstDate, lastDate);
         setNumMonths(calLength);
+
+        let days = [];
+
+        for (var d = firstDate; d <= lastDate; d.setDate(d.getDate() + 1)) {
+          if (seasonData.market.days.includes(dayNames[d.getDay()])) {
+            days.push(new Date(d));
+          }
+        }
+
+        console.log(days);
+
+        setMarketDates(days);
       };
 
       getSeason();
@@ -384,12 +396,12 @@ export const ApplicationsEdit: React.FC<any> = (props) => {
   }, [season]);
 
   useEffect(() => {}, [
-    market,
-    season,
     endDate,
-    startDate,
+    market,
     markets,
     numMonths,
+    season,
+    startDate,
     vendor,
   ]);
 
@@ -702,8 +714,8 @@ export const ApplicationsEdit: React.FC<any> = (props) => {
                 inline
                 dayClassName={(date) => {
                   let dateFound = null;
-                  if (marketDates) {
-                    dateFound = marketDates.find((item) => {
+                  if (dates) {
+                    dateFound = dates.find((item) => {
                       return item.date === date.toISOString();
                     });
                   }
@@ -1161,7 +1173,7 @@ export const ApplicationsEdit: React.FC<any> = (props) => {
                 <Text>Selected</Text>
               </HStack>
             </Wrap>
-            <Wrap>
+            <HStack className="datepicker-wrap">
               <DatePicker
                 inline
                 dayClassName={(date) => {
@@ -1185,7 +1197,7 @@ export const ApplicationsEdit: React.FC<any> = (props) => {
                 maxDate={endDate}
                 monthsShown={numMonths + 1}
               />
-            </Wrap>
+            </HStack>
             <Text marginTop={4}>
               How would you characterize your market attendance?
             </Text>

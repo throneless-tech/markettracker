@@ -254,7 +254,7 @@ export const ReviewsEdit: React.FC<any> = () => {
     }
   }, [shadowApp]);
 
-  console.log("***shadowApp", shadowApp);
+  // console.log("***shadowApp", shadowApp);
 
   if (
     shadowApp &&
