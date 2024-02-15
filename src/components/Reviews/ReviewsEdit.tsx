@@ -123,7 +123,6 @@ export const ReviewsEdit: React.FC<any> = () => {
   useEffect(() => {
     const trySubmit = async () => {
       await submit();
-      history.go(-2);
     };
     if (doSubmit) {
       trySubmit();
@@ -192,6 +191,8 @@ export const ReviewsEdit: React.FC<any> = () => {
     };
     if (history.location.state) {
       setShadow();
+    } else if (id) {
+      history.go(-2);
     }
 
     if (user) {
