@@ -7,7 +7,7 @@ export const SalesReports: CollectionConfig = {
     components: {
       views: {
         // Edit: CustomSalesReportsEdit,
-        List: CustomSalesReportsList,
+        // List: CustomSalesReportsList,
       },
     },
     // useAsTitle: "name",
@@ -21,9 +21,9 @@ export const SalesReports: CollectionConfig = {
       required: true,
     },
     {
-      name: "market",
+      name: "season",
       type: "relationship",
-      relationTo: "markets",
+      relationTo: "seasons",
       hasMany: false,
       required: true,
     },
@@ -41,7 +41,7 @@ export const SalesReports: CollectionConfig = {
       name: "cashAndCredit",
       label: "Cash & Credit Sales",
       type: "number",
-      required: true,
+      // required: true,
       admin: {
         description: "Enter the sum total of Cash and Credit sales",
         placeholder: "$0",
@@ -51,7 +51,7 @@ export const SalesReports: CollectionConfig = {
       name: "producePlus",
       label: "Produce Plus Sales",
       type: "number",
-      required: true,
+      // required: true,
       admin: {
         description:
           "Enter the sum total of Produce Plus sales (only applies in DC)",
@@ -62,7 +62,7 @@ export const SalesReports: CollectionConfig = {
       name: "sfmnp",
       label: "SFMNP Sales",
       type: "number",
-      required: true,
+      // required: true,
       admin: {
         description:
           "Enter the sum total of Seniors Farmers' Market Nutrition Program sales",
@@ -73,7 +73,7 @@ export const SalesReports: CollectionConfig = {
       name: "wic",
       label: "WIC Sales",
       type: "number",
-      required: true,
+      // required: true,
       admin: {
         description:
           "Enter the sum total of Special Supplemental Nutrition Program for Women, Infants, and Children (WIC) sales",
