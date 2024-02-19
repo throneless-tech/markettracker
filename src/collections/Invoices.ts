@@ -58,6 +58,13 @@ export const Invoices: CollectionConfig = {
       }),
     },
     {
+      name: "vendor",
+      type: "relationship",
+      relationTo: "vendors",
+      hasMany: false,
+      required: true,
+    },
+    {
       name: "reports",
       type: "relationship",
       relationTo: "sales-reports",
