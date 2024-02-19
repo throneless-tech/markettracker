@@ -161,7 +161,7 @@ export const ApplicationsEdit: React.FC<any> = (props) => {
     let selectedDateFound = !!selectedDatesArray.find(
       (item) => item.getTime() == date.getTime(),
     );
-    if (dateFound && selectedDateFound) {
+    if (dateFound || selectedDateFound) {
       datesArray = datesArray.filter((item) => item.date !== dateString);
       selectedDatesArray = selectedDatesArray.filter(
         (item) => item.getTime() != date.getTime(),
@@ -170,7 +170,7 @@ export const ApplicationsEdit: React.FC<any> = (props) => {
       datesArray.push({ date: dateString });
       selectedDatesArray = [date, ...selectedDates];
     }
-    // setDates(datesArray);
+    setDates(datesArray);
     setSelectedDates(selectedDatesArray);
   };
 
@@ -385,9 +385,6 @@ export const ApplicationsEdit: React.FC<any> = (props) => {
             days.push(new Date(d));
           }
         }
-
-        console.log(days);
-
         setMarketDates(days);
       };
 
@@ -398,6 +395,7 @@ export const ApplicationsEdit: React.FC<any> = (props) => {
   useEffect(() => {}, [
     endDate,
     market,
+    marketDates,
     markets,
     numMonths,
     season,
@@ -710,28 +708,30 @@ export const ApplicationsEdit: React.FC<any> = (props) => {
               </HStack>
             </Wrap>
             <HStack className="datepicker-wrap">
-              <DatePicker
-                inline
-                dayClassName={(date) => {
-                  let dateFound = null;
-                  if (dates) {
-                    dateFound = dates.find((item) => {
-                      return item.date === date.toISOString();
-                    });
-                  }
-                  if (dateFound) {
-                    return "vendor-select";
-                  } else {
-                    return "";
-                  }
-                }}
-                selected={null}
-                onChange={(date) => updateSelectedDates(date)}
-                includeDates={marketDates}
-                minDate={startDate}
-                maxDate={endDate}
-                monthsShown={numMonths + 1}
-              />
+              {marketDates && marketDates.length ? (
+                <DatePicker
+                  inline
+                  dayClassName={(date) => {
+                    let dateFound = null;
+                    if (dates) {
+                      dateFound = dates.find((item) => {
+                        return item.date === date.toISOString();
+                      });
+                    }
+                    if (dateFound) {
+                      return "vendor-select";
+                    } else {
+                      return "";
+                    }
+                  }}
+                  selected={null}
+                  onChange={(date) => updateSelectedDates(date)}
+                  includeDates={marketDates}
+                  minDate={startDate}
+                  maxDate={endDate}
+                  monthsShown={numMonths + 1}
+                />
+              ) : null}
             </HStack>
             <Text marginTop={4}>
               How would you characterize your market attendance?

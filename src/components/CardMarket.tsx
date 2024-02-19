@@ -112,7 +112,10 @@ export const CardMarket: FC<CardProps> = ({ applications }) => {
                   color="#000000"
                 >
                   {app.season.name} [
-                  {marketDay(app.season.marketDates.startDate)}]
+                  {app.season.marketDates
+                    ? marketDay(app.season.marketDates.startDate)
+                    : null}
+                  ]
                 </Text>
                 <Spacer
                   sx={{ position: "relative" }}
@@ -138,7 +141,9 @@ export const CardMarket: FC<CardProps> = ({ applications }) => {
                   color="#000000"
                   textAlign="end"
                 >
-                  {nextMarketDate(app.season.marketDates.startDate)}
+                  {app.season.marketDates
+                    ? nextMarketDate(app.season.marketDates.startDate)
+                    : null}
                 </Text>
               </Flex>
             ))}
