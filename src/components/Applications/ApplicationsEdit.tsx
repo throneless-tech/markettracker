@@ -86,7 +86,6 @@ export const ApplicationsEdit: React.FC<any> = (props) => {
   const [numMonths, setNumMonths] = useState(1);
   const [marketDates, setMarketDates] = useState([]);
   const [selectedDates, setSelectedDates] = useState([]);
-  const [marketDatesObjects, setMarketDatesObjects] = useState([]);
   const [selectAllDates, setSelectAllDates] = useState(false);
   const [doSubmit, setDoSubmit] = useState(false);
   const [available, setAvailable] = useState<Contact[]>([]);
@@ -148,25 +147,33 @@ export const ApplicationsEdit: React.FC<any> = (props) => {
     return months <= 0 ? 0 : months;
   };
 
-  const updateSelectAll = (event) => {
+  const updateSelectAll = () => {
     setSelectAllDates((selectAllDates) => !selectAllDates);
   };
 
   const updateSelectedDates = (date) => {
     let datesArray = dates ? dates : [];
+
     let selectedDatesArray = selectedDates ? selectedDates : [];
+
     const dateString = date.toISOString();
 
     let dateFound = datesArray.find((item) => item.date === dateString);
+
     let selectedDateFound = !!selectedDatesArray.find(
       (item) => item.getTime() == date.getTime(),
     );
+
     if (dateFound || selectedDateFound) {
+      console.log("date is found");
+
       datesArray = datesArray.filter((item) => item.date !== dateString);
       selectedDatesArray = selectedDatesArray.filter(
         (item) => item.getTime() != date.getTime(),
       );
     } else {
+      console.log("no date found");
+
       datesArray.push({ date: dateString });
       selectedDatesArray = [date, ...selectedDates];
     }
@@ -183,8 +190,10 @@ export const ApplicationsEdit: React.FC<any> = (props) => {
           return { date: date.toISOString() };
         }),
       );
+      setSelectedDates(marketDates.map((date) => date.toISOString()));
     } else {
       setDates([]);
+      setSelectedDates([]);
     }
   }, [selectAllDates]);
 
@@ -217,7 +226,6 @@ export const ApplicationsEdit: React.FC<any> = (props) => {
             objectDaysArray.push({ date: new Date(d) });
           }
         }
-        setMarketDatesObjects(objectDaysArray);
         setMarketDates(days);
       }
     }
@@ -342,7 +350,6 @@ export const ApplicationsEdit: React.FC<any> = (props) => {
         objectDaysArray.push({ date: new Date(d) });
       }
     }
-    setMarketDatesObjects(objectDaysArray);
     setMarketDates(days);
   };
 
@@ -362,7 +369,7 @@ export const ApplicationsEdit: React.FC<any> = (props) => {
     };
 
     getVendors();
-  }, []);
+  });
 
   useEffect(() => {
     if (id && season) {
@@ -389,6 +396,10 @@ export const ApplicationsEdit: React.FC<any> = (props) => {
       };
 
       getSeason();
+
+      let selectedDatesArray = [];
+      dates.map((d) => selectedDatesArray.push(new Date(d.date)));
+      setSelectedDates(selectedDatesArray);
     }
   }, [season]);
 
@@ -708,30 +719,27 @@ export const ApplicationsEdit: React.FC<any> = (props) => {
               </HStack>
             </Wrap>
             <HStack className="datepicker-wrap">
-              {marketDates && marketDates.length ? (
-                <DatePicker
-                  inline
-                  dayClassName={(date) => {
-                    let dateFound = null;
-                    if (dates) {
-                      dateFound = dates.find((item) => {
-                        return item.date === date.toISOString();
-                      });
-                    }
-                    if (dateFound) {
-                      return "vendor-select";
-                    } else {
-                      return "";
-                    }
-                  }}
-                  selected={null}
-                  onChange={(date) => updateSelectedDates(date)}
-                  includeDates={marketDates}
-                  minDate={startDate}
-                  maxDate={endDate}
-                  monthsShown={numMonths + 1}
-                />
-              ) : null}
+              <DatePicker
+                inline
+                dayClassName={(date) => {
+                  let dateFound = null;
+                  if (dates) {
+                    dateFound = dates.find((item) => {
+                      return item.date === date.toISOString();
+                    });
+                  }
+                  if (dateFound) {
+                    return "vendor-select";
+                  } else {
+                    return "";
+                  }
+                }}
+                startDate={startDate}
+                endDate={endDate}
+                onChange={(date) => updateSelectedDates(date)}
+                includeDates={marketDates}
+                monthsShown={numMonths + 1}
+              />
             </HStack>
             <Text marginTop={4}>
               How would you characterize your market attendance?
@@ -1486,7 +1494,6 @@ export const ApplicationsEdit: React.FC<any> = (props) => {
                   }
 
                   if (dateFound) {
-                    console.log("***found date", date);
                     return "vendor-select";
                   } else {
                     return "";
