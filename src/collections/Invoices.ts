@@ -1,5 +1,6 @@
 import { CollectionConfig } from "payload/types";
 import InvoicesList from "../components/Invoices/InvoicesList";
+import InvoicesEdit from "../components/Invoices/InvoicesEdit";
 
 const FullMonths = [
   "January",
@@ -22,6 +23,7 @@ export const Invoices: CollectionConfig = {
     components: {
       views: {
         List: InvoicesList,
+        Edit: InvoicesEdit,
       },
     },
   },
