@@ -129,9 +129,28 @@ export const ApplicationsEdit: React.FC<any> = (props) => {
   useEffect(() => {
     if (doSubmit) {
       submit();
-      if (user.vendor) {
+      if (user.vendor || user.role == "vendor") {
         history.push("/admin/collections/seasons");
       } else {
+        const approveWithEdits = async () => {
+          try {
+            const res = await fetch(`/api/applications/${id}`, {
+              method: "PATCH",
+              credentials: "include",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                status: "approvedWithEdits",
+              }),
+            });
+            if (!res.ok) throw new Error(res.statusText);
+          } catch (err) {
+            console.error(err.message);
+          }
+        };
+
+        approveWithEdits();
         history.push("/admin/collections/applications");
       }
     }
@@ -852,7 +871,9 @@ export const ApplicationsEdit: React.FC<any> = (props) => {
                   variant={"solid"}
                   onClick={submitForm}
                 >
-                  Submit application now
+                  {user.role == "vendor"
+                    ? "Submit application now"
+                    : "Approve application with edits"}
                 </Button>
                 <Button variant={"outline"}>Cancel</Button>
               </HStack>
@@ -1317,7 +1338,9 @@ export const ApplicationsEdit: React.FC<any> = (props) => {
                   variant={"solid"}
                   onClick={submitForm}
                 >
-                  Submit application now
+                  {user.role == "vendor"
+                    ? "Submit application now"
+                    : "Approve application with edits"}
                 </Button>
                 <Button variant={"outline"}>Cancel</Button>
               </HStack>

@@ -37,6 +37,7 @@ import {
 // utils
 
 // icons
+import EditIcon from "../../assets/icons/edit.js";
 
 // images
 
@@ -369,6 +370,27 @@ export const ReviewsEdit: React.FC<any> = () => {
               <Text marginTop={4} fontSize={"xl"}>
                 {shadowApp.vendor.description}
               </Text>
+            </Box>
+            <Box marginTop={8} textAlign={"right"}>
+              <Button
+                as="a"
+                href={`/admin/collections/applications/${shadowApp.id}`}
+                leftIcon={
+                  <EditIcon sx={{ fill: "none", height: 6, width: 6 }} />
+                }
+                variant={"unstyled"}
+                sx={{
+                  display: "block",
+                  marginBottom: 4,
+                  marginLeft: "auto",
+                  marginRight: 0,
+                  "&:active, &:focus, &:hover": {
+                    textDecoration: "underline",
+                  },
+                }}
+              >
+                Edit this application
+              </Button>
             </Box>
             <Text fontSize={18} marginY={4}>
               Grade the following catagories on a scale from 0 to 5. 0 being
