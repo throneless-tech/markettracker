@@ -68,6 +68,18 @@ const dayNames = [
   "sunday",
 ];
 
+type Status =
+  | (
+      | "approved"
+      | "rejected"
+      | "approvedWithEdits"
+      | "tentativelyApproved"
+      | "tentativelyRejected"
+      | "pending"
+      | "withdrawn"
+    )
+  | null;
+
 export const ApplicationsEdit: React.FC<any> = (props) => {
   const { user } = useAuth();
   const history: any = useHistory();
@@ -108,6 +120,9 @@ export const ApplicationsEdit: React.FC<any> = (props) => {
   const { value: schedule, setValue: setSchedule } = useField<string>({
     path: "schedule",
   });
+  const { value: status, setValue: setStatus } = useField<Status>({
+    path: "status",
+  });
 
   const [shadowSeason, setShadowSeason] = useState<Season>();
 
@@ -115,35 +130,21 @@ export const ApplicationsEdit: React.FC<any> = (props) => {
     if (!id && shadowSeason && shadowSeason.id) {
       setSeason(shadowSeason);
     }
+    if (user.role !== "vendor") {
+      setStatus("approvedWithEdits");
+    }
     setDoSubmit(true);
   };
 
   useEffect(() => {
     if (doSubmit) {
-      submit();
-      if (user.vendor || user.role == "vendor") {
+      if (user.role === "vendor") {
+        submit();
         history.push("/admin/collections/seasons");
       } else {
-        const approveWithEdits = async () => {
-          try {
-            const res = await fetch(`/api/applications/${id}`, {
-              method: "PATCH",
-              credentials: "include",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify({
-                status: "approvedWithEdits",
-              }),
-            });
-            if (!res.ok) throw new Error(res.statusText);
-          } catch (err) {
-            console.error(err.message);
-          }
-        };
-
-        approveWithEdits();
-        history.push("/admin/collections/applications");
+        console.log("Submitting with status:", status);
+        submit();
+        history.go(-2);
       }
     }
   }, [doSubmit]);
@@ -161,8 +162,6 @@ export const ApplicationsEdit: React.FC<any> = (props) => {
   };
 
   const updateSelectedDates = (date) => {
-    let datesArray = dates ? dates : [];
-
     const dateString = date.toISOString();
 
     let dateFound = dates.findIndex((item) => item.date === dateString);
@@ -265,30 +264,6 @@ export const ApplicationsEdit: React.FC<any> = (props) => {
       console.error(data);
     }
   };
-
-  // useEffect(() => {
-  //   if (id) {
-  //     const getApplication = async () => {
-  //       const response = await fetch(`/api/applications/${id}?depth=2`);
-  //       const thisApplication = await response.json();
-  //       console.log(thisApplication);
-  //       setApplication(thisApplication);
-  //     };
-
-  //     getApplication();
-
-  //     if (data) {
-  //       setName(data.name);
-  //       setApplication(data);
-  //     }
-  //   }
-  // }, []);
-
-  // const isPopulated = (
-  //   season: { market: string | Market },
-  // ): season is Market => {
-  //   return typeof season.market === "object";
-  // };
 
   const selectVendor = (id) => {
     const thisVendor = vendors.find((v) => v.id == id);
@@ -849,7 +824,13 @@ export const ApplicationsEdit: React.FC<any> = (props) => {
                     ? "Submit application now"
                     : "Approve application with edits"}
                 </Button>
-                <Button variant={"outline"}>Cancel</Button>
+                <Button
+                  as={"a"}
+                  variant={"outline"}
+                  href="/admin/collections/applications?limit=10"
+                >
+                  Cancel
+                </Button>
               </HStack>
             </Center>
           </Container>
@@ -1317,7 +1298,13 @@ export const ApplicationsEdit: React.FC<any> = (props) => {
                     ? "Submit application now"
                     : "Approve application with edits"}
                 </Button>
-                <Button variant={"outline"}>Cancel</Button>
+                <Button
+                  as={"a"}
+                  href="/admin/collections/applications?limit=10"
+                  variant={"outline"}
+                >
+                  Cancel
+                </Button>
               </HStack>
             </Center>
           </Container>
@@ -1604,7 +1591,7 @@ export const ApplicationsEdit: React.FC<any> = (props) => {
                 </Button>
                 <Button
                   as={"a"}
-                  href="/admin/collections/applications"
+                  href="/admin/collections/applications?limit=10"
                   variant={"outline"}
                 >
                   Cancel
