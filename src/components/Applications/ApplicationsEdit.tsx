@@ -1,7 +1,7 @@
 // @ts-nocheck
 "use client";
 import React, { useEffect, useState } from "react";
-import { useHistory, useLocation } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import DatePicker from "react-datepicker";
 import qs from "qs";
 
@@ -49,8 +49,6 @@ import { ContactsModal } from "../Contacts/ContactsModal";
 import formatTime from "../../utils/formatTime.js";
 
 // icons
-import { ArrowForwardIcon } from "@chakra-ui/icons";
-import EditIcon from "../../assets/icons/edit.js";
 import StarIcon from "../../assets/icons/star.js";
 
 // images
@@ -58,7 +56,6 @@ import stats1 from "../../assets/images/FF-sample-stats-1.jpg";
 import stats2 from "../../assets/images/FF-sample-stats-2.jpg";
 import stats3 from "../../assets/images/FF-sample-stats-3.jpg";
 import stats4 from "../../assets/images/FF-sample-stats-4.jpg";
-import { application } from "express";
 
 const dayNames = [
   "sunday",
@@ -74,18 +71,13 @@ const dayNames = [
 export const ApplicationsEdit: React.FC<any> = (props) => {
   const { user } = useAuth();
   const history: any = useHistory();
-  const { getField, getData, submit } = useForm();
+  const { getData, submit, addFieldRow, removeFieldRow } = useForm();
   const { id } = useDocumentInfo();
-  const { isOpen, onOpen, onClose } = useDisclosure();
-  const [contactName, setContactName] = useState("");
-  const [contactEmail, setContactEmail] = useState("");
-  const [contactPhone, setContactPhone] = useState("");
-  const [contactType, setContactType] = useState([]);
+  const { isOpen, onClose } = useDisclosure();
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
   const [numMonths, setNumMonths] = useState(1);
   const [marketDates, setMarketDates] = useState([]);
-  const [selectedDates, setSelectedDates] = useState([]);
   const [selectAllDates, setSelectAllDates] = useState(false);
   const [doSubmit, setDoSubmit] = useState(false);
   const [available, setAvailable] = useState<Contact[]>([]);
@@ -156,8 +148,6 @@ export const ApplicationsEdit: React.FC<any> = (props) => {
     }
   }, [doSubmit]);
 
-  useEffect(() => {}, [contactName, contactEmail, contactPhone, contactType]);
-
   const monthDiff = (d1, d2) => {
     let months;
     months = (d2.getFullYear() - d1.getFullYear()) * 12;
@@ -173,34 +163,22 @@ export const ApplicationsEdit: React.FC<any> = (props) => {
   const updateSelectedDates = (date) => {
     let datesArray = dates ? dates : [];
 
-    let selectedDatesArray = selectedDates ? selectedDates : [];
-
     const dateString = date.toISOString();
 
-    let dateFound = datesArray.find((item) => item.date === dateString);
+    let dateFound = dates.findIndex((item) => item.date === dateString);
 
-    let selectedDateFound = !!selectedDatesArray.find(
-      (item) => item.getTime() == date.getTime(),
-    );
+    if (dateFound >= 0) {
+      console.log("date is found", dateString);
 
-    if (dateFound || selectedDateFound) {
-      console.log("date is found");
-
-      datesArray = datesArray.filter((item) => item.date !== dateString);
-      selectedDatesArray = selectedDatesArray.filter(
-        (item) => item.getTime() != date.getTime(),
-      );
+      removeFieldRow({ path: "dates", rowIndex: dateFound });
     } else {
       console.log("no date found");
 
-      datesArray.push({ date: dateString });
-      selectedDatesArray = [date, ...selectedDates];
+      addFieldRow({ path: "dates", data: { date: dateString } });
     }
-    setDates(datesArray);
-    setSelectedDates(selectedDatesArray);
   };
 
-  useEffect(() => {}, [dates, selectedDates]);
+  useEffect(() => {}, [dates]);
 
   useEffect(() => {
     if (selectAllDates) {
@@ -209,10 +187,8 @@ export const ApplicationsEdit: React.FC<any> = (props) => {
           return { date: date.toISOString() };
         }),
       );
-      setSelectedDates(marketDates.map((date) => date.toISOString()));
     } else {
       setDates([]);
-      setSelectedDates([]);
     }
   }, [selectAllDates]);
 
@@ -388,7 +364,7 @@ export const ApplicationsEdit: React.FC<any> = (props) => {
     };
 
     getVendors();
-  });
+  }, []);
 
   useEffect(() => {
     if (id && season) {
@@ -415,10 +391,6 @@ export const ApplicationsEdit: React.FC<any> = (props) => {
       };
 
       getSeason();
-
-      let selectedDatesArray = [];
-      dates.map((d) => selectedDatesArray.push(new Date(d.date)));
-      setSelectedDates(selectedDatesArray);
     }
   }, [season]);
 
@@ -426,7 +398,6 @@ export const ApplicationsEdit: React.FC<any> = (props) => {
     endDate,
     market,
     marketDates,
-    markets,
     numMonths,
     season,
     startDate,
@@ -748,6 +719,7 @@ export const ApplicationsEdit: React.FC<any> = (props) => {
                     });
                   }
                   if (dateFound) {
+                    //console.log("dayClassName dateFound", dateFound);
                     return "vendor-select";
                   } else {
                     return "";
@@ -829,7 +801,7 @@ export const ApplicationsEdit: React.FC<any> = (props) => {
               onChange={(newValue) => setContacts(newValue)}
               value={contacts}
             >
-              {available && available.length && (
+              {available && available.length ? (
                 <HStack spacing={4}>
                   {available.map((contact) => (
                     <Checkbox key={contact.id} value={contact.id}>
@@ -840,6 +812,8 @@ export const ApplicationsEdit: React.FC<any> = (props) => {
                     </Checkbox>
                   ))}
                 </HStack>
+              ) : (
+                ""
               )}
             </CheckboxGroup>
             {/*
@@ -1219,7 +1193,6 @@ export const ApplicationsEdit: React.FC<any> = (props) => {
                     return "";
                   }
                 }}
-                selected={null}
                 onChange={(date) => updateSelectedDates(date)}
                 includeDates={marketDates}
                 minDate={startDate}
@@ -1296,7 +1269,7 @@ export const ApplicationsEdit: React.FC<any> = (props) => {
               onChange={(newValue) => setContacts(newValue)}
               value={contacts}
             >
-              {available && available.length && (
+              {available && available.length ? (
                 <HStack spacing={4}>
                   {available.map((contact) => (
                     <Checkbox key={contact.id} value={contact.id}>
@@ -1307,6 +1280,8 @@ export const ApplicationsEdit: React.FC<any> = (props) => {
                     </Checkbox>
                   ))}
                 </HStack>
+              ) : (
+                ""
               )}
             </CheckboxGroup>
             {/*
@@ -1522,7 +1497,6 @@ export const ApplicationsEdit: React.FC<any> = (props) => {
                     return "";
                   }
                 }}
-                selected={null}
                 onChange={(date) => updateSelectedDates(date)}
                 includeDates={marketDates}
                 minDate={startDate}
@@ -1615,7 +1589,9 @@ export const ApplicationsEdit: React.FC<any> = (props) => {
                     </Checkbox>
                   ))}
                 </HStack>
-              ) : null}
+              ) : (
+                ""
+              )}
             </CheckboxGroup>
             <Center marginY={8}>
               <HStack spacing={4}>
