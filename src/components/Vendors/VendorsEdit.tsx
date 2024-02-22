@@ -112,10 +112,6 @@ export const VendorsEdit: React.FC<any> = ({ data: vendor }) => {
     }
   }, [contacts, vendorUser]);
 
-  useEffect(() => {
-    console.log("PRIMARY CONTACT", primaryContact);
-  }, [primaryContact]);
-
   const onChange = async (standing: string) => {
     try {
       const res = await fetch(`/api/vendors/${vendor.id}`, {
