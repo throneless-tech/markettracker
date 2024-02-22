@@ -31,6 +31,7 @@ import {
   Textarea,
   Wrap,
 } from "@chakra-ui/react";
+import { TableColumnsProvider } from "payload/dist/admin/components/elements/TableColumns";
 
 // components
 
@@ -94,6 +95,9 @@ export const ReviewsEdit: React.FC<any> = () => {
   const [shadowReviewer, setShadowReviewer] = useState(null);
   const [doSubmit, setDoSubmit] = useState(false);
   const [seasonDaysLength, setSeasonDaysLength] = useState(0);
+
+  const [contacts, setContacts] = useState([]);
+  const [primaryContact, setPrimaryContact] = useState(null);
 
   const totalScoreSoFar = (reviews) => {
     let total = 0;
@@ -202,6 +206,10 @@ export const ReviewsEdit: React.FC<any> = () => {
   }, [history]);
 
   useEffect(() => {
+    if (shadowApp?.vendor?.contacts?.length) {
+      setContacts(shadowApp.vendor.contacts);
+    }
+
     if (
       shadowApp?.season?.marketDates?.startDate &&
       shadowApp?.season?.marketDates?.endDate
@@ -256,6 +264,29 @@ export const ReviewsEdit: React.FC<any> = () => {
   }, [shadowApp]);
 
   // console.log("***shadowApp", shadowApp);
+  useEffect(() => {
+    let primary;
+    if (contacts.length) {
+      primary = contacts.filter((contact) => contact.type.includes("primary"));
+    }
+
+    if (primary && primary.length) {
+      setPrimaryContact(primary[0]);
+    }
+
+    let primaryUser;
+    if (!contacts.length && shadowApp) {
+      primaryUser = shadowApp.vendor.user;
+    }
+
+    if (primaryUser) {
+      setPrimaryContact(primaryUser);
+    }
+  }, [contacts, shadowApp]);
+
+  useEffect(() => {
+    console.log("PRIMARY CONTACT?", primaryContact);
+  }, [primaryContact]);
 
   if (
     shadowApp &&
@@ -327,43 +358,24 @@ export const ReviewsEdit: React.FC<any> = () => {
                   </Text>
                 </HStack>
                 <Spacer />
-                {shadowApp.vendor.contacts && shadowApp.vendor.contacts.length
-                  ? shadowApp.vendor.contacts.map((contact) => {
-                      if (contact.type && contact.type.length) {
-                        const type = contact.type.find(
-                          (type) => type == "primary",
-                        );
-                        if (type) {
-                          return (
-                            <HStack key={contact.id}>
-                              <Text
-                                as={"span"}
-                                color={"gray.50"}
-                                fontSize="2xl"
-                                fontWeight={700}
-                              >
-                                Primary contact:
-                              </Text>
-                              <Text
-                                as={"span"}
-                                color={"gray.50"}
-                                fontSize="2xl"
-                              >
-                                {contact.name}
-                              </Text>
-                              <Text
-                                as={"span"}
-                                color={"gray.50"}
-                                fontSize="2xl"
-                              >
-                                {contact.phone}
-                              </Text>
-                            </HStack>
-                          );
-                        }
-                      }
-                    })
-                  : null}
+                {primaryContact ? (
+                  <HStack key={primaryContact.id}>
+                    <Text
+                      as={"span"}
+                      color={"gray.50"}
+                      fontSize="2xl"
+                      fontWeight={700}
+                    >
+                      Primary contact:
+                    </Text>
+                    <Text as={"span"} color={"gray.50"} fontSize="2xl">
+                      {primaryContact.name}
+                    </Text>
+                    <Text as={"span"} color={"gray.50"} fontSize="2xl">
+                      {primaryContact.email || primaryContact.phone}
+                    </Text>
+                  </HStack>
+                ) : null}
               </Flex>
             </Box>
             <Box background={"#90B132"} borderBottomRadius="8px" padding={4}>
