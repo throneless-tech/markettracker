@@ -54,6 +54,13 @@ import { CardSalesDue } from "../CardSalesDue";
 import { CardSalesSubmitted } from "../CardSalesSubmitted";
 import { ProductsCell } from "../cells/ProductsCell";
 
+type PrimaryContact = {
+  id: string;
+  name: string;
+  phone: string;
+  email: string;
+};
+
 export const VendorsEdit: React.FC<any> = ({ data: vendor }) => {
   // console.log("***vendor:", vendor);
   const { submit } = useForm();
@@ -64,13 +71,13 @@ export const VendorsEdit: React.FC<any> = ({ data: vendor }) => {
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
   const [contacts, setContacts] = useState([]);
   const [vendorUser, setVendorUser] = useState<User>();
-  const [primaryContact, setPrimaryContact] = useState({});
+  const [primaryContact, setPrimaryContact] = useState<PrimaryContact>(null);
 
-  const getVendorUser = async (userId) => {
+  async function getVendorUser(userId) {
     const response = await fetch(`/api/users/${userId}`);
     const user = await response.json();
     setVendorUser(user);
-  };
+  }
 
   useEffect(() => {
     if (vendor?.standing && !isLoaded) {
@@ -204,33 +211,24 @@ export const VendorsEdit: React.FC<any> = ({ data: vendor }) => {
                   </Text>
                 </HStack>
                 <Spacer />
-                {/* { primaryContact ? (
-                            <HStack key={primaryContact.id}>
-                              <Text
-                                as={"span"}
-                                color={"gray.50"}
-                                fontSize="2xl"
-                                fontWeight={700}
-                              >
-                                Primary contact:
-                              </Text>
-                              <Text
-                                as={"span"}
-                                color={"gray.50"}
-                                fontSize="2xl"
-                              >
-                                {primaryContact.name}
-                              </Text>
-                              <Text
-                                as={"span"}
-                                color={"gray.50"}
-                                fontSize="2xl"
-                              >
-                                {primaryContact.email || primaryContact.phone}
-                              </Text>
-                            </HStack>
-                          )
-                          : null }  */}
+                {primaryContact ? (
+                  <HStack key={primaryContact.id}>
+                    <Text
+                      as={"span"}
+                      color={"gray.50"}
+                      fontSize="2xl"
+                      fontWeight={700}
+                    >
+                      Primary contact:
+                    </Text>
+                    <Text as={"span"} color={"gray.50"} fontSize="2xl">
+                      {primaryContact.name}
+                    </Text>
+                    <Text as={"span"} color={"gray.50"} fontSize="2xl">
+                      {primaryContact.email || primaryContact.phone}
+                    </Text>
+                  </HStack>
+                ) : null}
               </Flex>
             </Box>
             <Box background={"#90B132"} borderBottomRadius="8px" padding={4}>
