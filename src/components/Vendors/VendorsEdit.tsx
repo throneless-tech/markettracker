@@ -46,7 +46,7 @@ import {
 } from "@chakra-ui/react";
 
 // types
-import { Vendor } from "payload/generated-types";
+import { Vendor, User } from "payload/generated-types";
 
 // components
 import { CardMarket } from "../CardMarket";
@@ -62,6 +62,15 @@ export const VendorsEdit: React.FC<any> = ({ data: vendor }) => {
   });
   const [standing, setStanding] = useState<string>();
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
+  const [contacts, setContacts] = useState([]);
+  const [vendorUser, setVendorUser] = useState<User>();
+  const [primaryContact, setPrimaryContact] = useState({});
+
+  const getVendorUser = async (userId) => {
+    const response = await fetch(`/api/users/${userId}`);
+    const user = await response.json();
+    setVendorUser(user);
+  };
 
   useEffect(() => {
     if (vendor?.standing && !isLoaded) {
@@ -69,9 +78,36 @@ export const VendorsEdit: React.FC<any> = ({ data: vendor }) => {
       setStanding(vendor.standing);
       setNotes(vendor.notes);
     }
+
+    if (vendor && vendor.contacts && vendor.contacts.length) {
+      setContacts(vendor.contacts);
+    }
+
+    if (vendor && vendor.user) {
+      getVendorUser(vendor.user);
+    }
   }, [vendor]);
 
-  useEffect(() => {}, [notes, standing]);
+  useEffect(() => {
+    let primary;
+    if (contacts.length) {
+      primary = contacts.filter((contact) => contact.type.includes("primary"));
+    }
+
+    if (!primary && vendorUser) {
+      primary = vendorUser;
+    }
+
+    if (primary && primary.length) {
+      setPrimaryContact(primary[0]);
+    } else {
+      setPrimaryContact(primary);
+    }
+  }, [contacts, vendorUser]);
+
+  useEffect(() => {
+    console.log("PRIMARY CONTACT", primaryContact);
+  }, [primaryContact]);
 
   const onChange = async (standing: string) => {
     try {
@@ -168,34 +204,8 @@ export const VendorsEdit: React.FC<any> = ({ data: vendor }) => {
                   </Text>
                 </HStack>
                 <Spacer />
-                {vendor.contacts && vendor.contacts.length
-                  ? vendor.contacts.map((contact) => {
-                      if (vendor.isPrimaryContact) {
-                        return (
-                          <HStack key={vendor.user.id}>
-                            <Text
-                              as={"span"}
-                              color={"gray.50"}
-                              fontSize="2xl"
-                              fontWeight={700}
-                            >
-                              Primary contact:
-                            </Text>
-                            <Text as={"span"} color={"gray.50"} fontSize="2xl">
-                              {vendor.user.name}
-                            </Text>
-                            <Text as={"span"} color={"gray.50"} fontSize="2xl">
-                              {vendor.user.phone}
-                            </Text>
-                          </HStack>
-                        );
-                      } else if (contact.type && contact.type.length) {
-                        const type = contact.type.find(
-                          (type) => type == "primary",
-                        );
-                        if (type) {
-                          return (
-                            <HStack key={type}>
+                {/* { primaryContact ? (
+                            <HStack key={primaryContact.id}>
                               <Text
                                 as={"span"}
                                 color={"gray.50"}
@@ -209,21 +219,18 @@ export const VendorsEdit: React.FC<any> = ({ data: vendor }) => {
                                 color={"gray.50"}
                                 fontSize="2xl"
                               >
-                                {contact.name}
+                                {primaryContact.name}
                               </Text>
                               <Text
                                 as={"span"}
                                 color={"gray.50"}
                                 fontSize="2xl"
                               >
-                                {contact.phone}
+                                {primaryContact.email || primaryContact.phone}
                               </Text>
                             </HStack>
-                          );
-                        }
-                      }
-                    })
-                  : null}
+                          )
+                          : null }  */}
               </Flex>
             </Box>
             <Box background={"#90B132"} borderBottomRadius="8px" padding={4}>
@@ -303,23 +310,33 @@ export const VendorsEdit: React.FC<any> = ({ data: vendor }) => {
                                   </Tr>
                                 </Thead>
                                 <Tbody>
-                                  {vendor.contacts && vendor.contacts.length
-                                    ? vendor.contacts.map((contact) => (
-                                        <Tr key={contact.id}>
-                                          <Td>{contact.name}</Td>
-                                          <Td>
-                                            {contact.type.map((type) => (
-                                              <Tag key={type}>{type}</Tag>
-                                            ))}
-                                          </Td>
-                                          <Td>{contact.email}</Td>
-                                          <Td>{contact.phone}</Td>
-                                          <Td>
-                                            <Button>Edit/delete</Button>
-                                          </Td>
-                                        </Tr>
-                                      ))
-                                    : null}
+                                  {vendor.contacts && vendor.contacts.length ? (
+                                    vendor.contacts.map((contact) => (
+                                      <Tr key={contact.id}>
+                                        <Td>{contact.name}</Td>
+                                        <Td>
+                                          {contact.type.map((type) => (
+                                            <Tag key={type}>{type}</Tag>
+                                          ))}
+                                        </Td>
+                                        <Td>{contact.email}</Td>
+                                        <Td>{contact.phone}</Td>
+                                        <Td>
+                                          <Button>Edit/delete</Button>
+                                        </Td>
+                                      </Tr>
+                                    ))
+                                  ) : vendorUser ? (
+                                    <Tr key={vendorUser.id}>
+                                      <Td>{vendorUser.name}</Td>
+                                      <Td></Td>
+                                      <Td>{vendorUser.email}</Td>
+                                      <Td></Td>
+                                      <Td>
+                                        <Button>Edit/delete</Button>
+                                      </Td>
+                                    </Tr>
+                                  ) : null}
                                 </Tbody>
                               </Table>
                             </TableContainer>
