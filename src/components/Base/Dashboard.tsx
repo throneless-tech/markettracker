@@ -71,7 +71,7 @@ export const Dashboard: React.FC<any> = () => {
                         color="#534C46"
                         textAlign="center"
                         marginBottom={0}
-                        href="/admin/collections/seasons"
+                        href="/admin/collections/applications"
                       >
                         Apply to Markets
                       </LinkOverlay>

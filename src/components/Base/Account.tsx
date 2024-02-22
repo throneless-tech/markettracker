@@ -1797,13 +1797,15 @@ export const Account: React.FC<any> = () => {
                 ) : null}
                 {role === "vendor" && vendor ? (
                   <TabPanel>
-                    <ProductsField
-                      onChange={(newValue) =>
-                        setVendor({ ...vendor, products: newValue })
-                      }
-                      value={vendor.products}
-                      path="vendor.products"
-                    />
+                    <Container maxW="container.xl">
+                      <ProductsField
+                        onChange={(newValue) =>
+                          setVendor({ ...vendor, products: newValue })
+                        }
+                        value={vendor.products}
+                        path="vendor.products"
+                      />
+                    </Container>
                   </TabPanel>
                 ) : null}
               </TabPanels>

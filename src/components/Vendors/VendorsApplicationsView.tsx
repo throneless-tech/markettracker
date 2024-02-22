@@ -22,10 +22,11 @@ export const VendorsApplicationsView: React.FC<any> = ({
           {applications.map((application) => (
             <>
               <SeasonCard
-                key={application.id}
+                key={`va-${application.id}`}
                 season={application.season}
                 isApplication
                 status={application.status}
+                appId={application.id}
               />
             </>
           ))}

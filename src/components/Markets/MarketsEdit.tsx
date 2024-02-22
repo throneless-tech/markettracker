@@ -210,8 +210,8 @@ export const MarketsEdit: React.FC<any> = (props) => {
   const [contact, setContact] = useState(null);
 
   useEffect(() => {
-    console.log("market: ", market);
-    console.log("isSubmitted: ", isSubmitted);
+    // console.log("market: ", market);
+    // console.log("isSubmitted: ", isSubmitted);
     if (market && isSubmitted) {
       history.push({
         pathname: `/admin/collections/seasons/create`,
@@ -979,6 +979,7 @@ export const MarketsEdit: React.FC<any> = (props) => {
                                     </Text>
                                     <DatePicker
                                       inline
+                                      calendarClassName="seasons-create-dates"
                                       selected={
                                         seasons[0].marketDates.startDate
                                           ? new Date(
@@ -997,11 +998,6 @@ export const MarketsEdit: React.FC<any> = (props) => {
                                           },
                                         ])
                                       }
-                                      // dayClassName={(date) =>
-                                      //   date.getDate() < Math.random() * 31
-                                      //     ? "random"
-                                      //     : undefined
-                                      // }
                                     />
                                   </Stack>
                                   <Stack>
@@ -1014,6 +1010,7 @@ export const MarketsEdit: React.FC<any> = (props) => {
                                     </Text>
                                     <DatePicker
                                       inline
+                                      calendarClassName="seasons-create-dates"
                                       selected={
                                         seasons[0].marketDates.endDate
                                           ? new Date(
@@ -1031,11 +1028,6 @@ export const MarketsEdit: React.FC<any> = (props) => {
                                             },
                                           },
                                         ])
-                                      }
-                                      dayClassName={(date) =>
-                                        date.getDate() < Math.random() * 31
-                                          ? "random"
-                                          : undefined
                                       }
                                     />
                                   </Stack>

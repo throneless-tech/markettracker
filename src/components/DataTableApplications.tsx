@@ -112,7 +112,10 @@ const defaultColumn: Partial<ColumnDef<Application>> = {
       >
         <option value="pending">Pending</option>
         <option value="approved">Approved</option>
+        <option value="approvedWithEdits">Approved with edits</option>
         <option value="rejected">Rejected</option>
+        <option value="tentativelyApproved">Tentatively approved</option>
+        <option value="tentativelyRejected">Tentatively rejected</option>
         <option value="withdrawn">Withdrawn</option>
       </Select>
     );
@@ -141,7 +144,7 @@ export function DataTable<Data extends object>({
       return fetchedData;
     },
     initialPageParam: page,
-    getNextPageParam: (_lastGroup, groups) => groups.length,
+    getNextPageParam: (_lastGroup, groups) => groups.length + 1,
     refetchOnWindowFocus: false,
   });
 
@@ -159,9 +162,9 @@ export function DataTable<Data extends object>({
     (tableContainerRef?: HTMLDivElement | null) => {
       if (tableContainerRef) {
         const { scrollHeight, scrollTop, clientHeight } = tableContainerRef;
-        //once the user has scrolled within 300px of the bottom of the table, fetch more data if there is any
+        //once the user has scrolled within 10px of the bottom of the table, fetch more data if there is any
         if (
-          scrollHeight - scrollTop - clientHeight < 300 &&
+          scrollHeight - scrollTop - clientHeight < 10 &&
           hasNextPage &&
           !isFetching &&
           totalFetched < totalDBRowCount
@@ -228,10 +231,12 @@ export function DataTable<Data extends object>({
         onScroll={(e) => fetchMore(e.target as HTMLDivElement)}
         ref={tableContainerRef}
         sx={{
+          containIntrinsicHeight: "100vh",
           height: "100vh",
           maxWidth: "3000px !important;",
+          overflowAnchor: "none !important",
           overflowX: "scroll",
-          overflowY: "auto",
+          overflowY: "scroll",
         }}
       >
         <Table variant="simple">
@@ -305,8 +310,18 @@ export function DataTable<Data extends object>({
                   </Tr>
                 );
               })
+            ) : isFetching ? (
+              <Tr>
+                <Td sx={{ borderBottom: "none" }}>
+                  <Text>Loading...</Text>
+                </Td>
+              </Tr>
             ) : (
-              <Text>No results found.</Text>
+              <Tr>
+                <Td sx={{ borderBottom: "none" }}>
+                  <Text>No results found.</Text>
+                </Td>
+              </Tr>
             )}
             {paddingBottom > 0 && (
               <tr>

@@ -26,6 +26,7 @@ import {
   InputLeftElement,
   Stack,
   Tag,
+  Wrap,
 } from "@chakra-ui/react";
 
 // chakra icons
@@ -135,47 +136,31 @@ export const VendorsAppTab: React.FC<any> = () => {
       enableSorting: false,
       cell: (demoCell) => {
         const demos: any = demoCell.getValue();
-        return demos && typeof demos === "object"
-          ? Object.entries(demos).map((key, _) => {
-              if (key[1] == "yes") {
-                if (key[0] == "firstGeneration") {
-                  return (
-                    <Tag key={key[0]} mb={1} mr={1}>
-                      First generation farmer
-                    </Tag>
-                  );
-                }
-                if (key[0] == "veteranOwned") {
-                  return (
-                    <Tag key={key[0]} mb={1} mr={1}>
-                      Veteran-owned
-                    </Tag>
-                  );
-                }
-                if (key[0] == "bipoc") {
-                  return (
-                    <Tag key={key[0]} mb={1} mr={1}>
-                      BIPOC
-                    </Tag>
-                  );
-                }
-                if (key[0] == "immigrantOrRefugee") {
-                  return (
-                    <Tag key={key[0]} mb={1} mr={1}>
-                      Immigrant or refugee
-                    </Tag>
-                  );
-                }
-                if (key[0] == "lgbtqia") {
-                  return (
-                    <Tag key={key[0]} mb={1}>
-                      LGBTQIA
-                    </Tag>
-                  );
-                }
-              }
-            })
-          : null;
+        return (
+          <Wrap spacing={1} maxW={170}>
+            {demos && typeof demos === "object"
+              ? Object.entries(demos).map((key, _) => {
+                  if (key[1] == "yes") {
+                    if (key[0] == "firstGeneration") {
+                      return <Tag key={key[0]}>First generation farmer</Tag>;
+                    }
+                    if (key[0] == "veteranOwned") {
+                      return <Tag key={key[0]}>Veteran-owned</Tag>;
+                    }
+                    if (key[0] == "bipoc") {
+                      return <Tag key={key[0]}>BIPOC</Tag>;
+                    }
+                    if (key[0] == "immigrantOrRefugee") {
+                      return <Tag key={key[0]}>Immigrant or refugee</Tag>;
+                    }
+                    if (key[0] == "lgbtqia") {
+                      return <Tag key={key[0]}>LGBTQIA</Tag>;
+                    }
+                  }
+                })
+              : null}
+          </Wrap>
+        );
       },
     },
     // {
@@ -191,9 +176,21 @@ export const VendorsAppTab: React.FC<any> = () => {
       header: "Standing",
       accessorKey: "standing",
       enableSorting: false,
-      cell: (statusCell) => {
-        const status: any = statusCell.getValue();
-        return <Tag>{status ? status : "Good"}</Tag>;
+      cell: (standingCell) => {
+        const standing: any = standingCell.getValue();
+        return (
+          <Tag textTransform="capitalize">
+            {standing == "underReview"
+              ? "Under review"
+              : standing == "approvedWithEdits"
+              ? "Approved with edits"
+              : standing == "tentativelyApproved"
+              ? "Tentatively approved"
+              : standing == "tentativelyRejected"
+              ? "Tentatively rejected"
+              : standing}
+          </Tag>
+        );
       },
     },
   ];

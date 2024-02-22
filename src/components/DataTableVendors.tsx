@@ -141,7 +141,7 @@ export function DataTable<Data extends object>({
       return fetchedData;
     },
     initialPageParam: page,
-    getNextPageParam: (_lastGroup, groups) => groups.length,
+    getNextPageParam: (_lastGroup, groups) => groups.length + 1,
     refetchOnWindowFocus: false,
   });
 
@@ -228,8 +228,10 @@ export function DataTable<Data extends object>({
         onScroll={(e) => fetchMore(e.target as HTMLDivElement)}
         ref={tableContainerRef}
         sx={{
+          containIntrinsicHeight: "100vh",
           height: "100vh",
           maxWidth: "3000px !important;",
+          overflowAnchor: "none !important",
           overflowX: "scroll",
           overflowY: "auto",
         }}
@@ -305,6 +307,8 @@ export function DataTable<Data extends object>({
                   </Tr>
                 );
               })
+            ) : isFetching ? (
+              <Text>Loading...</Text>
             ) : (
               <Text>No results found.</Text>
             )}

@@ -10,6 +10,7 @@ import { afterReadStats } from "./hooks/populateStats";
 import { ApplicationsEdit } from "../../components/Applications/ApplicationsEdit";
 import { ApplicationsList } from "../../components/Applications/ApplicationsList";
 import { withFormContext } from "../../utils/withFormContext";
+//import { beforeValidateReviews } from "./hooks/populateReviews";
 
 export const Applications: CollectionConfig = {
   slug: "applications",
@@ -80,6 +81,18 @@ export const Applications: CollectionConfig = {
         {
           label: "Rejected",
           value: "rejected",
+        },
+        {
+          label: "Approved with edits",
+          value: "approvedWithEdits",
+        },
+        {
+          label: "Tentatively approved",
+          value: "tentativelyApproved",
+        },
+        {
+          label: "Tentatively rejected",
+          value: "tentativelyRejected",
         },
         {
           label: "Pending",
@@ -179,6 +192,7 @@ export const Applications: CollectionConfig = {
       beforeValidateMarket,
       beforeValidateVendor,
       beforeValidateProducts,
+      //beforeValidateReviews,
     ],
   },
 };
