@@ -1,12 +1,21 @@
 import { CollectionConfig } from "payload/types";
 import { createCollectionDocument } from "./hooks/createCollectionDocument";
 import { emptyProfileNotifications } from "./hooks/emptyProfileNotifications";
+import { withFormContext } from "../../utils/withFormContext";
+import { LicensesList } from "../../components/Licenses/LicensesList";
 
 export const Documents: CollectionConfig = {
   slug: "documents",
   // hooks: {
   //   afterChange: [emptyProfileNotifications],
   // },
+  admin: {
+    components: {
+      views: {
+        List: withFormContext(LicensesList),
+      }
+    }
+  },
   upload: {
     staticURL: "/documents",
     staticDir: "documents",

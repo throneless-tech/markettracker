@@ -1,4 +1,4 @@
-import React, { FC, useCallback } from "react";
+import React, { FC, useCallback, useState } from "react";
 
 // Payload imports
 import { useField } from "payload/components/forms";
@@ -11,6 +11,8 @@ import {
   FormHelperText,
   FormLabel,
   Input,
+  Select,
+  Text,
 } from "@chakra-ui/react";
 
 // Local imports
@@ -52,23 +54,46 @@ export const UploadField: FC<Props> = ({
   });
 
   return (
-    <FormControl>
-      {label ? (
-        <FormLabel fontSize={"small"}>
-          {label + (required ? " (Required)" : "")}
+    <>
+      <FormControl>
+        <FormLabel
+          sx={{
+            backgroundColor: "gray.50",
+            border: "2px solid",
+            borderRadius: "2000px",
+            fontSize: 18,
+            fontWeight: "600",
+            lineHeight: "1.11",
+            padding: "10px 16px",
+            width: 114,
+          }}
+        >
+          {"Browse..." + (required ? " (Required)" : "")}
         </FormLabel>
-      ) : (
-        ""
-      )}
-      {description ? <FormHelperText>{description}</FormHelperText> : ""}
-      <ErrorTooltip message={errorMessage} showError={showError}>
-        <Input
-          placeholder={placeholder}
-          type="file"
-          value={value}
-          onChange={(e) => setValue(e.target.value)}
-        />
-      </ErrorTooltip>
-    </FormControl>
+        {description ? <FormHelperText>{description}</FormHelperText> : ""}
+        <ErrorTooltip message={errorMessage} showError={showError}>
+          <Input
+            placeholder={placeholder}
+            type="file"
+            value={value}
+            onChange={(e) => setValue(e.target.value)}
+            maxW={320}
+            sx={{
+              display: "none",
+            }}
+          />
+        </ErrorTooltip>
+      </FormControl>
+      {value ? (
+        <Text>{value}</Text>
+      ) : null}
+      <FormControl marginTop={8} maxW={320}>
+        <FormLabel>License type</FormLabel>
+        <Select placeholder='Select the type of license'>
+          <option value='license'>Business License</option>
+          <option value='insurance'>Business Insurance Documentation</option>
+        </Select>
+      </FormControl>
+    </>
   );
 };

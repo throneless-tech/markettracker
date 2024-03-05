@@ -202,7 +202,7 @@ export const Nav: React.FC<any> = () => {
                         color: "gray.700",
                         "& path": {
                           stroke:
-                            location.pathname == "#FIXME/admin/licenses"
+                            location.pathname == "/admin/collections/documents"
                               ? "gray.700 !important"
                               : "",
                         },
@@ -214,7 +214,7 @@ export const Nav: React.FC<any> = () => {
                         align="center"
                       >
                         <LinkOverlay
-                          href="#FIXME/admin/licenses"
+                          href="/admin/collections/documents"
                           fontFamily="Outfit"
                           fontWeight="semibold"
                           fontSize="2xl"
@@ -526,24 +526,24 @@ export const Nav: React.FC<any> = () => {
                   paddingY={8}
                   sx={{
                     borderLeft:
-                      location.pathname == "#FIXME/admin/licenses"
+                      location.pathname == "/admin/collections/documents"
                         ? "2px solid white"
                         : "",
                     borderRight:
-                      location.pathname == "#FIXME/admin/licenses"
+                      location.pathname == "/admin/collections/documents"
                         ? "2px solid white"
                         : "",
                     color:
-                      location.pathname == "#FIXME/admin/licenses"
+                      location.pathname == "/admin/collections/documents"
                         ? "gray.700"
                         : "gray.50",
                     bg:
-                      location.pathname == "#FIXME/admin/licenses"
+                      location.pathname == "/admin/collections/documents"
                         ? "teal.300"
                         : "gray.700",
                     "& path": {
                       stroke:
-                        location.pathname == "#FIXME/admin/licenses"
+                        location.pathname == "/admin/collections/documents"
                           ? "gray.700 !important"
                           : "",
                     },
@@ -554,7 +554,7 @@ export const Nav: React.FC<any> = () => {
                       sx={{ fill: "none", height: "24px", width: "24px" }}
                     />
                     <LinkOverlay
-                      href="#FIXME/admin/licenses"
+                      href="/admin/collections/documents"
                       fontFamily="Outfit"
                       fontWeight="semibold"
                       fontSize="2xl"
