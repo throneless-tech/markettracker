@@ -37,11 +37,11 @@ export const LicensesEdit: React.FC<any> = () => {
   };
 
   useEffect(() => {
-    console.log("***user", user);
+    // console.log("***user", user);
     if (!user.vendor) return;
     const vendor = user.vendor as Vendor;
     const owner = vendor.id ? vendor.id : vendor;
-    console.log("***owner", owner);
+    // console.log("***owner", owner);
     setLicenseOwner(owner);
   }, [user]);
 
