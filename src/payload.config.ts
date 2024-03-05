@@ -10,6 +10,7 @@ import { Applications } from "./collections/Applications";
 import { Contacts } from "./collections/Contacts";
 import { Documents } from "./collections/Documents";
 import { Invoices } from "./collections/Invoices";
+import { Licenses } from "./collections/Licenses";
 import { MarketReports } from "./collections/MarketReports";
 import { Markets } from "./collections/Markets";
 import { Media } from "./collections/Media";
@@ -99,6 +100,7 @@ export default buildConfig({
     Contacts,
     Documents,
     Invoices,
+    Licenses,
     MarketReports,
     Markets,
     Media,

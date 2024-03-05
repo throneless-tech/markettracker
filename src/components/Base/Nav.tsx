@@ -214,7 +214,7 @@ export const Nav: React.FC<any> = () => {
                         align="center"
                       >
                         <LinkOverlay
-                          href="/admin/collections/documents"
+                          href="/admin/collections/licenses"
                           fontFamily="Outfit"
                           fontWeight="semibold"
                           fontSize="2xl"
@@ -554,7 +554,7 @@ export const Nav: React.FC<any> = () => {
                       sx={{ fill: "none", height: "24px", width: "24px" }}
                     />
                     <LinkOverlay
-                      href="/admin/collections/documents"
+                      href="/admin/collections/licenses"
                       fontFamily="Outfit"
                       fontWeight="semibold"
                       fontSize="2xl"

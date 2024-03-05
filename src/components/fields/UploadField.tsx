@@ -1,4 +1,4 @@
-import React, { FC, useCallback, useState } from "react";
+import React, { FC, useCallback, useEffect } from "react";
 
 // Payload imports
 import { useField } from "payload/components/forms";
@@ -11,18 +11,16 @@ import {
   FormHelperText,
   FormLabel,
   Input,
-  Select,
   Text,
 } from "@chakra-ui/react";
 
 // Local imports
 import { ErrorTooltip } from "../ErrorTooltip";
+import { Document } from "payload/generated-types";
 
 type Props = {
-  label: string;
-  minLength?: number;
-  maxLength?: number;
   path: string;
+  relationTo: string;
   required?: boolean;
   type?: string;
   validate?: Validate;
@@ -34,12 +32,34 @@ type Props = {
 };
 
 export const UploadField: FC<Props> = ({
-  label,
   path,
+  relationTo,
   required,
   validate = upload,
   admin: { condition, description, placeholder } = {},
 }) => {
+  const uploadFiles = useCallback(
+    (files: FileList) => {
+      const uploadFile = async (file) => {
+        const req = await fetch(`/api/${relationTo}`, {
+          method: "POST",
+          credentials: "include",
+          body: file,
+        });
+        const data = await req.json();
+        console.log("***data", data);
+        setValue(data.doc.id);
+      };
+
+      const formData = new FormData();
+      for (const f of Array.from(files)) {
+        formData.append("file", f);
+      }
+      uploadFile(formData);
+    },
+    [relationTo],
+  );
+
   const memoizedValidate = useCallback(
     (value: string, options: any) => {
       return validate(value, { ...options, required });
@@ -47,11 +67,18 @@ export const UploadField: FC<Props> = ({
     [validate, required],
   );
 
-  const { errorMessage, setValue, showError, value } = useField<string>({
+  const { errorMessage, setValue, showError, value } = useField<
+    string | Document
+  >({
     condition,
     path,
     validate: memoizedValidate,
   });
+
+  useEffect(() => {
+    if (!showError) return;
+    console.log("errorMessage", errorMessage);
+  }, [showError]);
 
   return (
     <>
@@ -75,24 +102,16 @@ export const UploadField: FC<Props> = ({
           <Input
             placeholder={placeholder}
             type="file"
-            value={value}
-            onChange={(e) => setValue(e.target.value)}
+            onChange={(e) => {
+              console.log("***target:", e.target);
+              uploadFiles(e.target.files);
+            }}
             maxW={320}
             sx={{
               display: "none",
             }}
           />
         </ErrorTooltip>
-      </FormControl>
-      {value ? (
-        <Text>{value}</Text>
-      ) : null}
-      <FormControl marginTop={8} maxW={320}>
-        <FormLabel>License type</FormLabel>
-        <Select placeholder='Select the type of license'>
-          <option value='license'>Business License</option>
-          <option value='insurance'>Business Insurance Documentation</option>
-        </Select>
       </FormControl>
     </>
   );
