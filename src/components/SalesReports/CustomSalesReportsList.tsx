@@ -217,26 +217,26 @@ const CustomSalesReportsList: React.FC<any> = () => {
   return (
     <>
       <SalesReportsTabs selected="salesReports" />
-      <Container maxW="container.xl">
+      <Container maxW="container.xl" marginY={12}>
         <Flex my={6} justify="space-between" flexWrap={"wrap"}>
           <Box>
             <Heading as="h2" sx={{ textTransform: "uppercase" }}>
               Sales Reports
             </Heading>
           </Box>
-          {role != "vendor" ? (
-            <>
-              <Spacer />
-              <HStack flexGrow={1} spacing={4} justify={"flex-end"}>
-                <Button as="a" href="/#FIXME">
-                  Download sales data
-                </Button>
-                <Button as="a" href="/admin/collections/sales-reports/create">
-                  Create a sales report
-                </Button>
-              </HStack>
-            </>
-          ) : null}
+          <Spacer />
+          <HStack flexGrow={1} spacing={4} justify={"flex-end"}>
+            <Button
+              as="a"
+              href="/admin/collections/sales-reports/create"
+              variant="ghost"
+            >
+              Create a sales report
+            </Button>
+            <Button as="a" href="/#FIXME" variant="ghost">
+              Download sales data
+            </Button>
+          </HStack>
         </Flex>
         <Divider color="gray.900" borderBottomWidth={2} opacity={1} />
         <Grid templateColumns="repeat(2, 5fr)" gap={4} marginTop={10}>
