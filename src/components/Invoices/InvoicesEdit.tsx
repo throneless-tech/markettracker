@@ -14,25 +14,26 @@ import { FooterAdmin } from "../FooterAdmin";
 import { useField, useForm } from "payload/components/forms";
 import {
   Box,
-  Button,
   Container,
-  Center,
-  Divider,
   Flex,
-  Grid,
-  GridItem,
-  Heading,
-  HStack,
-  Input,
-  LinkBox,
-  LinkOverlay,
-  Spacer,
-  Stack,
-  Text,
   FormControl,
   FormLabel,
   FormHelperText,
+  Heading,
+  Spacer,
+  Stack,
+  Table,
+  Thead,
+  Tbody,
+  Tfoot,
+  Tr,
+  Th,
+  Td,
+  TableCaption,
+  TableContainer,
+  Text,
   Select,
+  VStack,
 } from "@chakra-ui/react";
 
 const InvoicesEdit: React.FC<any> = () => {
@@ -57,19 +58,19 @@ const InvoicesEdit: React.FC<any> = () => {
   }, []);
 
   useEffect(() => {
-    console.log("VENDORS???", vendors);
+    // console.log("VENDORS???", vendors);
   }, [vendors]);
 
   return (
-    <Container maxW="container.xl" marginBottom={4}>
+    <Container maxW="container.2xl" marginBottom={4}>
       <Flex my={8} justify="space-between" flexWrap={"wrap"}>
         <Box>
           <Heading as="h1" sx={{ textTransform: "uppercase" }}>
-            Create an invoice
+            Invoicing
           </Heading>
         </Box>
         <Spacer />
-        <Box>
+        <VStack>
           <FormControl sx={{ alignItems: "center", display: "flex" }}>
             <FormLabel>
               <Text
@@ -80,6 +81,7 @@ const InvoicesEdit: React.FC<any> = () => {
                 letterSpacing="0.03em"
                 textTransform="capitalize"
                 color="gray.600"
+                width={200}
               >
                 Choose a vendor
               </Text>
@@ -88,6 +90,7 @@ const InvoicesEdit: React.FC<any> = () => {
               value={vendorId}
               maxWidth={"360px"}
               onChange={handleVendorChange}
+              sx={{ color: "gray.700" }}
             >
               {vendors.length
                 ? vendors.map((vendor) => {
@@ -110,6 +113,7 @@ const InvoicesEdit: React.FC<any> = () => {
                 letterSpacing="0.03em"
                 textTransform="capitalize"
                 color="gray.600"
+                width={200}
               >
                 Choose a date
               </Text>
@@ -118,6 +122,7 @@ const InvoicesEdit: React.FC<any> = () => {
               // value={reportDate}
               maxWidth={"360px"}
               // onChange={handleDateChange}
+              sx={{ color: "gray.700" }}
             >
               {/* {dateOptions && dateOptions.length
             ? dateOptions.map((dateObj) => {
@@ -130,8 +135,511 @@ const InvoicesEdit: React.FC<any> = () => {
             : null} */}
             </Select>
           </FormControl>
-        </Box>
+        </VStack>
       </Flex>
+      <Heading
+        as="h2"
+        sx={{
+          fontFamily: "'Outfit', sans-serif",
+          fontSize: 24,
+          fontWeight: 700,
+          textTransform: "uppercase",
+        }}
+      >
+        Becca's Farm
+      </Heading>
+      <Container maxW="container.xl" marginBottom={4}>
+        <Heading as="h3" sx={{ fontSize: 24 }}>
+          Market Sales &amp; Fees
+        </Heading>
+        <TableContainer>
+          <Table
+            variant="simple"
+            sx={{
+              border: "1px solid",
+              borderColor: "gray.100",
+              // borderTopLeftRadius: "8px !important",
+              // borderTopRightRadius: "8px !important",
+            }}
+          >
+            <Thead sx={{ backgroundColor: "gray.50" }}>
+              <Tr>
+                <Th
+                  sx={{
+                    border: "1px solid",
+                    borderColor: "gray.100",
+                    color: "gray.900",
+                    fontFamily: "'Outfit', sans-serif",
+                    fontSize: 16,
+                    fontWeight: 500,
+                    textTransform: "none",
+                  }}
+                >
+                  Market
+                </Th>
+                <Th
+                  isNumeric
+                  sx={{
+                    border: "1px solid",
+                    borderColor: "gray.100",
+                    color: "gray.900",
+                    fontFamily: "'Outfit', sans-serif",
+                    fontSize: 16,
+                    fontWeight: 500,
+                    textTransform: "none",
+                    width: 100,
+                  }}
+                >
+                  Market days
+                </Th>
+                <Th
+                  isNumeric
+                  sx={{
+                    border: "1px solid",
+                    borderColor: "gray.100",
+                    color: "gray.900",
+                    fontFamily: "'Outfit', sans-serif",
+                    fontSize: 16,
+                    fontWeight: 500,
+                    textTransform: "none",
+                    width: 100,
+                  }}
+                >
+                  Gross sales
+                </Th>
+                <Th
+                  isNumeric
+                  sx={{
+                    border: "1px solid",
+                    borderColor: "gray.100",
+                    color: "gray.900",
+                    fontFamily: "'Outfit', sans-serif",
+                    fontSize: 16,
+                    fontWeight: 500,
+                    textTransform: "none",
+                    width: 100,
+                  }}
+                >
+                  Market fees
+                </Th>
+                <Th
+                  isNumeric
+                  sx={{
+                    border: "1px solid",
+                    borderColor: "gray.100",
+                    color: "gray.900",
+                    fontFamily: "'Outfit', sans-serif",
+                    fontSize: 16,
+                    fontWeight: 500,
+                    textTransform: "none",
+                    width: 100,
+                  }}
+                >
+                  SNAP
+                </Th>
+                <Th
+                  isNumeric
+                  sx={{
+                    border: "1px solid",
+                    borderColor: "gray.100",
+                    color: "gray.900",
+                    fontFamily: "'Outfit', sans-serif",
+                    fontSize: 16,
+                    fontWeight: 500,
+                    textTransform: "none",
+                    width: 100,
+                  }}
+                >
+                  SNAP Bonus
+                </Th>
+                <Th
+                  isNumeric
+                  sx={{
+                    border: "1px solid",
+                    borderColor: "gray.100",
+                    color: "gray.900",
+                    fontFamily: "'Outfit', sans-serif",
+                    fontSize: 16,
+                    fontWeight: 500,
+                    textTransform: "none",
+                    width: 100,
+                  }}
+                >
+                  WIC/Senior Bonus
+                </Th>
+                <Th
+                  isNumeric
+                  sx={{
+                    border: "1px solid",
+                    borderColor: "gray.100",
+                    color: "gray.900",
+                    fontFamily: "'Outfit', sans-serif",
+                    fontSize: 16,
+                    fontWeight: 500,
+                    textTransform: "none",
+                    width: 100,
+                  }}
+                >
+                  Credit card
+                </Th>
+                <Th
+                  isNumeric
+                  sx={{
+                    border: "1px solid",
+                    borderColor: "gray.100",
+                    color: "gray.900",
+                    fontFamily: "'Outfit', sans-serif",
+                    fontSize: 16,
+                    fontWeight: 500,
+                    textTransform: "none",
+                    width: 100,
+                  }}
+                >
+                  Market goods
+                </Th>
+                <Th
+                  isNumeric
+                  sx={{
+                    border: "1px solid",
+                    borderColor: "gray.100",
+                    color: "gray.900",
+                    fontFamily: "'Outfit', sans-serif",
+                    fontSize: 16,
+                    fontWeight: 500,
+                    textTransform: "none",
+                    width: 100,
+                  }}
+                >
+                  G World
+                </Th>
+                <Th
+                  isNumeric
+                  sx={{
+                    border: "1px solid",
+                    borderColor: "gray.100",
+                    color: "gray.900",
+                    fontFamily: "'Outfit', sans-serif",
+                    fontSize: 16,
+                    fontWeight: 500,
+                    textTransform: "none",
+                    width: 100,
+                  }}
+                >
+                  Net
+                </Th>
+              </Tr>
+            </Thead>
+            <Tbody>
+              <Tr>
+                <Td
+                  sx={{
+                    border: "1px solid",
+                    borderColor: "gray.100",
+                    fontWeight: "500",
+                    maxWidth: 300,
+                  }}
+                >
+                  Dupont Circle [Wednesday]
+                </Td>
+                <Td
+                  isNumeric
+                  sx={{
+                    border: "1px solid",
+                    borderColor: "gray.100",
+                    width: 100,
+                  }}
+                >
+                  4
+                </Td>
+                <Td
+                  isNumeric
+                  sx={{
+                    border: "1px solid",
+                    borderColor: "gray.100",
+                    width: 100,
+                  }}
+                >
+                  $19,638.75
+                </Td>
+                <Td
+                  isNumeric
+                  sx={{
+                    border: "1px solid",
+                    borderColor: "gray.100",
+                    width: 100,
+                  }}
+                >
+                  $1,082.58
+                </Td>
+                <Td
+                  isNumeric
+                  sx={{
+                    border: "1px solid",
+                    borderColor: "gray.100",
+                    width: 100,
+                  }}
+                >
+                  -$29
+                </Td>
+                <Td
+                  isNumeric
+                  sx={{
+                    border: "1px solid",
+                    borderColor: "gray.100",
+                    width: 100,
+                  }}
+                >
+                  -$12
+                </Td>
+                <Td
+                  isNumeric
+                  sx={{
+                    border: "1px solid",
+                    borderColor: "gray.100",
+                    width: 100,
+                  }}
+                >
+                  -$32
+                </Td>
+                <Td
+                  isNumeric
+                  sx={{
+                    border: "1px solid",
+                    borderColor: "gray.100",
+                    width: 100,
+                  }}
+                >
+                  -$0
+                </Td>
+                <Td
+                  isNumeric
+                  sx={{
+                    border: "1px solid",
+                    borderColor: "gray.100",
+                    width: 100,
+                  }}
+                >
+                  -$0
+                </Td>
+                <Td
+                  isNumeric
+                  sx={{
+                    border: "1px solid",
+                    borderColor: "gray.100",
+                    width: 100,
+                  }}
+                >
+                  -$0
+                </Td>
+                <Td isNumeric sx={{ fontWeight: "bold" }}>
+                  $1009.58
+                </Td>
+              </Tr>
+              <Tr>
+                <Td
+                  sx={{
+                    border: "1px solid",
+                    borderColor: "gray.100",
+                    fontWeight: "500",
+                    maxWidth: 300,
+                  }}
+                >
+                  Columbia Heights
+                </Td>
+                <Td
+                  isNumeric
+                  sx={{
+                    border: "1px solid",
+                    borderColor: "gray.100",
+                    width: 100,
+                  }}
+                >
+                  2
+                </Td>
+                <Td
+                  isNumeric
+                  sx={{
+                    border: "1px solid",
+                    borderColor: "gray.100",
+                    width: 100,
+                  }}
+                >
+                  $7,564.27
+                </Td>
+                <Td
+                  isNumeric
+                  sx={{
+                    border: "1px solid",
+                    borderColor: "gray.100",
+                    width: 100,
+                  }}
+                >
+                  $582.58
+                </Td>
+                <Td
+                  isNumeric
+                  sx={{
+                    border: "1px solid",
+                    borderColor: "gray.100",
+                    width: 100,
+                  }}
+                >
+                  -$29
+                </Td>
+                <Td
+                  isNumeric
+                  sx={{
+                    border: "1px solid",
+                    borderColor: "gray.100",
+                    width: 100,
+                  }}
+                >
+                  -$12
+                </Td>
+                <Td
+                  isNumeric
+                  sx={{
+                    border: "1px solid",
+                    borderColor: "gray.100",
+                    width: 100,
+                  }}
+                >
+                  -$32
+                </Td>
+                <Td
+                  isNumeric
+                  sx={{
+                    border: "1px solid",
+                    borderColor: "gray.100",
+                    width: 100,
+                  }}
+                >
+                  -$0
+                </Td>
+                <Td
+                  isNumeric
+                  sx={{
+                    border: "1px solid",
+                    borderColor: "gray.100",
+                    width: 100,
+                  }}
+                >
+                  -$0
+                </Td>
+                <Td
+                  isNumeric
+                  sx={{
+                    border: "1px solid",
+                    borderColor: "gray.100",
+                    width: 100,
+                  }}
+                >
+                  -$0
+                </Td>
+                <Td isNumeric sx={{ fontWeight: "bold" }}>
+                  $509.58
+                </Td>
+              </Tr>
+            </Tbody>
+          </Table>
+        </TableContainer>
+        <Flex align="center" justify="flex-end" marginTop={6}>
+          <Text sx={{ backgroundColor: "teal.100", padding: 4 }}>Subtotal</Text>
+          <Text sx={{ backgroundColor: "teal.50", padding: 4 }}>$1,519.16</Text>
+        </Flex>
+        <Heading as="h3" marginTop={12} sx={{ fontSize: 24 }}>
+          Penalties &amp; Credits
+        </Heading>
+        <TableContainer>
+          <Table
+            variant="simple"
+            sx={{
+              border: "1px solid",
+              borderColor: "gray.100",
+              // borderTopLeftRadius: "8px !important",
+              // borderTopRightRadius: "8px !important",
+            }}
+          >
+            <Thead sx={{ backgroundColor: "gray.50" }}>
+              <Tr>
+                <Th
+                  sx={{
+                    color: "gray.900",
+                    fontFamily: "'Outfit', sans-serif",
+                    fontSize: 16,
+                    fontWeight: 500,
+                    maxWidth: 300,
+                    textTransform: "none",
+                  }}
+                >
+                  Market
+                </Th>
+                <Th
+                  isNumeric
+                  sx={{
+                    color: "gray.900",
+                    fontFamily: "'Outfit', sans-serif",
+                    fontSize: 16,
+                    fontWeight: 500,
+                    textTransform: "none",
+                  }}
+                >
+                  Amount
+                </Th>
+                <Th
+                  sx={{
+                    color: "gray.900",
+                    fontFamily: "'Outfit', sans-serif",
+                    fontSize: 16,
+                    fontWeight: 500,
+                    textTransform: "none",
+                  }}
+                >
+                  Type
+                </Th>
+                <Th
+                  sx={{
+                    color: "gray.900",
+                    fontFamily: "'Outfit', sans-serif",
+                    fontSize: 16,
+                    fontWeight: 500,
+                    textTransform: "none",
+                  }}
+                >
+                  Notes
+                </Th>
+              </Tr>
+            </Thead>
+            <Tbody>
+              <Tr>
+                <Td sx={{ maxWidth: 300 }}>Dupont Circle [Wednesday]</Td>
+                <Td isNumeric>$100</Td>
+                <Td>Late fee</Td>
+                <Td>Late 4 times.</Td>
+              </Tr>
+            </Tbody>
+          </Table>
+        </TableContainer>
+        <Flex align="center" justify="flex-end" marginTop={6}>
+          <Text sx={{ backgroundColor: "teal.100", padding: 4 }}>Subtotal</Text>
+          <Text sx={{ backgroundColor: "teal.50", padding: 4 }}>$100</Text>
+        </Flex>
+        <Flex align="center" justify="flex-end" marginTop={6}>
+          <Text sx={{ backgroundColor: "teal.100", padding: 4 }}>
+            Total due
+          </Text>
+          <Text
+            sx={{
+              backgroundColor: "teal.500",
+              color: "#FFF",
+              fontWeight: 500,
+              padding: 4,
+            }}
+          >
+            $1619.16
+          </Text>
+        </Flex>
+      </Container>
     </Container>
   );
 };
