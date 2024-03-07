@@ -74,7 +74,7 @@ const CustomSalesReportsList: React.FC<any> = () => {
     [],
   );
   const [vendors, setVendors] = useState(["All"]);
-  const [vendorValue, setVendorValue] = useState("All");
+  const [vendorValue, setVendorValue] = useState<string>("All");
 
   const getVendorSalesReports = async () => {
     const salesReportsQuery = {
@@ -105,6 +105,25 @@ const CustomSalesReportsList: React.FC<any> = () => {
       pathname: `/admin/collections/sales-reports/${report.id}`,
       state: report,
     });
+  };
+
+  const handleDelete = async (report) => {
+    // TODO: A POPUP FOR "ARE YOU SURE YOU WANT TO DELETE THIS REPORT"
+    try {
+      const res = await fetch(`/api/sales-reports/${report.id}`, {
+        method: "DELETE",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+    } catch (err) {
+      console.log("ERROR DELETING REPORT: ", err);
+    }
+  };
+
+  const deleteReport = async (report) => {
+    await handleDelete(report);
   };
 
   const getSalesReports = async () => {
@@ -138,20 +157,34 @@ const CustomSalesReportsList: React.FC<any> = () => {
     role == "vendor" ? getVendorSalesReports() : getSalesReports();
   }, []);
 
-  // useEffect(() => {
-  //   if (reports.length) {
-  //     const dedupSeasons = new Map();
-  //     reports.map((report) => dedupSeasons.set(report.season.id, report.season));
-  //     const seasons = Array.from(dedupSeasons.values())
+  useEffect(() => {
+    if (reports.length) {
+      const dedupSeasons = new Map();
+      reports.map((report) =>
+        dedupSeasons.set(
+          report.season && typeof report.season == "object"
+            ? report.season.id
+            : null,
+          report.season,
+        ),
+      );
+      const seasons = Array.from(dedupSeasons.values());
 
-  //     const dedupVendors = new Map()
-  //     reports.map(report => dedupVendors.set(report.vendor.id, report.vendor))
-  //     const vendorsList = Array.from(dedupVendors.values())
+      const dedupVendors = new Map();
+      reports.map((report) =>
+        dedupVendors.set(
+          report.vendor && typeof report.vendor == "object"
+            ? report.vendor.id
+            : null,
+          report.vendor,
+        ),
+      );
+      const vendorsList = Array.from(dedupVendors.values());
 
-  //     setVendors([...vendors, ...vendorsList])
-  //     setMarkets([...markets, ...seasons])
-  //   }
-  // }, [reports])
+      setVendors([...vendors, ...vendorsList]);
+      setMarkets([...markets, ...seasons]);
+    }
+  }, [reports]);
 
   useEffect(() => {
     let filtered = reports;
@@ -191,17 +224,19 @@ const CustomSalesReportsList: React.FC<any> = () => {
               Sales Reports
             </Heading>
           </Box>
-          <>
-            <Spacer />
-            <HStack flexGrow={1} spacing={4} justify={"flex-end"}>
-              <Button as="a" href="/#FIXME">
-                Download sales data
-              </Button>
-              <Button as="a" href="/admin/collections/sales-reports/create">
-                Create a sales report
-              </Button>
-            </HStack>
-          </>
+          {role != "vendor" ? (
+            <>
+              <Spacer />
+              <HStack flexGrow={1} spacing={4} justify={"flex-end"}>
+                <Button as="a" href="/#FIXME">
+                  Download sales data
+                </Button>
+                <Button as="a" href="/admin/collections/sales-reports/create">
+                  Create a sales report
+                </Button>
+              </HStack>
+            </>
+          ) : null}
         </Flex>
         <Divider color="gray.900" borderBottomWidth={2} opacity={1} />
         <Grid templateColumns="repeat(2, 5fr)" gap={4} marginTop={10}>
@@ -297,16 +332,17 @@ const CustomSalesReportsList: React.FC<any> = () => {
                     maxWidth={"360px"}
                     onChange={handleVendorChange}
                   >
-                    {/* {vendors.map((vendor) => {
+                    {/**commented out because goddamn type errors */}
+                    {/* {vendors ? vendors.map((vendor) => {
                       return (
                         <option
-                          value={typeof vendor === "object" ? vendor.id : "All"}
-                          key={typeof vendor === "object" ? vendor.id : "All"}
+                          value={typeof vendor === 'object' ? vendor.id : "All"}
+                          key={typeof vendor === 'object' ? vendor.id : "All"}
                         >
                           {typeof vendor === "object" ? vendor.name : "All"}
                         </option>
                       );
-                    })} */}
+                    }) : null } */}
                   </Select>
                 </FormControl>
               </Box>
@@ -323,8 +359,8 @@ const CustomSalesReportsList: React.FC<any> = () => {
                 <Th>Penalties/Credits</Th>
                 <Th>Sales Total</Th>
                 <Th>Coupon Total</Th>
-                {/* <Th>Review Status</Th> */}
                 <Th>Invoice Date</Th>
+                <Th></Th>
                 <Th></Th>
               </Tr>
             </Thead>
@@ -348,29 +384,38 @@ const CustomSalesReportsList: React.FC<any> = () => {
                     return (
                       <Tr>
                         <Td>{typeof season === "object" ? season.name : ""}</Td>
-                        {/* <Td>{report.vendor.name}</Td> */}
+                        <Td>
+                          {typeof report.vendor == "object"
+                            ? report.vendor.name
+                            : null}
+                        </Td>
                         <Td>{new Date(day).toLocaleDateString("en-US")}</Td>
                         <Td>$0</Td>
-                        <Td>{`$${
-                          producePlus + cashAndCredit + wic + sfmnp
-                        }`}</Td>
+                        <Td>{`$${cashAndCredit}`}</Td>
                         <Td>
                           $
                           {`${
-                            producePlus +
-                            wic +
-                            sfmnp +
-                            ebt +
-                            snapBonus +
-                            fmnpBonus +
-                            cardCoupon +
-                            marketGoods +
-                            gWorld
+                            producePlus
+                              ? producePlus
+                              : 0 + wic
+                              ? wic
+                              : 0 + sfmnp
+                              ? sfmnp
+                              : 0 + ebt
+                              ? ebt
+                              : 0 + snapBonus
+                              ? snapBonus
+                              : 0 + fmnpBonus
+                              ? fmnpBonus
+                              : 0 + cardCoupon
+                              ? cardCoupon
+                              : 0 + marketGoods
+                              ? marketGoods
+                              : 0 + gWorld
+                              ? gWorld
+                              : 0
                           }`}
                         </Td>
-                        {/* <Td>
-                          <GreenCheckIcon />
-                        </Td> */}
                         <Td>dd/mm/yyyy</Td>
                         <Td>
                           <Button
@@ -382,6 +427,18 @@ const CustomSalesReportsList: React.FC<any> = () => {
                             View report
                           </Button>
                         </Td>
+                        {role !== "vendor" ? (
+                          <Td>
+                            <Button
+                              onClick={(e) => {
+                                e.preventDefault;
+                                deleteReport(report);
+                              }}
+                            >
+                              Delete
+                            </Button>
+                          </Td>
+                        ) : null}
                       </Tr>
                     );
                   })
