@@ -1,10 +1,10 @@
 "use client";
-import React, { useEffect, useState } from "react";
-// import React, { useEffect } from "react";
+import React, { useEffect, useState, useCallback } from "react";
+import qs from "qs";
 
 // utils and payload
 import { useAuth } from "payload/components/utilities";
-import getSeasons from "../../utils/getSeasons";
+// import getSeasons from "../../utils/getSeasons";
 import { Market, Season, Vendor } from "payload/generated-types";
 
 // components
@@ -39,24 +39,29 @@ const CustomSalesReportsEdit: React.FC<any> = () => {
   const { user } = useAuth();
   const role = user.role;
   const { submit, getData } = useForm();
+
   // for the dropdown options
   const [seasons, setSeasons] = useState([]);
-  const [allDates, setAllDates] = useState({}); // #FIXME
+  const [vendors, setVendors] = useState([]);
+  const [datesMap, setDatesMap] = useState(new Map()); // #FIXME
   const [dateOptions, setDateOptions] = useState([]);
-  const [seasonId, setSeasonId] = useState<string>("");
+
+  // const [seasonId, setSeasonId] = useState<string>("");
+  // const [vendorId, setVendorId] = useState<string>("");
+  const [isFetching, setIsFetching] = useState<boolean>(false);
 
   // market location
   const [location, setLocation] = useState<string>("");
 
   // the form
-  const { value: season, setValue: setSeason } = useField<"string">({
+  const { value: seasonId, setValue: setSeasonId } = useField<"string">({
     path: "season",
   });
-  const { value: vendor, setValue: setVendor } = useField<"string">({
+  const { value: vendorId, setValue: setVendorId } = useField<"string">({
     path: "vendor",
   });
 
-  const { value: reportDate, setValue: setReportDate } = useField<string>({
+  const { value: date, setValue: setDate } = useField<string>({
     path: "day",
   });
 
@@ -65,7 +70,10 @@ const CustomSalesReportsEdit: React.FC<any> = () => {
     setSeasonId(event.target.value);
   };
   const handleDateChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    setReportDate(event.target.value);
+    setDate(event.target.value);
+  };
+  const handleVendorChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    setVendorId(event.target.value);
   };
 
   // form enable/disable
@@ -96,51 +104,100 @@ const CustomSalesReportsEdit: React.FC<any> = () => {
     console.log("getData", await getData());
   };
 
+  const getSeasons = useCallback(async () => {
+    if (isFetching) return;
+
+    const stringifiedQuery = qs.stringify(
+      {
+        //where: query,
+        limit: 9999,
+      },
+      { addQueryPrefix: true },
+    );
+    setIsFetching(true);
+    try {
+      const res = await fetch(
+        `/api/seasons${stringifiedQuery ? stringifiedQuery : ""}`,
+      );
+      if (!res.ok) throw new Error(res.statusText);
+      const newSeasons = await res.json();
+      setSeasons(seasons.concat(newSeasons.docs));
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setIsFetching(false);
+    }
+  }, [seasons, isFetching]);
+
+  const getVendors = useCallback(async () => {
+    const stringifiedQuery = qs.stringify(
+      {
+        where: {
+          and: [
+            {
+              season: {
+                equals: seasonId,
+              },
+            },
+            {
+              or: [
+                {
+                  status: { equals: "approved" },
+                },
+                {
+                  status: { equals: "approvedWithEdits" },
+                },
+              ],
+            },
+          ],
+        },
+        limit: 9999,
+      },
+      { addQueryPrefix: true },
+    );
+
+    // only do this applications etch if a seasonId has been set
+    if (seasonId) {
+      try {
+        const res = await fetch(`/api/applications${stringifiedQuery}`, {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+        if (!res.ok) throw new Error(res.statusText);
+        const response = await res.json();
+        let vendors;
+        let dates = new Map();
+
+        if (response.docs.length) {
+          // response.docs is an array of the applicationss
+          vendors = response.docs.map((application) => {
+            dates.set(application.vendor.id, application.dates);
+            return application.vendor;
+          });
+        }
+        setVendors(vendors);
+        setDatesMap(dates);
+      } catch (err) {
+        console.error(err);
+      }
+    }
+  }, [seasonId]);
+
   // useEffects
   useEffect(() => {
-    const fetchSeasons = async () => {
-      const approved = await getSeasons(user);
-      const dedup = new Map();
-      const dates = [];
-
-      approved.map((season) => {
-        dedup.set(season.season.id, season.season);
-        dates.push(season.dates);
-      });
-      const seasons = Array.from(dedup.values());
-
-      const datesObj = Object.assign({}, ...dates);
-
-      setAllDates(datesObj);
-      setSeasons(seasons);
-      setSeasonId(seasons[0].id); // initial value
-    };
-
-    fetchSeasons();
+    getSeasons();
   }, []);
 
-  // useEffect(()=>{
-  //   console.log("user?", user)
-  //   if (user && user.vendor?.id) {
-  //     setVendor(user.vendor.id)
-  //   }
-  // }, [user])
+  useEffect(() => {
+    getVendors();
+  }, [seasonId]);
 
-  // useEffect(()=>{
-  //   console.log("vendor?", vendor)
-  // }, [vendor])
-
-  // useEffect(()=>{
-  //   seasonId ? setSeason(seasons.filter(season => season.id == seasonId)[0].id) : null
-  //   allDates && seasonId ? setDateOptions(allDates[seasonId]) : null
-  //   user && typeof user.vendor === "object" && user.vendor.id ? setVendor(user.vendor.id) : null
-  // }, [seasonId, allDates])
+  useEffect(() => {
+    setDateOptions(datesMap.get(vendorId));
+  }, [vendorId, datesMap]);
 
   // commented out to bypass linter lol
-
-  // useEffect(()=>{
-  //   season && typeof season.market == 'object' ? setLocation(season.market.address.state) : null
-  // }, [season])
 
   return (
     <>
@@ -200,11 +257,46 @@ const CustomSalesReportsEdit: React.FC<any> = () => {
                     textTransform="capitalize"
                     color="gray.600"
                   >
+                    Choose a vendor
+                  </Text>
+                </FormLabel>
+                <Select
+                  value={vendorId}
+                  maxWidth={"360px"}
+                  onChange={handleVendorChange}
+                >
+                  {vendors && vendors.length
+                    ? vendors.map((vendor) => {
+                        return (
+                          <option
+                            value={
+                              typeof vendor === "object" ? vendor.id : "All"
+                            }
+                            key={typeof vendor === "object" ? vendor.id : "All"}
+                          >
+                            {typeof vendor === "object" ? vendor.name : "All"}
+                          </option>
+                        );
+                      })
+                    : null}
+                </Select>
+              </FormControl>
+              <FormControl sx={{ alignItems: "center", display: "flex" }}>
+                <FormLabel>
+                  <Text
+                    fontFamily="Zilla Slab"
+                    lineHeight="1"
+                    fontWeight="semibold"
+                    fontSize="24px"
+                    letterSpacing="0.03em"
+                    textTransform="capitalize"
+                    color="gray.600"
+                  >
                     Choose a date
                   </Text>
                 </FormLabel>
                 <Select
-                  value={reportDate}
+                  value={date}
                   maxWidth={"360px"}
                   onChange={handleDateChange}
                 >
@@ -242,7 +334,7 @@ const CustomSalesReportsEdit: React.FC<any> = () => {
                 <NumberField
                   path="producePlus"
                   label="Produce Plus sales (DC markets only/staff will enter)"
-                  isDisabled={true}
+                  // isDisabled={true}
                   admin={{
                     description: "Enter the sum total of Produce Plus sales",
                     placeholder: "Produce plus sales",
@@ -255,7 +347,7 @@ const CustomSalesReportsEdit: React.FC<any> = () => {
                 <NumberField
                   path="sfmnp"
                   label="SFMNP sales"
-                  isDisabled={sfmnpEnable()}
+                  // isDisabled={sfmnpEnable()}
                   admin={{
                     description:
                       "Enter the sum total of Seniors Farmers' Market Nutrition Program sales",
@@ -267,9 +359,9 @@ const CustomSalesReportsEdit: React.FC<any> = () => {
                 <NumberField
                   path="wic"
                   label="WIC sales (staff will enter)"
-                  isDisabled={
-                    role == "vendor" && location == "MD" ? false : true
-                  }
+                  // isDisabled={
+                  //   role == "vendor" && location == "MD" ? false : true
+                  // }
                   admin={{
                     description:
                       "Enter the sum total of Special Supplemental Nutrition Program for Women, Infants, and Children (WIC) sales",
@@ -283,11 +375,11 @@ const CustomSalesReportsEdit: React.FC<any> = () => {
                 <NumberField
                   path="ebt"
                   label="EBT/SNAP sales"
-                  isDisabled={
-                    location && location == "DC" && role !== "vendor"
-                      ? false
-                      : true
-                  }
+                  // isDisabled={
+                  //   location && location == "DC" && role !== "vendor"
+                  //     ? false
+                  //     : true
+                  // }
                   admin={{
                     description: "Enter the sum total of EBT/SNAP sales",
                     placeholder: "EBT sales",
@@ -298,7 +390,7 @@ const CustomSalesReportsEdit: React.FC<any> = () => {
                 <NumberField
                   path="snapBonus"
                   label="SNAP Bonus sales (staff will enter)"
-                  isDisabled={role == "vendor" ? true : false}
+                  // isDisabled={role == "vendor" ? true : false}
                   admin={{
                     description: "Enter the sum total of SNAP Bonus sales",
                     placeholder: "SNAP bonus sales",
@@ -311,7 +403,7 @@ const CustomSalesReportsEdit: React.FC<any> = () => {
                 <NumberField
                   path="fmnpBonus"
                   label="FMNP Bonus sales (staff will enter)"
-                  isDisabled={role == "vendor" ? true : false}
+                  // isDisabled={role == "vendor" ? true : false}
                   admin={{
                     description: "Enter the sum total of FMNP Bonus sales",
                     placeholder: "EBT sales",
@@ -322,7 +414,7 @@ const CustomSalesReportsEdit: React.FC<any> = () => {
                 <NumberField
                   path="cardCoupon"
                   label="Credit card coupon sales (staff will enter)"
-                  isDisabled={role == "vendor" ? true : false}
+                  // isDisabled={role == "vendor" ? true : false}
                   admin={{
                     description:
                       "Enter the sum total of credit card coupon sales",
@@ -336,7 +428,7 @@ const CustomSalesReportsEdit: React.FC<any> = () => {
                 <NumberField
                   path="marketGoods"
                   label="Market Goods coupon sales (staff will enter)"
-                  isDisabled={role == "vendor" ? true : false}
+                  // isDisabled={role == "vendor" ? true : false}
                   admin={{
                     description:
                       "Enter the sum total of Market Goods coupon sales",
@@ -348,7 +440,7 @@ const CustomSalesReportsEdit: React.FC<any> = () => {
                 <NumberField
                   path="gWorld"
                   label="GWorld coupon coupon sales (staff will enter)"
-                  isDisabled={role == "vendor" ? true : false}
+                  // isDisabled={role == "vendor" ? true : false}
                   admin={{
                     description: "Enter the sum total of GWorld coupon sales",
                     placeholder: "SNAP bonus sales",
