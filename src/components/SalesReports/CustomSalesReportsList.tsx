@@ -224,19 +224,23 @@ const CustomSalesReportsList: React.FC<any> = () => {
               Sales Reports
             </Heading>
           </Box>
-          <Spacer />
-          <HStack flexGrow={1} spacing={4} justify={"flex-end"}>
-            <Button
-              as="a"
-              href="/admin/collections/sales-reports/create"
-              variant="ghost"
-            >
-              Create a sales report
-            </Button>
-            <Button as="a" href="/#FIXME" variant="ghost">
-              Download sales data
-            </Button>
-          </HStack>
+          {user.role != "vendor" ? (
+            <>
+              <Spacer />
+              <HStack flexGrow={1} spacing={4} justify={"flex-end"}>
+                <Button
+                  as="a"
+                  href="/admin/collections/sales-reports/create"
+                  variant="ghost"
+                >
+                  Create a sales report
+                </Button>
+                <Button as="a" href="/#FIXME" variant="ghost">
+                  Download sales data
+                </Button>
+              </HStack>
+            </>
+          ) : null}
         </Flex>
         <Divider color="gray.900" borderBottomWidth={2} opacity={1} />
         <Grid templateColumns="repeat(2, 5fr)" gap={4} marginTop={10}>
