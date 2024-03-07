@@ -56,10 +56,63 @@ export const NumberField: FC<Props> = ({
     validate: memoizedValidate,
   });
 
+  const getTextColor = (path) => {
+    if (
+      !path ||
+      path == "wic" ||
+      path == "cashAndCredit" ||
+      path == "sfmnp" ||
+      path == "producePlus"
+    ) {
+      return "black";
+    }
+    return "white";
+  };
+
+  const getBgColor = (path) => {
+    if (!path) {
+      return "none";
+    }
+    let bgColor;
+    switch (path) {
+      case "fmnpBonus":
+        bgColor = "red";
+        break;
+      case "wic":
+        bgColor = "none";
+        break;
+      case "ebt":
+        bgColor = "#922dd4";
+        break;
+      case "snapBonus":
+        bgColor = "black";
+        break;
+      case "cardCoupon":
+        bgColor = "orange";
+        break;
+      case "marketGoods":
+        bgColor = "#e9d826";
+        break;
+      case "gWorld":
+        bgColor = "#4dd42d";
+        break;
+    }
+    console.log("bgColor =>", bgColor);
+    return bgColor;
+  };
+
   return (
     <FormControl>
       {label ? (
-        <FormLabel fontSize={"small"}>
+        <FormLabel
+          fontSize={"small"}
+          sx={{
+            fontWeight: 900,
+            textTransform: "uppercase",
+            color: getTextColor(path),
+            backgroundColor: getBgColor(path),
+          }}
+        >
           {label + (required ? " (Required)" : "")}
         </FormLabel>
       ) : (
