@@ -172,6 +172,7 @@ const InvoicesEdit: React.FC<any> = () => {
                     fontFamily: "'Outfit', sans-serif",
                     fontSize: 16,
                     fontWeight: 500,
+                    maxWidth: 300,
                     textTransform: "none",
                   }}
                 >
@@ -564,6 +565,8 @@ const InvoicesEdit: React.FC<any> = () => {
               <Tr>
                 <Th
                   sx={{
+                    border: "1px solid",
+                    borderColor: "gray.100",
                     color: "gray.900",
                     fontFamily: "'Outfit', sans-serif",
                     fontSize: 16,
@@ -577,6 +580,8 @@ const InvoicesEdit: React.FC<any> = () => {
                 <Th
                   isNumeric
                   sx={{
+                    border: "1px solid",
+                    borderColor: "gray.100",
                     color: "gray.900",
                     fontFamily: "'Outfit', sans-serif",
                     fontSize: 16,
@@ -588,6 +593,8 @@ const InvoicesEdit: React.FC<any> = () => {
                 </Th>
                 <Th
                   sx={{
+                    border: "1px solid",
+                    borderColor: "gray.100",
                     color: "gray.900",
                     fontFamily: "'Outfit', sans-serif",
                     fontSize: 16,
@@ -599,6 +606,8 @@ const InvoicesEdit: React.FC<any> = () => {
                 </Th>
                 <Th
                   sx={{
+                    border: "1px solid",
+                    borderColor: "gray.100",
                     color: "gray.900",
                     fontFamily: "'Outfit', sans-serif",
                     fontSize: 16,
@@ -612,10 +621,43 @@ const InvoicesEdit: React.FC<any> = () => {
             </Thead>
             <Tbody>
               <Tr>
-                <Td sx={{ maxWidth: 300 }}>Dupont Circle [Wednesday]</Td>
-                <Td isNumeric>$100</Td>
-                <Td>Late fee</Td>
-                <Td>Late 4 times.</Td>
+                <Td
+                  sx={{
+                    border: "1px solid",
+                    borderColor: "gray.100",
+                    maxWidth: 300,
+                  }}
+                >
+                  Dupont Circle [Wednesday]
+                </Td>
+                <Td
+                  isNumeric
+                  sx={{
+                    border: "1px solid",
+                    borderColor: "gray.100",
+                    width: 100,
+                  }}
+                >
+                  $100
+                </Td>
+                <Td
+                  sx={{
+                    border: "1px solid",
+                    borderColor: "gray.100",
+                    width: 100,
+                  }}
+                >
+                  Late fee
+                </Td>
+                <Td
+                  sx={{
+                    border: "1px solid",
+                    borderColor: "gray.100",
+                    width: 100,
+                  }}
+                >
+                  Late 4 times.
+                </Td>
               </Tr>
             </Tbody>
           </Table>
