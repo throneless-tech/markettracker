@@ -35,7 +35,7 @@ import {
 import { ColumnDef, RowData, SortingState } from "@tanstack/react-table";
 
 // components
-import { DataTable } from "../DataTable";
+import { DataTable } from "../DataTableApplications";
 import { SeasonCard } from "../Seasons/SeasonCard";
 import { SeasonsTabs } from "../Seasons/SeasonsTabs";
 
@@ -74,11 +74,16 @@ export const ApplicationsList: React.FC<any> = () => {
   const [isFetching, setIsFetching] = useState<boolean>(false);
   const [isAcceptingSearch, setIsAcceptingSearch] = useState("all");
   const [locationSearch, setLocationSearch] = useState([]);
+  const [isScheduleSearch, setIsScheduleSearch] = useState([]);
+  const [isStandingSearch, setIsStandingSearch] = useState([]);
+  const [priorityGroupSearch, setPriorityGroupSearch] = useState([]);
+  const [productGapSearch, setProductGapSearch] = useState([]);
+  const [isApplicationStatus, setIsApplicationStatus] = useState([]);
   const [searchBox, setSearchBox] = useState("");
   const [seasons, setSeasons] = useState([]);
 
   // vendor seasons to apply for
-  useEffect(() => {}, []);
+  useEffect(() => {}, [season]);
 
   useEffect(() => {
     if (user.role !== "vendor" || !user.vendor) return;
@@ -117,11 +122,12 @@ export const ApplicationsList: React.FC<any> = () => {
         { addQueryPrefix: true },
       );
 
-      console.log(`api/applications${appsStringQuery}`);
-
-      const appsResponse = await fetch(`/api/applications${appsStringQuery}`);
+      const appsResponse = await fetch(
+        `/api/applications${appsStringQuery}${
+          season ? `&season=${season.id}` : ""
+        }`,
+      );
       let theseApplications = await appsResponse.json();
-      console.log("these applications", theseApplications);
 
       vendorApps = theseApplications.docs;
 
@@ -235,27 +241,35 @@ export const ApplicationsList: React.FC<any> = () => {
       enableSorting: false,
       cell: (demoCell) => {
         const demos: any = demoCell.getValue();
-        return demos && typeof demos === "object"
-          ? Object.entries(demos).map((key, _) => {
-              if (key[1] == "yes") {
-                if (key[0] == "firstGeneration") {
-                  return <Tag>First generation farmer</Tag>;
-                }
-                if (key[0] == "veteranOwned") {
-                  return <Tag>Veteran-owned</Tag>;
-                }
-                if (key[0] == "bipoc") {
-                  return <Tag>BIPOC</Tag>;
-                }
-                if (key[0] == "immigrantOrRefugee") {
-                  return <Tag>Immigrant or refugee</Tag>;
-                }
-                if (key[0] == "lgbtqia") {
-                  return <Tag>LGBTQIA</Tag>;
-                }
-              }
-            })
-          : null;
+        return (
+          <Wrap spacing={1} maxW={170}>
+            {demos && typeof demos === "object"
+              ? Object.entries(demos).map((key, _) => {
+                  if (key[1] == "yes") {
+                    if (key[0] == "firstGeneration") {
+                      return <Tag key={key[0]}>First generation farmer</Tag>;
+                    }
+                    if (key[0] == "veteranOwned") {
+                      return <Tag key={key[0]}>Veteran-owned</Tag>;
+                    }
+                    if (key[0] == "bipoc") {
+                      return <Tag key={key[0]}>BIPOC</Tag>;
+                    }
+                    if (key[0] == "immigrantOrRefugee") {
+                      return (
+                        <Tag padding={1} key={key[0]}>
+                          Immigrant or refugee
+                        </Tag>
+                      );
+                    }
+                    if (key[0] == "lgbtqia") {
+                      return <Tag key={key[0]}>LGBTQIA</Tag>;
+                    }
+                  }
+                })
+              : null}
+          </Wrap>
+        );
       },
     },
     {
@@ -264,7 +278,19 @@ export const ApplicationsList: React.FC<any> = () => {
       enableSorting: false,
       cell: (standingCell) => {
         const standing: any = standingCell.getValue();
-        return <Tag>{standing ? standing : "Good"}</Tag>;
+        return (
+          <Tag textTransform="capitalize">
+            {standing == "underReview"
+              ? "Under review"
+              : standing == "approvedWithEdits"
+              ? "Approved with edits"
+              : standing == "tentativelyApproved"
+              ? "Tentatively approved"
+              : standing == "tentativelyRejected"
+              ? "Tentatively rejected"
+              : standing}
+          </Tag>
+        );
       },
     },
     {
@@ -316,9 +342,9 @@ export const ApplicationsList: React.FC<any> = () => {
 
   const getApplications = useCallback(
     async (page: number, limit: number, sorting: SortingState) => {
-      console.log("page: ", page);
-      console.log("limit: ", limit);
-      console.log("sorting: ", sorting);
+      // console.log("page: ", page);
+      // console.log("limit: ", limit);
+      // console.log("sorting: ", sorting);
 
       if (isFetching) return;
       const searchParams = new URLSearchParams(search);
@@ -341,10 +367,74 @@ export const ApplicationsList: React.FC<any> = () => {
       }
       const location = searchParams.get("location");
       if (location) {
-        queries.push({ "season.market.address.state": { in: location } });
+        queries.push({
+          or: [{ "season.market.address.state": { in: location } }],
+        });
         setLocationSearch(location.split(","));
       }
-      let sort: string;
+      const productGaps = searchParams.get("productGaps");
+      if (productGaps) {
+        queries.push({ or: [{ "season.productGaps": { in: productGaps } }] });
+        setProductGapSearch(productGaps.split(","));
+      }
+      const schedule = searchParams.get("schedule");
+      if (schedule) {
+        queries.push({ or: [{ schedule: { in: schedule } }] });
+        setIsScheduleSearch(schedule.split(","));
+      }
+      const vendorDemographics = searchParams.get("vendorDemographics");
+      if (vendorDemographics) {
+        const demosArray = vendorDemographics.split(",");
+        const theseQueries = [];
+
+        demosArray.map((demo) => {
+          if (demo === "firstGeneration") {
+            theseQueries.push({
+              "vendor.demographics.firstGeneration": { equals: "yes" },
+            });
+          }
+          if (demo === "veteranOwned") {
+            theseQueries.push({
+              "vendor.demographics.veteranOwned": { equals: "yes" },
+            });
+          }
+          if (demo === "bipoc") {
+            theseQueries.push({
+              "vendor.demographics.bipoc": { equals: "yes" },
+            });
+          }
+          if (demo === "immigrantOrRefugee") {
+            theseQueries.push({
+              "vendor.demographics.immigrantOrRefugee": { equals: "yes" },
+            });
+          }
+          if (demo === "lgbtqia") {
+            theseQueries.push({
+              "vendor.demographics.lgbtqia": { equals: "yes" },
+            });
+          }
+          if (demo === "other") {
+            theseQueries.push({
+              "vendor.demographics.other": { exists: true },
+            });
+          }
+        });
+
+        queries.push({ or: theseQueries });
+
+        setPriorityGroupSearch(demosArray);
+      }
+      const vendorStanding = searchParams.get("vendorStanding");
+      if (vendorStanding) {
+        queries.push({ or: [{ "vendor.standing": { in: vendorStanding } }] });
+        setIsStandingSearch(vendorStanding.split(","));
+      }
+      const status = searchParams.get("status");
+      if (status) {
+        queries.push({ or: [{ status: { in: status } }] });
+        setIsApplicationStatus(status.split(","));
+      }
+      let sort = "-createdAt";
       if (sorting?.length) {
         sort = `${sorting[0].desc ? "-" : ""}${sorting[0].id}`;
       }
@@ -390,7 +480,7 @@ export const ApplicationsList: React.FC<any> = () => {
         );
         if (!res.ok) throw new Error(res.statusText);
         const newApplications = await res.json();
-        console.log("***newApplications", newApplications);
+        // console.log("***newApplications", newApplications);
         return newApplications;
       } catch (err) {
         console.error(err);
@@ -404,7 +494,9 @@ export const ApplicationsList: React.FC<any> = () => {
   // table sorting
 
   const searchViaFilters = (e) => {
-    const query = new URLSearchParams("limit=10");
+    const query = new URLSearchParams(
+      `limit=10${season ? `&season=${season.id}` : ""}`,
+    );
 
     if (searchBox) {
       query.append("search", searchBox);
@@ -416,6 +508,26 @@ export const ApplicationsList: React.FC<any> = () => {
 
     if (isAcceptingSearch === "open") {
       query.append("accepting", "true");
+    }
+
+    if (productGapSearch.length) {
+      query.append("productGaps", productGapSearch.join(","));
+    }
+
+    if (isScheduleSearch.length) {
+      query.append("schedule", isScheduleSearch.join(","));
+    }
+
+    if (isStandingSearch.length) {
+      query.append("vendorStanding", isStandingSearch.join(","));
+    }
+
+    if (priorityGroupSearch.length) {
+      query.append("vendorDemographics", priorityGroupSearch.join(","));
+    }
+
+    if (isApplicationStatus.length) {
+      query.append("status", isApplicationStatus.join(","));
     }
 
     if (e.type == "click") {
@@ -435,9 +547,7 @@ export const ApplicationsList: React.FC<any> = () => {
     }
   };
 
-  // table filters
-
-  useEffect(() => {}, []);
+  // table filters=
 
   useEffect(() => {}, [isAcceptingSearch, locationSearch]);
 
@@ -515,6 +625,7 @@ export const ApplicationsList: React.FC<any> = () => {
               // flexGrow={1}
               p={4}
               marginBottom={{ base: 4, lg: 0 }}
+              marginTop={{ base: 0, lg: 4 }}
               maxW={260}
               minWidth={{ base: "100%", lg: 230 }}
               width={"100%"}
@@ -542,42 +653,166 @@ export const ApplicationsList: React.FC<any> = () => {
                     />
                   </InputGroup>
                 </FormControl>
+                {!season ? (
+                  <>
+                    <FormControl marginTop={4}>
+                      <FormLabel
+                        fontSize="sm"
+                        sx={{ fontWeight: 900, textTransform: "uppercase" }}
+                      >
+                        Show
+                      </FormLabel>
+                      <RadioGroup
+                        colorScheme="green"
+                        onChange={(val) => setIsAcceptingSearch(val)}
+                        value={isAcceptingSearch}
+                      >
+                        <Stack direction="column">
+                          <Radio value="all">All markets</Radio>
+                          <Radio value="open">
+                            Only markets accepting applications
+                          </Radio>
+                        </Stack>
+                      </RadioGroup>
+                    </FormControl>
+                    <FormControl marginTop={4}>
+                      <FormLabel
+                        fontSize="sm"
+                        sx={{ fontWeight: 900, textTransform: "uppercase" }}
+                      >
+                        Market location
+                      </FormLabel>
+                      <CheckboxGroup
+                        colorScheme="green"
+                        onChange={(val) => setLocationSearch(val)}
+                        value={locationSearch}
+                      >
+                        <Stack spacing={2} direction="column">
+                          <Checkbox value="DC">DC</Checkbox>
+                          <Checkbox value="MD">Maryland</Checkbox>
+                          <Checkbox value="VA">Virginia</Checkbox>
+                        </Stack>
+                      </CheckboxGroup>
+                    </FormControl>
+                  </>
+                ) : null}
                 <FormControl marginTop={4}>
                   <FormLabel
                     fontSize="sm"
                     sx={{ fontWeight: 900, textTransform: "uppercase" }}
                   >
-                    Show
+                    Schedule
                   </FormLabel>
-                  <RadioGroup
+                  <CheckboxGroup
                     colorScheme="green"
-                    onChange={(val) => setIsAcceptingSearch(val)}
-                    value={isAcceptingSearch}
+                    onChange={(val) => setIsScheduleSearch(val)}
+                    value={isScheduleSearch}
                   >
-                    <Stack direction="column">
-                      <Radio value="all">All markets</Radio>
-                      <Radio value="open">
-                        Only markets accepting applications
-                      </Radio>
+                    <Stack spacing={2} direction="column">
+                      <Checkbox value="fulltime">Full time</Checkbox>
+                      <Checkbox value="parttime">Part time</Checkbox>
+                      <Checkbox value="popup">Popup</Checkbox>
                     </Stack>
-                  </RadioGroup>
+                  </CheckboxGroup>
                 </FormControl>
                 <FormControl marginTop={4}>
                   <FormLabel
                     fontSize="sm"
                     sx={{ fontWeight: 900, textTransform: "uppercase" }}
                   >
-                    Market location
+                    Priority group
                   </FormLabel>
                   <CheckboxGroup
                     colorScheme="green"
-                    onChange={(val) => setLocationSearch(val)}
-                    value={locationSearch}
+                    onChange={(val) => setPriorityGroupSearch(val)}
+                    value={priorityGroupSearch}
                   >
                     <Stack spacing={2} direction="column">
-                      <Checkbox value="DC">DC</Checkbox>
-                      <Checkbox value="MD">Maryland</Checkbox>
-                      <Checkbox value="VA">Virginia</Checkbox>
+                      <Checkbox value="firstGeneration">
+                        First-generation farmer
+                      </Checkbox>
+                      <Checkbox value="veteranOwned">Veteran owned</Checkbox>
+                      <Checkbox value="bipoc">
+                        Black, Indigenous, and/or Person of Color
+                      </Checkbox>
+                      <Checkbox value="immigrantOrRefugee">
+                        Immigrant or refugee
+                      </Checkbox>
+                      <Checkbox value="lgbtqia">
+                        Lesbian, Gay, Bisexual, Transgender, Queer, Intersex,
+                        Asexual, Plus
+                      </Checkbox>
+                      <Checkbox value="other">Other</Checkbox>
+                    </Stack>
+                  </CheckboxGroup>
+                </FormControl>
+                <FormControl marginTop={4}>
+                  <FormLabel
+                    fontSize="sm"
+                    sx={{ fontWeight: 900, textTransform: "uppercase" }}
+                  >
+                    Vendor standing
+                  </FormLabel>
+                  <CheckboxGroup
+                    colorScheme="green"
+                    onChange={(val) => setIsStandingSearch(val)}
+                    value={isStandingSearch}
+                  >
+                    <Stack spacing={2} direction="column">
+                      <Checkbox value="good">Good</Checkbox>
+                      <Checkbox value="conditional">Conditional</Checkbox>
+                      <Checkbox value="bad">Bad</Checkbox>
+                      <Checkbox value="underReview">Under review</Checkbox>
+                      <Checkbox value="ineligible">Ineligible</Checkbox>
+                      <Checkbox value="inactive">Inactive</Checkbox>
+                    </Stack>
+                  </CheckboxGroup>
+                </FormControl>
+                <FormControl marginTop={4}>
+                  <FormLabel
+                    fontSize="sm"
+                    sx={{ fontWeight: 900, textTransform: "uppercase" }}
+                  >
+                    Product gaps
+                  </FormLabel>
+                  <CheckboxGroup
+                    colorScheme="green"
+                    onChange={(val) => setProductGapSearch(val)}
+                    value={productGapSearch}
+                  >
+                    <Stack spacing={2} direction="column">
+                      <Checkbox value="meat">Meat</Checkbox>
+                      <Checkbox value="dairy">Dairy</Checkbox>
+                      <Checkbox value="produce">Produce</Checkbox>
+                      <Checkbox value="plants">Plants</Checkbox>
+                      <Checkbox value="dried_goods">Dried goods</Checkbox>
+                      <Checkbox value="value_added_products">
+                        Value-added products
+                      </Checkbox>
+                      <Checkbox value="baked_goods">Baked goods</Checkbox>
+                      <Checkbox value="prepared_food">Prepared food</Checkbox>
+                      <Checkbox value="beverages">Beverages</Checkbox>
+                      <Checkbox value="non_food">Non-food</Checkbox>
+                    </Stack>
+                  </CheckboxGroup>
+                </FormControl>
+                <FormControl marginTop={4}>
+                  <FormLabel
+                    fontSize="sm"
+                    sx={{ fontWeight: 900, textTransform: "uppercase" }}
+                  >
+                    Application status
+                  </FormLabel>
+                  <CheckboxGroup
+                    colorScheme="green"
+                    onChange={(val) => setIsApplicationStatus(val)}
+                    value={isApplicationStatus}
+                  >
+                    <Stack spacing={2} direction="column">
+                      <Checkbox value="approved">Approved</Checkbox>
+                      <Checkbox value="rejected">Rejected</Checkbox>
+                      <Checkbox value="pending">Pending</Checkbox>
+                      <Checkbox value="withdrawn">Withdrawn</Checkbox>
                     </Stack>
                   </CheckboxGroup>
                 </FormControl>
@@ -587,7 +822,9 @@ export const ApplicationsList: React.FC<any> = () => {
                   </Button>
                   <Button
                     as="a"
-                    href="/admin/collections/applications?limit=10"
+                    href={`/admin/collections/applications?limit=10${
+                      season ? `&season=${season.id}` : ""
+                    }`}
                     variant={"outline"}
                   >
                     Clear search

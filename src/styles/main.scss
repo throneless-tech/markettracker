@@ -148,6 +148,8 @@ p {
   font-family: "Outfit", sans-serif;
 }
 
+/* react datepicker */
+
 .react-datepicker {
   border: none;
   font-family: "Outfit", sans-serif;
@@ -155,9 +157,6 @@ p {
 
   .react-datepicker__navigation {
     display: none;
-  }
-
-  .react-datepicker__navigation--next {
   }
 
   .react-datepicker__header {
@@ -225,4 +224,34 @@ p {
     border: 2px solid #a3a3a3;
     padding: 2px;
   }
+}
+
+.seasons-create-dates {
+  .react-datepicker {
+    .react-datepicker__navigation {
+      display: flex;
+
+      &.react-datepicker__navigation--previous {
+        left: 0;
+        top: 8px;
+      }
+
+      &.react-datepicker__navigation--next {
+        right: 18px;
+        top: 6px;
+      }
+    }
+  }
+}
+
+.datepicker-wrap {
+  .react-datepicker {
+    display: flex;
+    flex-wrap: wrap;
+  }
+}
+/* react table */
+.ReactTable .rt-table .rt-thead {
+  min-width: 0px !important;
+  overflow: hidden !important;
 }

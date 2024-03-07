@@ -175,7 +175,7 @@ export const SeasonsEdit: React.FC<any> = (props) => {
 
   const submitForm = async () => {
     setIsSubmitted(true);
-    console.log("***fields", fields);
+    // console.log("***fields", fields);
     //submit();
     await saveSeason();
   };
@@ -195,11 +195,11 @@ export const SeasonsEdit: React.FC<any> = (props) => {
         console.error(error);
       }
     };
-    console.log("***data", history.location.state);
+    // console.log("***data", history.location.state);
     if ((history.location.state as Season).market) {
       const market = (history.location.state as Season).market;
       setMarketId(typeof market === "object" ? market.id : market);
-      console.log("***market state", history.location.state);
+      // console.log("***market state", history.location.state);
     } else if (history.location.state) {
       setMarketId((history.location.state as Market).id);
     }
@@ -226,7 +226,7 @@ export const SeasonsEdit: React.FC<any> = (props) => {
         let newContacts = await response.json();
 
         newContacts = newContacts.docs;
-        console.log("***newContacts:", newContacts);
+        // console.log("***newContacts:", newContacts);
         setUsers(newContacts);
         setIsLoaded(true);
       };
@@ -274,7 +274,7 @@ export const SeasonsEdit: React.FC<any> = (props) => {
                 layout: "vertical",
               }}
             />
-            <HStack>
+            <HStack className="seasons-create-dates">
               <DateField label="Start date" path="marketDates.startDate" />
               <DateField label="End date" path="marketDates.endDate" />
             </HStack>
@@ -543,7 +543,7 @@ export const SeasonsEdit: React.FC<any> = (props) => {
                         borderBottomRadius="8px"
                         padding={4}
                       >
-                        <HStack>
+                        <HStack wrap={"wrap"}>
                           <Text
                             fontSize={"sm"}
                             textTransform={"uppercase"}
@@ -766,16 +766,12 @@ export const SeasonsEdit: React.FC<any> = (props) => {
                                     </Text>
                                     <DatePicker
                                       inline
+                                      calendarClassName="seasons-create-dates"
                                       selected={
                                         startDate ? new Date(startDate) : null
                                       }
                                       onChange={(date) =>
                                         setStartDate(date.toISOString())
-                                      }
-                                      dayClassName={(date) =>
-                                        date.getDate() < Math.random() * 31
-                                          ? "random"
-                                          : undefined
                                       }
                                     />
                                   </Stack>
@@ -789,16 +785,12 @@ export const SeasonsEdit: React.FC<any> = (props) => {
                                     </Text>
                                     <DatePicker
                                       inline
+                                      calendarClassName="seasons-create-dates"
                                       selected={
                                         endDate ? new Date(endDate) : null
                                       }
                                       onChange={(date) =>
                                         setEndDate(date.toISOString())
-                                      }
-                                      dayClassName={(date) =>
-                                        date.getDate() < Math.random() * 31
-                                          ? "random"
-                                          : undefined
                                       }
                                     />
                                   </Stack>
@@ -984,7 +976,7 @@ export const SeasonsEdit: React.FC<any> = (props) => {
                         sx={{ borderColor: "gray.600", borderBottomWidth: 2 }}
                       />
                     </HStack>
-                    <HStack marginTop={2}>
+                    <HStack marginTop={2} wrap={"wrap"}>
                       {vendors?.length &&
                         vendors.map((vendor) => (
                           <>

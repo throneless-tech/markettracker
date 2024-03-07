@@ -6,7 +6,7 @@ import qs from "qs";
 
 // Payload imports
 import { useField, useForm } from "payload/components/forms";
-import type { Application, User } from "payload/generated-types";
+import type { Application, Review, User } from "payload/generated-types";
 import { useAuth, useDocumentInfo } from "payload/components/utilities";
 
 // Chakra imports
@@ -31,20 +31,27 @@ import {
   Textarea,
   Wrap,
 } from "@chakra-ui/react";
+import { TableColumnsProvider } from "payload/dist/admin/components/elements/TableColumns";
 
 // components
 
 // utils
 
 // icons
+import EditIcon from "../../assets/icons/edit.js";
 
 // images
+
 const monthDiff = (d1, d2) => {
   let months;
   months = (d2.getFullYear() - d1.getFullYear()) * 12;
   months -= d1.getMonth();
   months += d2.getMonth();
   return months <= 0 ? 0 : months;
+};
+
+const dayDiff = (d1, d2) => {
+  return Math.ceil((d2 - d1) / (7 * 24 * 60 * 60 * 1000));
 };
 
 export const ReviewsEdit: React.FC<any> = () => {
@@ -87,10 +94,31 @@ export const ReviewsEdit: React.FC<any> = () => {
   const [shadowApp, setShadowApp] = useState(null);
   const [shadowReviewer, setShadowReviewer] = useState(null);
   const [doSubmit, setDoSubmit] = useState(false);
+  const [seasonDaysLength, setSeasonDaysLength] = useState(0);
+
+  const [contacts, setContacts] = useState([]);
+  const [primaryContact, setPrimaryContact] = useState(null);
+
+  const totalScoreSoFar = (reviews) => {
+    let total = 0;
+    reviews.map((review) => {
+      let thisScore =
+        review.attendanceScore +
+        review.demographicScore +
+        review.productScore +
+        review.saturationScore +
+        review.setupScore +
+        review.vendorScore;
+
+      total += thisScore;
+      total = total / reviews.length;
+    });
+
+    return isNaN(total) ? 0 : total;
+  };
 
   const submitForm = () => {
     if (!id && shadowApp && shadowApp.id) {
-      console.log("***Setting shadow app", shadowApp);
       setApplication(shadowApp);
       setReviewer(shadowReviewer);
     }
@@ -101,8 +129,6 @@ export const ReviewsEdit: React.FC<any> = () => {
     const trySubmit = async () => {
       console.log("getData->", await getData());
       await submit();
-      //history.push("/admin/collections/applications?limit=10");
-      history.goBack();
     };
     if (doSubmit) {
       console.log("submitting");
@@ -116,6 +142,7 @@ export const ReviewsEdit: React.FC<any> = () => {
     const setShadow = async () => {
       let vendor = app.vendor;
       let season = app.season;
+      let reviews = app.reviews ? app.reviews : [];
       if (typeof vendor === "string") {
         try {
           const response = await fetch(`/api/vendors/${vendor}`, {
@@ -142,10 +169,38 @@ export const ReviewsEdit: React.FC<any> = () => {
           console.error(error.message);
         }
       }
-      setShadowApp({ ...app, vendor: vendor, season: season });
+
+      let theseReviews: Array<Review> = [];
+      if (reviews.length && typeof reviews[0] === "string") {
+        reviews.map(async (review) => {
+          try {
+            const response = await fetch(`/api/reviews/${reviews[0]}`, {
+              headers: {
+                "Content-Type": "application/json",
+              },
+            });
+            if (!response.ok) throw new Error(response.statusText);
+            const res = await response.json();
+            console.log(res);
+            theseReviews.push(res);
+          } catch (error) {
+            console.error(error.message);
+          }
+        });
+      } else {
+        theseReviews = reviews as Review[];
+      }
+      setShadowApp({
+        ...app,
+        vendor: vendor,
+        season: season,
+        reviews: theseReviews,
+      });
     };
     if (history.location.state) {
       setShadow();
+    } else if (id) {
+      history.go(-2);
     }
 
     if (user) {
@@ -154,16 +209,26 @@ export const ReviewsEdit: React.FC<any> = () => {
   }, [history]);
 
   useEffect(() => {
+    if (shadowApp?.vendor?.contacts?.length) {
+      setContacts(shadowApp.vendor.contacts);
+    }
+
     if (
       shadowApp?.season?.marketDates?.startDate &&
       shadowApp?.season?.marketDates?.endDate
     ) {
-      console.log("***shadowApp.season", shadowApp.season);
+      // console.log("***shadowApp.season", shadowApp.season);
       let calLength = monthDiff(
         new Date(shadowApp.season.marketDates.startDate),
         new Date(shadowApp.season.marketDates.endDate),
       );
       setNumMonths(calLength);
+
+      let daysLength = dayDiff(
+        new Date(shadowApp.season.marketDates.startDate),
+        new Date(shadowApp.season.marketDates.endDate),
+      );
+      setSeasonDaysLength(daysLength);
     }
 
     const setProducts = async (ids: string[]) => {
@@ -201,7 +266,30 @@ export const ReviewsEdit: React.FC<any> = () => {
     }
   }, [shadowApp]);
 
-  console.log("***shadowApp", shadowApp);
+  // console.log("***shadowApp", shadowApp);
+  useEffect(() => {
+    let primary;
+    if (contacts.length) {
+      primary = contacts.filter((contact) => contact.type.includes("primary"));
+    }
+
+    if (primary && primary.length) {
+      setPrimaryContact(primary[0]);
+    }
+
+    let primaryUser;
+    if (!contacts.length && shadowApp) {
+      primaryUser = shadowApp.vendor.user;
+    }
+
+    if (primaryUser) {
+      setPrimaryContact(primaryUser);
+    }
+  }, [contacts, shadowApp]);
+
+  useEffect(() => {
+    console.log("PRIMARY CONTACT?", primaryContact);
+  }, [primaryContact]);
 
   if (
     shadowApp &&
@@ -273,43 +361,24 @@ export const ReviewsEdit: React.FC<any> = () => {
                   </Text>
                 </HStack>
                 <Spacer />
-                {shadowApp.vendor.contacts && shadowApp.vendor.contacts.length
-                  ? shadowApp.vendor.contacts.map((contact) => {
-                      if (contact.type && contact.type.length) {
-                        const type = contact.type.find(
-                          (type) => type == "primary",
-                        );
-                        if (type) {
-                          return (
-                            <HStack key={contact.id}>
-                              <Text
-                                as={"span"}
-                                color={"gray.50"}
-                                fontSize="2xl"
-                                fontWeight={700}
-                              >
-                                Primary contact:
-                              </Text>
-                              <Text
-                                as={"span"}
-                                color={"gray.50"}
-                                fontSize="2xl"
-                              >
-                                {contact.name}
-                              </Text>
-                              <Text
-                                as={"span"}
-                                color={"gray.50"}
-                                fontSize="2xl"
-                              >
-                                {contact.phone}
-                              </Text>
-                            </HStack>
-                          );
-                        }
-                      }
-                    })
-                  : null}
+                {primaryContact ? (
+                  <HStack key={primaryContact.id}>
+                    <Text
+                      as={"span"}
+                      color={"gray.50"}
+                      fontSize="2xl"
+                      fontWeight={700}
+                    >
+                      Primary contact:
+                    </Text>
+                    <Text as={"span"} color={"gray.50"} fontSize="2xl">
+                      {primaryContact.name}
+                    </Text>
+                    <Text as={"span"} color={"gray.50"} fontSize="2xl">
+                      {primaryContact.email || primaryContact.phone}
+                    </Text>
+                  </HStack>
+                ) : null}
               </Flex>
             </Box>
             <Box background={"#90B132"} borderBottomRadius="8px" padding={4}>
@@ -317,12 +386,33 @@ export const ReviewsEdit: React.FC<any> = () => {
                 {shadowApp.vendor.description}
               </Text>
             </Box>
+            <Box marginTop={8} textAlign={"right"}>
+              <Button
+                as="a"
+                href={`/admin/collections/applications/${shadowApp.id}`}
+                leftIcon={
+                  <EditIcon sx={{ fill: "none", height: 6, width: 6 }} />
+                }
+                variant={"unstyled"}
+                sx={{
+                  display: "block",
+                  marginBottom: 4,
+                  marginLeft: "auto",
+                  marginRight: 0,
+                  "&:active, &:focus, &:hover": {
+                    textDecoration: "underline",
+                  },
+                }}
+              >
+                Edit this application
+              </Button>
+            </Box>
             <Text fontSize={18} marginY={4}>
               Grade the following catagories on a scale from 0 to 5. 0 being
               least qualified, 5 being most qualified.
             </Text>
             <FormControl marginBottom={8}>
-              <HStack alignItems={"center"} spacing={3}>
+              <HStack alignItems={"top"} spacing={3}>
                 <NumberInput
                   colorScheme="green"
                   min={0}
@@ -333,7 +423,7 @@ export const ReviewsEdit: React.FC<any> = () => {
                 >
                   <NumberInputField />
                 </NumberInput>
-                <Stack>
+                <Stack direction="row">
                   <FormLabel
                     sx={{
                       fontSize: 18,
@@ -343,12 +433,14 @@ export const ReviewsEdit: React.FC<any> = () => {
                   >
                     Vendor type
                   </FormLabel>
-                  <Text>{shadowApp.vendor.type}</Text>
+                  <Text fontWeight="bold" textTransform="capitalize">
+                    {shadowApp.vendor.type}
+                  </Text>
                 </Stack>
               </HStack>
             </FormControl>
             <FormControl marginBottom={8}>
-              <HStack alignItems={"center"} spacing={3}>
+              <HStack alignItems={"top"} spacing={3}>
                 <NumberInput
                   colorScheme="green"
                   min={0}
@@ -378,7 +470,7 @@ export const ReviewsEdit: React.FC<any> = () => {
               </HStack>
             </FormControl>
             <FormControl marginBottom={8}>
-              <HStack alignItems={"center"} spacing={3}>
+              <HStack alignItems={"top"} spacing={3}>
                 <NumberInput
                   colorScheme="green"
                   min={0}
@@ -427,7 +519,7 @@ export const ReviewsEdit: React.FC<any> = () => {
               </HStack>
             </FormControl>
             <FormControl marginBottom={8}>
-              <HStack alignItems={"center"} spacing={3}>
+              <HStack alignItems={"top"} spacing={3}>
                 <NumberInput
                   colorScheme="green"
                   min={0}
@@ -456,7 +548,7 @@ export const ReviewsEdit: React.FC<any> = () => {
               </HStack>
             </FormControl>
             <FormControl marginBottom={8}>
-              <HStack alignItems={"center"} spacing={3}>
+              <HStack alignItems={"top"} spacing={3}>
                 <NumberInput
                   colorScheme="green"
                   min={0}
@@ -493,7 +585,7 @@ export const ReviewsEdit: React.FC<any> = () => {
               </HStack>
             </FormControl>
             <FormControl marginBottom={8}>
-              <HStack alignItems={"center"} spacing={3}>
+              <HStack alignItems={"top"} spacing={3}>
                 <NumberInput
                   colorScheme="green"
                   min={0}
@@ -502,7 +594,7 @@ export const ReviewsEdit: React.FC<any> = () => {
                   value={attendScore}
                   onChange={(newValue) => setAttendScore(Number(newValue))}
                 >
-                  <NumberInputField />
+                  <NumberInputField sx={{ width: 16 }} />
                 </NumberInput>
                 <Stack>
                   <FormLabel
@@ -516,36 +608,41 @@ export const ReviewsEdit: React.FC<any> = () => {
                   </FormLabel>
                   <FormHelperText>
                     {shadowApp.vendor.name} plans to attend{" "}
-                    {shadowApp.dates.length}/13 market days
-                    <Wrap>
-                      <DatePicker
-                        inline
-                        readOnly={true}
-                        onChange={() => true}
-                        dayClassName={(date) => {
-                          let dateFound = null;
-                          if (shadowApp.dates) {
-                            dateFound = shadowApp.dates.find((item) => {
-                              return item.date === date.toISOString();
-                            });
-                          }
-
-                          if (dateFound) {
-                            return "vendor-select";
-                          } else {
-                            return "";
-                          }
-                        }}
-                        selected={null}
-                        includeDates={shadowApp.dates.map(
-                          (item) => new Date(item.date),
-                        )}
-                        minDate={shadowApp.startDate}
-                        maxDate={shadowApp.endDate}
-                        monthsShown={numMonths + 1}
-                      />
-                    </Wrap>
+                    {shadowApp.dates.length}/{seasonDaysLength} market days
                   </FormHelperText>
+                  <Wrap className="datepicker-wrap">
+                    <DatePicker
+                      inline
+                      readOnly={true}
+                      onChange={() => true}
+                      dayClassName={(date) => {
+                        let dateFound = null;
+                        if (shadowApp.dates) {
+                          dateFound = shadowApp.dates.find((item) => {
+                            if (item.date) {
+                              return (
+                                item.date.substring(0, 10) ===
+                                date.toISOString().substring(0, 10)
+                              );
+                            }
+                          });
+                        }
+
+                        if (dateFound) {
+                          return "vendor-select";
+                        } else {
+                          return "";
+                        }
+                      }}
+                      selected={null}
+                      includeDates={shadowApp.dates.map(
+                        (item) => new Date(item.date),
+                      )}
+                      minDate={shadowApp.startDate}
+                      maxDate={shadowApp.endDate}
+                      monthsShown={numMonths + 1}
+                    />
+                  </Wrap>
                 </Stack>
               </HStack>
             </FormControl>
@@ -576,6 +673,56 @@ export const ReviewsEdit: React.FC<any> = () => {
               </Button>
             </Center>
           </Box>
+          {shadowApp.reviews && shadowApp.reviews.length ? (
+            <HStack marginTop={8} spacing={4} align={"stretch"}>
+              <Container background={"gray.50"} padding={4}>
+                <Heading size={"md"} color={"gray.600"} marginBottom={0}>
+                  Recorded reviews
+                </Heading>
+                <Stack>
+                  {shadowApp.reviews.map((review) => (
+                    <>
+                      {typeof review === "object" ? (
+                        <>
+                          <HStack marginTop={4} spacing={2}>
+                            <Text>
+                              Total score:{" "}
+                              {review.attendanceScore +
+                                review.demographicScore +
+                                review.productScore +
+                                review.saturationScore +
+                                review.setupScore +
+                                review.vendorScore}
+                            </Text>
+                            <Text>by {review.reviewer.name}</Text>
+                            <Text></Text>
+                          </HStack>
+                          <HStack>
+                            <Text>
+                              <span style={{ fontWeight: "bold" }}>
+                                Notes:{" "}
+                              </span>
+                              <span>{review.notes}</span>
+                            </Text>
+                          </HStack>
+                        </>
+                      ) : (
+                        <Text marginTop={8}>
+                          None yet. Be the first to leave a review.
+                        </Text>
+                      )}
+                    </>
+                  ))}
+                </Stack>
+              </Container>
+              <Container background={"gray.50"} padding={4}>
+                <Heading size={"md"} color={"gray.600"}>
+                  Average grade
+                </Heading>
+                <Heading>{totalScoreSoFar(shadowApp.reviews)}</Heading>
+              </Container>
+            </HStack>
+          ) : null}
         </Container>
       </Box>
     );

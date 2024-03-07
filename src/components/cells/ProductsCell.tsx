@@ -44,7 +44,9 @@ export const ProductsCell: FC<Props | CellData> = ({ cellData }) => {
   return products ? (
     <>
       {products.length
-        ? products.map((product) => <Tag>{product.product}</Tag>)
+        ? products.map((product) => (
+            <Tag marginRight={2}>{product.product}</Tag>
+          ))
         : ""}
     </>
   ) : null;

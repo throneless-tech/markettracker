@@ -17,7 +17,6 @@ export const SeasonsTabs: React.FC<any> = ({ selected }) => {
           <ChakraLink as={ReactRouterLink} to="/admin/collections/seasons">
             <Box
               mb="-1px"
-              as="a"
               display="block"
               px="5"
               py="3"
@@ -40,7 +39,6 @@ export const SeasonsTabs: React.FC<any> = ({ selected }) => {
           >
             <Box
               mb="-1px"
-              as="a"
               display="block"
               px="5"
               py="3"
@@ -63,7 +61,6 @@ export const SeasonsTabs: React.FC<any> = ({ selected }) => {
           >
             <Box
               mb="-1px"
-              as="a"
               display="block"
               px="5"
               py="3"

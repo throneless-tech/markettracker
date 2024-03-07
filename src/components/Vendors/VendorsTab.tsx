@@ -26,6 +26,7 @@ import {
   InputLeftElement,
   Stack,
   Tag,
+  Wrap,
 } from "@chakra-ui/react";
 
 // chakra icons
@@ -38,7 +39,7 @@ import type { Vendor } from "payload/generated-types";
 import { GrayCheckIcon } from "../../assets/icons/gray-check";
 
 // components
-import { DataTable } from "../DataTable";
+import { DataTable } from "../DataTableVendors";
 
 type VendorStats = Vendor & {
   numberOfApplications: number;
@@ -135,27 +136,31 @@ export const VendorsTab: React.FC<any> = () => {
       enableSorting: false,
       cell: (demoCell) => {
         const demos: any = demoCell.getValue();
-        return demos && typeof demos === "object"
-          ? Object.entries(demos).map((key, _) => {
-              if (key[1] == "yes") {
-                if (key[0] == "firstGeneration") {
-                  return <Tag key={key[0]}>First generation farmer</Tag>;
-                }
-                if (key[0] == "veteranOwned") {
-                  return <Tag key={key[0]}>Veteran-owned</Tag>;
-                }
-                if (key[0] == "bipoc") {
-                  return <Tag key={key[0]}>BIPOC</Tag>;
-                }
-                if (key[0] == "immigrantOrRefugee") {
-                  return <Tag key={key[0]}>Immigrant or refugee</Tag>;
-                }
-                if (key[0] == "lgbtqia") {
-                  return <Tag key={key[0]}>LGBTQIA</Tag>;
-                }
-              }
-            })
-          : null;
+        return (
+          <Wrap spacing={1} maxW={170}>
+            {demos && typeof demos === "object"
+              ? Object.entries(demos).map((key, _) => {
+                  if (key[1] == "yes") {
+                    if (key[0] == "firstGeneration") {
+                      return <Tag key={key[0]}>First generation farmer</Tag>;
+                    }
+                    if (key[0] == "veteranOwned") {
+                      return <Tag key={key[0]}>Veteran-owned</Tag>;
+                    }
+                    if (key[0] == "bipoc") {
+                      return <Tag key={key[0]}>BIPOC</Tag>;
+                    }
+                    if (key[0] == "immigrantOrRefugee") {
+                      return <Tag key={key[0]}>Immigrant or refugee</Tag>;
+                    }
+                    if (key[0] == "lgbtqia") {
+                      return <Tag key={key[0]}>LGBTQIA</Tag>;
+                    }
+                  }
+                })
+              : null}
+          </Wrap>
+        );
       },
     },
     // {
@@ -171,9 +176,21 @@ export const VendorsTab: React.FC<any> = () => {
       header: "Standing",
       accessorKey: "standing",
       enableSorting: false,
-      cell: (statusCell) => {
-        const status: any = statusCell.getValue();
-        return <Tag>{status ? status : "Good"}</Tag>;
+      cell: (standingCell) => {
+        const standing: any = standingCell.getValue();
+        return (
+          <Tag textTransform="capitalize">
+            {standing == "underReview"
+              ? "Under review"
+              : standing == "approvedWithEdits"
+              ? "Approved with edits"
+              : standing == "tentativelyApproved"
+              ? "Tentatively approved"
+              : standing == "tentativelyRejected"
+              ? "Tentatively rejected"
+              : standing}
+          </Tag>
+        );
       },
       // cell not included because it is defined as editable in ../DataTable.tsx
     },
@@ -213,7 +230,7 @@ export const VendorsTab: React.FC<any> = () => {
       if (isFetching) return;
       const searchParams = new URLSearchParams(search);
       const queries = [];
-      queries.push({ standing: { not_equals: "underReview" } });
+      // queries.push({ standing: { not_equals: "underReview" } });
       const searchQuery = searchParams.get("search");
       if (searchQuery) {
         queries.push({ name: { like: searchQuery } });
@@ -263,7 +280,7 @@ export const VendorsTab: React.FC<any> = () => {
         );
         if (!res.ok) throw new Error(res.statusText);
         const newVendors = await res.json();
-        console.log("vendors: ", newVendors);
+        // console.log("vendors: ", newVendors);
         setVendors(newVendors);
         return newVendors;
       } catch (err) {

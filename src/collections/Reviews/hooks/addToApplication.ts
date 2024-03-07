@@ -9,7 +9,6 @@ export const afterChangeAddToApplication: CollectionAfterChangeHook = async ({
   doc,
   operation,
 }) => {
-  console.log("***doc", doc);
   if (operation === "create") {
     const application = await payload.findByID({
       id:
@@ -19,7 +18,8 @@ export const afterChangeAddToApplication: CollectionAfterChangeHook = async ({
       collection: "applications",
       depth: 0,
     });
-    console.log("***application:", application);
+    // console.log("***reviews:", application.reviews);
+    // console.log("***doc id", doc.id);
 
     let reviews: string[] = [];
     if (application.reviews && application.reviews.length) {

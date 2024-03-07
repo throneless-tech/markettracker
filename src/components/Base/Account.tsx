@@ -83,12 +83,12 @@ export const Account: React.FC<any> = () => {
   const [vendor, setShadowVendor] = useState<Vendor>();
   const [editContact, setEditContact] = useState<Contact>();
 
-  console.log("***isLoaded:", isLoaded);
-  console.log("***Name:", name);
-  console.log("***Email:", email);
-  console.log("***Role:", role);
-  console.log("***Vendor:", vendor);
-  console.log("***realVendor:", realVendor);
+  // console.log("***isLoaded:", isLoaded);
+  // console.log("***Name:", name);
+  // console.log("***Email:", email);
+  // console.log("***Role:", role);
+  // console.log("***Vendor:", vendor);
+  // console.log("***realVendor:", realVendor);
 
   const debounceVendor = useDebouncedCallback((vendor) => {
     setRealVendor(vendor);
@@ -1797,13 +1797,15 @@ export const Account: React.FC<any> = () => {
                 ) : null}
                 {role === "vendor" && vendor ? (
                   <TabPanel>
-                    <ProductsField
-                      onChange={(newValue) =>
-                        setVendor({ ...vendor, products: newValue })
-                      }
-                      value={vendor.products}
-                      path="vendor.products"
-                    />
+                    <Container maxW="container.xl">
+                      <ProductsField
+                        onChange={(newValue) =>
+                          setVendor({ ...vendor, products: newValue })
+                        }
+                        value={vendor.products}
+                        path="vendor.products"
+                      />
+                    </Container>
                   </TabPanel>
                 ) : null}
               </TabPanels>
