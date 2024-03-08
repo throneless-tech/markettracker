@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
-// import React, { useEffect } from "react";
+import qs from "qs";
 
 // utils and payload
 import { useAuth } from "payload/components/utilities";
@@ -41,9 +41,16 @@ const InvoicesEdit: React.FC<any> = () => {
   // TODO USER PERMISSIONS
 
   const [vendors, setVendors] = useState<Vendor[]>([]);
-  const [vendorId, setVendorId] = useState("");
-  const handleVendorChange = () => {
-    console.log("handling vendor change");
+  const [vendor, setVendor] = useState(null);
+  const [salesReports, setSalesReports] = useState([]);
+  const [invoice, setInvoice] = useState(null);
+
+  const handleVendorChange = (event) => {
+    const thisVendor = vendors.find(
+      (vendor) => vendor.id == event.target.value,
+    );
+    setVendor(thisVendor);
+    getSalesReports(event.target.value);
   };
 
   const getVendors = async () => {
@@ -53,13 +60,41 @@ const InvoicesEdit: React.FC<any> = () => {
     setVendors(vendors);
   };
 
+  const getSalesReports = async (id) => {
+    const query = {
+      vendor: {
+        equals: id,
+      },
+    };
+    const stringifiedQuery = qs.stringify(
+      {
+        where: query, // ensure that `qs` adds the `where` property, too!
+      },
+      { addQueryPrefix: true },
+    );
+
+    const response = await fetch(`/api/sales-reports${stringifiedQuery}`);
+    let reports = await response.json();
+    reports = reports.docs;
+    console.log(reports);
+
+    setSalesReports(reports);
+  };
+
   useEffect(() => {
     getVendors();
   }, []);
 
   useEffect(() => {
     // console.log("VENDORS???", vendors);
-  }, [vendors]);
+    if (salesReports.length) {
+      let thisInvoice = [];
+
+      salesReports.map((report, index) => {
+        console.log(report);
+      });
+    }
+  }, [salesReports, vendor, vendors]);
 
   return (
     <Container maxW="container.2xl" marginBottom={4}>
@@ -77,7 +112,7 @@ const InvoicesEdit: React.FC<any> = () => {
                 fontFamily="Zilla Slab"
                 lineHeight="1"
                 fontWeight="semibold"
-                fontSize="24px"
+                fontSize={24}
                 letterSpacing="0.03em"
                 textTransform="capitalize"
                 color="gray.600"
@@ -87,7 +122,7 @@ const InvoicesEdit: React.FC<any> = () => {
               </Text>
             </FormLabel>
             <Select
-              value={vendorId}
+              placeholder="Select an option"
               maxWidth={"360px"}
               onChange={handleVendorChange}
               sx={{ color: "gray.700" }}
@@ -119,6 +154,7 @@ const InvoicesEdit: React.FC<any> = () => {
               </Text>
             </FormLabel>
             <Select
+              placeholder="Select an option"
               // value={reportDate}
               maxWidth={"360px"}
               // onChange={handleDateChange}
@@ -146,7 +182,7 @@ const InvoicesEdit: React.FC<any> = () => {
           textTransform: "uppercase",
         }}
       >
-        Becca's Farm
+        {vendor ? vendor.name : ""}
       </Heading>
       <Container maxW="container.xl" marginBottom={4}>
         <Heading as="h3" sx={{ fontSize: 24 }}>
