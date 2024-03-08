@@ -216,9 +216,11 @@ const CustomSalesReportsEdit: React.FC<any> = () => {
     if (location == "DC" && role !== "vendor") {
       setPpDisable(false);
       setWicDisable(false);
+      setSfmnpDisable(false);
     } else {
       setPpDisable(true);
       setWicDisable(true);
+      setSfmnpDisable(true);
     }
 
     // SFMNP

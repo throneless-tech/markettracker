@@ -54,7 +54,7 @@ export const SalesReports: CollectionConfig = {
       name: "cashAndCredit",
       label: "Cash & Credit Sales",
       type: "number",
-      required: true,
+      // required: true,
       // defaultValue: 0,
       admin: {
         description: "Enter the sum total of Cash and Credit sales",
