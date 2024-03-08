@@ -97,7 +97,6 @@ export const NumberField: FC<Props> = ({
         bgColor = "#4dd42d";
         break;
     }
-    console.log("bgColor =>", bgColor);
     return bgColor;
   };
 
@@ -105,7 +104,6 @@ export const NumberField: FC<Props> = ({
     <FormControl>
       {label ? (
         <FormLabel
-          fontSize={"small"}
           sx={{
             fontWeight: 900,
             textTransform: "uppercase",

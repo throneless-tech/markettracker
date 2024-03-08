@@ -1,6 +1,7 @@
 "use client";
 import React, { useEffect, useState, useCallback } from "react";
 import qs from "qs";
+import { useHistory } from "react-router-dom";
 
 // utils and payload
 import { useAuth } from "payload/components/utilities";
@@ -38,6 +39,7 @@ import {
 const CustomSalesReportsEdit: React.FC<any> = () => {
   const { user } = useAuth();
   const role = user.role;
+  const history: any = useHistory();
   const { submit, getData } = useForm();
 
   // for the dropdown options
@@ -46,11 +48,16 @@ const CustomSalesReportsEdit: React.FC<any> = () => {
   const [datesMap, setDatesMap] = useState(new Map()); // #FIXME
   const [dateOptions, setDateOptions] = useState([]);
 
-  // const [seasonId, setSeasonId] = useState<string>("");
-  // const [vendorId, setVendorId] = useState<string>("");
   const [isFetching, setIsFetching] = useState<boolean>(false);
+  const [isEditView, setIsEditView] = useState<boolean>(false);
 
-  // market location
+  // FOR EDIT VIEW HEADERS
+  // const [seasonId, setSeasonId] = useState<string>("");
+  const [thisVendor, setThisVendor] = useState<string>("");
+  const [thisMarket, setThisMarket] = useState<string>("");
+  const [thisDate, setThisDate] = useState<string>("");
+
+  // FOR PERMISSIONS
   const [location, setLocation] = useState<string>("");
 
   // the form
@@ -93,6 +100,7 @@ const CustomSalesReportsEdit: React.FC<any> = () => {
 
   const producePlusEnable = () => {
     console.log("location?", location, "user.role?", user.role);
+    return true;
   };
 
   const submitForm = async () => {
@@ -184,7 +192,39 @@ const CustomSalesReportsEdit: React.FC<any> = () => {
     }
   }, [seasonId]);
 
-  // useEffects
+  useEffect(() => {
+    if (history.location.state) {
+      setIsEditView(true);
+    }
+
+    let thisReport;
+
+    if (history.location.state && history.location.state.id) {
+      thisReport = history.location.state;
+    }
+
+    if (thisReport) {
+      setThisVendor(thisReport.vendor.name);
+      setThisMarket(thisReport.season.name);
+      setThisDate(new Date(thisReport.day).toLocaleDateString("en-US"));
+    }
+
+    if (
+      thisReport &&
+      thisReport.season &&
+      thisReport.season.market &&
+      thisReport.season.market.address
+    ) {
+      setLocation(thisReport.season.market.address.state);
+    }
+  }, [history]);
+
+  useEffect(() => {
+    if (location) {
+      producePlusEnable();
+    }
+  }, [location]);
+
   useEffect(() => {
     getSeasons();
   }, []);
@@ -197,122 +237,134 @@ const CustomSalesReportsEdit: React.FC<any> = () => {
     setDateOptions(datesMap.get(vendorId));
   }, [vendorId, datesMap]);
 
-  // commented out to bypass linter lol
-
   return (
     <>
       <Container maxW="container.xl" marginBottom={4}>
         <Flex my={8} justify="space-between" flexWrap={"wrap"}>
           <Box>
-            <Heading as="h1" sx={{ textTransform: "uppercase" }}>
-              Submit Sales Report
-            </Heading>
+            {isEditView && history ? (
+              <Heading as="h2" sx={{ textTransform: "uppercase" }}>
+                Updating {thisVendor}'s Sales Report: {thisMarket} on {thisDate}
+              </Heading>
+            ) : (
+              <Heading as="h1" sx={{ textTransform: "uppercase" }}>
+                Submit Sales Report
+              </Heading>
+            )}
           </Box>
-          <>
-            <Spacer />
-            <Box>
-              <FormControl sx={{ alignItems: "center", display: "flex" }}>
-                <FormLabel>
-                  <Text
-                    fontFamily="Zilla Slab"
-                    lineHeight="1"
-                    fontWeight="semibold"
-                    fontSize="24px"
-                    letterSpacing="0.03em"
-                    textTransform="capitalize"
-                    color="gray.600"
+          {!isEditView ? (
+            <>
+              <Spacer />
+              <Box>
+                <FormControl sx={{ alignItems: "center", display: "flex" }}>
+                  <FormLabel>
+                    <Text
+                      fontFamily="Zilla Slab"
+                      lineHeight="1"
+                      fontWeight="semibold"
+                      fontSize="24px"
+                      letterSpacing="0.03em"
+                      textTransform="capitalize"
+                      color="gray.600"
+                    >
+                      Choose a market
+                    </Text>
+                  </FormLabel>
+                  <Select
+                    value={seasonId}
+                    maxWidth={"360px"}
+                    onChange={handleSeasonChange}
                   >
-                    Choose a market
-                  </Text>
-                </FormLabel>
-                <Select
-                  value={seasonId}
-                  maxWidth={"360px"}
-                  onChange={handleSeasonChange}
-                >
-                  {seasons.length
-                    ? seasons.map((season) => {
-                        return (
-                          <option
-                            value={
-                              typeof season === "object" ? season.id : "All"
-                            }
-                            key={typeof season === "object" ? season.id : "All"}
-                          >
-                            {typeof season === "object" ? season.name : "All"}
-                          </option>
-                        );
-                      })
-                    : null}
-                </Select>
-              </FormControl>
-              <FormControl sx={{ alignItems: "center", display: "flex" }}>
-                <FormLabel>
-                  <Text
-                    fontFamily="Zilla Slab"
-                    lineHeight="1"
-                    fontWeight="semibold"
-                    fontSize="24px"
-                    letterSpacing="0.03em"
-                    textTransform="capitalize"
-                    color="gray.600"
+                    {seasons.length
+                      ? seasons.map((season) => {
+                          return (
+                            <option
+                              value={
+                                typeof season === "object" ? season.id : "All"
+                              }
+                              key={
+                                typeof season === "object" ? season.id : "All"
+                              }
+                            >
+                              {typeof season === "object" ? season.name : "All"}
+                            </option>
+                          );
+                        })
+                      : null}
+                  </Select>
+                </FormControl>
+                <FormControl sx={{ alignItems: "center", display: "flex" }}>
+                  <FormLabel>
+                    <Text
+                      fontFamily="Zilla Slab"
+                      lineHeight="1"
+                      fontWeight="semibold"
+                      fontSize="24px"
+                      letterSpacing="0.03em"
+                      textTransform="capitalize"
+                      color="gray.600"
+                    >
+                      Choose a vendor
+                    </Text>
+                  </FormLabel>
+                  <Select
+                    value={vendorId}
+                    maxWidth={"360px"}
+                    onChange={handleVendorChange}
                   >
-                    Choose a vendor
-                  </Text>
-                </FormLabel>
-                <Select
-                  value={vendorId}
-                  maxWidth={"360px"}
-                  onChange={handleVendorChange}
-                >
-                  {vendors && vendors.length
-                    ? vendors.map((vendor) => {
-                        return (
-                          <option
-                            value={
-                              typeof vendor === "object" ? vendor.id : "All"
-                            }
-                            key={typeof vendor === "object" ? vendor.id : "All"}
-                          >
-                            {typeof vendor === "object" ? vendor.name : "All"}
-                          </option>
-                        );
-                      })
-                    : null}
-                </Select>
-              </FormControl>
-              <FormControl sx={{ alignItems: "center", display: "flex" }}>
-                <FormLabel>
-                  <Text
-                    fontFamily="Zilla Slab"
-                    lineHeight="1"
-                    fontWeight="semibold"
-                    fontSize="24px"
-                    letterSpacing="0.03em"
-                    textTransform="capitalize"
-                    color="gray.600"
+                    {vendors && vendors.length
+                      ? vendors.map((vendor) => {
+                          return (
+                            <option
+                              value={
+                                typeof vendor === "object" ? vendor.id : "All"
+                              }
+                              key={
+                                typeof vendor === "object" ? vendor.id : "All"
+                              }
+                            >
+                              {typeof vendor === "object" ? vendor.name : "All"}
+                            </option>
+                          );
+                        })
+                      : null}
+                  </Select>
+                </FormControl>
+                <FormControl sx={{ alignItems: "center", display: "flex" }}>
+                  <FormLabel>
+                    <Text
+                      fontFamily="Zilla Slab"
+                      lineHeight="1"
+                      fontWeight="semibold"
+                      fontSize="24px"
+                      letterSpacing="0.03em"
+                      textTransform="capitalize"
+                      color="gray.600"
+                    >
+                      Choose a date
+                    </Text>
+                  </FormLabel>
+                  <Select
+                    value={date}
+                    maxWidth={"360px"}
+                    onChange={handleDateChange}
                   >
-                    Choose a date
-                  </Text>
-                </FormLabel>
-                <Select
-                  value={date}
-                  maxWidth={"360px"}
-                  onChange={handleDateChange}
-                >
-                  {dateOptions && dateOptions.length
-                    ? dateOptions.map((dateObj) => {
-                        return (
-                          <option value={dateObj.date} key={dateObj.id}>
-                            {new Date(dateObj.date).toLocaleDateString("en-US")}
-                          </option>
-                        );
-                      })
-                    : null}
-                </Select>
-              </FormControl>
-            </Box>
-          </>
+                    {dateOptions && dateOptions.length
+                      ? dateOptions.map((dateObj) => {
+                          return (
+                            <option value={dateObj.date} key={dateObj.id}>
+                              {new Date(dateObj.date).toLocaleDateString(
+                                "en-US",
+                              )}
+                            </option>
+                          );
+                        })
+                      : null}
+                  </Select>
+                </FormControl>
+              </Box>
+            </>
+          ) : null}
         </Flex>
         <Divider color="gray.900" borderBottomWidth={2} opacity={1} />
         <Container maxW="container.xl" marginTop={6} marginBottom={4}>
@@ -334,7 +386,7 @@ const CustomSalesReportsEdit: React.FC<any> = () => {
                 <NumberField
                   path="producePlus"
                   label="Produce Plus sales (DC markets only/staff will enter)"
-                  // isDisabled={true}
+                  isDisabled={producePlusEnable()}
                   admin={{
                     description: "Enter the sum total of Produce Plus sales",
                     placeholder: "Produce plus sales",
