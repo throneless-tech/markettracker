@@ -396,7 +396,8 @@ const CustomSalesReportsEdit: React.FC<any> = () => {
                   path="cashAndCredit"
                   label="Cash and credit sales"
                   isDisabled={false}
-                  required
+                  min={0}
+                  // required
                   admin={{
                     description: "Enter the sum total of Cash and Credit sales",
                     placeholder: "Cash and credit sales",
@@ -408,6 +409,7 @@ const CustomSalesReportsEdit: React.FC<any> = () => {
                   path="producePlus"
                   label="Produce Plus sales"
                   isDisabled={ppDisable}
+                  min={0}
                   admin={{
                     description: "Enter the sum total of Produce Plus sales",
                     placeholder: "Produce plus sales",
@@ -420,7 +422,8 @@ const CustomSalesReportsEdit: React.FC<any> = () => {
                 <NumberField
                   path="sfmnp"
                   label="SFMNP sales"
-                  // isDisabled={sfmnpEnable()}
+                  isDisabled={sfmnpDisable}
+                  min={0}
                   admin={{
                     description:
                       "Enter the sum total of Seniors Farmers' Market Nutrition Program sales",
@@ -433,6 +436,7 @@ const CustomSalesReportsEdit: React.FC<any> = () => {
                   path="wic"
                   label="WIC sales (staff will enter)"
                   isDisabled={wicDisable}
+                  min={0}
                   admin={{
                     description:
                       "Enter the sum total of Special Supplemental Nutrition Program for Women, Infants, and Children (WIC) sales",
@@ -453,6 +457,7 @@ const CustomSalesReportsEdit: React.FC<any> = () => {
                       //     ? false
                       //     : true
                       // }
+                      min={0}
                       admin={{
                         description: "Enter the sum total of EBT/SNAP sales",
                         placeholder: "EBT sales",
@@ -477,6 +482,7 @@ const CustomSalesReportsEdit: React.FC<any> = () => {
                       path="fmnpBonus"
                       label="FMNP Bonus sales (staff will enter)"
                       // isDisabled={role == "vendor" ? true : false}
+                      min={0}
                       admin={{
                         description: "Enter the sum total of FMNP Bonus sales",
                         placeholder: "EBT sales",
@@ -488,6 +494,7 @@ const CustomSalesReportsEdit: React.FC<any> = () => {
                       path="cardCoupon"
                       label="Credit card coupon sales (staff will enter)"
                       // isDisabled={role == "vendor" ? true : false}
+                      min={0}
                       admin={{
                         description:
                           "Enter the sum total of credit card coupon sales",
@@ -502,6 +509,7 @@ const CustomSalesReportsEdit: React.FC<any> = () => {
                       path="marketGoods"
                       label="Market Goods coupon sales (staff will enter)"
                       // isDisabled={role == "vendor" ? true : false}
+                      min={0}
                       admin={{
                         description:
                           "Enter the sum total of Market Goods coupon sales",
@@ -514,6 +522,7 @@ const CustomSalesReportsEdit: React.FC<any> = () => {
                       path="gWorld"
                       label="GWorld coupon coupon sales (staff will enter)"
                       // isDisabled={role == "vendor" ? true : false}
+                      min={0}
                       admin={{
                         description:
                           "Enter the sum total of GWorld coupon sales",

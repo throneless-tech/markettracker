@@ -55,7 +55,7 @@ export const SalesReports: CollectionConfig = {
       label: "Cash & Credit Sales",
       type: "number",
       required: true,
-      defaultValue: 0,
+      // defaultValue: 0,
       admin: {
         description: "Enter the sum total of Cash and Credit sales",
         placeholder: "$0",
@@ -66,7 +66,7 @@ export const SalesReports: CollectionConfig = {
       label: "Produce Plus Sales",
       type: "number",
       // required: true,
-      defaultValue: 0,
+      // defaultValue: 0,
       admin: {
         description:
           "Enter the sum total of Produce Plus sales (only applies in DC)",
@@ -78,7 +78,7 @@ export const SalesReports: CollectionConfig = {
       label: "SFMNP Sales",
       type: "number",
       // required: true,
-      defaultValue: 0,
+      // defaultValue: 0,
       admin: {
         description:
           "Enter the sum total of Seniors Farmers' Market Nutrition Program sales",
@@ -90,7 +90,7 @@ export const SalesReports: CollectionConfig = {
       label: "WIC Sales",
       type: "number",
       // required: true,
-      defaultValue: 0,
+      // defaultValue: 0,
       admin: {
         description:
           "Enter the sum total of Special Supplemental Nutrition Program for Women, Infants, and Children (WIC) sales",
@@ -102,7 +102,7 @@ export const SalesReports: CollectionConfig = {
       label: "EBT/SNAP",
       type: "number",
       // required: true,
-      defaultValue: 0,
+      // defaultValue: 0,
       admin: {
         description: "Enter the sum total of EBT/SNAP sales",
         placeholder: "$0",
@@ -113,7 +113,7 @@ export const SalesReports: CollectionConfig = {
       label: "SNAP Bonus",
       type: "number",
       // required: true,
-      defaultValue: 0,
+      // defaultValue: 0,
       admin: {
         description: "Enter the sum total of SNAP Bonus sales",
         placeholder: "$0",
@@ -124,7 +124,7 @@ export const SalesReports: CollectionConfig = {
       label: "FMNP Bonus",
       type: "number",
       // required: true,
-      defaultValue: 0,
+      // defaultValue: 0,
       admin: {
         description: "Enter the sum total of FMNP Bonus sales",
         placeholder: "$0",
@@ -135,7 +135,7 @@ export const SalesReports: CollectionConfig = {
       label: "Credit card coupon",
       type: "number",
       // required: true,
-      defaultValue: 0,
+      // defaultValue: 0,
       admin: {
         description: "Enter the sum total of credit card coupon sales",
         placeholder: "$0",
@@ -146,7 +146,7 @@ export const SalesReports: CollectionConfig = {
       label: "Market Goods coupon",
       type: "number",
       // required: true,
-      defaultValue: 0,
+      // defaultValue: 0,
       admin: {
         description: "Enter the sum total of Market Goods coupon sales",
         placeholder: "$0",
@@ -157,7 +157,7 @@ export const SalesReports: CollectionConfig = {
       label: "GWorld coupon",
       type: "number",
       // required: true,
-      defaultValue: 0,
+      // defaultValue: 0,
       admin: {
         description: "Enter the sum total of GWorld coupon sales",
         placeholder: "$0",
