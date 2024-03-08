@@ -57,7 +57,7 @@ const dayDiff = (d1, d2) => {
 export const ReviewsEdit: React.FC<any> = () => {
   const { user } = useAuth();
   const history = useHistory();
-  const { submit } = useForm();
+  const { submit, getData } = useForm();
   const { id } = useDocumentInfo();
   const [numMonths, setNumMonths] = useState(1);
 
@@ -127,14 +127,17 @@ export const ReviewsEdit: React.FC<any> = () => {
 
   useEffect(() => {
     const trySubmit = async () => {
+      console.log("getData->", await getData());
       await submit();
     };
     if (doSubmit) {
+      console.log("submitting");
       trySubmit();
     }
   }, [doSubmit]);
 
   useEffect(() => {
+    console.log("this is the ReviewsEdit component");
     const app: Application = history.location.state as Application;
     const setShadow = async () => {
       let vendor = app.vendor;
