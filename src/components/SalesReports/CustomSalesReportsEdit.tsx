@@ -59,6 +59,9 @@ const CustomSalesReportsEdit: React.FC<any> = () => {
 
   // FOR PERMISSIONS
   const [location, setLocation] = useState<string>("");
+  const [ppDisable, setPpDisable] = useState<boolean>(true); // enable/disable produce plus fields
+  const [sfmnpDisable, setSfmnpDisable] = useState<boolean>(true); // enable/disable SFMNP
+  const [wicDisable, setWicDisable] = useState<boolean>(true); // enable/disable WIC
 
   // the form
   const { value: seasonId, setValue: setSeasonId } = useField<"string">({
@@ -81,26 +84,6 @@ const CustomSalesReportsEdit: React.FC<any> = () => {
   };
   const handleVendorChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setVendorId(event.target.value);
-  };
-
-  // form enable/disable
-  const sfmnpEnable = () => {
-    let disable = true;
-
-    if (role == "vendor" && (location == "VA" || location == "MD")) {
-      disable = false;
-    }
-
-    if (role == "admin" && location == "DC") {
-      disable = false;
-    }
-
-    return disable;
-  };
-
-  const producePlusEnable = () => {
-    console.log("location?", location, "user.role?", user.role);
-    return true;
   };
 
   const submitForm = async () => {
@@ -138,6 +121,10 @@ const CustomSalesReportsEdit: React.FC<any> = () => {
   }, [seasons, isFetching]);
 
   const getVendors = useCallback(async () => {
+    // get vendors only for the selected season,
+    // query the applications table for apps from vendors with
+    // approved or approvedWithEdits status
+
     const stringifiedQuery = qs.stringify(
       {
         where: {
@@ -164,7 +151,8 @@ const CustomSalesReportsEdit: React.FC<any> = () => {
       { addQueryPrefix: true },
     );
 
-    // only do this applications etch if a seasonId has been set
+    // only do this applications fetch
+    // IF a seasonId has been set
     if (seasonId) {
       try {
         const res = await fetch(`/api/applications${stringifiedQuery}`, {
@@ -193,6 +181,8 @@ const CustomSalesReportsEdit: React.FC<any> = () => {
   }, [seasonId]);
 
   useEffect(() => {
+    // a create page won't have
+    // history.location.state
     if (history.location.state) {
       setIsEditView(true);
     }
@@ -220,8 +210,33 @@ const CustomSalesReportsEdit: React.FC<any> = () => {
   }, [history]);
 
   useEffect(() => {
-    if (location) {
-      producePlusEnable();
+    // market location determines editability of some coupon forms
+
+    // PRODUCE PLUS
+    if (location == "DC" && role !== "vendor") {
+      setPpDisable(false);
+      setWicDisable(false);
+    } else {
+      setPpDisable(true);
+      setWicDisable(true);
+    }
+
+    // SFMNP
+    // only editable by vendor in VA or MD
+    if (role == "vendor" && (location == "VA" || location == "MD")) {
+      setSfmnpDisable(false);
+    } else {
+      setSfmnpDisable(true);
+    }
+
+    if (role == "vendor" && location == "MD") {
+      setWicDisable(false);
+    } else {
+      setWicDisable(true);
+    }
+
+    if (role == "vendor" && location == "VA") {
+      setWicDisable(true);
     }
   }, [location]);
 
@@ -231,6 +246,12 @@ const CustomSalesReportsEdit: React.FC<any> = () => {
 
   useEffect(() => {
     getVendors();
+
+    let selected;
+    if (seasonId && !history.location.state) {
+      selected = seasons.filter((season) => season.id == seasonId)[0];
+      setLocation(selected ? selected.market.address.state : "");
+    }
   }, [seasonId]);
 
   useEffect(() => {
@@ -385,8 +406,8 @@ const CustomSalesReportsEdit: React.FC<any> = () => {
               <GridItem w="100%" h="10">
                 <NumberField
                   path="producePlus"
-                  label="Produce Plus sales (DC markets only/staff will enter)"
-                  isDisabled={producePlusEnable()}
+                  label="Produce Plus sales"
+                  isDisabled={ppDisable}
                   admin={{
                     description: "Enter the sum total of Produce Plus sales",
                     placeholder: "Produce plus sales",
@@ -411,9 +432,7 @@ const CustomSalesReportsEdit: React.FC<any> = () => {
                 <NumberField
                   path="wic"
                   label="WIC sales (staff will enter)"
-                  // isDisabled={
-                  //   role == "vendor" && location == "MD" ? false : true
-                  // }
+                  isDisabled={wicDisable}
                   admin={{
                     description:
                       "Enter the sum total of Special Supplemental Nutrition Program for Women, Infants, and Children (WIC) sales",
@@ -422,84 +441,89 @@ const CustomSalesReportsEdit: React.FC<any> = () => {
                 />
               </GridItem>
             </Grid>
-            <Grid templateColumns="repeat(2, 5fr)" gap={4}>
-              <GridItem>
-                <NumberField
-                  path="ebt"
-                  label="EBT/SNAP sales"
-                  // isDisabled={
-                  //   location && location == "DC" && role !== "vendor"
-                  //     ? false
-                  //     : true
-                  // }
-                  admin={{
-                    description: "Enter the sum total of EBT/SNAP sales",
-                    placeholder: "EBT sales",
-                  }}
-                />
-              </GridItem>
-              <GridItem>
-                <NumberField
-                  path="snapBonus"
-                  label="SNAP Bonus sales (staff will enter)"
-                  // isDisabled={role == "vendor" ? true : false}
-                  admin={{
-                    description: "Enter the sum total of SNAP Bonus sales",
-                    placeholder: "SNAP bonus sales",
-                  }}
-                />
-              </GridItem>
-            </Grid>
-            <Grid templateColumns="repeat(2, 5fr)" gap={4}>
-              <GridItem>
-                <NumberField
-                  path="fmnpBonus"
-                  label="FMNP Bonus sales (staff will enter)"
-                  // isDisabled={role == "vendor" ? true : false}
-                  admin={{
-                    description: "Enter the sum total of FMNP Bonus sales",
-                    placeholder: "EBT sales",
-                  }}
-                />
-              </GridItem>
-              <GridItem>
-                <NumberField
-                  path="cardCoupon"
-                  label="Credit card coupon sales (staff will enter)"
-                  // isDisabled={role == "vendor" ? true : false}
-                  admin={{
-                    description:
-                      "Enter the sum total of credit card coupon sales",
-                    placeholder: "SNAP bonus sales",
-                  }}
-                />
-              </GridItem>
-            </Grid>
-            <Grid templateColumns="repeat(2, 5fr)" gap={4}>
-              <GridItem>
-                <NumberField
-                  path="marketGoods"
-                  label="Market Goods coupon sales (staff will enter)"
-                  // isDisabled={role == "vendor" ? true : false}
-                  admin={{
-                    description:
-                      "Enter the sum total of Market Goods coupon sales",
-                    placeholder: "EBT sales",
-                  }}
-                />
-              </GridItem>
-              <GridItem>
-                <NumberField
-                  path="gWorld"
-                  label="GWorld coupon coupon sales (staff will enter)"
-                  // isDisabled={role == "vendor" ? true : false}
-                  admin={{
-                    description: "Enter the sum total of GWorld coupon sales",
-                    placeholder: "SNAP bonus sales",
-                  }}
-                />
-              </GridItem>
-            </Grid>
+            {role !== "vendor" ? (
+              <>
+                <Grid templateColumns="repeat(2, 5fr)" gap={4}>
+                  <GridItem>
+                    <NumberField
+                      path="ebt"
+                      label="EBT/SNAP sales"
+                      // isDisabled={
+                      //   location && location == "DC" && role !== "vendor"
+                      //     ? false
+                      //     : true
+                      // }
+                      admin={{
+                        description: "Enter the sum total of EBT/SNAP sales",
+                        placeholder: "EBT sales",
+                      }}
+                    />
+                  </GridItem>
+                  <GridItem>
+                    <NumberField
+                      path="snapBonus"
+                      label="SNAP Bonus sales (staff will enter)"
+                      // isDisabled={role == "vendor" ? true : false}
+                      admin={{
+                        description: "Enter the sum total of SNAP Bonus sales",
+                        placeholder: "SNAP bonus sales",
+                      }}
+                    />
+                  </GridItem>
+                </Grid>
+                <Grid templateColumns="repeat(2, 5fr)" gap={4}>
+                  <GridItem>
+                    <NumberField
+                      path="fmnpBonus"
+                      label="FMNP Bonus sales (staff will enter)"
+                      // isDisabled={role == "vendor" ? true : false}
+                      admin={{
+                        description: "Enter the sum total of FMNP Bonus sales",
+                        placeholder: "EBT sales",
+                      }}
+                    />
+                  </GridItem>
+                  <GridItem>
+                    <NumberField
+                      path="cardCoupon"
+                      label="Credit card coupon sales (staff will enter)"
+                      // isDisabled={role == "vendor" ? true : false}
+                      admin={{
+                        description:
+                          "Enter the sum total of credit card coupon sales",
+                        placeholder: "SNAP bonus sales",
+                      }}
+                    />
+                  </GridItem>
+                </Grid>
+                <Grid templateColumns="repeat(2, 5fr)" gap={4}>
+                  <GridItem>
+                    <NumberField
+                      path="marketGoods"
+                      label="Market Goods coupon sales (staff will enter)"
+                      // isDisabled={role == "vendor" ? true : false}
+                      admin={{
+                        description:
+                          "Enter the sum total of Market Goods coupon sales",
+                        placeholder: "EBT sales",
+                      }}
+                    />
+                  </GridItem>
+                  <GridItem>
+                    <NumberField
+                      path="gWorld"
+                      label="GWorld coupon coupon sales (staff will enter)"
+                      // isDisabled={role == "vendor" ? true : false}
+                      admin={{
+                        description:
+                          "Enter the sum total of GWorld coupon sales",
+                        placeholder: "SNAP bonus sales",
+                      }}
+                    />
+                  </GridItem>
+                </Grid>
+              </>
+            ) : null}
             <Center marginTop={6}>
               <Button onClick={submitForm}>
                 Confirm and Submit Sales Report
