@@ -43,7 +43,7 @@ const InvoicesEdit: React.FC<any> = () => {
   const [vendors, setVendors] = useState<Vendor[]>([]);
   const [vendor, setVendor] = useState(null);
   const [salesReports, setSalesReports] = useState([]);
-  const [invoice, setInvoice] = useState(null);
+  const [invoice, setInvoice] = useState([]);
 
   const handleVendorChange = (event) => {
     const thisVendor = vendors.find(
@@ -85,14 +85,31 @@ const InvoicesEdit: React.FC<any> = () => {
     getVendors();
   }, []);
 
-  useEffect(() => {
-    // console.log("VENDORS???", vendors);
-    if (salesReports.length) {
-      let thisInvoice = [];
+  function reportReducer(accumulator, report, index) {
+    const existingReport = accumulator.get(report.season.id);
 
-      salesReports.map((report, index) => {
-        console.log(report);
-      });
+    if (existingReport) {
+      existingReport.cashAndCredit += report.cashAndCredit;
+      existingReport.marketDays += 1;
+      existingReport.producePlus += report.producePlus;
+      existingReport.sfmnp += report.sfmnp;
+      existingReport.wic += report.wic;
+    } else {
+      let thisReport = {
+        ...report,
+        marketDays: 1,
+      };
+      accumulator.set(report.season.id, thisReport);
+    }
+
+    return accumulator;
+  }
+
+  useEffect(() => {
+    if (salesReports.length) {
+      const combinedReports = salesReports.reduce(reportReducer, new Map());
+      const reportsArray = Array.from(combinedReports.values());
+      setInvoice(reportsArray);
     }
   }, [salesReports, vendor, vendors]);
 
@@ -367,216 +384,115 @@ const InvoicesEdit: React.FC<any> = () => {
               </Tr>
             </Thead>
             <Tbody>
-              <Tr>
-                <Td
-                  sx={{
-                    border: "1px solid",
-                    borderColor: "gray.100",
-                    fontWeight: "500",
-                    maxWidth: 300,
-                  }}
-                >
-                  Dupont Circle [Wednesday]
-                </Td>
-                <Td
-                  isNumeric
-                  sx={{
-                    border: "1px solid",
-                    borderColor: "gray.100",
-                    width: 100,
-                  }}
-                >
-                  4
-                </Td>
-                <Td
-                  isNumeric
-                  sx={{
-                    border: "1px solid",
-                    borderColor: "gray.100",
-                    width: 100,
-                  }}
-                >
-                  $19,638.75
-                </Td>
-                <Td
-                  isNumeric
-                  sx={{
-                    border: "1px solid",
-                    borderColor: "gray.100",
-                    width: 100,
-                  }}
-                >
-                  $1,082.58
-                </Td>
-                <Td
-                  isNumeric
-                  sx={{
-                    border: "1px solid",
-                    borderColor: "gray.100",
-                    width: 100,
-                  }}
-                >
-                  -$29
-                </Td>
-                <Td
-                  isNumeric
-                  sx={{
-                    border: "1px solid",
-                    borderColor: "gray.100",
-                    width: 100,
-                  }}
-                >
-                  -$12
-                </Td>
-                <Td
-                  isNumeric
-                  sx={{
-                    border: "1px solid",
-                    borderColor: "gray.100",
-                    width: 100,
-                  }}
-                >
-                  -$32
-                </Td>
-                <Td
-                  isNumeric
-                  sx={{
-                    border: "1px solid",
-                    borderColor: "gray.100",
-                    width: 100,
-                  }}
-                >
-                  -$0
-                </Td>
-                <Td
-                  isNumeric
-                  sx={{
-                    border: "1px solid",
-                    borderColor: "gray.100",
-                    width: 100,
-                  }}
-                >
-                  -$0
-                </Td>
-                <Td
-                  isNumeric
-                  sx={{
-                    border: "1px solid",
-                    borderColor: "gray.100",
-                    width: 100,
-                  }}
-                >
-                  -$0
-                </Td>
-                <Td isNumeric sx={{ fontWeight: "bold" }}>
-                  $1009.58
-                </Td>
-              </Tr>
-              <Tr>
-                <Td
-                  sx={{
-                    border: "1px solid",
-                    borderColor: "gray.100",
-                    fontWeight: "500",
-                    maxWidth: 300,
-                  }}
-                >
-                  Columbia Heights
-                </Td>
-                <Td
-                  isNumeric
-                  sx={{
-                    border: "1px solid",
-                    borderColor: "gray.100",
-                    width: 100,
-                  }}
-                >
-                  2
-                </Td>
-                <Td
-                  isNumeric
-                  sx={{
-                    border: "1px solid",
-                    borderColor: "gray.100",
-                    width: 100,
-                  }}
-                >
-                  $7,564.27
-                </Td>
-                <Td
-                  isNumeric
-                  sx={{
-                    border: "1px solid",
-                    borderColor: "gray.100",
-                    width: 100,
-                  }}
-                >
-                  $582.58
-                </Td>
-                <Td
-                  isNumeric
-                  sx={{
-                    border: "1px solid",
-                    borderColor: "gray.100",
-                    width: 100,
-                  }}
-                >
-                  -$29
-                </Td>
-                <Td
-                  isNumeric
-                  sx={{
-                    border: "1px solid",
-                    borderColor: "gray.100",
-                    width: 100,
-                  }}
-                >
-                  -$12
-                </Td>
-                <Td
-                  isNumeric
-                  sx={{
-                    border: "1px solid",
-                    borderColor: "gray.100",
-                    width: 100,
-                  }}
-                >
-                  -$32
-                </Td>
-                <Td
-                  isNumeric
-                  sx={{
-                    border: "1px solid",
-                    borderColor: "gray.100",
-                    width: 100,
-                  }}
-                >
-                  -$0
-                </Td>
-                <Td
-                  isNumeric
-                  sx={{
-                    border: "1px solid",
-                    borderColor: "gray.100",
-                    width: 100,
-                  }}
-                >
-                  -$0
-                </Td>
-                <Td
-                  isNumeric
-                  sx={{
-                    border: "1px solid",
-                    borderColor: "gray.100",
-                    width: 100,
-                  }}
-                >
-                  -$0
-                </Td>
-                <Td isNumeric sx={{ fontWeight: "bold" }}>
-                  $509.58
-                </Td>
-              </Tr>
+              {invoice && invoice.length
+                ? invoice.map((row) => (
+                    <Tr>
+                      <Td
+                        sx={{
+                          border: "1px solid",
+                          borderColor: "gray.100",
+                          fontWeight: "500",
+                          maxWidth: 300,
+                        }}
+                      >
+                        {row.season.name}
+                      </Td>
+                      <Td
+                        isNumeric
+                        sx={{
+                          border: "1px solid",
+                          borderColor: "gray.100",
+                          width: 100,
+                        }}
+                      >
+                        {row.marketDays}
+                      </Td>
+                      <Td
+                        isNumeric
+                        sx={{
+                          border: "1px solid",
+                          borderColor: "gray.100",
+                          width: 100,
+                        }}
+                      >
+                        FIXME
+                      </Td>
+                      <Td
+                        isNumeric
+                        sx={{
+                          border: "1px solid",
+                          borderColor: "gray.100",
+                          width: 100,
+                        }}
+                      >
+                        FIXME
+                      </Td>
+                      <Td
+                        isNumeric
+                        sx={{
+                          border: "1px solid",
+                          borderColor: "gray.100",
+                          width: 100,
+                        }}
+                      >
+                        FIXME
+                      </Td>
+                      <Td
+                        isNumeric
+                        sx={{
+                          border: "1px solid",
+                          borderColor: "gray.100",
+                          width: 100,
+                        }}
+                      >
+                        FIXME
+                      </Td>
+                      <Td
+                        isNumeric
+                        sx={{
+                          border: "1px solid",
+                          borderColor: "gray.100",
+                          width: 100,
+                        }}
+                      >
+                        {row.wic}
+                      </Td>
+                      <Td
+                        isNumeric
+                        sx={{
+                          border: "1px solid",
+                          borderColor: "gray.100",
+                          width: 100,
+                        }}
+                      >
+                        {row.cashAndCredit}
+                      </Td>
+                      <Td
+                        isNumeric
+                        sx={{
+                          border: "1px solid",
+                          borderColor: "gray.100",
+                          width: 100,
+                        }}
+                      >
+                        FIXME
+                      </Td>
+                      <Td
+                        isNumeric
+                        sx={{
+                          border: "1px solid",
+                          borderColor: "gray.100",
+                          width: 100,
+                        }}
+                      >
+                        FIXME
+                      </Td>
+                      <Td isNumeric sx={{ fontWeight: "bold" }}>
+                        FIXME
+                      </Td>
+                    </Tr>
+                  ))
+                : null}
             </Tbody>
           </Table>
         </TableContainer>
