@@ -31,12 +31,14 @@ import {
   Textarea,
   Wrap,
 } from "@chakra-ui/react";
+import { TableColumnsProvider } from "payload/dist/admin/components/elements/TableColumns";
 
 // components
 
 // utils
 
 // icons
+import EditIcon from "../../assets/icons/edit.js";
 
 // images
 
@@ -94,6 +96,9 @@ export const ReviewsEdit: React.FC<any> = () => {
   const [doSubmit, setDoSubmit] = useState(false);
   const [seasonDaysLength, setSeasonDaysLength] = useState(0);
 
+  const [contacts, setContacts] = useState([]);
+  const [primaryContact, setPrimaryContact] = useState(null);
+
   const totalScoreSoFar = (reviews) => {
     let total = 0;
     reviews.map((review) => {
@@ -123,7 +128,6 @@ export const ReviewsEdit: React.FC<any> = () => {
   useEffect(() => {
     const trySubmit = async () => {
       await submit();
-      history.go(-2);
     };
     if (doSubmit) {
       trySubmit();
@@ -192,6 +196,8 @@ export const ReviewsEdit: React.FC<any> = () => {
     };
     if (history.location.state) {
       setShadow();
+    } else if (id) {
+      history.go(-2);
     }
 
     if (user) {
@@ -200,6 +206,10 @@ export const ReviewsEdit: React.FC<any> = () => {
   }, [history]);
 
   useEffect(() => {
+    if (shadowApp?.vendor?.contacts?.length) {
+      setContacts(shadowApp.vendor.contacts);
+    }
+
     if (
       shadowApp?.season?.marketDates?.startDate &&
       shadowApp?.season?.marketDates?.endDate
@@ -253,7 +263,30 @@ export const ReviewsEdit: React.FC<any> = () => {
     }
   }, [shadowApp]);
 
-  console.log("***shadowApp", shadowApp);
+  // console.log("***shadowApp", shadowApp);
+  useEffect(() => {
+    let primary;
+    if (contacts.length) {
+      primary = contacts.filter((contact) => contact.type.includes("primary"));
+    }
+
+    if (primary && primary.length) {
+      setPrimaryContact(primary[0]);
+    }
+
+    let primaryUser;
+    if (!contacts.length && shadowApp) {
+      primaryUser = shadowApp.vendor.user;
+    }
+
+    if (primaryUser) {
+      setPrimaryContact(primaryUser);
+    }
+  }, [contacts, shadowApp]);
+
+  useEffect(() => {
+    console.log("PRIMARY CONTACT?", primaryContact);
+  }, [primaryContact]);
 
   if (
     shadowApp &&
@@ -325,49 +358,51 @@ export const ReviewsEdit: React.FC<any> = () => {
                   </Text>
                 </HStack>
                 <Spacer />
-                {shadowApp.vendor.contacts && shadowApp.vendor.contacts.length
-                  ? shadowApp.vendor.contacts.map((contact) => {
-                      if (contact.type && contact.type.length) {
-                        const type = contact.type.find(
-                          (type) => type == "primary",
-                        );
-                        if (type) {
-                          return (
-                            <HStack key={contact.id}>
-                              <Text
-                                as={"span"}
-                                color={"gray.50"}
-                                fontSize="2xl"
-                                fontWeight={700}
-                              >
-                                Primary contact:
-                              </Text>
-                              <Text
-                                as={"span"}
-                                color={"gray.50"}
-                                fontSize="2xl"
-                              >
-                                {contact.name}
-                              </Text>
-                              <Text
-                                as={"span"}
-                                color={"gray.50"}
-                                fontSize="2xl"
-                              >
-                                {contact.phone}
-                              </Text>
-                            </HStack>
-                          );
-                        }
-                      }
-                    })
-                  : null}
+                {primaryContact ? (
+                  <HStack key={primaryContact.id}>
+                    <Text
+                      as={"span"}
+                      color={"gray.50"}
+                      fontSize="2xl"
+                      fontWeight={700}
+                    >
+                      Primary contact:
+                    </Text>
+                    <Text as={"span"} color={"gray.50"} fontSize="2xl">
+                      {primaryContact.name}
+                    </Text>
+                    <Text as={"span"} color={"gray.50"} fontSize="2xl">
+                      {primaryContact.email || primaryContact.phone}
+                    </Text>
+                  </HStack>
+                ) : null}
               </Flex>
             </Box>
             <Box background={"#90B132"} borderBottomRadius="8px" padding={4}>
               <Text marginTop={4} fontSize={"xl"}>
                 {shadowApp.vendor.description}
               </Text>
+            </Box>
+            <Box marginTop={8} textAlign={"right"}>
+              <Button
+                as="a"
+                href={`/admin/collections/applications/${shadowApp.id}`}
+                leftIcon={
+                  <EditIcon sx={{ fill: "none", height: 6, width: 6 }} />
+                }
+                variant={"unstyled"}
+                sx={{
+                  display: "block",
+                  marginBottom: 4,
+                  marginLeft: "auto",
+                  marginRight: 0,
+                  "&:active, &:focus, &:hover": {
+                    textDecoration: "underline",
+                  },
+                }}
+              >
+                Edit this application
+              </Button>
             </Box>
             <Text fontSize={18} marginY={4}>
               Grade the following catagories on a scale from 0 to 5. 0 being

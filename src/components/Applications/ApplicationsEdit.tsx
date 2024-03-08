@@ -1,7 +1,7 @@
 // @ts-nocheck
 "use client";
 import React, { useEffect, useState } from "react";
-import { useHistory, useLocation } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import DatePicker from "react-datepicker";
 import qs from "qs";
 
@@ -49,8 +49,6 @@ import { ContactsModal } from "../Contacts/ContactsModal";
 import formatTime from "../../utils/formatTime.js";
 
 // icons
-import { ArrowForwardIcon } from "@chakra-ui/icons";
-import EditIcon from "../../assets/icons/edit.js";
 import StarIcon from "../../assets/icons/star.js";
 
 // images
@@ -58,7 +56,6 @@ import stats1 from "../../assets/images/FF-sample-stats-1.jpg";
 import stats2 from "../../assets/images/FF-sample-stats-2.jpg";
 import stats3 from "../../assets/images/FF-sample-stats-3.jpg";
 import stats4 from "../../assets/images/FF-sample-stats-4.jpg";
-import { application } from "express";
 
 const dayNames = [
   "sunday",
@@ -71,22 +68,28 @@ const dayNames = [
   "sunday",
 ];
 
+type Status =
+  | (
+      | "approved"
+      | "rejected"
+      | "approvedWithEdits"
+      | "tentativelyApproved"
+      | "tentativelyRejected"
+      | "pending"
+      | "withdrawn"
+    )
+  | null;
+
 export const ApplicationsEdit: React.FC<any> = (props) => {
   const { user } = useAuth();
   const history: any = useHistory();
-  const { submit } = useForm();
+  const { getData, submit, addFieldRow, removeFieldRow } = useForm();
   const { id } = useDocumentInfo();
-  const { isOpen, onOpen, onClose } = useDisclosure();
-  const [contactName, setContactName] = useState("");
-  const [contactEmail, setContactEmail] = useState("");
-  const [contactPhone, setContactPhone] = useState("");
-  const [contactType, setContactType] = useState([]);
+  const { isOpen, onClose } = useDisclosure();
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
   const [numMonths, setNumMonths] = useState(1);
   const [marketDates, setMarketDates] = useState([]);
-  const [selectedDates, setSelectedDates] = useState([]);
-  const [marketDatesObjects, setMarketDatesObjects] = useState([]);
   const [selectAllDates, setSelectAllDates] = useState(false);
   const [doSubmit, setDoSubmit] = useState(false);
   const [available, setAvailable] = useState<Contact[]>([]);
@@ -100,11 +103,11 @@ export const ApplicationsEdit: React.FC<any> = (props) => {
   const { value: isCSA, setValue: setIsCSA } = useField<boolean>({
     path: "isCSA",
   });
-  const { value: dates, setValue: setDates } = useField<
-    { date?: string; id?: string }[]
-  >({
+  const { setValue: setDates } = useField<{ date?: string; id?: string }[]>({
     path: "dates",
   });
+  const data = getData();
+  const dates = data.dates ? data.dates : [];
   const { value: contacts, setValue: setContacts } = useField<string[]>({
     path: "contacts",
   });
@@ -117,6 +120,9 @@ export const ApplicationsEdit: React.FC<any> = (props) => {
   const { value: schedule, setValue: setSchedule } = useField<string>({
     path: "schedule",
   });
+  const { value: status, setValue: setStatus } = useField<Status>({
+    path: "status",
+  });
 
   const [shadowSeason, setShadowSeason] = useState<Season>();
 
@@ -124,21 +130,24 @@ export const ApplicationsEdit: React.FC<any> = (props) => {
     if (!id && shadowSeason && shadowSeason.id) {
       setSeason(shadowSeason);
     }
+    if (user.role !== "vendor") {
+      setStatus("approvedWithEdits");
+    }
     setDoSubmit(true);
   };
 
   useEffect(() => {
     if (doSubmit) {
-      submit();
-      if (user.vendor) {
+      if (user.role === "vendor") {
+        submit();
         history.push("/admin/collections/seasons");
       } else {
-        history.push("/admin/collections/applications");
+        console.log("Submitting with status:", status);
+        submit();
+        history.go(-2);
       }
     }
   }, [doSubmit]);
-
-  useEffect(() => {}, [contactName, contactEmail, contactPhone, contactType]);
 
   const monthDiff = (d1, d2) => {
     let months;
@@ -148,33 +157,27 @@ export const ApplicationsEdit: React.FC<any> = (props) => {
     return months <= 0 ? 0 : months;
   };
 
-  const updateSelectAll = (event) => {
+  const updateSelectAll = () => {
     setSelectAllDates((selectAllDates) => !selectAllDates);
   };
 
   const updateSelectedDates = (date) => {
-    let datesArray = dates ? dates : [];
-    let selectedDatesArray = selectedDates ? selectedDates : [];
     const dateString = date.toISOString();
 
-    let dateFound = datesArray.find((item) => item.date === dateString);
-    let selectedDateFound = !!selectedDatesArray.find(
-      (item) => item.getTime() == date.getTime(),
-    );
-    if (dateFound && selectedDateFound) {
-      datesArray = datesArray.filter((item) => item.date !== dateString);
-      selectedDatesArray = selectedDatesArray.filter(
-        (item) => item.getTime() != date.getTime(),
-      );
+    let dateFound = dates.findIndex((item) => item.date === dateString);
+
+    if (dateFound >= 0) {
+      console.log("date is found", dateString);
+
+      removeFieldRow({ path: "dates", rowIndex: dateFound });
     } else {
-      datesArray.push({ date: dateString });
-      selectedDatesArray = [date, ...selectedDates];
+      console.log("no date found");
+
+      addFieldRow({ path: "dates", data: { date: dateString } });
     }
-    setDates(datesArray);
-    setSelectedDates(selectedDatesArray);
   };
 
-  useEffect(() => {}, [dates, selectedDates]);
+  useEffect(() => {}, [dates]);
 
   useEffect(() => {
     if (selectAllDates) {
@@ -217,7 +220,6 @@ export const ApplicationsEdit: React.FC<any> = (props) => {
             objectDaysArray.push({ date: new Date(d) });
           }
         }
-        setMarketDatesObjects(objectDaysArray);
         setMarketDates(days);
       }
     }
@@ -262,30 +264,6 @@ export const ApplicationsEdit: React.FC<any> = (props) => {
       console.error(data);
     }
   };
-
-  // useEffect(() => {
-  //   if (id) {
-  //     const getApplication = async () => {
-  //       const response = await fetch(`/api/applications/${id}?depth=2`);
-  //       const thisApplication = await response.json();
-  //       console.log(thisApplication);
-  //       setApplication(thisApplication);
-  //     };
-
-  //     getApplication();
-
-  //     if (data) {
-  //       setName(data.name);
-  //       setApplication(data);
-  //     }
-  //   }
-  // }, []);
-
-  // const isPopulated = (
-  //   season: { market: string | Market },
-  // ): season is Market => {
-  //   return typeof season.market === "object";
-  // };
 
   const selectVendor = (id) => {
     const thisVendor = vendors.find((v) => v.id == id);
@@ -342,7 +320,6 @@ export const ApplicationsEdit: React.FC<any> = (props) => {
         objectDaysArray.push({ date: new Date(d) });
       }
     }
-    setMarketDatesObjects(objectDaysArray);
     setMarketDates(days);
   };
 
@@ -365,7 +342,7 @@ export const ApplicationsEdit: React.FC<any> = (props) => {
   }, []);
 
   useEffect(() => {
-    if (season) {
+    if (id && season) {
       const getSeason = async () => {
         const response = await fetch(`/api/seasons/${season}`);
         const seasonData = await response.json();
@@ -377,6 +354,15 @@ export const ApplicationsEdit: React.FC<any> = (props) => {
 
         let calLength = monthDiff(firstDate, lastDate);
         setNumMonths(calLength);
+
+        let days = [];
+
+        for (var d = firstDate; d <= lastDate; d.setDate(d.getDate() + 1)) {
+          if (seasonData.market.days.includes(dayNames[d.getDay()])) {
+            days.push(new Date(d));
+          }
+        }
+        setMarketDates(days);
       };
 
       getSeason();
@@ -384,12 +370,12 @@ export const ApplicationsEdit: React.FC<any> = (props) => {
   }, [season]);
 
   useEffect(() => {}, [
-    market,
-    season,
     endDate,
-    startDate,
-    markets,
+    market,
+    marketDates,
     numMonths,
+    season,
+    startDate,
     vendor,
   ]);
 
@@ -702,22 +688,22 @@ export const ApplicationsEdit: React.FC<any> = (props) => {
                 inline
                 dayClassName={(date) => {
                   let dateFound = null;
-                  if (marketDates) {
-                    dateFound = marketDates.find((item) => {
+                  if (dates) {
+                    dateFound = dates.find((item) => {
                       return item.date === date.toISOString();
                     });
                   }
                   if (dateFound) {
+                    //console.log("dayClassName dateFound", dateFound);
                     return "vendor-select";
                   } else {
                     return "";
                   }
                 }}
-                selected={null}
+                startDate={startDate}
+                endDate={endDate}
                 onChange={(date) => updateSelectedDates(date)}
                 includeDates={marketDates}
-                minDate={startDate}
-                maxDate={endDate}
                 monthsShown={numMonths + 1}
               />
             </HStack>
@@ -790,7 +776,7 @@ export const ApplicationsEdit: React.FC<any> = (props) => {
               onChange={(newValue) => setContacts(newValue)}
               value={contacts}
             >
-              {available && available.length && (
+              {available && available.length ? (
                 <HStack spacing={4}>
                   {available.map((contact) => (
                     <Checkbox key={contact.id} value={contact.id}>
@@ -801,6 +787,8 @@ export const ApplicationsEdit: React.FC<any> = (props) => {
                     </Checkbox>
                   ))}
                 </HStack>
+              ) : (
+                ""
               )}
             </CheckboxGroup>
             {/*
@@ -832,9 +820,17 @@ export const ApplicationsEdit: React.FC<any> = (props) => {
                   variant={"solid"}
                   onClick={submitForm}
                 >
-                  Submit application now
+                  {user.role == "vendor"
+                    ? "Submit application now"
+                    : "Approve application with edits"}
                 </Button>
-                <Button variant={"outline"}>Cancel</Button>
+                <Button
+                  as={"a"}
+                  variant={"outline"}
+                  href="/admin/collections/applications?limit=10"
+                >
+                  Cancel
+                </Button>
               </HStack>
             </Center>
           </Container>
@@ -1161,7 +1157,7 @@ export const ApplicationsEdit: React.FC<any> = (props) => {
                 <Text>Selected</Text>
               </HStack>
             </Wrap>
-            <Wrap>
+            <HStack className="datepicker-wrap">
               <DatePicker
                 inline
                 dayClassName={(date) => {
@@ -1178,14 +1174,13 @@ export const ApplicationsEdit: React.FC<any> = (props) => {
                     return "";
                   }
                 }}
-                selected={null}
                 onChange={(date) => updateSelectedDates(date)}
                 includeDates={marketDates}
                 minDate={startDate}
                 maxDate={endDate}
                 monthsShown={numMonths + 1}
               />
-            </Wrap>
+            </HStack>
             <Text marginTop={4}>
               How would you characterize your market attendance?
             </Text>
@@ -1255,7 +1250,7 @@ export const ApplicationsEdit: React.FC<any> = (props) => {
               onChange={(newValue) => setContacts(newValue)}
               value={contacts}
             >
-              {available && available.length && (
+              {available && available.length ? (
                 <HStack spacing={4}>
                   {available.map((contact) => (
                     <Checkbox key={contact.id} value={contact.id}>
@@ -1266,6 +1261,8 @@ export const ApplicationsEdit: React.FC<any> = (props) => {
                     </Checkbox>
                   ))}
                 </HStack>
+              ) : (
+                ""
               )}
             </CheckboxGroup>
             {/*
@@ -1297,9 +1294,17 @@ export const ApplicationsEdit: React.FC<any> = (props) => {
                   variant={"solid"}
                   onClick={submitForm}
                 >
-                  Submit application now
+                  {user.role == "vendor"
+                    ? "Submit application now"
+                    : "Approve application with edits"}
                 </Button>
-                <Button variant={"outline"}>Cancel</Button>
+                <Button
+                  as={"a"}
+                  href="/admin/collections/applications?limit=10"
+                  variant={"outline"}
+                >
+                  Cancel
+                </Button>
               </HStack>
             </Center>
           </Container>
@@ -1474,13 +1479,11 @@ export const ApplicationsEdit: React.FC<any> = (props) => {
                   }
 
                   if (dateFound) {
-                    console.log("***found date", date);
                     return "vendor-select";
                   } else {
                     return "";
                   }
                 }}
-                selected={null}
                 onChange={(date) => updateSelectedDates(date)}
                 includeDates={marketDates}
                 minDate={startDate}
@@ -1573,7 +1576,9 @@ export const ApplicationsEdit: React.FC<any> = (props) => {
                     </Checkbox>
                   ))}
                 </HStack>
-              ) : null}
+              ) : (
+                ""
+              )}
             </CheckboxGroup>
             <Center marginY={8}>
               <HStack spacing={4}>
@@ -1586,7 +1591,7 @@ export const ApplicationsEdit: React.FC<any> = (props) => {
                 </Button>
                 <Button
                   as={"a"}
-                  href="/admin/collections/applications"
+                  href="/admin/collections/applications?limit=10"
                   variant={"outline"}
                 >
                   Cancel
