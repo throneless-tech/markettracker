@@ -187,6 +187,7 @@ const CustomSalesReportsList: React.FC<any> = () => {
   }, [reports]);
 
   useEffect(() => {
+    console.log("**** REPORTS", reports);
     let filtered = reports;
 
     if (monthValue.toLowerCase() !== "all") {
@@ -395,29 +396,19 @@ const CustomSalesReportsList: React.FC<any> = () => {
                         </Td>
                         <Td>{new Date(day).toLocaleDateString("en-US")}</Td>
                         <Td>$0</Td>
-                        <Td>{`$${cashAndCredit}`}</Td>
+                        <Td>{cashAndCredit ? `$${cashAndCredit}` : ""}</Td>
                         <Td>
                           $
                           {`${
-                            producePlus
-                              ? producePlus
-                              : 0 + wic
-                              ? wic
-                              : 0 + sfmnp
-                              ? sfmnp
-                              : 0 + ebt
-                              ? ebt
-                              : 0 + snapBonus
-                              ? snapBonus
-                              : 0 + fmnpBonus
-                              ? fmnpBonus
-                              : 0 + cardCoupon
-                              ? cardCoupon
-                              : 0 + marketGoods
-                              ? marketGoods
-                              : 0 + gWorld
-                              ? gWorld
-                              : 0
+                            (producePlus ? producePlus : 0) +
+                            (wic ? wic : 0) +
+                            (sfmnp ? sfmnp : 0) +
+                            (ebt ? ebt : 0) +
+                            (snapBonus ? snapBonus : 0) +
+                            (fmnpBonus ? fmnpBonus : 0) +
+                            (cardCoupon ? cardCoupon : 0) +
+                            (marketGoods ? marketGoods : 0) +
+                            (gWorld ? gWorld : 0)
                           }`}
                         </Td>
                         <Td>dd/mm/yyyy</Td>
