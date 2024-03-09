@@ -1,18 +1,15 @@
+import e from "express";
 import type { SalesReport, Vendor, Application } from "payload/generated-types";
 
 const monthlyInvoices = async (req, res, next) => {
   /**
-   * This thing creates invoices
+   * This endpoint creates invoices
    * for vendors whose sales and coupons in a particular month
-   * for a particular market for every date that they're signed up for
+   * for a particular market for every date that they attended
    * has been completed
    */
 
   /**
-   * per vendor,
-   * get every sales report in a month
-   * get their application, get all the dates for that month?
-   * and check if
    *
    * loop through every sales report for a particular month--
    * create a map where the key is vendor
@@ -33,55 +30,123 @@ const monthlyInvoices = async (req, res, next) => {
     "december",
   ];
 
-  const month = months[new Date().getMonth()];
+  // invoices are run for the previous month
+  const month = months[new Date().getMonth() - 1];
 
   let reports = await req.payload.find({
     collection: "sales-reports",
     where: {
       month: {
-        equals: "february",
+        equals: month,
       },
     },
     depth: 2,
   });
 
-  const vendorMaps = reports.docs.reduce(
+  console.log("**** reports", reports);
+
+  const [completeMap, incompleteMap] = reports.docs.reduce(
     (acc, report) => {
-      const [salesReports, marketDates] = acc;
+      const [completed, incomplete] = acc;
+
+      // if an invoice date exists
+      // it's already been invoiced
+      // don't do anything
+      if (report.invoiceDate) {
+        return [completed, incomplete];
+      }
 
       // if a sales report has an empty cashAndCredit
       // (i.e. the vendor hasn't added it)
-      // we don't add that sales report to the array
+      // we add that sales report to a separate array
       if (report.cashAndCredit === null || report.cashAndCredit === undefined) {
-        return [salesReports, marketDates];
-      }
-      // check if the vendorMap has a key of this vendor's id
-      let existing = salesReports.get(report.vendor.id);
-      // if it does, add the report to the vendor's values array
-      if (existing) {
-        existing.push(report);
+        let existing = incomplete.get(report.vendor.id);
+        // if it does, add the report to the vendor's values array
+        if (existing) {
+          existing.push(report);
+        } else {
+          incomplete.set(report.vendor.id, [report]);
+        }
       } else {
-        salesReports.set(report.vendor.id, [report]);
+        // check if the vendorMap has a key of this vendor's id
+        let existing = completed.get(report.vendor.id);
+        // if it does, add the report to the vendor's values array
+        if (existing) {
+          existing.push(report);
+        } else {
+          completed.set(report.vendor.id, [report]);
+        }
       }
 
-      let existingDates = marketDates.get(report.vendor.id);
+      /**  the below is looking through all of a vendor's
+            //      * approved application for dates in the month of 
+            //      * invoice generation,
+            //      * we do this because the number of completed sales reports 
+            //      * needs to be THE SAME
+            //      * as the number of approved dates
+            //      * before an invoice can be created
+            //     */
+      // let existingDates = marketDates.get(report.vendor.id);
 
-      if (existingDates) {
-        const dates = report.vendor.applications.reduce((acc, app) => {
-          acc.concat(app.dates);
-        }, []);
-        existingDates.concat(dates);
-      } else {
-        // TODO
-      }
+      // const dates = report.vendor.applications.reduce((acc, app) => {
+      //     if (app.status === 'approved' || app.status === "approvedWithEdits") {
+      //         const thisMonth = app.dates.map(date => date.date).filter(date => months[new Date(date).getMonth()] === 'february')
+      //         // filter the array for when
+      //         return acc.concat(thisMonth)
+      //     }
+      //     return acc
+      // }, []);
 
-      return [salesReports, marketDates];
+      // if (existingDates) {
+      //     existingDates.concat(dates);
+      // } else {
+      //     marketDates.set(report.vendor.id, dates)
+      // }
+
+      return [completed, incomplete];
     },
     [new Map(), new Map()],
   );
 
-  console.log("*** VENDOR MAP INNIT", vendorMaps);
-  return res.status(200).send();
-};
+  // only create invoices for vendors
+  // who doesn't have an incomplete sales report
+  const invoicesArray = [];
 
+  try {
+    // create invoices
+    for (const [key, value] of Array.from(completeMap) as any) {
+      // if the vendor has an incomplete sales report
+      // don't create the invoice
+      if (incompleteMap.has(key)) {
+        return;
+      }
+      const invoice = await req.payload.create({
+        collection: "invoices",
+        data: {
+          vendor: key,
+          marketMonth: month,
+          reports: value.map((report) => report.id),
+        },
+      });
+      invoicesArray.push(invoice);
+      for (const report of value) {
+        const updated = await req.payload.update({
+          collection: "sales-reports",
+          id: report.id,
+          data: {
+            invoiceDate: new Date().toISOString(),
+          },
+        });
+      }
+    }
+  } catch (err) {
+    res.status(500).send({
+      error: err.message,
+    });
+  }
+
+  return res.status(201).send({
+    invoices: invoicesArray,
+  });
+};
 export { monthlyInvoices };

@@ -168,6 +168,11 @@ export const SalesReports: CollectionConfig = {
         placeholder: "$0",
       },
     },
+    {
+      name: "invoiceDate",
+      label: "Invoice date",
+      type: "date",
+    },
   ],
   hooks: {
     beforeChange: [reportMonth],

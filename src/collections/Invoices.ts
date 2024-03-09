@@ -4,18 +4,18 @@ import InvoicesEdit from "../components/Invoices/InvoicesEdit";
 import { monthlyInvoices } from "../routes/monthlyInvoices";
 
 const FullMonths = [
-  "January",
-  "February",
-  "March",
-  "April",
-  "May",
-  "June",
-  "July",
-  "August",
-  "September",
-  "October",
-  "November",
-  "December",
+  "january",
+  "february",
+  "march",
+  "april",
+  "may",
+  "june",
+  "july",
+  "august",
+  "september",
+  "october",
+  "november",
+  "december",
 ];
 
 export const Invoices: CollectionConfig = {
