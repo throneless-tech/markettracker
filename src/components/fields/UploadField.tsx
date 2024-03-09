@@ -1,4 +1,4 @@
-import React, { FC, useCallback, useEffect } from "react";
+import React, { FC, useCallback, useEffect, useState } from "react";
 
 // Payload imports
 import { useField } from "payload/components/forms";
@@ -7,11 +7,11 @@ import { upload } from "payload/dist/fields/validations";
 
 // Chakra imports
 import {
+  Box,
   FormControl,
   FormHelperText,
   FormLabel,
   Input,
-  Text,
 } from "@chakra-ui/react";
 
 // Local imports
@@ -38,6 +38,8 @@ export const UploadField: FC<Props> = ({
   validate = upload,
   admin: { condition, description, placeholder } = {},
 }) => {
+  const [toUpload, setToUpload] = useState(null);
+
   const uploadFiles = useCallback(
     (files: FileList) => {
       const uploadFile = async (file) => {
@@ -47,7 +49,7 @@ export const UploadField: FC<Props> = ({
           body: file,
         });
         const data = await req.json();
-        console.log("***data", data);
+        // console.log("***data", data);
         setValue(data.doc.id);
       };
 
@@ -56,9 +58,12 @@ export const UploadField: FC<Props> = ({
         formData.append("file", f);
       }
       uploadFile(formData);
+      setToUpload(files);
     },
     [relationTo],
   );
+
+  useEffect(() => {}, [toUpload]);
 
   const memoizedValidate = useCallback(
     (value: string, options: any) => {
@@ -103,7 +108,6 @@ export const UploadField: FC<Props> = ({
             placeholder={placeholder}
             type="file"
             onChange={(e) => {
-              console.log("***target:", e.target);
               uploadFiles(e.target.files);
             }}
             maxW={320}
@@ -113,6 +117,7 @@ export const UploadField: FC<Props> = ({
           />
         </ErrorTooltip>
       </FormControl>
+      {toUpload ? <Box>{toUpload[0].name}</Box> : null}
     </>
   );
 };

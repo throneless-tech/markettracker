@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useAuth } from "payload/components/utilities";
 import { useField, useForm } from "payload/components/forms";
+import { useHistory } from "react-router-dom";
 
 // Chakra imports
 import {
@@ -22,6 +23,7 @@ import { Vendor } from "payload/generated-types";
 
 export const LicensesEdit: React.FC<any> = () => {
   const { user } = useAuth();
+  const history: any = useHistory();
   const { submit } = useForm();
   const [doSubmit, setDoSubmit] = useState(false);
 
@@ -37,11 +39,11 @@ export const LicensesEdit: React.FC<any> = () => {
   };
 
   useEffect(() => {
-    console.log("***user", user);
+    // console.log("***user", user);
     if (!user.vendor) return;
     const vendor = user.vendor as Vendor;
     const owner = vendor.id ? vendor.id : vendor;
-    console.log("***owner", owner);
+    // console.log("***owner", owner);
     setLicenseOwner(owner);
   }, [user]);
 
@@ -51,6 +53,7 @@ export const LicensesEdit: React.FC<any> = () => {
       console.log("licenseType", licenseType);
 
       submit();
+      history.push("/admin/collections/licenses");
     }
   }, [doSubmit]);
 

@@ -8,7 +8,7 @@ interface CardProps {
   // icon?: string;
 }
 
-export const CardSalesDue: FC<CardProps> = ({ }) => {
+export const CardSalesDue: FC<CardProps> = ({}) => {
   return (
     <Box
       padding="16px"
@@ -56,12 +56,7 @@ export const CardSalesDue: FC<CardProps> = ({ }) => {
         Due by
       </Text>
       <Stack justify="flex-start" align="flex-start" spacing={4}>
-        <Flex
-          minWidth="404px"
-          paddingY={1}
-          width="100%"
-          direction="row"
-        >
+        <Flex minWidth="404px" paddingY={1} width="100%" direction="row">
           <Text
             fontFamily="Outfit"
             lineHeight="1.14"
