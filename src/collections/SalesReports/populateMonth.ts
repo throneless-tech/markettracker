@@ -1,18 +1,20 @@
 import payload from "payload";
-import { CollectionAfterReadHook } from "payload/types";
+import { CollectionBeforeChangeHook } from "payload/types";
 
-export const reportMonth: CollectionAfterReadHook = async ({
-  context,
-  doc,
+export const reportMonth: CollectionBeforeChangeHook = async ({
+  data,
+  req,
+  operation,
 }) => {
-  if (context.skipTrigger) return;
-  const reportDate = new Date(doc.day);
-  const month = reportDate
-    .toLocaleString("default", { month: "long" })
-    .toLowerCase();
-
-  return {
-    ...doc,
-    month,
-  };
+  if (operation === "create") {
+    const reportDate = new Date(data.day);
+    const month = reportDate
+      .toLocaleString("default", { month: "long" })
+      .toLowerCase();
+    return {
+      ...data,
+      month,
+    };
+  }
+  return data;
 };

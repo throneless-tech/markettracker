@@ -1,6 +1,7 @@
 import { CollectionConfig } from "payload/types";
 import InvoicesList from "../components/Invoices/InvoicesList";
 import InvoicesEdit from "../components/Invoices/InvoicesEdit";
+import { monthlyInvoices } from "../routes/monthlyInvoices";
 
 const FullMonths = [
   "January",
@@ -27,6 +28,7 @@ export const Invoices: CollectionConfig = {
       },
     },
   },
+  endpoints: [{ path: "/generate", method: "get", handler: monthlyInvoices }],
   fields: [
     // {
     //   name: "id",

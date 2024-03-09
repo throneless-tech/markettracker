@@ -51,6 +51,11 @@ export const SalesReports: CollectionConfig = {
       },
     },
     {
+      name: "month",
+      type: "text",
+      // required: true,
+    },
+    {
       name: "cashAndCredit",
       label: "Cash & Credit Sales",
       type: "number",
@@ -165,6 +170,6 @@ export const SalesReports: CollectionConfig = {
     },
   ],
   hooks: {
-    afterRead: [reportMonth],
+    beforeChange: [reportMonth],
   },
 };
