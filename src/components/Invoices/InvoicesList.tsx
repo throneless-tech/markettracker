@@ -72,14 +72,14 @@ const InvoicesList: React.FC<any> = () => {
   return (
     <>
       {/* <SalesReportsTabs selected="salesReports" />; */}
-      <Container maxW="container.xl">
+      <Container maxW="container.xl" marginY={8}>
         <Flex my={6} justify="space-between" flexWrap={"wrap"}>
           <Box>
             <Heading as="h2" sx={{ textTransform: "uppercase" }}>
-              Vendors Ready to Invoice
+              {user.role == "vendor" ? "Invoices" : "Vendors Ready to Invoice"}
             </Heading>
           </Box>
-          {user.role == "vendor" ? (
+          {/* {user.role == "vendor" ? (
             <>
               <Spacer />
               <HStack flexGrow={1} spacing={4} justify={"flex-end"}>
@@ -91,12 +91,7 @@ const InvoicesList: React.FC<any> = () => {
                 </Button>
               </HStack>
             </>
-          ) : (
-            <>
-              <Spacer />
-              Coming soon.
-            </>
-          )}
+          ) : null} */}
         </Flex>
         <Divider color="gray.900" borderBottomWidth={2} opacity={1} />
         <Grid templateColumns="repeat(2, 5fr)" gap={4} marginTop={10}>
@@ -121,6 +116,7 @@ const InvoicesList: React.FC<any> = () => {
                   value={monthValue}
                   maxWidth={"360px"}
                   onChange={handleMonthChange}
+                  sx={{ color: "gray.700" }}
                 >
                   {months.map((month: string, idx: React.Key) => {
                     return (
@@ -154,6 +150,7 @@ const InvoicesList: React.FC<any> = () => {
                   value={marketValue}
                   maxWidth={"360px"}
                   onChange={handleMarketChange}
+                  sx={{ color: "gray.700" }}
                 >
                   {markets.map((market) => {
                     return (
@@ -170,18 +167,116 @@ const InvoicesList: React.FC<any> = () => {
             </Box>
           </GridItem>
         </Grid>
-        <TableContainer>
-          <Table variant="simple">
-            <Thead>
+        <TableContainer marginTop={8}>
+          <Table
+            variant="simple"
+            sx={{
+              border: "1px solid",
+              borderColor: "gray.100",
+              // borderTopLeftRadius: "8px !important",
+              // borderTopRightRadius: "8px !important",
+            }}
+          >
+            <Thead sx={{ backgroundColor: "gray.50" }}>
               <Tr>
-                <Th>Vendor</Th>
-                <Th>Vendor email</Th>
-                <Th>Subtotal</Th>
-                <Th>Penalties/Credits</Th>
-                <Th>Invoice amount</Th>
-                <Th>Invoice sent on</Th>
-                <Th>Invoice status</Th>
-                <Th></Th>
+                <Th
+                  sx={{
+                    border: "1px solid",
+                    borderColor: "gray.100",
+                    color: "gray.900",
+                    fontFamily: "'Outfit', sans-serif",
+                    fontSize: 16,
+                    fontWeight: 500,
+                    maxWidth: 300,
+                    textTransform: "none",
+                  }}
+                >
+                  Vendor
+                </Th>
+                <Th
+                  sx={{
+                    border: "1px solid",
+                    borderColor: "gray.100",
+                    color: "gray.900",
+                    fontFamily: "'Outfit', sans-serif",
+                    fontSize: 16,
+                    fontWeight: 500,
+                    maxWidth: 300,
+                    textTransform: "none",
+                  }}
+                >
+                  Vendor email
+                </Th>
+                <Th
+                  sx={{
+                    border: "1px solid",
+                    borderColor: "gray.100",
+                    color: "gray.900",
+                    fontFamily: "'Outfit', sans-serif",
+                    fontSize: 16,
+                    fontWeight: 500,
+                    maxWidth: 300,
+                    textTransform: "none",
+                  }}
+                >
+                  Subtotal
+                </Th>
+                <Th
+                  sx={{
+                    border: "1px solid",
+                    borderColor: "gray.100",
+                    color: "gray.900",
+                    fontFamily: "'Outfit', sans-serif",
+                    fontSize: 16,
+                    fontWeight: 500,
+                    maxWidth: 300,
+                    textTransform: "none",
+                  }}
+                >
+                  Penalties/Credits
+                </Th>
+                <Th
+                  sx={{
+                    border: "1px solid",
+                    borderColor: "gray.100",
+                    color: "gray.900",
+                    fontFamily: "'Outfit', sans-serif",
+                    fontSize: 16,
+                    fontWeight: 500,
+                    maxWidth: 300,
+                    textTransform: "none",
+                  }}
+                >
+                  Invoice amount
+                </Th>
+                <Th
+                  sx={{
+                    border: "1px solid",
+                    borderColor: "gray.100",
+                    color: "gray.900",
+                    fontFamily: "'Outfit', sans-serif",
+                    fontSize: 16,
+                    fontWeight: 500,
+                    maxWidth: 300,
+                    textTransform: "none",
+                  }}
+                >
+                  Invoice sent on
+                </Th>
+                <Th
+                  sx={{
+                    border: "1px solid",
+                    borderColor: "gray.100",
+                    color: "gray.900",
+                    fontFamily: "'Outfit', sans-serif",
+                    fontSize: 16,
+                    fontWeight: 500,
+                    maxWidth: 300,
+                    textTransform: "none",
+                  }}
+                >
+                  Invoice status
+                </Th>
               </Tr>
             </Thead>
             <Tbody>
