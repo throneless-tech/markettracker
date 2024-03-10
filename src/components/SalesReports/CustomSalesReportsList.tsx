@@ -130,12 +130,14 @@ const CustomSalesReportsList: React.FC<any> = () => {
     const stringQuery = qs.stringify(
       {
         depth: 1,
+        limit: 9999,
       },
       { addQueryPrefix: true },
     );
 
     const response = await fetch(`/api/sales-reports${stringQuery}`);
     const json = await response.json();
+    console.log("json,", json);
     const reports = json ? json.docs : [];
 
     setReports(reports);

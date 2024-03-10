@@ -16,7 +16,7 @@ export const SalesReportsTabs: React.FC<any> = ({ selected }) => {
         <Box as="li">
           <ChakraLink
             as={ReactRouterLink}
-            to="/admin/collections/sales-reports?limit=10"
+            to="/admin/collections/sales-reports"
           >
             <Box
               mb="-1px"
