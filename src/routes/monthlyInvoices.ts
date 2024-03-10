@@ -1,20 +1,12 @@
-import e from "express";
 import type { SalesReport, Vendor, Application } from "payload/generated-types";
+/**
+ * This endpoint creates invoices
+ * for vendors whose sales and coupons in a particular month
+ * for a particular market for every date that they attended
+ * has been completed
+ */
 
 const monthlyInvoices = async (req, res, next) => {
-  /**
-   * This endpoint creates invoices
-   * for vendors whose sales and coupons in a particular month
-   * for a particular market for every date that they attended
-   * has been completed
-   */
-
-  /**
-   *
-   * loop through every sales report for a particular month--
-   * create a map where the key is vendor
-   * and the value is all their sales reports
-   */
   const months = [
     "january",
     "february",
@@ -43,34 +35,31 @@ const monthlyInvoices = async (req, res, next) => {
     depth: 2,
   });
 
-  console.log("**** reports", reports);
-
   const [completeMap, incompleteMap] = reports.docs.reduce(
     (acc, report) => {
       const [completed, incomplete] = acc;
 
-      // if an invoice date exists
+      // if an invoice date exists in a Sales Report
       // it's already been invoiced
-      // don't do anything
+      // we don't need to do anything
       if (report.invoiceDate) {
         return [completed, incomplete];
       }
 
-      // if a sales report has an empty cashAndCredit
+      // if a sales report has an empty cashAndCredit property
       // (i.e. the vendor hasn't added it)
-      // we add that sales report to a separate array
+      // we add that sales report to a separate array called
       if (report.cashAndCredit === null || report.cashAndCredit === undefined) {
-        let existing = incomplete.get(report.vendor.id);
+        // check if the vendorMap has a key of this vendor's id
         // if it does, add the report to the vendor's values array
+        let existing = incomplete.get(report.vendor.id);
         if (existing) {
           existing.push(report);
         } else {
           incomplete.set(report.vendor.id, [report]);
         }
       } else {
-        // check if the vendorMap has a key of this vendor's id
         let existing = completed.get(report.vendor.id);
-        // if it does, add the report to the vendor's values array
         if (existing) {
           existing.push(report);
         } else {
@@ -78,14 +67,15 @@ const monthlyInvoices = async (req, res, next) => {
         }
       }
 
-      /**  the below is looking through all of a vendor's
-            //      * approved application for dates in the month of 
-            //      * invoice generation,
-            //      * we do this because the number of completed sales reports 
-            //      * needs to be THE SAME
-            //      * as the number of approved dates
-            //      * before an invoice can be created
-            //     */
+      /** THIS IS COMMENTED OUT, WE CHOSE A DIFFERENT WAY  
+             * the below is looking through all of a vendor's
+                  //      * approved application for dates in the month of 
+                  //      * invoice generation,
+                  //      * we do this because the number of completed sales reports 
+                  //      * needs to be THE SAME
+                  //      * as the number of approved dates
+                  //      * before an invoice can be created
+                  //     */
       // let existingDates = marketDates.get(report.vendor.id);
 
       // const dates = report.vendor.applications.reduce((acc, app) => {
@@ -108,12 +98,12 @@ const monthlyInvoices = async (req, res, next) => {
     [new Map(), new Map()],
   );
 
-  // only create invoices for vendors
-  // who doesn't have an incomplete sales report
   const invoicesArray = [];
 
   try {
     // create invoices
+    // only create invoices for vendors
+    // who doesn't have an incomplete sales report
     for (const [key, value] of Array.from(completeMap) as any) {
       // if the vendor has an incomplete sales report
       // don't create the invoice
