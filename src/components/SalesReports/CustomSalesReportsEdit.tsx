@@ -275,7 +275,7 @@ const CustomSalesReportsEdit: React.FC<any> = () => {
               </Heading>
             )}
           </Box>
-          {!isEditView ? (
+          {!isEditView && user.role != "vendor" ? (
             <>
               <Spacer />
               <Box>
@@ -522,7 +522,7 @@ const CustomSalesReportsEdit: React.FC<any> = () => {
                   <GridItem>
                     <NumberField
                       path="gWorld"
-                      label="GWorld coupon coupon sales (staff will enter)"
+                      label="GWorld coupon coupon sales (green) (staff will enter)"
                       // isDisabled={role == "vendor" ? true : false}
                       min={0}
                       admin={{

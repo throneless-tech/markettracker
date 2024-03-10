@@ -12,6 +12,7 @@ import {
   FormLabel,
   NumberInput,
   NumberInputField,
+  Text,
 } from "@chakra-ui/react";
 
 // Local imports
@@ -69,49 +70,94 @@ export const NumberField: FC<Props> = ({
     return "white";
   };
 
-  const getBgColor = (path) => {
+  const getColor = (path) => {
     if (!path) {
       return "none";
     }
-    let bgColor;
+    let color;
     switch (path) {
       case "fmnpBonus":
-        bgColor = "red";
+        color = "#fa706f";
         break;
       case "wic":
-        bgColor = "none";
+        color = "#fa706f";
         break;
       case "ebt":
-        bgColor = "#922dd4";
+        color = "#9747ff";
         break;
       case "snapBonus":
-        bgColor = "black";
+        color = "#1f78b4";
         break;
       case "cardCoupon":
-        bgColor = "orange";
+        color = "#fab26f";
         break;
       case "marketGoods":
-        bgColor = "#e9d826";
+        color = "#fadb6f";
         break;
       case "gWorld":
-        bgColor = "#4dd42d";
+        color = "#60a29b";
         break;
     }
-    return bgColor;
+    return color;
+  };
+
+  const getColorName = (path) => {
+    if (!path) {
+      return "";
+    }
+    let colorName;
+    switch (path) {
+      case "cashAndCredit":
+        colorName = "";
+        break;
+      case "producePlus":
+        colorName = "";
+        break;
+      case "sfmnp":
+        colorName = "";
+        break;
+      case "fmnpBonus":
+        colorName = "(red)";
+        break;
+      case "wic":
+        colorName = "(red)";
+        break;
+      case "ebt":
+        colorName = "(purple)";
+        break;
+      case "snapBonus":
+        colorName = "(white and blue)";
+        break;
+      case "cardCoupon":
+        colorName = "(orange)";
+        break;
+      case "marketGoods":
+        colorName = "(yellow)";
+        break;
+      case "gWorld":
+        colorName = "(green)";
+        break;
+    }
+    return colorName;
   };
 
   return (
-    <FormControl>
+    <FormControl sx={{ marginBottom: 4 }}>
       {label ? (
         <FormLabel
-          sx={{
-            fontWeight: 900,
-            textTransform: "uppercase",
-            color: getTextColor(path),
-            backgroundColor: getBgColor(path),
-          }}
+          sx={
+            {
+              // fontWeight: 900,
+              // textTransform: "uppercase",
+              // color: getColor(path),
+              // backgroundColor: getColor(path),
+            }
+          }
         >
           {label + (required ? " (Required)" : "")}
+          <Text as="span" sx={{ color: getColor(path) }}>
+            {` ${getColorName(path)}`}
+          </Text>
         </FormLabel>
       ) : (
         ""
@@ -127,6 +173,7 @@ export const NumberField: FC<Props> = ({
           // sx={{ width: 16 }}
           value={value}
           onChange={(newValue) => setValue(Number(newValue))}
+          sx={{ width: 260 }}
         >
           <NumberInputField />
         </NumberInput>
