@@ -187,6 +187,7 @@ const CustomSalesReportsList: React.FC<any> = () => {
   }, [reports]);
 
   useEffect(() => {
+    console.log("**** REPORTS", reports);
     let filtered = reports;
 
     if (monthValue.toLowerCase() !== "all") {
@@ -217,22 +218,26 @@ const CustomSalesReportsList: React.FC<any> = () => {
   return (
     <>
       <SalesReportsTabs selected="salesReports" />
-      <Container maxW="container.xl">
+      <Container maxW="container.xl" marginY={12}>
         <Flex my={6} justify="space-between" flexWrap={"wrap"}>
           <Box>
             <Heading as="h2" sx={{ textTransform: "uppercase" }}>
               Sales Reports
             </Heading>
           </Box>
-          {role != "vendor" ? (
+          {user.role != "vendor" ? (
             <>
               <Spacer />
               <HStack flexGrow={1} spacing={4} justify={"flex-end"}>
-                <Button as="a" href="/#FIXME">
-                  Download sales data
-                </Button>
-                <Button as="a" href="/admin/collections/sales-reports/create">
+                <Button
+                  as="a"
+                  href="/admin/collections/sales-reports/create"
+                  variant="ghost"
+                >
                   Create a sales report
+                </Button>
+                <Button as="a" href="/#FIXME" variant="ghost">
+                  Download sales data
                 </Button>
               </HStack>
             </>
@@ -391,29 +396,19 @@ const CustomSalesReportsList: React.FC<any> = () => {
                         </Td>
                         <Td>{new Date(day).toLocaleDateString("en-US")}</Td>
                         <Td>$0</Td>
-                        <Td>{`$${cashAndCredit}`}</Td>
+                        <Td>{cashAndCredit ? `$${cashAndCredit}` : ""}</Td>
                         <Td>
                           $
                           {`${
-                            producePlus
-                              ? producePlus
-                              : 0 + wic
-                              ? wic
-                              : 0 + sfmnp
-                              ? sfmnp
-                              : 0 + ebt
-                              ? ebt
-                              : 0 + snapBonus
-                              ? snapBonus
-                              : 0 + fmnpBonus
-                              ? fmnpBonus
-                              : 0 + cardCoupon
-                              ? cardCoupon
-                              : 0 + marketGoods
-                              ? marketGoods
-                              : 0 + gWorld
-                              ? gWorld
-                              : 0
+                            (producePlus ? producePlus : 0) +
+                            (wic ? wic : 0) +
+                            (sfmnp ? sfmnp : 0) +
+                            (ebt ? ebt : 0) +
+                            (snapBonus ? snapBonus : 0) +
+                            (fmnpBonus ? fmnpBonus : 0) +
+                            (cardCoupon ? cardCoupon : 0) +
+                            (marketGoods ? marketGoods : 0) +
+                            (gWorld ? gWorld : 0)
                           }`}
                         </Td>
                         <Td>dd/mm/yyyy</Td>
