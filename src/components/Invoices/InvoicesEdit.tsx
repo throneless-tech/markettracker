@@ -76,8 +76,6 @@ const InvoicesEdit: React.FC<any> = () => {
     const response = await fetch(`/api/sales-reports${stringifiedQuery}`);
     let reports = await response.json();
     reports = reports.docs;
-    console.log(reports);
-
     setSalesReports(reports);
   };
 
@@ -112,6 +110,28 @@ const InvoicesEdit: React.FC<any> = () => {
       setInvoice(reportsArray);
     }
   }, [salesReports, vendor, vendors]);
+
+  const calculateNet = (row) => {
+    if (!invoice) {
+      return null;
+    }
+    const rowTotal = row.cashAndCredit - row.producePlus - row.sfmnp - row.wic;
+    return rowTotal;
+  };
+
+  const calculateSubtotal = () => {
+    let subtotal = [];
+
+    invoice.map((row) => {
+      const rowTotal =
+        row.cashAndCredit - row.producePlus - row.sfmnp - row.wic;
+      subtotal.push(rowTotal);
+    });
+
+    const sum = subtotal.reduce((partialSum, a) => partialSum + a, 0);
+
+    return sum;
+  };
 
   return (
     <Container maxW="container.2xl" marginBottom={4}>
@@ -488,7 +508,7 @@ const InvoicesEdit: React.FC<any> = () => {
                         FIXME
                       </Td>
                       <Td isNumeric sx={{ fontWeight: "bold" }}>
-                        FIXME
+                        {calculateNet(row)}
                       </Td>
                     </Tr>
                   ))
@@ -498,7 +518,9 @@ const InvoicesEdit: React.FC<any> = () => {
         </TableContainer>
         <Flex align="center" justify="flex-end" marginTop={6}>
           <Text sx={{ backgroundColor: "teal.100", padding: 4 }}>Subtotal</Text>
-          <Text sx={{ backgroundColor: "teal.50", padding: 4 }}>$1,519.16</Text>
+          <Text sx={{ backgroundColor: "teal.50", padding: 4 }}>
+            {calculateSubtotal()}
+          </Text>
         </Flex>
         <Heading as="h3" marginTop={12} sx={{ fontSize: 24 }}>
           Penalties &amp; Credits
@@ -580,7 +602,7 @@ const InvoicesEdit: React.FC<any> = () => {
                     maxWidth: 300,
                   }}
                 >
-                  Dupont Circle [Wednesday]
+                  FIXME
                 </Td>
                 <Td
                   isNumeric
@@ -590,7 +612,7 @@ const InvoicesEdit: React.FC<any> = () => {
                     width: 100,
                   }}
                 >
-                  $100
+                  FIXME
                 </Td>
                 <Td
                   sx={{
@@ -599,7 +621,7 @@ const InvoicesEdit: React.FC<any> = () => {
                     width: 100,
                   }}
                 >
-                  Late fee
+                  ex: Late fee
                 </Td>
                 <Td
                   sx={{
@@ -608,7 +630,7 @@ const InvoicesEdit: React.FC<any> = () => {
                     width: 100,
                   }}
                 >
-                  Late 4 times.
+                  ex: Late 4 times.
                 </Td>
               </Tr>
             </Tbody>
@@ -616,7 +638,7 @@ const InvoicesEdit: React.FC<any> = () => {
         </TableContainer>
         <Flex align="center" justify="flex-end" marginTop={6}>
           <Text sx={{ backgroundColor: "teal.100", padding: 4 }}>Subtotal</Text>
-          <Text sx={{ backgroundColor: "teal.50", padding: 4 }}>$100</Text>
+          <Text sx={{ backgroundColor: "teal.50", padding: 4 }}>$FIXME</Text>
         </Flex>
         <Flex align="center" justify="flex-end" marginTop={6}>
           <Text sx={{ backgroundColor: "teal.100", padding: 4 }}>
@@ -630,7 +652,7 @@ const InvoicesEdit: React.FC<any> = () => {
               padding: 4,
             }}
           >
-            $1619.16
+            $FIXME
           </Text>
         </Flex>
       </Container>
