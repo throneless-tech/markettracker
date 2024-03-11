@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-
+import { useHistory } from "react-router-dom";
 import { useAuth } from "payload/components/utilities";
 
 // Chakra imports
@@ -49,7 +49,10 @@ const months = [
 const InvoicesList: React.FC<any> = () => {
   const { user } = useAuth();
   const [invoices, setInvoices] = useState([]);
+  const [toDisplay, setToDisplay] = useState([]);
   const [monthValue, setMonthValue] = useState("All");
+
+  const history = useHistory();
 
   //   const [filtered, setFiltered] = useState([])
 
@@ -57,17 +60,74 @@ const InvoicesList: React.FC<any> = () => {
     setMonthValue(event.target.value);
   };
 
+  const viewInvoice = (invoice) => {
+    history.push({
+      pathname: `/admin/collections/invoices/${invoice.id}`,
+      state: invoice,
+    });
+  };
+
   const getInvoices = async () => {
     const response = await fetch(`/api/invoices`);
     const json = await response.json();
     const invoices = json ? json.docs : [];
-    console.log("invoices!", invoices);
     setInvoices(invoices);
   };
 
   useEffect(() => {
     getInvoices();
   }, []);
+
+  useEffect(() => {
+    let withTotals = [];
+
+    if (invoices.length) {
+      withTotals = invoices.map((invoice) => {
+        // this is to calculate invoice amounts
+        /**
+         * from FF point of view, an invoice amount is:
+         * market fee (that the vendor owes calculated from cash and credit * percentage) MINUS the coupon amounts
+         * that FF owes the vendor
+         */
+        const totals = invoice.reports.reduce((acc, report) => {
+          const {
+            producePlus,
+            cashAndCredit,
+            wic,
+            sfmnp,
+            ebt,
+            snapBonus,
+            fmnpBonus,
+            cardCoupon,
+            marketGoods,
+            gWorld,
+          } = report;
+          acc =
+            acc +
+            cashAndCredit -
+            (producePlus ? producePlus : 0) +
+            (wic ? wic : 0) +
+            (sfmnp ? sfmnp : 0) +
+            (ebt ? ebt : 0) +
+            (snapBonus ? snapBonus : 0) +
+            (fmnpBonus ? fmnpBonus : 0) +
+            (cardCoupon ? cardCoupon : 0) +
+            (marketGoods ? marketGoods : 0) +
+            (gWorld ? gWorld : 0);
+          return acc;
+        }, 0);
+
+        return {
+          ...invoice,
+          total: totals,
+        };
+      });
+    }
+
+    if (withTotals.length) {
+      setToDisplay(withTotals);
+    }
+  }, [invoices]);
 
   return (
     <>
@@ -277,21 +337,58 @@ const InvoicesList: React.FC<any> = () => {
                 >
                   Invoice status
                 </Th>
+                <Th
+                  sx={{
+                    border: "1px solid",
+                    borderColor: "gray.100",
+                    color: "gray.900",
+                    fontFamily: "'Outfit', sans-serif",
+                    fontSize: 16,
+                    fontWeight: 500,
+                    maxWidth: 300,
+                    textTransform: "none",
+                  }}
+                ></Th>
               </Tr>
             </Thead>
             <Tbody>
-              {invoices.length
-                ? invoices.map((invoice) => {
-                    const { reports, amountOwed, paid } = invoice;
+              {toDisplay.length
+                ? toDisplay.map((invoice) => {
+                    const {
+                      reports,
+                      date,
+                      total,
+                      amountOwed,
+                      penalty,
+                      credit,
+                      paid,
+                    } = invoice;
                     return (
                       <Tr>
                         <Td>{reports[0].vendor.name}</Td>
                         <Td>{reports[0].vendor.contacts[0].email}</Td>
-                        <Td>${amountOwed}</Td>
-                        <Td></Td>
-                        <Td></Td>
-                        <Td>dd/mm/yyyy</Td>
-                        <Td></Td>
+                        <Td>
+                          $
+                          {total +
+                            (credit ? credit : 0) -
+                            (penalty ? penalty : 0)}
+                        </Td>
+                        <Td>
+                          ${(credit ? credit : 0) - (penalty ? penalty : 0)}
+                        </Td>
+                        <Td>${total}</Td>
+                        <Td>{new Date(date).toLocaleDateString("en-US")}</Td>
+                        <Td>{paid ? "Paid" : "Open"}</Td>
+                        <Td>
+                          <Button
+                            onClick={(e) => {
+                              e.preventDefault;
+                              viewInvoice(invoice);
+                            }}
+                          >
+                            View invoice
+                          </Button>
+                        </Td>
                       </Tr>
                     );
                   })
