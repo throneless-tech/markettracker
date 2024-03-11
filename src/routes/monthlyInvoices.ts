@@ -32,6 +32,7 @@ const monthlyInvoices = async (req, res, next) => {
         equals: month,
       },
     },
+    limit: 9999,
     depth: 2,
   });
 
@@ -116,6 +117,7 @@ const monthlyInvoices = async (req, res, next) => {
           vendor: key,
           marketMonth: month,
           reports: value.map((report) => report.id),
+          date: new Date().toISOString(),
         },
       });
       invoicesArray.push(invoice);
