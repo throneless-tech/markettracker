@@ -52,6 +52,11 @@ export const Invoices: CollectionConfig = {
       type: "number",
     },
     {
+      name: "date",
+      label: "Invoice date",
+      type: "date",
+    },
+    {
       name: "marketMonth",
       type: "select",
       options: FullMonths.map((month) => {
