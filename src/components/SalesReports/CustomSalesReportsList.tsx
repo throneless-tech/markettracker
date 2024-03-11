@@ -376,6 +376,7 @@ const CustomSalesReportsList: React.FC<any> = () => {
                 ? filteredReports.map((report) => {
                     const {
                       season,
+                      invoiceDate,
                       day,
                       producePlus,
                       cashAndCredit,
@@ -413,7 +414,11 @@ const CustomSalesReportsList: React.FC<any> = () => {
                             (gWorld ? gWorld : 0)
                           }`}
                         </Td>
-                        <Td>dd/mm/yyyy</Td>
+                        <Td>
+                          {invoiceDate
+                            ? new Date(invoiceDate).toLocaleDateString("en-US")
+                            : "Not invoiced"}
+                        </Td>
                         <Td>
                           <Button
                             onClick={(e) => {
