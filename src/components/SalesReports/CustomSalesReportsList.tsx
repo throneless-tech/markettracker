@@ -73,7 +73,7 @@ const CustomSalesReportsList: React.FC<any> = () => {
   const [filteredReports, setFilteredReports] = useState<SalesReportMonth[]>(
     [],
   );
-  const [vendors, setVendors] = useState(["All"]);
+  const [vendors, setVendors] = useState<(Vendor | string)[]>(["All"]);
   const [vendorValue, setVendorValue] = useState<string>("All");
 
   const getVendorSalesReports = async () => {
@@ -189,7 +189,6 @@ const CustomSalesReportsList: React.FC<any> = () => {
   }, [reports]);
 
   useEffect(() => {
-    console.log("**** REPORTS", reports);
     let filtered = reports;
 
     if (monthValue.toLowerCase() !== "all") {
@@ -339,17 +338,23 @@ const CustomSalesReportsList: React.FC<any> = () => {
                     maxWidth={"360px"}
                     onChange={handleVendorChange}
                   >
-                    {/**commented out because goddamn type errors */}
-                    {/* {vendors ? vendors.map((vendor) => {
-                      return (
-                        <option
-                          value={typeof vendor === 'object' ? vendor.id : "All"}
-                          key={typeof vendor === 'object' ? vendor.id : "All"}
-                        >
-                          {typeof vendor === "object" ? vendor.name : "All"}
-                        </option>
-                      );
-                    }) : null } */}
+                    {/* *commented out because goddamn type errors */}
+                    {vendors.length
+                      ? vendors.map((vendor) => {
+                          return (
+                            <option
+                              value={
+                                typeof vendor === "object" ? vendor.id : "All"
+                              }
+                              key={
+                                typeof vendor === "object" ? vendor.id : "All"
+                              }
+                            >
+                              {typeof vendor === "object" ? vendor.name : "All"}
+                            </option>
+                          );
+                        })
+                      : null}
                   </Select>
                 </FormControl>
               </Box>
