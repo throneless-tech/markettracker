@@ -76,6 +76,7 @@ const InvoicesList: React.FC<any> = () => {
 
   useEffect(() => {
     getInvoices();
+    console.log("user->", user);
   }, []);
 
   useEffect(() => {

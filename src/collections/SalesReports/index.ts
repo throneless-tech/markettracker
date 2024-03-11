@@ -43,7 +43,7 @@ export const SalesReports: CollectionConfig = {
     {
       name: "day",
       type: "date",
-      // required: true,
+      required: true,
       admin: {
         date: {
           pickerAppearance: "dayOnly",

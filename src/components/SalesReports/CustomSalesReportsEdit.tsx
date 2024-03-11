@@ -92,7 +92,7 @@ const CustomSalesReportsEdit: React.FC<any> = () => {
     } catch (err) {
       console.log("error: ", err);
     }
-    console.log("getData", await getData());
+    history.push("/admin/collections/sales-reports");
   };
 
   const getSeasons = useCallback(async () => {
