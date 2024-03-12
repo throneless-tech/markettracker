@@ -34,16 +34,12 @@ const InvoicesEdit: React.FC<any> = () => {
   useEffect(() => {
     if (history.location.state) {
       setInvoice(history.location.state as Invoice);
-      console.log("***invoice", history.location.state);
     }
   }, [history.location.state]);
 
   const reportReducer = useCallback(
     (accumulator, report, index) => {
       const existingReport = accumulator.get(report.season.id);
-
-      console.log("***existingReport", existingReport);
-
       const {
         producePlus = 0,
         cashAndCredit = 0,
@@ -56,6 +52,7 @@ const InvoicesEdit: React.FC<any> = () => {
         marketGoods = 0,
         gWorld = 0,
       } = report;
+
       if (existingReport) {
         existingReport.cashAndCredit =
           (existingReport.cashAndCredit ?? 0) + cashAndCredit;
@@ -118,6 +115,14 @@ const InvoicesEdit: React.FC<any> = () => {
       setSalesReports(reportsArray);
     }
   }, [invoice]);
+
+  /**
+   * Invoice amount:
+   * Market fees (total cash
+   * and credit sales * market fee percentage) owed by vendor
+   * MINUS
+   * total coupons owed by FF to the vendors
+   */
 
   return (
     <Container maxW="container.2xl" marginBottom={4}>
