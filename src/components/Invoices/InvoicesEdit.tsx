@@ -81,23 +81,21 @@ const InvoicesEdit: React.FC<any> = () => {
             (marketGoods ?? 0) +
             (gWorld ?? 0));
         setSubtotal(subtotal + existingReport.total);
-        accumulator.set(report.season.id, existingReport);
       } else {
         let thisReport = {
           ...report,
           marketDays: 1,
           total:
-            cashAndCredit ??
-            0 -
-              (producePlus ? producePlus : 0) +
-              (wic ? wic : 0) +
-              (sfmnp ? sfmnp : 0) +
-              (ebt ? ebt : 0) +
-              (snapBonus ? snapBonus : 0) +
-              (fmnpBonus ? fmnpBonus : 0) +
-              (cardCoupon ? cardCoupon : 0) +
-              (marketGoods ? marketGoods : 0) +
-              (gWorld ? gWorld : 0),
+            (cashAndCredit ?? 0) -
+            ((producePlus ?? 0) +
+              (wic ?? 0) +
+              (sfmnp ?? 0) +
+              (ebt ?? 0) +
+              (snapBonus ?? 0) +
+              (fmnpBonus ?? 0) +
+              (cardCoupon ?? 0) +
+              (marketGoods ?? 0) +
+              (gWorld ?? 0)),
         };
         setSubtotal(subtotal + thisReport.total);
         accumulator.set(report.season.id, thisReport);
