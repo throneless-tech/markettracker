@@ -169,6 +169,11 @@ export const SalesReports: CollectionConfig = {
       },
     },
     {
+      name: "penalty",
+      label: "Penalty",
+      type: "number",
+    },
+    {
       name: "invoiceDate",
       label: "Invoice date",
       type: "date",

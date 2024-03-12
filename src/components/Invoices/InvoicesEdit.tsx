@@ -53,6 +53,8 @@ const InvoicesEdit: React.FC<any> = () => {
         gWorld = 0,
       } = report;
 
+      console.log("report =>", report);
+
       if (existingReport) {
         existingReport.cashAndCredit =
           (existingReport.cashAndCredit ?? 0) + cashAndCredit;
@@ -113,6 +115,15 @@ const InvoicesEdit: React.FC<any> = () => {
       setSalesReports(reportsArray);
     }
   }, [invoice]);
+
+  useEffect(() => {
+    console.log("SALES REPORTS? =>", salesReports);
+    /***
+     * find the market id of each sales report
+     * go to the vendor, find the application that matches the market id
+     * and check if that application has a market fee on it
+     */
+  }, [salesReports]);
 
   /**
    * Invoice amount:

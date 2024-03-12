@@ -7,6 +7,7 @@
   "scripts": {
     "dev": "cross-env PAYLOAD_CONFIG_PATH=src/payload.config.ts nodemon",
     "build:payload": "cross-env PAYLOAD_CONFIG_PATH=src/payload.config.ts payload build",
+    "payload": "cross-env PAYLOAD_CONFIG_PATH=src/payload.config.ts payload",
     "build:server": "tsc",
     "build": "npm run generate:types && npm run copyfiles && npm run build:payload && npm run build:server",
     "serve": "cross-env PAYLOAD_CONFIG_PATH=dist/payload.config.js NODE_ENV=production node dist/server.js",
