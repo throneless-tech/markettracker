@@ -40,7 +40,6 @@ const InvoicesEdit: React.FC<any> = () => {
   const reportReducer = useCallback(
     (accumulator, report, index) => {
       const existingReport = accumulator.get(report.season.id);
-
       const {
         producePlus,
         cashAndCredit,
@@ -53,18 +52,20 @@ const InvoicesEdit: React.FC<any> = () => {
         marketGoods,
         gWorld,
       } = report;
+
       if (existingReport) {
+        // need to account for when an existing report
         existingReport.cashAndCredit += cashAndCredit;
         existingReport.marketDays += 1;
-        existingReport.producePlus += producePlus;
-        existingReport.wic += wic;
-        existingReport.sfmnp += sfmnp;
-        existingReport.ebt += ebt;
-        existingReport.snapBonus += snapBonus;
-        existingReport.fmnpBonus += fmnpBonus;
-        existingReport.cardCoupon += cardCoupon;
-        existingReport.marketGoods += marketGoods;
-        existingReport.gWorld += gWorld;
+        existingReport.producePlus += producePlus ? producePlus : 0;
+        existingReport.wic += wic ? wic : 0;
+        existingReport.sfmnp += sfmnp ? sfmnp : 0;
+        existingReport.ebt += ebt ? ebt : 0;
+        existingReport.snapBonus += snapBonus ? snapBonus : 0;
+        existingReport.fmnpBonus += fmnpBonus ? fmnpBonus : 0;
+        existingReport.cardCoupon += cardCoupon ? cardCoupon : 0;
+        existingReport.marketGoods += marketGoods ? marketGoods : 0;
+        existingReport.gWorld += gWorld ? gWorld : 0;
         existingReport.total +=
           cashAndCredit -
           (producePlus ? producePlus : 0) +
@@ -109,6 +110,14 @@ const InvoicesEdit: React.FC<any> = () => {
       setSalesReports(reportsArray);
     }
   }, [invoice]);
+
+  /**
+   * Invoice amount:
+   * Market fees (total cash
+   * and credit sales * market fee percentage) owed by vendor
+   * MINUS
+   * total coupons owed by FF to the vendors
+   */
 
   return (
     <Container maxW="container.2xl" marginBottom={4}>
