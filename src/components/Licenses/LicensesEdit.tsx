@@ -30,7 +30,7 @@ export const LicensesEdit: React.FC<any> = () => {
   const { value: licenseType, setValue: setLicenseType } = useField<string>({
     path: "type",
   });
-  const { setValue: setLicenseOwner } = useField<string>({
+  const { setValue: setLicenseOwner } = useField<string | Vendor>({
     path: "owner",
   });
 
@@ -39,12 +39,9 @@ export const LicensesEdit: React.FC<any> = () => {
   };
 
   useEffect(() => {
-    // console.log("***user", user);
     if (!user.vendor) return;
-    const vendor = user.vendor as Vendor;
-    const owner = vendor.id ? vendor.id : vendor;
-    // console.log("***owner", owner);
-    setLicenseOwner(owner);
+    console.log("***owner", user.vendor);
+    setLicenseOwner(user.vendor);
   }, [user]);
 
   useEffect(() => {
@@ -81,7 +78,7 @@ export const LicensesEdit: React.FC<any> = () => {
           <Button
             as={"a"}
             variant={"outline"}
-            href="/admin/collections/documents"
+            href="/admin/collections/licenses"
           >
             Cancel
           </Button>

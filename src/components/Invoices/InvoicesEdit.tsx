@@ -34,6 +34,7 @@ const InvoicesEdit: React.FC<any> = () => {
   useEffect(() => {
     if (history.location.state) {
       setInvoice(history.location.state as Invoice);
+      console.log("***invoice", history.location.state);
     }
   }, [history.location.state]);
 
@@ -41,57 +42,65 @@ const InvoicesEdit: React.FC<any> = () => {
     (accumulator, report, index) => {
       const existingReport = accumulator.get(report.season.id);
 
+      console.log("***existingReport", existingReport);
+
       const {
-        producePlus,
-        cashAndCredit,
-        wic,
-        sfmnp,
-        ebt,
-        snapBonus,
-        fmnpBonus,
-        cardCoupon,
-        marketGoods,
-        gWorld,
+        producePlus = 0,
+        cashAndCredit = 0,
+        wic = 0,
+        sfmnp = 0,
+        ebt = 0,
+        snapBonus = 0,
+        fmnpBonus = 0,
+        cardCoupon = 0,
+        marketGoods = 0,
+        gWorld = 0,
       } = report;
       if (existingReport) {
-        existingReport.cashAndCredit += cashAndCredit;
-        existingReport.marketDays += 1;
-        existingReport.producePlus += producePlus;
-        existingReport.wic += wic;
-        existingReport.sfmnp += sfmnp;
-        existingReport.ebt += ebt;
-        existingReport.snapBonus += snapBonus;
-        existingReport.fmnpBonus += fmnpBonus;
-        existingReport.cardCoupon += cardCoupon;
-        existingReport.marketGoods += marketGoods;
-        existingReport.gWorld += gWorld;
+        existingReport.cashAndCredit =
+          (existingReport.cashAndCredit ?? 0) + cashAndCredit;
+        existingReport.marketDays = (existingReport.marketDays ?? 0) + 1;
+        existingReport.producePlus =
+          (existingReport.producePlus ?? 0) + producePlus;
+        existingReport.wic = (existingReport.wic ?? 0) + wic;
+        existingReport.sfmnp = (existingReport.sfmnp ?? 0) + sfmnp;
+        existingReport.ebt = (existingReport.ebt ?? 0) + ebt;
+        existingReport.snapBonus = (existingReport.snapBonus ?? 0) + snapBonus;
+        existingReport.fmnpBonus = (existingReport.fmnpBonus ?? 0) + fmnpBonus;
+        existingReport.cardCoupon =
+          (existingReport.cardCoupon ?? 0) + cardCoupon;
+        existingReport.marketGoods =
+          (existingReport.marketGoods ?? 0) + marketGoods;
+        existingReport.gWorld = (existingReport.gWorld ?? 0) + gWorld;
         existingReport.total +=
-          cashAndCredit -
-          (producePlus ? producePlus : 0) +
-          (wic ? wic : 0) +
-          (sfmnp ? sfmnp : 0) +
-          (ebt ? ebt : 0) +
-          (snapBonus ? snapBonus : 0) +
-          (fmnpBonus ? fmnpBonus : 0) +
-          (cardCoupon ? cardCoupon : 0) +
-          (marketGoods ? marketGoods : 0) +
-          (gWorld ? gWorld : 0);
+          (cashAndCredit ?? 0) -
+          ((producePlus ?? 0) +
+            (wic ?? 0) +
+            (sfmnp ?? 0) +
+            (ebt ?? 0) +
+            (snapBonus ?? 0) +
+            (fmnpBonus ?? 0) +
+            (cardCoupon ?? 0) +
+            (marketGoods ?? 0) +
+            (gWorld ?? 0));
         setSubtotal(subtotal + existingReport.total);
+        accumulator.set(report.season.id, existingReport);
       } else {
         let thisReport = {
           ...report,
           marketDays: 1,
           total:
-            cashAndCredit -
-            (producePlus ? producePlus : 0) +
-            (wic ? wic : 0) +
-            (sfmnp ? sfmnp : 0) +
-            (ebt ? ebt : 0) +
-            (snapBonus ? snapBonus : 0) +
-            (fmnpBonus ? fmnpBonus : 0) +
-            (cardCoupon ? cardCoupon : 0) +
-            (marketGoods ? marketGoods : 0) +
-            (gWorld ? gWorld : 0),
+            cashAndCredit ??
+            0 -
+              (producePlus ? producePlus : 0) +
+              (wic ? wic : 0) +
+              (sfmnp ? sfmnp : 0) +
+              (ebt ? ebt : 0) +
+              (snapBonus ? snapBonus : 0) +
+              (fmnpBonus ? fmnpBonus : 0) +
+              (cardCoupon ? cardCoupon : 0) +
+              (marketGoods ? marketGoods : 0) +
+              (gWorld ? gWorld : 0),
         };
         setSubtotal(subtotal + thisReport.total);
         accumulator.set(report.season.id, thisReport);
