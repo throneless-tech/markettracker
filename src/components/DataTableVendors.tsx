@@ -223,20 +223,26 @@ export function DataTable<Data extends object>({
       : 0;
 
   return (
-    <Container maxW="container.2xl" width={"80vw"}>
+    <Container
+      maxW="container.2xl"
+      width={"80vw"}
+      className="p-2 block max-w-full overflow-x-scroll overflow-y-hidden"
+    >
       <Box
         onScroll={(e) => fetchMore(e.target as HTMLDivElement)}
         ref={tableContainerRef}
-        sx={{
-          containIntrinsicHeight: "100vh",
-          height: "100vh",
-          maxWidth: "3000px !important;",
-          overflowAnchor: "none !important",
-          overflowX: "scroll",
-          overflowY: "auto",
-        }}
+        sx={
+          {
+            // containIntrinsicHeight: "100vh",
+            // height: "100vh",
+            // maxWidth: "3000px !important;",
+            // overflowAnchor: "none !important",
+            // overflowX: "scroll",
+            // overflowY: "auto",
+          }
+        }
       >
-        <Table variant="simple">
+        <Table variant="striped" colorScheme="green" className="w-full">
           <Thead sx={{ position: "sticky", top: 0, zIndex: 5 }}>
             {table.getHeaderGroups().map((headerGroup) => (
               <Tr key={headerGroup.id} background={"gray.100"}>
