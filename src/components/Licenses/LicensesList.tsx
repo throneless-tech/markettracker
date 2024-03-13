@@ -83,7 +83,7 @@ const LicensesList: React.FC<any> = () => {
         <Stack>
           {licenses && licenses.length ? (licenses.map(license => (
             <Box key={license.id} marginBottom={8}>
-              <Link href={`/admin/collections/documents/${license.document.filename}`} color="teal.600" fontSize={20}>
+              <Link href={`/documents/${license.document.filename}`} color="teal.600" fontSize={20}>
                 {license.document.filename}
               </Link>
               <Text>
