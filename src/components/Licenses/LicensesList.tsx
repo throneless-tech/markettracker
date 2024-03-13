@@ -59,8 +59,8 @@ const LicensesList: React.FC<any> = () => {
 
   const formatDate = (dateString) => {
     const d = new Date(dateString);
-    return d.toLocaleDateString("en-US")
-  }
+    return d.toLocaleDateString("en-US");
+  };
 
   return (
     <>
@@ -81,16 +81,28 @@ const LicensesList: React.FC<any> = () => {
           </Box>
         ) : null}
         <Stack>
-          {licenses && licenses.length ? (licenses.map(license => (
-            <Box key={license.id} marginBottom={8}>
-              <Link href={`/documents/${license.document.filename}`} color="teal.600" fontSize={20}>
-                {license.document.filename}
-              </Link>
-              <Text>
-                {license.type == "license" ? "Business license" : "Business insurance document"}{" "}uploaded on{" "}{formatDate(license.createdAt)}.
-              </Text>
-            </Box>
-          ))
+          {licenses && licenses.length ? (
+            licenses.map((license) => (
+              <Box key={license.id} marginBottom={8}>
+                {typeof license.document === "object" ? (
+                  <Link
+                    href={`/documents/${license.document.filename}`}
+                    color="teal.600"
+                    fontSize={20}
+                  >
+                    {license.document.filename}
+                  </Link>
+                ) : (
+                  ""
+                )}
+                <Text>
+                  {license.type == "license"
+                    ? "Business license"
+                    : "Business insurance document"}{" "}
+                  uploaded on {formatDate(license.createdAt)}.
+                </Text>
+              </Box>
+            ))
           ) : (
             <>
               <Text fontSize={24} marginTop={8}>
