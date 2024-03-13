@@ -46,7 +46,7 @@ export const CardMarket: FC<CardProps> = ({ applications }) => {
       const selectApplications = applications.filter(
         (application) => application.status === "approved",
       );
-      console.log(selectApplications);
+      // console.log(selectApplications);
 
       setApprovedApps(selectApplications);
     }

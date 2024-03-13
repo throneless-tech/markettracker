@@ -30,9 +30,11 @@ export const LicensesEdit: React.FC<any> = () => {
   const { value: licenseType, setValue: setLicenseType } = useField<string>({
     path: "type",
   });
-  const { setValue: setLicenseOwner } = useField<string | Vendor>({
+  const { value: licenseOwner, setValue: setLicenseOwner } = useField<string | Vendor>({
     path: "owner",
   });
+
+  const [shadowLicenseOwner, setShadowLicenseOwner] = useState(null);
 
   const submitForm = () => {
     setDoSubmit(true);
@@ -40,15 +42,15 @@ export const LicensesEdit: React.FC<any> = () => {
 
   useEffect(() => {
     if (!user.vendor) return;
-    console.log("***owner", user.vendor);
-    setLicenseOwner(user.vendor);
+    setShadowLicenseOwner(user.vendor);
   }, [user]);
+
+  useEffect(() => {console.log(shadowLicenseOwner);}, [shadowLicenseOwner])
 
   useEffect(() => {
     if (doSubmit) {
+      setLicenseOwner(shadowLicenseOwner);
       console.log("submitting...");
-      console.log("licenseType", licenseType);
-
       submit();
       history.push("/admin/collections/licenses");
     }
@@ -65,7 +67,10 @@ export const LicensesEdit: React.FC<any> = () => {
           <FormLabel>License type</FormLabel>
           <Select
             placeholder="Select the type of license"
-            onChange={(e) => setLicenseType(e.target.value)}
+            onChange={(e) => {
+              setLicenseType(e.target.value);
+              setLicenseOwner(shadowLicenseOwner.id);
+            }}
           >
             <option value="license">Business License</option>
             <option value="insurance">Business Insurance Documentation</option>

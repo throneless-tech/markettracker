@@ -7,6 +7,7 @@ import { License, Vendor } from "payload/generated-types";
 
 // Chakra imports
 import {
+  Box,
   Button,
   Container,
   Divider,
@@ -56,6 +57,11 @@ const LicensesList: React.FC<any> = () => {
     getVendorLicenses();
   }, []);
 
+  const formatDate = (dateString) => {
+    const d = new Date(dateString);
+    return d.toLocaleDateString("en-US")
+  }
+
   return (
     <>
       <Container maxW="container.xl" marginY={12}>
@@ -63,9 +69,28 @@ const LicensesList: React.FC<any> = () => {
           My Licenses
         </Heading>
         <Divider color="gray.900" borderBottomWidth={2} opacity={1} />
+        {licenses && licenses.length ? (
+          <Box marginY={6} marginLeft={"auto"} marginRight={0} width={200}>
+            <Button
+              as="a"
+              href="/admin/collections/licenses/create"
+              variant="outline"
+            >
+              Add a new license
+            </Button>
+          </Box>
+        ) : null}
         <Stack>
-          {licenses && licenses.length ? (
-            <></>
+          {licenses && licenses.length ? (licenses.map(license => (
+            <Box key={license.id} marginBottom={8}>
+              <Link href={`/admin/collections/documents/${license.document.filename}`} color="teal.600" fontSize={20}>
+                {license.document.filename}
+              </Link>
+              <Text>
+                {license.type == "license" ? "Business license" : "Business insurance document"}{" "}uploaded on{" "}{formatDate(license.createdAt)}.
+              </Text>
+            </Box>
+          ))
           ) : (
             <>
               <Text fontSize={24} marginTop={8}>
