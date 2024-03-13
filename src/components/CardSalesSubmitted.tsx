@@ -1,14 +1,12 @@
 import React, { FC } from "react";
 import { Box, Flex, Heading, Spacer, Stack, Text } from "@chakra-ui/react";
-import { MarketIcon } from "../assets/icons/market";
 import { SalesIcon } from "../assets/icons/sales";
 
 interface CardProps {
-  // title: string;
-  // icon?: string;
+  reports?: Array<any>;
 }
 
-export const CardSalesSubmitted: FC<CardProps> = ({}) => {
+export const CardSalesSubmitted: FC<CardProps> = ({ reports }) => {
   return (
     <Box
       padding="16px"
