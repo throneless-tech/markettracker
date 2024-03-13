@@ -6,11 +6,11 @@ import qs from "qs";
 import { SalesReportsTabs } from "./SalesReportsTabs";
 import { Dropdown } from "../Dropdown";
 // import { MonthDropdown } from "../MonthDropdown";
-
 import { GreenCheckIcon } from "../../assets/icons/green-check";
+
 // payload
 import { useAuth } from "payload/components/utilities";
-import { Market, Season, SalesReport, Vendor } from "payload/generated-types";
+import { Season, SalesReport, Vendor } from "payload/generated-types";
 
 // utils
 import getSeasons from "../../utils/getSeasons";
@@ -223,7 +223,7 @@ const CustomSalesReportsList: React.FC<any> = () => {
       <Container maxW="container.xl" marginY={12}>
         <Flex my={6} justify="space-between" flexWrap={"wrap"}>
           <Box>
-            <Heading as="h2" sx={{ textTransform: "uppercase" }}>
+            <Heading as="h1" sx={{ textTransform: "uppercase" }}>
               Sales Reports
             </Heading>
           </Box>

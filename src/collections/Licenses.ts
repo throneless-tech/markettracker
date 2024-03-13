@@ -1,6 +1,7 @@
 import { CollectionConfig } from "payload/types";
 import { withFormContext } from "../utils/withFormContext";
 import { LicensesEdit } from "../components/Licenses/LicensesEdit";
+import LicensesList from "../components/Licenses/LicensesList";
 
 export const Licenses: CollectionConfig = {
   slug: "licenses",
@@ -11,6 +12,7 @@ export const Licenses: CollectionConfig = {
     components: {
       views: {
         Edit: withFormContext(LicensesEdit),
+        List: LicensesList,
       },
     },
   },
