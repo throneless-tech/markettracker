@@ -28,7 +28,9 @@ import {
   TableContainer,
 } from "@chakra-ui/react";
 
+// components
 import { FooterAdmin } from "../FooterAdmin";
+import { InvoicesTabs } from "./InvoicesTabs";
 
 const months = [
   "All",
@@ -76,7 +78,7 @@ const InvoicesList: React.FC<any> = () => {
 
   useEffect(() => {
     getInvoices();
-    console.log("user->", user);
+    // console.log("user->", user);
   }, []);
 
   useEffect(() => {
@@ -132,7 +134,7 @@ const InvoicesList: React.FC<any> = () => {
 
   return (
     <>
-      {/* <SalesReportsTabs selected="salesReports" />; */}
+      <InvoicesTabs />
       <Container maxW="container.xl" marginY={8}>
         <Flex my={6} justify="space-between" flexWrap={"wrap"}>
           <Box>

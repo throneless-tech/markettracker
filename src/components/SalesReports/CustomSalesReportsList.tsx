@@ -39,6 +39,7 @@ import {
   FormLabel,
   Text,
   Select,
+  VStack,
 } from "@chakra-ui/react";
 
 import { FooterAdmin } from "../FooterAdmin";
@@ -245,135 +246,160 @@ const CustomSalesReportsList: React.FC<any> = () => {
           ) : null}
         </Flex>
         <Divider color="gray.900" borderBottomWidth={2} opacity={1} />
-        <Grid templateColumns="repeat(2, 5fr)" gap={4} marginTop={10}>
-          <GridItem>
-            <Spacer />
-            <Box>
-              <FormControl sx={{ alignItems: "center", display: "flex" }}>
-                <FormLabel>
-                  <Text
-                    fontFamily="Zilla Slab"
-                    lineHeight="1"
-                    fontWeight="semibold"
-                    fontSize="24px"
-                    letterSpacing="0.03em"
-                    textTransform="capitalize"
-                    color="gray.600"
-                  >
-                    Market month
-                  </Text>
-                </FormLabel>
-                <Select
-                  value={monthValue}
-                  maxWidth={"360px"}
-                  onChange={handleMonthChange}
+        <VStack align="flex-start" marginY={8}>
+          <Box>
+            <FormControl sx={{ alignItems: "center", display: "flex" }}>
+              <FormLabel>
+                <Text
+                  fontFamily="Zilla Slab"
+                  lineHeight="1"
+                  fontWeight="semibold"
+                  fontSize="24px"
+                  letterSpacing="0.03em"
+                  textTransform="capitalize"
+                  color="gray.600"
+                  width={200}
                 >
-                  {months.map((month: string, idx: React.Key) => {
-                    return (
-                      <option value={month.toLowerCase()} key={idx}>
-                        {month}
-                      </option>
-                    );
-                  })}
-                </Select>
-              </FormControl>
-            </Box>
-          </GridItem>
-          <GridItem>
-            <Spacer />
-            <Box>
-              <FormControl sx={{ alignItems: "center", display: "flex" }}>
-                <FormLabel>
-                  <Text
-                    fontFamily="Zilla Slab"
-                    lineHeight="1"
-                    fontWeight="semibold"
-                    fontSize="24px"
-                    letterSpacing="0.03em"
-                    textTransform="capitalize"
-                    color="gray.600"
-                  >
-                    Choose a market
-                  </Text>
-                </FormLabel>
-                <Select
-                  value={marketValue}
-                  maxWidth={"360px"}
-                  onChange={handleMarketChange}
+                  Market month
+                </Text>
+              </FormLabel>
+              <Select
+                value={monthValue}
+                width={360}
+                onChange={handleMonthChange}
+              >
+                {months.map((month: string, idx: React.Key) => {
+                  return (
+                    <option value={month.toLowerCase()} key={idx}>
+                      {month}
+                    </option>
+                  );
+                })}
+              </Select>
+            </FormControl>
+          </Box>
+
+          <Box>
+            <FormControl sx={{ alignItems: "center", display: "flex" }}>
+              <FormLabel>
+                <Text
+                  fontFamily="Zilla Slab"
+                  lineHeight="1"
+                  fontWeight="semibold"
+                  fontSize="24px"
+                  letterSpacing="0.03em"
+                  textTransform="capitalize"
+                  color="gray.600"
+                  width={200}
                 >
-                  {markets.map((market) => {
-                    return (
-                      <option
-                        value={typeof market === "object" ? market.id : "All"}
-                        key={typeof market === "object" ? market.id : "All"}
-                      >
-                        {typeof market === "object" ? market.name : "All"}
-                      </option>
-                    );
-                  })}
-                </Select>
-              </FormControl>
-            </Box>
-          </GridItem>
-          {role !== "vendor" ? (
-            <GridItem>
-              <Spacer />
-              <Box>
-                <FormControl sx={{ alignItems: "center", display: "flex" }}>
-                  <FormLabel>
-                    <Text
-                      fontFamily="Zilla Slab"
-                      lineHeight="1"
-                      fontWeight="semibold"
-                      fontSize="24px"
-                      letterSpacing="0.03em"
-                      textTransform="capitalize"
-                      color="gray.600"
+                  Choose a market
+                </Text>
+              </FormLabel>
+              <Select
+                value={marketValue}
+                width={360}
+                onChange={handleMarketChange}
+              >
+                {markets.map((market) => {
+                  return (
+                    <option
+                      value={typeof market === "object" ? market.id : "All"}
+                      key={typeof market === "object" ? market.id : "All"}
                     >
-                      Choose a vendor
-                    </Text>
-                  </FormLabel>
-                  <Select
-                    value={vendorValue}
-                    maxWidth={"360px"}
-                    onChange={handleVendorChange}
+                      {typeof market === "object" ? market.name : "All"}
+                    </option>
+                  );
+                })}
+              </Select>
+            </FormControl>
+          </Box>
+          {role !== "vendor" ? (
+            <Box>
+              <FormControl sx={{ alignItems: "center", display: "flex" }}>
+                <FormLabel>
+                  <Text
+                    fontFamily="Zilla Slab"
+                    lineHeight="1"
+                    fontWeight="semibold"
+                    fontSize="24px"
+                    letterSpacing="0.03em"
+                    textTransform="capitalize"
+                    color="gray.600"
+                    width={200}
                   >
-                    {/* *commented out because goddamn type errors */}
-                    {vendors.length
-                      ? vendors.map((vendor) => {
-                          return (
-                            <option
-                              value={
-                                typeof vendor === "object" ? vendor.id : "All"
-                              }
-                              key={
-                                typeof vendor === "object" ? vendor.id : "All"
-                              }
-                            >
-                              {typeof vendor === "object" ? vendor.name : "All"}
-                            </option>
-                          );
-                        })
-                      : null}
-                  </Select>
-                </FormControl>
-              </Box>
-            </GridItem>
+                    Choose a vendor
+                  </Text>
+                </FormLabel>
+                <Select
+                  value={vendorValue}
+                  width={360}
+                  onChange={handleVendorChange}
+                >
+                  {/* *commented out because goddamn type errors */}
+                  {vendors.length
+                    ? vendors.map((vendor) => {
+                        return (
+                          <option
+                            value={
+                              typeof vendor === "object" ? vendor.id : "All"
+                            }
+                            key={typeof vendor === "object" ? vendor.id : "All"}
+                          >
+                            {typeof vendor === "object" ? vendor.name : "All"}
+                          </option>
+                        );
+                      })
+                    : null}
+                </Select>
+              </FormControl>
+            </Box>
           ) : null}
-        </Grid>
+        </VStack>
         <TableContainer>
-          <Table variant="simple">
-            <Thead>
+          <Table variant="striped" colorScheme={"green"}>
+            <Thead background={"gray.100"}>
               <Tr>
-                <Th>Market</Th>
-                <Th>Vendor</Th>
-                <Th>Date</Th>
-                <Th>Penalties/Credits</Th>
-                <Th>Sales Total</Th>
-                <Th>Coupon Total</Th>
-                <Th>Invoice Date</Th>
-                <Th></Th>
-                <Th></Th>
+                <Th
+                  sx={{ color: "gray.900", fontFamily: "'Outfit', sans-serif" }}
+                >
+                  Market
+                </Th>
+                <Th
+                  sx={{ color: "gray.900", fontFamily: "'Outfit', sans-serif" }}
+                >
+                  Vendor
+                </Th>
+                <Th
+                  sx={{ color: "gray.900", fontFamily: "'Outfit', sans-serif" }}
+                >
+                  Date
+                </Th>
+                <Th
+                  sx={{ color: "gray.900", fontFamily: "'Outfit', sans-serif" }}
+                >
+                  Penalties/Credits
+                </Th>
+                <Th
+                  sx={{ color: "gray.900", fontFamily: "'Outfit', sans-serif" }}
+                >
+                  Sales Total
+                </Th>
+                <Th
+                  sx={{ color: "gray.900", fontFamily: "'Outfit', sans-serif" }}
+                >
+                  Coupon Total
+                </Th>
+                <Th
+                  sx={{ color: "gray.900", fontFamily: "'Outfit', sans-serif" }}
+                >
+                  Invoice Date
+                </Th>
+                <Th
+                  sx={{ color: "gray.900", fontFamily: "'Outfit', sans-serif" }}
+                ></Th>
+                <Th
+                  sx={{ color: "gray.900", fontFamily: "'Outfit', sans-serif" }}
+                ></Th>
               </Tr>
             </Thead>
             <Tbody>
