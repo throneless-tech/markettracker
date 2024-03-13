@@ -27,6 +27,8 @@ import { Vendor } from "payload/generated-types";
 export const Dashboard: React.FC<any> = () => {
   const { user } = useAuth();
 
+  console.log(user);
+
   return (
     <>
       <Container maxW="container.xl" marginBottom={4}>

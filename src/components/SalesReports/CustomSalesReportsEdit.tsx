@@ -282,13 +282,14 @@ const CustomSalesReportsEdit: React.FC<any> = () => {
                 <FormControl sx={{ alignItems: "center", display: "flex" }}>
                   <FormLabel>
                     <Text
-                      fontFamily="Zilla Slab"
-                      lineHeight="1"
-                      fontWeight="semibold"
-                      fontSize="24px"
-                      letterSpacing="0.03em"
-                      textTransform="capitalize"
                       color="gray.600"
+                      fontFamily="Zilla Slab"
+                      fontSize="24px"
+                      fontWeight="semibold"
+                      letterSpacing="0.03em"
+                      lineHeight="1"
+                      textTransform="capitalize"
+                      width={200}
                     >
                       Choose a market
                     </Text>
@@ -297,6 +298,7 @@ const CustomSalesReportsEdit: React.FC<any> = () => {
                     value={seasonId}
                     maxWidth={"360px"}
                     onChange={handleSeasonChange}
+                    placeholder="Market"
                   >
                     {seasons.length
                       ? seasons.map((season) => {
@@ -316,16 +318,20 @@ const CustomSalesReportsEdit: React.FC<any> = () => {
                       : null}
                   </Select>
                 </FormControl>
-                <FormControl sx={{ alignItems: "center", display: "flex" }}>
+                <FormControl
+                  marginTop={3}
+                  sx={{ alignItems: "center", display: "flex" }}
+                >
                   <FormLabel>
                     <Text
-                      fontFamily="Zilla Slab"
-                      lineHeight="1"
-                      fontWeight="semibold"
-                      fontSize="24px"
-                      letterSpacing="0.03em"
-                      textTransform="capitalize"
                       color="gray.600"
+                      fontFamily="Zilla Slab"
+                      fontSize="24px"
+                      fontWeight="semibold"
+                      letterSpacing="0.03em"
+                      lineHeight="1"
+                      textTransform="capitalize"
+                      width={200}
                     >
                       Choose a vendor
                     </Text>
@@ -334,6 +340,7 @@ const CustomSalesReportsEdit: React.FC<any> = () => {
                     value={vendorId}
                     maxWidth={"360px"}
                     onChange={handleVendorChange}
+                    placeholder="Vendor"
                   >
                     {vendors && vendors.length
                       ? vendors.map((vendor) => {
@@ -353,16 +360,20 @@ const CustomSalesReportsEdit: React.FC<any> = () => {
                       : null}
                   </Select>
                 </FormControl>
-                <FormControl sx={{ alignItems: "center", display: "flex" }}>
+                <FormControl
+                  marginTop={3}
+                  sx={{ alignItems: "center", display: "flex" }}
+                >
                   <FormLabel>
                     <Text
-                      fontFamily="Zilla Slab"
-                      lineHeight="1"
-                      fontWeight="semibold"
-                      fontSize="24px"
-                      letterSpacing="0.03em"
-                      textTransform="capitalize"
                       color="gray.600"
+                      fontFamily="Zilla Slab"
+                      fontSize="24px"
+                      fontWeight="semibold"
+                      letterSpacing="0.03em"
+                      lineHeight="1"
+                      textTransform="capitalize"
+                      width={200}
                     >
                       Choose a date
                     </Text>
@@ -371,6 +382,7 @@ const CustomSalesReportsEdit: React.FC<any> = () => {
                     value={date}
                     maxWidth={"360px"}
                     onChange={handleDateChange}
+                    placeholder="Date"
                   >
                     {dateOptions && dateOptions.length
                       ? dateOptions.map((dateObj) => {

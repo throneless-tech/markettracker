@@ -27,7 +27,7 @@ const LicensesList: React.FC<any> = () => {
 
   const getVendorLicenses = async () => {
     const licensesQuery = {
-      vendor: {
+      owner: {
         equals:
           user.vendor && typeof user.vendor === "object"
             ? (user.vendor as Vendor).id
@@ -47,7 +47,7 @@ const LicensesList: React.FC<any> = () => {
     const json = await response.json();
     const licenses = json ? json.docs : [];
 
-    console.log(json);
+    console.log(licenses);
 
     setLicenses(licenses);
   };
