@@ -83,7 +83,7 @@ export const Invoices: CollectionConfig = {
           type: "number",
         },
         {
-          name: "marketFees",
+          name: "marketFee",
           type: "number",
         },
         {

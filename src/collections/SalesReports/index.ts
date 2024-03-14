@@ -174,6 +174,11 @@ export const SalesReports: CollectionConfig = {
       type: "number",
     },
     {
+      name: "marketFee",
+      label: "Market fee percentage",
+      type: "number",
+    },
+    {
       name: "invoiceDate",
       label: "Invoice date",
       type: "date",
