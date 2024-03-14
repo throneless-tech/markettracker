@@ -89,7 +89,7 @@ export const CardSalesSubmitted: FC<CardProps> = ({ reports }) => {
             color="#000000"
             textAlign="end"
           >
-            12/10/22
+            2/10/24
           </Text>
         </Flex>
       </Stack>
