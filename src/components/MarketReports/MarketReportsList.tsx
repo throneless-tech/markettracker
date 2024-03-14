@@ -50,9 +50,7 @@ export const MarketReportsList: React.FC<any> = () => {
     getOperatorMarkets();
   }, []);
 
-  useEffect(() => {
-    console.log(markets);
-  }, [markets]);
+  useEffect(() => {}, [markets]);
 
   return (
     <>
