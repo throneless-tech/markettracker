@@ -26,7 +26,6 @@ import {
 const InvoicesEdit: React.FC<any> = () => {
   // TODO USER PERMISSIONS
 
-  const [salesReports, setSalesReports] = useState([]);
   const [invoice, setInvoice] = useState<Invoice>();
   const [subtotal, setSubtotal] = useState(0);
   const history = useHistory();
@@ -36,94 +35,6 @@ const InvoicesEdit: React.FC<any> = () => {
       setInvoice(history.location.state as Invoice);
     }
   }, [history.location.state]);
-
-  const reportReducer = useCallback(
-    (accumulator, report, index) => {
-      const existingReport = accumulator.get(report.season.id);
-      const {
-        producePlus = 0,
-        cashAndCredit = 0,
-        wic = 0,
-        sfmnp = 0,
-        ebt = 0,
-        snapBonus = 0,
-        fmnpBonus = 0,
-        cardCoupon = 0,
-        marketGoods = 0,
-        gWorld = 0,
-      } = report;
-
-      console.log("report =>", report);
-
-      if (existingReport) {
-        existingReport.cashAndCredit =
-          (existingReport.cashAndCredit ?? 0) + cashAndCredit;
-        existingReport.marketDays = (existingReport.marketDays ?? 0) + 1;
-        existingReport.producePlus =
-          (existingReport.producePlus ?? 0) + producePlus;
-        existingReport.wic = (existingReport.wic ?? 0) + wic;
-        existingReport.sfmnp = (existingReport.sfmnp ?? 0) + sfmnp;
-        existingReport.ebt = (existingReport.ebt ?? 0) + ebt;
-        existingReport.snapBonus = (existingReport.snapBonus ?? 0) + snapBonus;
-        existingReport.fmnpBonus = (existingReport.fmnpBonus ?? 0) + fmnpBonus;
-        existingReport.cardCoupon =
-          (existingReport.cardCoupon ?? 0) + cardCoupon;
-        existingReport.marketGoods =
-          (existingReport.marketGoods ?? 0) + marketGoods;
-        existingReport.gWorld = (existingReport.gWorld ?? 0) + gWorld;
-        existingReport.total +=
-          (cashAndCredit ?? 0) -
-          ((producePlus ?? 0) +
-            (wic ?? 0) +
-            (sfmnp ?? 0) +
-            (ebt ?? 0) +
-            (snapBonus ?? 0) +
-            (fmnpBonus ?? 0) +
-            (cardCoupon ?? 0) +
-            (marketGoods ?? 0) +
-            (gWorld ?? 0));
-        setSubtotal(subtotal + existingReport.total);
-      } else {
-        let thisReport = {
-          ...report,
-          marketDays: 1,
-          total:
-            (cashAndCredit ?? 0) -
-            ((producePlus ?? 0) +
-              (wic ?? 0) +
-              (sfmnp ?? 0) +
-              (ebt ?? 0) +
-              (snapBonus ?? 0) +
-              (fmnpBonus ?? 0) +
-              (cardCoupon ?? 0) +
-              (marketGoods ?? 0) +
-              (gWorld ?? 0)),
-        };
-        setSubtotal(subtotal + thisReport.total);
-        accumulator.set(report.season.id, thisReport);
-      }
-
-      return accumulator;
-    },
-    [subtotal],
-  );
-
-  useEffect(() => {
-    if (invoice?.reports?.length) {
-      const combinedReports = invoice.reports.reduce(reportReducer, new Map());
-      const reportsArray = Array.from(combinedReports.values());
-      setSalesReports(reportsArray);
-    }
-  }, [invoice]);
-
-  useEffect(() => {
-    console.log("SALES REPORTS? =>", salesReports);
-    /***
-     * find the market id of each sales report
-     * go to the vendor, find the application that matches the market id
-     * and check if that application has a market fee on it
-     */
-  }, [salesReports]);
 
   /**
    * Invoice amount:
@@ -339,8 +250,8 @@ const InvoicesEdit: React.FC<any> = () => {
               </Tr>
             </Thead>
             <Tbody>
-              {salesReports && salesReports.length
-                ? salesReports.map((row) => (
+              {invoice?.sales && invoice?.sales.length
+                ? invoice.sales.map((row) => (
                     <Tr>
                       <Td
                         sx={{
@@ -350,7 +261,7 @@ const InvoicesEdit: React.FC<any> = () => {
                           maxWidth: 300,
                         }}
                       >
-                        {row.season.name}
+                        {row.season}
                       </Td>
                       <Td
                         isNumeric

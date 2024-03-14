@@ -148,6 +148,7 @@ const monthlyInvoices = async (req, res, next) => {
             total: 0,
           };
         }
+        console.log("***existing", existing);
 
         existing.marketDays += report.marketDays ?? 0;
         existing.cashAndCredit += report.cashAndCredit ?? 0;
@@ -162,7 +163,7 @@ const monthlyInvoices = async (req, res, next) => {
         existing.marketGoods += report.marketGoods ?? 0;
         existing.gWorld += report.gWorld ?? 0;
         existing.total =
-          (report.cashAndCredit ?? 0) * (report.marketFees / 100) -
+          (report.cashAndCredit ?? 0) * ((report.marketFees ?? 0) / 100) -
           ((report.ebt ?? 0) +
             (report.snapBonus ?? 0) +
             (report.producePlus ?? 0) +
@@ -176,12 +177,13 @@ const monthlyInvoices = async (req, res, next) => {
         acc.set(report.season.name, existing);
         return acc;
       }, new Map());
+      console.log("***sales", sales);
       const invoice = await req.payload.create({
         collection: "invoices",
         data: {
           vendor: key,
           marketMonth: month,
-          sales,
+          sales: Array.from(sales.values()),
           reports: value.map((report) => report.id),
           date: new Date().toISOString(),
         },
