@@ -67,6 +67,68 @@ export const Invoices: CollectionConfig = {
       }),
     },
     {
+      name: "sales",
+      type: "array",
+      fields: [
+        {
+          name: "season",
+          type: "text",
+        },
+        {
+          name: "marketDays",
+          type: "number",
+        },
+        {
+          name: "cashAndCredit",
+          type: "number",
+        },
+        {
+          name: "marketFees",
+          type: "number",
+        },
+        {
+          name: "ebt",
+          type: "number",
+        },
+        {
+          name: "snapBonus",
+          type: "number",
+        },
+        {
+          name: "producePlus",
+          type: "number",
+        },
+        {
+          name: "wic",
+          type: "number",
+        },
+        {
+          name: "sfmnp",
+          type: "number",
+        },
+        {
+          name: "fmnpBonus",
+          type: "number",
+        },
+        {
+          name: "cardCoupon",
+          type: "number",
+        },
+        {
+          name: "marketGoods",
+          type: "number",
+        },
+        {
+          name: "gWorld",
+          type: "number",
+        },
+        {
+          name: "total",
+          type: "number",
+        },
+      ],
+    },
+    {
       name: "vendor",
       type: "relationship",
       relationTo: "vendors",

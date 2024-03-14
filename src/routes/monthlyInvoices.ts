@@ -111,11 +111,77 @@ const monthlyInvoices = async (req, res, next) => {
       if (incompleteMap.has(key)) {
         return;
       }
+
+      //  {
+      //   season: "",
+      //   marketDays: 0,
+      //   cashAndCredit: 0,
+      //   marketFees: 0,
+      //   ebt: 0,
+      //   snapBonus: 0,
+      //   producePlus: 0,
+      //   wic: 0,
+      //   sfmnp: 0,
+      //   fmnpBonus: 0,
+      //   cardCoupon: 0,
+      //   marketGoods: 0,
+      //   gWorld: 0,
+      //   total: 0,
+      // }
+      const sales = value.reduce((acc, report) => {
+        let existing = acc.get(report.season.name);
+        if (!existing) {
+          existing = {
+            season: report.season.name,
+            marketDays: 0,
+            cashAndCredit: 0,
+            marketFees: 0,
+            ebt: 0,
+            snapBonus: 0,
+            producePlus: 0,
+            wic: 0,
+            sfmnp: 0,
+            fmnpBonus: 0,
+            cardCoupon: 0,
+            marketGoods: 0,
+            gWorld: 0,
+            total: 0,
+          };
+        }
+
+        existing.marketDays += report.marketDays ?? 0;
+        existing.cashAndCredit += report.cashAndCredit ?? 0;
+        existing.marketFees += report.marketFees ?? 0;
+        existing.ebt += report.ebt ?? 0;
+        existing.snapBonus += report.snapBonus ?? 0;
+        existing.producePlus += report.producePlus ?? 0;
+        existing.wic += report.wic ?? 0;
+        existing.sfmnp += report.sfmnp ?? 0;
+        existing.fmnpBonus += report.fmnpBonus ?? 0;
+        existing.cardCoupon += report.cardCoupon ?? 0;
+        existing.marketGoods += report.marketGoods ?? 0;
+        existing.gWorld += report.gWorld ?? 0;
+        existing.total =
+          (report.cashAndCredit ?? 0) * (report.marketFees / 100) -
+          ((report.ebt ?? 0) +
+            (report.snapBonus ?? 0) +
+            (report.producePlus ?? 0) +
+            (report.wic ?? 0) +
+            (report.sfmnp ?? 0) +
+            (report.fmnpBonus ?? 0) +
+            (report.cardCoupon ?? 0) +
+            (report.marketGoods ?? 0) +
+            (report.gWorld ?? 0));
+
+        acc.set(report.season.name, existing);
+        return acc;
+      }, new Map());
       const invoice = await req.payload.create({
         collection: "invoices",
         data: {
           vendor: key,
           marketMonth: month,
+          sales,
           reports: value.map((report) => report.id),
           date: new Date().toISOString(),
         },
