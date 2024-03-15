@@ -1,19 +1,17 @@
 import React, { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
+import { useInView } from "react-intersection-observer";
 import qs from "qs";
 
 // components
 import { SalesReportsTabs } from "./SalesReportsTabs";
-import { Dropdown } from "../Dropdown";
+// import { Dropdown } from "../Dropdown";
 // import { MonthDropdown } from "../MonthDropdown";
-import { GreenCheckIcon } from "../../assets/icons/green-check";
+// import { GreenCheckIcon } from "../../assets/icons/green-check";
 
 // payload
 import { useAuth } from "payload/components/utilities";
 import { Season, SalesReport, Vendor } from "payload/generated-types";
-
-// utils
-import getSeasons from "../../utils/getSeasons";
 
 // Chakra imports
 import {
@@ -77,6 +75,10 @@ const CustomSalesReportsList: React.FC<any> = () => {
   const [vendors, setVendors] = useState<(Vendor | string)[]>(["All"]);
   const [vendorValue, setVendorValue] = useState<string>("All");
 
+  // lazy loading
+  const { ref, inView } = useInView({});
+  const [page, setPage] = useState<number>(1);
+
   const getVendorSalesReports = async () => {
     const salesReportsQuery = {
       vendor: {
@@ -90,6 +92,7 @@ const CustomSalesReportsList: React.FC<any> = () => {
       {
         where: salesReportsQuery,
         depth: 1,
+        page,
       },
       { addQueryPrefix: true },
     );
@@ -131,17 +134,14 @@ const CustomSalesReportsList: React.FC<any> = () => {
     const stringQuery = qs.stringify(
       {
         depth: 1,
-        limit: 9999,
+        page,
       },
       { addQueryPrefix: true },
     );
-
     const response = await fetch(`/api/sales-reports${stringQuery}`);
     const json = await response.json();
-    console.log("json,", json);
-    const reports = json ? json.docs : [];
-
-    setReports(reports);
+    const newReports = json ? json.docs : [];
+    setReports(reports.concat(newReports));
   };
 
   const handleMonthChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
@@ -159,6 +159,16 @@ const CustomSalesReportsList: React.FC<any> = () => {
   useEffect(() => {
     role == "vendor" ? getVendorSalesReports() : getSalesReports();
   }, []);
+
+  useEffect(() => {
+    getSalesReports();
+  }, [page]);
+
+  useEffect(() => {
+    if (inView) {
+      setPage((prevState) => prevState + 1);
+    }
+  }, [inView]);
 
   useEffect(() => {
     if (reports.length) {
@@ -404,7 +414,7 @@ const CustomSalesReportsList: React.FC<any> = () => {
             </Thead>
             <Tbody>
               {filteredReports.length
-                ? filteredReports.map((report) => {
+                ? filteredReports.map((report, index) => {
                     const {
                       season,
                       invoiceDate,
@@ -421,7 +431,10 @@ const CustomSalesReportsList: React.FC<any> = () => {
                       gWorld,
                     } = report;
                     return (
-                      <Tr>
+                      <Tr
+                        key={report.id}
+                        ref={index === filteredReports.length - 1 ? ref : null}
+                      >
                         <Td>{typeof season === "object" ? season.name : ""}</Td>
                         <Td>
                           {typeof report.vendor == "object"
