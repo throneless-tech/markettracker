@@ -174,6 +174,16 @@ export const SalesReports: CollectionConfig = {
       type: "number",
     },
     {
+      name: "penaltyDescription",
+      label: "Penalty Description",
+      type: "text",
+    },
+    {
+      name: "penaltyType",
+      label: "Penalty Type",
+      type: "text",
+    },
+    {
       name: "invoiceDate",
       label: "Invoice date",
       type: "date",

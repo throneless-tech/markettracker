@@ -46,11 +46,12 @@ const months = [
   "December",
 ];
 
-const InvoicesList: React.FC<any> = () => {
+const InvoicesList: React.FC<any> = (props) => {
   const { user } = useAuth();
   const [invoices, setInvoices] = useState([]);
   const [toDisplay, setToDisplay] = useState([]);
   const [monthValue, setMonthValue] = useState("All");
+  console.log("***props", props);
 
   const history = useHistory();
 
@@ -353,30 +354,22 @@ const InvoicesList: React.FC<any> = () => {
               </Tr>
             </Thead>
             <Tbody>
-              {toDisplay.length
-                ? toDisplay.map((invoice) => {
+              {invoices.length
+                ? invoices.map((invoice) => {
                     const {
                       reports,
                       date,
                       total,
-                      amountOwed,
-                      penalty,
-                      credit,
+                      salesSubtotal,
+                      penaltySubtotal,
                       paid,
                     } = invoice;
                     return (
                       <Tr>
                         <Td>{reports[0].vendor.name}</Td>
                         <Td>{reports[0].vendor.contacts[0].email}</Td>
-                        <Td>
-                          $
-                          {total +
-                            (credit ? credit : 0) -
-                            (penalty ? penalty : 0)}
-                        </Td>
-                        <Td>
-                          ${(credit ? credit : 0) - (penalty ? penalty : 0)}
-                        </Td>
+                        <Td>${salesSubtotal}</Td>
+                        <Td>${penaltySubtotal}</Td>
                         <Td>${total}</Td>
                         <Td>{new Date(date).toLocaleDateString("en-US")}</Td>
                         <Td>{paid ? "Paid" : "Open"}</Td>

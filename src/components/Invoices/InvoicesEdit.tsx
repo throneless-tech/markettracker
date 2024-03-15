@@ -1,5 +1,5 @@
 "use client";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 
 // utils and payload
@@ -27,7 +27,6 @@ const InvoicesEdit: React.FC<any> = () => {
   // TODO USER PERMISSIONS
 
   const [invoice, setInvoice] = useState<Invoice>();
-  const [subtotal, setSubtotal] = useState(0);
   const history = useHistory();
 
   useEffect(() => {
@@ -365,7 +364,7 @@ const InvoicesEdit: React.FC<any> = () => {
         <Flex align="center" justify="flex-end" marginTop={6}>
           <Text sx={{ backgroundColor: "teal.100", padding: 4 }}>Subtotal</Text>
           <Text sx={{ backgroundColor: "teal.50", padding: 4 }}>
-            {subtotal}
+            {invoice?.salesSubtotal}
           </Text>
         </Flex>
         <Heading as="h3" marginTop={12} sx={{ fontSize: 24 }}>
@@ -440,51 +439,57 @@ const InvoicesEdit: React.FC<any> = () => {
               </Tr>
             </Thead>
             <Tbody>
-              <Tr>
-                <Td
-                  sx={{
-                    border: "1px solid",
-                    borderColor: "gray.100",
-                    maxWidth: 300,
-                  }}
-                >
-                  Example Market
-                </Td>
-                <Td
-                  isNumeric
-                  sx={{
-                    border: "1px solid",
-                    borderColor: "gray.100",
-                    width: 100,
-                  }}
-                >
-                  $0
-                </Td>
-                <Td
-                  sx={{
-                    border: "1px solid",
-                    borderColor: "gray.100",
-                    width: 100,
-                  }}
-                >
-                  ex: Late fee
-                </Td>
-                <Td
-                  sx={{
-                    border: "1px solid",
-                    borderColor: "gray.100",
-                    width: 100,
-                  }}
-                >
-                  ex: Late 4 times.
-                </Td>
-              </Tr>
+              {invoice?.penalties && invoice?.penalties.length
+                ? invoice.penalties.map((row) => (
+                    <Tr>
+                      <Td
+                        sx={{
+                          border: "1px solid",
+                          borderColor: "gray.100",
+                          maxWidth: 300,
+                        }}
+                      >
+                        {row.season}
+                      </Td>
+                      <Td
+                        isNumeric
+                        sx={{
+                          border: "1px solid",
+                          borderColor: "gray.100",
+                          width: 100,
+                        }}
+                      >
+                        {row.penalty}
+                      </Td>
+                      <Td
+                        sx={{
+                          border: "1px solid",
+                          borderColor: "gray.100",
+                          width: 100,
+                        }}
+                      >
+                        {row.type}
+                      </Td>
+                      <Td
+                        sx={{
+                          border: "1px solid",
+                          borderColor: "gray.100",
+                          width: 100,
+                        }}
+                      >
+                        {row.description}
+                      </Td>
+                    </Tr>
+                  ))
+                : ""}
             </Tbody>
           </Table>
         </TableContainer>
         <Flex align="center" justify="flex-end" marginTop={6}>
           <Text sx={{ backgroundColor: "teal.100", padding: 4 }}>Subtotal</Text>
-          <Text sx={{ backgroundColor: "teal.50", padding: 4 }}>0</Text>
+          <Text sx={{ backgroundColor: "teal.50", padding: 4 }}>
+            {invoice?.penaltySubtotal}
+          </Text>
         </Flex>
         <Flex align="center" justify="flex-end" marginTop={6}>
           <Text sx={{ backgroundColor: "teal.100", padding: 4 }}>
@@ -498,7 +503,7 @@ const InvoicesEdit: React.FC<any> = () => {
               padding: 4,
             }}
           >
-            {subtotal}
+            {invoice?.total}
           </Text>
         </Flex>
       </Container>
