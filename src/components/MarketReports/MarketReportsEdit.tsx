@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
+import { useField, useForm } from "payload/components/forms";
 import qs from "qs";
 
 // Chakra imports
@@ -7,10 +8,13 @@ import {
   Box,
   Button,
   Card,
+  CardBody,
   Container,
   Divider,
   Flex,
   HStack,
+  LinkBox,
+  LinkOverlay,
   Spacer,
   Stack,
   Tab,
@@ -18,11 +22,11 @@ import {
   TabPanel,
   TabPanels,
   Tabs,
-  Tag,
   Text,
-  Textarea,
-  useDisclosure,
 } from "@chakra-ui/react";
+
+// types
+import { Vendor } from "payload/generated-types";
 
 // utils
 import formatDate from "../../utils/formatDate";
@@ -36,14 +40,27 @@ import { GreenCheckIcon } from "../../assets/icons/green-check";
 import { GrayCheckIcon } from "../../assets/icons/gray-check";
 import { RedXIcon } from "../../assets/icons/red-x";
 import YellowClockIcon from "../../assets/icons/yellow-clock";
-import { Contacts } from "../../collections/Contacts";
+
+type AttendanceArray =
+  | {
+      vendor?: (string | null) | Vendor;
+      status?: ("present" | "late" | "absent" | "undetermined") | null;
+      id?: string | null;
+    }[]
+  | null;
 
 export const MarketReportsEdit: React.FC<any> = () => {
+  const { submit } = useForm();
   const [date, setDate] = useState("");
   const [operator, setOperator] = useState(null);
   const [season, setSeason] = useState(null);
   const [vendors, setVendors] = useState([]);
   const history: any = useHistory();
+
+  const { value: vendorAttendance, setValue: setVendorAttendance } =
+    useField<AttendanceArray>({
+      path: "vendorAttendance.vendorAttendance",
+    });
 
   // get date, operator and market info from state
   useEffect(() => {
@@ -52,7 +69,27 @@ export const MarketReportsEdit: React.FC<any> = () => {
       setOperator(history.location.state.operator);
       setSeason(history.location.state.season);
     }
-  }, []);
+  }, [vendorAttendance]);
+
+  // update the attendance for a vendor on click
+  const updateAttendance = (vendorId) => {
+    let vendAttend = vendorAttendance.map((v) => {
+      if (v.vendor == vendorId) {
+        if (v.status == "undetermined") {
+          v.status = "present";
+        } else if (v.status == "present") {
+          v.status = "late";
+        } else if (v.status == "late") {
+          v.status = "absent";
+        } else if (v.status == "absent") {
+          v.status = "undetermined";
+        }
+      }
+    });
+
+    // let vendAttend = [...vendorAttendance, {vendor: vendorId, status: status}]
+    setVendorAttendance(vendAttend);
+  };
 
   // find vendors for this specific market date
   const getVendors = useCallback(async () => {
@@ -124,6 +161,15 @@ export const MarketReportsEdit: React.FC<any> = () => {
         }
         vendors = vendors.filter((vendor) => vendor !== undefined);
         setVendors(vendors);
+        let vendAttend = [];
+        vendors.map((vendor) => {
+          let thisVendorAttendance = {
+            vendor: vendor.id,
+            status: "undetermined",
+          };
+          vendAttend.push(thisVendorAttendance);
+        });
+        setVendorAttendance(vendAttend);
       } catch (err) {
         console.error(err);
       }
@@ -136,9 +182,7 @@ export const MarketReportsEdit: React.FC<any> = () => {
     }
   }, [date, season]);
 
-  useEffect(() => {
-    console.log(vendors);
-  }, [vendors]);
+  useEffect(() => {}, [vendors, vendorAttendance]);
 
   if (date && operator && season) {
     return (
@@ -296,41 +340,58 @@ export const MarketReportsEdit: React.FC<any> = () => {
                           border="2px solid"
                           borderColor="gray.100"
                           key={vendor.id}
-                          padding={4}
                         >
-                          <Stack direction={["column", "row"]}>
-                            <Stack>
-                              <Text
-                                fontFamily={"Zilla Slab"}
-                                fontSize="3xl"
-                                fontWeight={700}
-                              >
-                                {vendor.name}
-                              </Text>
-                              <HStack>
-                                {vendor.contacts && vendor.contacts.length ? (
-                                  <>
+                          <CardBody>
+                            <LinkBox>
+                              <Stack direction={["column", "row"]}>
+                                <Stack>
+                                  <LinkOverlay
+                                    as="button"
+                                    onClick={() => updateAttendance(vendor.id)}
+                                  >
                                     <Text
                                       fontFamily={"Zilla Slab"}
-                                      fontSize="xl"
+                                      fontSize="3xl"
                                       fontWeight={700}
                                     >
-                                      Contact:{" "}
+                                      {vendor.name}
                                     </Text>
-                                    {vendor.contacts.map((contact) => (
-                                      <Text>
-                                        {contact.name}{" "}
-                                        {contact.phone
-                                          ? contact.phone
-                                          : contact.email}
-                                      </Text>
-                                    ))}
-                                  </>
-                                ) : null}
-                              </HStack>
-                            </Stack>
-                            <GrayCheckIcon height="50px" width="50px" />
-                          </Stack>
+                                  </LinkOverlay>
+                                  <HStack>
+                                    {vendor.contacts &&
+                                    vendor.contacts.length ? (
+                                      <>
+                                        <Text
+                                          fontFamily={"Zilla Slab"}
+                                          fontSize="xl"
+                                          fontWeight={700}
+                                        >
+                                          Contact:{" "}
+                                        </Text>
+                                        {vendor.contacts.map((contact) => (
+                                          <Text>
+                                            {contact.name}{" "}
+                                            {contact.phone
+                                              ? contact.phone
+                                              : contact.email}
+                                          </Text>
+                                        ))}
+                                      </>
+                                    ) : null}
+                                  </HStack>
+                                </Stack>
+                                {vendor.status == "present" ? (
+                                  <GreenCheckIcon height="50px" width="50px" />
+                                ) : vendor.status == "late" ? (
+                                  <YellowClockIcon height="50px" width="50px" />
+                                ) : vendor.status == "absent" ? (
+                                  <RedXIcon height="50px" width="50px" />
+                                ) : (
+                                  <GrayCheckIcon height="50px" width="50px" />
+                                )}
+                              </Stack>
+                            </LinkBox>
+                          </CardBody>
                         </Card>
                       ))
                     : null}

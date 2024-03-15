@@ -22,7 +22,6 @@ import formatTime from "../../utils/formatTime";
 
 // icons
 import { MarketIcon } from "../../assets/icons/market";
-import create from "payload/dist/collections/operations/create";
 
 export const MarketReportCard: React.FC<any> = (props) => {
   const { user } = useAuth();

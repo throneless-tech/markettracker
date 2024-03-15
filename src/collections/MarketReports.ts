@@ -17,12 +17,27 @@ export const MarketReports: CollectionConfig = {
     },
     useAsTitle: "name",
   },
+  versions: {
+    drafts: {
+      autosave: true,
+    },
+  },
   fields: [
     {
       name: "market",
       label: "Market",
       type: "relationship",
       relationTo: "markets",
+    },
+    {
+      name: "date",
+      type: "date",
+      admin: {
+        date: {
+          pickerAppearance: "dayOnly",
+          displayFormat: "d MMM yyy",
+        },
+      },
     },
     {
       type: "tabs",
