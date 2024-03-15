@@ -66,7 +66,11 @@ export const MarketReportsList: React.FC<any> = () => {
               Choose a market
             </Text>
           ) : null}
-          <Grid templateColumns="repeat(3, 1fr)" gap={6} marginTop={6}>
+          <Grid
+            templateColumns={["repeat(1, 1fr)", "repeat(3, 1fr)"]}
+            gap={6}
+            marginTop={6}
+          >
             {markets && markets.length ? (
               markets.map((market) => (
                 <GridItem key={market.id}>

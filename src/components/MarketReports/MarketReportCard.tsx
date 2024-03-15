@@ -12,6 +12,7 @@ import {
   LinkBox,
   LinkOverlay,
   Spacer,
+  Stack,
   Text,
   VStack,
 } from "@chakra-ui/react";
@@ -58,7 +59,7 @@ export const MarketReportCard: React.FC<any> = (props) => {
   };
 
   return (
-    <Card border={"2px solid"} borderColor={"gray.600"} maxWidth={436}>
+    <Card border={"2px solid"} borderColor={"gray.600"} maxWidth={[330, 436]}>
       <CardBody>
         <LinkBox>
           <LinkOverlay as="button" onClick={() => createReport()}>
@@ -96,16 +97,20 @@ export const MarketReportCard: React.FC<any> = (props) => {
             </Text>
           </HStack>
           <HStack marginTop={2} align="flex-start">
-            <Text fontWeight={600}>Manager: </Text>
+            <Text fontWeight={600}>Operator: </Text>
             <VStack align="flex-start">
               {market.operators && market.operators.length
                 ? market.operators.map((operator) => (
-                    <HStack key={operator.id}>
+                    <Stack
+                      direction={["column", "row"]}
+                      key={operator.id}
+                      spacing={[0, 2]}
+                    >
                       <Text>{operator.name}</Text>
                       <Text>
                         {operator.phone ? operator.phone : operator.email}
                       </Text>
-                    </HStack>
+                    </Stack>
                   ))
                 : null}
             </VStack>

@@ -1,30 +1,19 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
+import qs from "qs";
 
 // Chakra imports
 import {
   Box,
   Button,
   Card,
-  Checkbox,
-  CheckboxGroup,
   Container,
   Divider,
   Flex,
-  FormControl,
-  FormHelperText,
-  FormLabel,
-  Heading,
   HStack,
-  Image,
-  Input,
-  Radio,
-  RadioGroup,
-  Select,
   Spacer,
   Stack,
   Tab,
-  TabIndicator,
   TabList,
   TabPanel,
   TabPanels,
@@ -47,22 +36,109 @@ import { GreenCheckIcon } from "../../assets/icons/green-check";
 import { GrayCheckIcon } from "../../assets/icons/gray-check";
 import { RedXIcon } from "../../assets/icons/red-x";
 import YellowClockIcon from "../../assets/icons/yellow-clock";
+import { Contacts } from "../../collections/Contacts";
 
 export const MarketReportsEdit: React.FC<any> = () => {
   const [date, setDate] = useState("");
   const [operator, setOperator] = useState(null);
   const [season, setSeason] = useState(null);
+  const [vendors, setVendors] = useState([]);
   const history: any = useHistory();
 
+  // get date, operator and market info from state
   useEffect(() => {
     if (history.location.state) {
       setDate(history.location.state.date);
       setOperator(history.location.state.operator);
       setSeason(history.location.state.season);
-
-      console.log(history.location.state.season);
     }
   }, []);
+
+  // find vendors for this specific market date
+  const getVendors = useCallback(async () => {
+    // get vendors only for the selected season,
+    // query the applications table for apps from vendors with
+    // approved or approvedWithEdits status
+
+    const stringifiedQuery = qs.stringify(
+      {
+        where: {
+          and: [
+            {
+              season: {
+                equals: season.id,
+              },
+            },
+            {
+              or: [
+                {
+                  status: { equals: "approved" },
+                },
+                {
+                  status: { equals: "approvedWithEdits" },
+                },
+              ],
+            },
+          ],
+        },
+        limit: 999,
+      },
+      { addQueryPrefix: true },
+    );
+
+    // fetch applications to see if vendor was scheduled for this date
+    if (season.id) {
+      try {
+        const res = await fetch(`/api/applications${stringifiedQuery}`, {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+        if (!res.ok) throw new Error(res.statusText);
+        const response = await res.json();
+        let vendors;
+        let dates = new Map();
+        const options: any = {
+          year: "numeric",
+          month: "numeric",
+          day: "numeric",
+        };
+
+        if (response.docs.length) {
+          // response.docs is an array of the applications
+          vendors = response.docs.map((application) => {
+            const dateFound = application.dates.find((thisDate) => {
+              const d = new Date(thisDate.date);
+              const dateString = d.toLocaleDateString("en-US", options);
+
+              if (dateString == date) {
+                return application.vendor;
+              } else {
+                return false;
+              }
+            });
+            if (dateFound) {
+              return application.vendor;
+            }
+          });
+        }
+        vendors = vendors.filter((vendor) => vendor !== undefined);
+        setVendors(vendors);
+      } catch (err) {
+        console.error(err);
+      }
+    }
+  }, [season]);
+
+  useEffect(() => {
+    if (date && season) {
+      getVendors();
+    }
+  }, [date, season]);
+
+  useEffect(() => {
+    console.log(vendors);
+  }, [vendors]);
 
   if (date && operator && season) {
     return (
@@ -214,30 +290,50 @@ export const MarketReportsEdit: React.FC<any> = () => {
                   </HStack>
                 </Stack>
                 <Flex direction={["column", "row"]} marginTop={8}>
-                  <Card border="2px solid" borderColor="gray.100" padding={4}>
-                    <Stack direction={["column", "row"]}>
-                      <Stack>
-                        <Text
-                          fontFamily={"Zilla Slab"}
-                          fontSize="3xl"
-                          fontWeight={700}
+                  {vendors && vendors.length
+                    ? vendors.map((vendor) => (
+                        <Card
+                          border="2px solid"
+                          borderColor="gray.100"
+                          key={vendor.id}
+                          padding={4}
                         >
-                          Vendor name
-                        </Text>
-                        <HStack>
-                          <Text
-                            fontFamily={"Zilla Slab"}
-                            fontSize="xl"
-                            fontWeight={700}
-                          >
-                            Contact:{" "}
-                          </Text>
-                          <Text>Alex 202.123.4567</Text>
-                        </HStack>
-                      </Stack>
-                      <GrayCheckIcon height="50px" width="50px" />
-                    </Stack>
-                  </Card>
+                          <Stack direction={["column", "row"]}>
+                            <Stack>
+                              <Text
+                                fontFamily={"Zilla Slab"}
+                                fontSize="3xl"
+                                fontWeight={700}
+                              >
+                                {vendor.name}
+                              </Text>
+                              <HStack>
+                                {vendor.contacts && vendor.contacts.length ? (
+                                  <>
+                                    <Text
+                                      fontFamily={"Zilla Slab"}
+                                      fontSize="xl"
+                                      fontWeight={700}
+                                    >
+                                      Contact:{" "}
+                                    </Text>
+                                    {vendor.contacts.map((contact) => (
+                                      <Text>
+                                        {contact.name}{" "}
+                                        {contact.phone
+                                          ? contact.phone
+                                          : contact.email}
+                                      </Text>
+                                    ))}
+                                  </>
+                                ) : null}
+                              </HStack>
+                            </Stack>
+                            <GrayCheckIcon height="50px" width="50px" />
+                          </Stack>
+                        </Card>
+                      ))
+                    : null}
                 </Flex>
               </TabPanel>
             </TabPanels>
