@@ -1,5 +1,6 @@
 import { CollectionConfig } from "payload/types";
 import { withFormContext } from "../utils/withFormContext";
+import { MarketReportsEdit } from "../components/MarketReports/MarketReportsEdit";
 import { MarketReportsList } from "../components/MarketReports/MarketReportsList";
 
 export const MarketReports: CollectionConfig = {
@@ -7,7 +8,7 @@ export const MarketReports: CollectionConfig = {
   admin: {
     components: {
       views: {
-        // Edit: withFormContext(MarketReportsEdit),
+        Edit: withFormContext(MarketReportsEdit),
         List: withFormContext(MarketReportsList),
       },
     },

@@ -1,4 +1,6 @@
 import React from "react";
+import { useHistory } from "react-router-dom";
+import { useAuth } from "payload/components/utilities";
 
 // chakra ui imports
 import {
@@ -19,11 +21,24 @@ import formatTime from "../../utils/formatTime";
 
 // icons
 import { MarketIcon } from "../../assets/icons/market";
+import create from "payload/dist/collections/operations/create";
 
 export const MarketReportCard: React.FC<any> = (props) => {
+  const { user } = useAuth();
   const { market } = props;
+  const history = useHistory();
 
-  console.log(market);
+  // direct user to create a report; send state including market and user
+  const createReport = () => {
+    history.push({
+      pathname: `/admin/collections/market-reports/create`,
+      state: {
+        season: market,
+        operator: user,
+        date: nextMarketDate(market.marketDates.startDate),
+      },
+    });
+  };
 
   // figure out which market days are in the future
   const options: any = {
@@ -46,7 +61,7 @@ export const MarketReportCard: React.FC<any> = (props) => {
     <Card border={"2px solid"} borderColor={"gray.600"} maxWidth={436}>
       <CardBody>
         <LinkBox>
-          <LinkOverlay href="/admin/collections/market-reports/create">
+          <LinkOverlay as="button" onClick={() => createReport()}>
             <Flex>
               <HStack>
                 <MarketIcon
@@ -85,7 +100,7 @@ export const MarketReportCard: React.FC<any> = (props) => {
             <VStack align="flex-start">
               {market.operators && market.operators.length
                 ? market.operators.map((operator) => (
-                    <HStack>
+                    <HStack key={operator.id}>
                       <Text>{operator.name}</Text>
                       <Text>
                         {operator.phone ? operator.phone : operator.email}
