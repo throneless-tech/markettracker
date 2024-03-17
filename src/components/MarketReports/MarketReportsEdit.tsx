@@ -201,9 +201,11 @@ export const MarketReportsEdit: React.FC<any> = () => {
     }
   }, [shadowDate, shadowSeason]);
 
-  useEffect(() => {}, [vendors, vendorAttendance]);
+  useEffect(() => {
+    console.log(season);
+  }, [date, season, vendors, vendorAttendance]);
 
-  if (id) {
+  if (id && season && typeof season === "object") {
     return (
       <>
         <Container maxW="container.xl" marginY={8}>

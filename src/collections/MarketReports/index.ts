@@ -1,7 +1,8 @@
 import { CollectionConfig } from "payload/types";
-import { withFormContext } from "../utils/withFormContext";
-import { MarketReportsEdit } from "../components/MarketReports/MarketReportsEdit";
-import { MarketReportsList } from "../components/MarketReports/MarketReportsList";
+import { withFormContext } from "../../utils/withFormContext";
+import { MarketReportsEdit } from "../../components/MarketReports/MarketReportsEdit";
+import { MarketReportsList } from "../../components/MarketReports/MarketReportsList";
+import { afterReadSeason, beforeValidateSeason } from "./hooks/populateSeason";
 
 export const MarketReports: CollectionConfig = {
   slug: "market-reports",
@@ -16,6 +17,10 @@ export const MarketReports: CollectionConfig = {
       defaultLimit: 20,
     },
     useAsTitle: "name",
+  },
+  hooks: {
+    afterRead: [afterReadSeason],
+    beforeValidate: [beforeValidateSeason],
   },
   versions: {
     drafts: {
