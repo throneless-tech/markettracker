@@ -46,6 +46,7 @@ export const MarketReportsList: React.FC<any> = () => {
       );
       setMarkets(operatorMarkets);
     };
+    // TODO filter by market dates as well
 
     getOperatorMarkets();
   }, []);

@@ -30,6 +30,18 @@ export const MarketReports: CollectionConfig = {
       relationTo: "markets",
     },
     {
+      name: "season",
+      label: "Season",
+      type: "relationship",
+      relationTo: "seasons",
+    },
+    {
+      name: "operator",
+      label: "Operator",
+      type: "relationship",
+      relationTo: "contacts",
+    },
+    {
       name: "date",
       type: "date",
       admin: {
