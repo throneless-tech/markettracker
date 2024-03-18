@@ -227,6 +227,7 @@ p {
 }
 
 .seasons-create-dates {
+  &.react-datepicker,
   .react-datepicker {
     .react-datepicker__navigation {
       display: flex;

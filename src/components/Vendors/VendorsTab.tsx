@@ -312,7 +312,7 @@ export const VendorsTab: React.FC<any> = () => {
         </Heading>
         <Divider color="gray.900" borderBottomWidth={2} opacity={1} />
       </Container>
-      <Container sx={{ maxWidth: "unset" }}>
+      <Container sx={{ maxWidth: "unset" }} marginTop={4}>
         <Flex wrap={{ base: "wrap", lg: "nowrap" }}>
           <Box
             bg={"gray.100"}
@@ -389,6 +389,7 @@ export const VendorsTab: React.FC<any> = () => {
               sx={{
                 overflowX: "scroll",
                 overflowY: "auto",
+                height: "100vh",
               }}
               ref={ref}
             >

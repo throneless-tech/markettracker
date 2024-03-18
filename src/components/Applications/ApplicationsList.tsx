@@ -851,12 +851,11 @@ export const ApplicationsList: React.FC<any> = () => {
                 </Button>
               </Box>
               <Box
-                sx={
-                  {
-                    // overflowX: "scroll",
-                    // overflowY: "auto",
-                  }
-                }
+                sx={{
+                  overflowX: "scroll",
+                  overflowY: "auto",
+                  height: "100vh",
+                }}
               >
                 <DataTable columns={columns} fetchData={getApplications} />
               </Box>

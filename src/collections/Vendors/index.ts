@@ -12,6 +12,7 @@ import {
   afterReadApplications,
   beforeValidateApplications,
 } from "./hooks/populateApplications";
+import { afterReadSalesReports } from "./hooks/populateSalesReports";
 import { beforeValidateUser } from "./hooks/populateUser";
 import { beforeValidateProducts } from "./hooks/populateProducts";
 import { afterReadStats } from "./hooks/populateStats";
@@ -769,7 +770,12 @@ export const Vendors: CollectionConfig = {
     },
   ],
   hooks: {
-    afterRead: [afterReadApplications, afterReadContacts, afterReadStats],
+    afterRead: [
+      afterReadApplications,
+      afterReadContacts,
+      afterReadSalesReports,
+      afterReadStats,
+    ],
     beforeValidate: [
       beforeValidateContacts,
       beforeValidateUser,

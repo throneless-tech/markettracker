@@ -750,14 +750,14 @@ export const Nav: React.FC<any> = () => {
           </Flex>
           <Show above="md">
             <Menu>
-              <MenuButton sx={{ width: "146px" }}>
+              <MenuButton sx={{ width: "160px" }}>
                 <Stack direction="row" justify="flex-end" align="center">
                   <Avatar
                     width="32px"
                     height="32px"
                     sx={{ border: "1px solid var(--chakra-colors-teal-300)" }}
                   />
-                  <Text color="white" marginBottom={0}>
+                  <Text color="white" marginBottom={0} width={"100%"}>
                     {user.name ? `${user.name}` : `${user.email}`}
                   </Text>
                 </Stack>

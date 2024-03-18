@@ -46,7 +46,7 @@ export const CardMarket: FC<CardProps> = ({ applications }) => {
       const selectApplications = applications.filter(
         (application) => application.status === "approved",
       );
-      console.log(selectApplications);
+      // console.log(selectApplications);
 
       setApprovedApps(selectApplications);
     }
@@ -102,7 +102,13 @@ export const CardMarket: FC<CardProps> = ({ applications }) => {
           </Text>
           <Stack justify="flex-start" align="flex-start" spacing={4}>
             {approvedApps.map((app) => (
-              <Flex minWidth="404px" paddingY={1} width="100%" direction="row">
+              <Flex
+                key={app.id}
+                minWidth="404px"
+                paddingY={1}
+                width="100%"
+                direction="row"
+              >
                 <Text
                   fontFamily="Outfit"
                   lineHeight="1.14"

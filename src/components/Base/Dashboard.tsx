@@ -93,8 +93,16 @@ export const Dashboard: React.FC<any> = () => {
               user.vendor ? (user.vendor as Vendor).applications : null
             }
           />
-          <CardSalesDue />
-          <CardSalesSubmitted />
+          <CardSalesDue
+          // reports={
+          //   user.vendor ? (user.vendor as Vendor).salesReports : null
+          // }
+          />
+          <CardSalesSubmitted
+          //   reports={
+          //     user.vendor ? (user.vendor as Vendor).salesReports : null
+          //   }
+          />
         </Wrap>
         <Stack spacing={8}>
           <Stats />

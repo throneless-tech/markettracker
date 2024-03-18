@@ -4,7 +4,7 @@ import { Link as ReactRouterLink } from "react-router-dom";
 // Chakra imports
 import { Box, HStack, Link as ChakraLink } from "@chakra-ui/react";
 
-export const SalesReportsTabs: React.FC<any> = ({ selected }) => {
+export const InvoicesTabs: React.FC<any> = ({ selected }) => {
   return (
     <Box as="nav" aria-label="Component navigation" bg={"gray.50"}>
       <HStack
