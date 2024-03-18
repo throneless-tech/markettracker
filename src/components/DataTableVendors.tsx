@@ -179,8 +179,6 @@ export function DataTable<Data extends object>({
   // console.log("global filter:", globalFilter);
 
   React.useEffect(() => {
-    console.log(isVisible);
-
     if (isVisible) {
       fetchMore(tableContainerRef.current);
     }

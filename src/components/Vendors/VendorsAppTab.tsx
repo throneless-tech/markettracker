@@ -281,7 +281,7 @@ export const VendorsAppTab: React.FC<any> = () => {
         );
         if (!res.ok) throw new Error(res.statusText);
         const newVendors = await res.json();
-        console.log("vendors: ", newVendors);
+        // console.log("vendors: ", newVendors);
         setVendors(newVendors);
         return newVendors;
       } catch (err) {
