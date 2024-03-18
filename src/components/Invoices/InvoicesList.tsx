@@ -371,6 +371,7 @@ const InvoicesList: React.FC<any> = (props) => {
                       salesSubtotal,
                       penaltySubtotal,
                       paid,
+                      approved,
                     } = invoice;
                     return (
                       <Tr ref={idx === invoices.length - 1 ? ref : null}>
@@ -389,7 +390,10 @@ const InvoicesList: React.FC<any> = (props) => {
                         <Td>${penaltySubtotal}</Td>
                         <Td>${total}</Td>
                         <Td>{new Date(date).toLocaleDateString("en-US")}</Td>
-                        <Td>{paid ? "Paid" : "Open"}</Td>
+                        <Td>
+                          {paid ? "Paid" : "Open"}
+                          {approved ? ", approved" : ", not approved"}
+                        </Td>
                         <Td>
                           <Button
                             onClick={(e) => {
