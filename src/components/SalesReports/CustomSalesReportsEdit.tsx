@@ -6,7 +6,7 @@ import { useHistory } from "react-router-dom";
 // utils and payload
 import { useAuth } from "payload/components/utilities";
 // import getSeasons from "../../utils/getSeasons";
-import { Market, Season, Vendor } from "payload/generated-types";
+import { Application, Season, Vendor } from "payload/generated-types";
 
 // components
 import { NumberField } from "../fields/NumberField";
@@ -44,15 +44,20 @@ const CustomSalesReportsEdit: React.FC<any> = () => {
 
   // for the dropdown options
   const [seasons, setSeasons] = useState([]);
-  const [vendors, setVendors] = useState([]);
+  const [vendors, setVendors] = useState<Vendor[]>([]);
   const [datesMap, setDatesMap] = useState(new Map()); // #FIXME
   const [dateOptions, setDateOptions] = useState([]);
 
   const [isFetching, setIsFetching] = useState<boolean>(false);
   const [isEditView, setIsEditView] = useState<boolean>(false);
 
+  // for the market fee setting
+  const [applications, setApplications] = useState([]);
+  const [application, setApplication] = useState<Application>(null);
+  const [season, setSeason] = useState<Season>(null);
+  const [vendor, setVendor] = useState<Vendor>(null);
+
   // FOR EDIT VIEW HEADERS
-  // const [seasonId, setSeasonId] = useState<string>("");
   const [thisVendor, setThisVendor] = useState<string>("");
   const [thisMarket, setThisMarket] = useState<string>("");
   const [thisDate, setThisDate] = useState<string>("");
@@ -75,6 +80,10 @@ const CustomSalesReportsEdit: React.FC<any> = () => {
     path: "day",
   });
 
+  const { value: fee, setValue: setFee } = useField<number>({
+    path: "marketFee",
+  });
+
   // dropdown
   const handleSeasonChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setSeasonId(event.target.value);
@@ -93,6 +102,7 @@ const CustomSalesReportsEdit: React.FC<any> = () => {
       console.log("error: ", err);
     }
     history.push("/admin/collections/sales-reports");
+    console.log("get Data ->", getData());
   };
 
   const getSeasons = useCallback(async () => {
@@ -163,15 +173,19 @@ const CustomSalesReportsEdit: React.FC<any> = () => {
         if (!res.ok) throw new Error(res.statusText);
         const response = await res.json();
         let vendors;
+        let applications;
         let dates = new Map();
 
         if (response.docs.length) {
-          // response.docs is an array of the applicationss
+          // response.docs is an array of the applications
+          applications = response.docs;
           vendors = response.docs.map((application) => {
             dates.set(application.vendor.id, application.dates);
             return application.vendor;
           });
         }
+
+        setApplications(applications);
         setVendors(vendors);
         setDatesMap(dates);
       } catch (err) {
@@ -250,15 +264,57 @@ const CustomSalesReportsEdit: React.FC<any> = () => {
     getVendors();
 
     let selected;
-    if (seasonId && !history.location.state) {
-      selected = seasons.filter((season) => season.id == seasonId)[0];
+
+    if (seasons && seasons.length && seasonId) {
+      const filteredSeason = seasons.filter((season) => season.id === seasonId);
+      filteredSeason.length ? (selected = filteredSeason[0]) : null;
+    }
+
+    if (selected) {
+      setSeason(selected);
+    }
+
+    if (selected && !history.location.state) {
       setLocation(selected ? selected.market.address.state : "");
     }
   }, [seasonId]);
 
   useEffect(() => {
+    if (vendors && vendors.length && vendorId) {
+      setVendor(vendors.filter((vendor) => vendor.id === vendorId)[0]);
+    }
     setDateOptions(datesMap.get(vendorId));
   }, [vendorId, datesMap]);
+
+  useEffect(() => {
+    let app;
+    if (seasonId && vendorId) {
+      app = applications.filter(
+        (app) => app.season.id === seasonId && app.vendor.id === vendorId,
+      );
+    }
+    if (app && app.length) {
+      setApplication(app[0]);
+    }
+  }, [seasonId, vendorId]);
+
+  useEffect(() => {
+    // setting market fees
+    let marketFee;
+
+    if (season && season.fees && season.fees.length && vendor) {
+      marketFee = season.fees.filter((fee) => fee.fee.label === vendor.type);
+    }
+
+    if (marketFee && marketFee.length) {
+      setFee(marketFee[0].fee.percentage);
+    }
+
+    // application-specific market fee, if exists, overrides the above setting of fee
+    if (application && application.marketFee) {
+      setFee(application.marketFee);
+    }
+  }, [application, season, vendor]);
 
   return (
     <>
@@ -305,13 +361,11 @@ const CustomSalesReportsEdit: React.FC<any> = () => {
                           return (
                             <option
                               value={
-                                typeof season === "object" ? season.id : "All"
+                                typeof season === "object" ? season.id : ""
                               }
-                              key={
-                                typeof season === "object" ? season.id : "All"
-                              }
+                              key={typeof season === "object" ? season.id : ""}
                             >
-                              {typeof season === "object" ? season.name : "All"}
+                              {typeof season === "object" ? season.name : ""}
                             </option>
                           );
                         })
@@ -347,13 +401,11 @@ const CustomSalesReportsEdit: React.FC<any> = () => {
                           return (
                             <option
                               value={
-                                typeof vendor === "object" ? vendor.id : "All"
+                                typeof vendor === "object" ? vendor.id : ""
                               }
-                              key={
-                                typeof vendor === "object" ? vendor.id : "All"
-                              }
+                              key={typeof vendor === "object" ? vendor.id : ""}
                             >
-                              {typeof vendor === "object" ? vendor.name : "All"}
+                              {typeof vendor === "object" ? vendor.name : ""}
                             </option>
                           );
                         })
@@ -448,7 +500,7 @@ const CustomSalesReportsEdit: React.FC<any> = () => {
               <GridItem>
                 <NumberField
                   path="wic"
-                  label="WIC sales (staff will enter)"
+                  label="WIC sales"
                   isDisabled={wicDisable}
                   min={0}
                   admin={{
@@ -481,7 +533,7 @@ const CustomSalesReportsEdit: React.FC<any> = () => {
                   <GridItem>
                     <NumberField
                       path="snapBonus"
-                      label="SNAP Bonus sales (staff will enter)"
+                      label="SNAP Bonus sales"
                       // isDisabled={role == "vendor" ? true : false}
                       admin={{
                         description: "Enter the sum total of SNAP Bonus sales",
@@ -494,7 +546,7 @@ const CustomSalesReportsEdit: React.FC<any> = () => {
                   <GridItem>
                     <NumberField
                       path="fmnpBonus"
-                      label="FMNP Bonus sales (staff will enter)"
+                      label="FMNP Bonus sales"
                       // isDisabled={role == "vendor" ? true : false}
                       min={0}
                       admin={{
@@ -506,7 +558,7 @@ const CustomSalesReportsEdit: React.FC<any> = () => {
                   <GridItem>
                     <NumberField
                       path="cardCoupon"
-                      label="Credit card coupon sales (staff will enter)"
+                      label="Credit card coupon sales"
                       // isDisabled={role == "vendor" ? true : false}
                       min={0}
                       admin={{
@@ -521,7 +573,7 @@ const CustomSalesReportsEdit: React.FC<any> = () => {
                   <GridItem>
                     <NumberField
                       path="marketGoods"
-                      label="Market Goods coupon sales (staff will enter)"
+                      label="Market Goods coupon sales"
                       // isDisabled={role == "vendor" ? true : false}
                       min={0}
                       admin={{
@@ -534,7 +586,7 @@ const CustomSalesReportsEdit: React.FC<any> = () => {
                   <GridItem>
                     <NumberField
                       path="gWorld"
-                      label="GWorld coupon coupon sales (green) (staff will enter)"
+                      label="GWorld coupon coupon sales (green)"
                       // isDisabled={role == "vendor" ? true : false}
                       min={0}
                       admin={{

@@ -34,22 +34,11 @@ export const Invoices: CollectionConfig = {
     //   name: "id",
     //   type: "text",
     // },
-    {
-      name: "amountOwed",
-      type: "number",
-    },
+
     {
       name: "paid",
       type: "checkbox",
       defaultValue: false,
-    },
-    {
-      name: "penalty",
-      type: "number",
-    },
-    {
-      name: "credit",
-      type: "number",
     },
     {
       name: "date",
@@ -65,6 +54,102 @@ export const Invoices: CollectionConfig = {
           value: month,
         };
       }),
+    },
+    {
+      name: "sales",
+      type: "array",
+      fields: [
+        {
+          name: "season",
+          type: "text",
+        },
+        {
+          name: "marketDays",
+          type: "number",
+        },
+        {
+          name: "cashAndCredit",
+          type: "number",
+        },
+        {
+          name: "marketFee",
+          type: "number",
+        },
+        {
+          name: "ebt",
+          type: "number",
+        },
+        {
+          name: "snapBonus",
+          type: "number",
+        },
+        {
+          name: "producePlus",
+          type: "number",
+        },
+        {
+          name: "wic",
+          type: "number",
+        },
+        {
+          name: "sfmnp",
+          type: "number",
+        },
+        {
+          name: "fmnpBonus",
+          type: "number",
+        },
+        {
+          name: "cardCoupon",
+          type: "number",
+        },
+        {
+          name: "marketGoods",
+          type: "number",
+        },
+        {
+          name: "gWorld",
+          type: "number",
+        },
+        {
+          name: "total",
+          type: "number",
+        },
+      ],
+    },
+    {
+      name: "penalties",
+      type: "array",
+      fields: [
+        {
+          name: "season",
+          type: "text",
+        },
+        {
+          name: "penalty",
+          type: "number",
+        },
+        {
+          name: "description",
+          type: "text",
+        },
+        {
+          name: "type",
+          type: "text",
+        },
+      ],
+    },
+    {
+      name: "salesSubtotal",
+      type: "number",
+    },
+    {
+      name: "penaltySubtotal",
+      type: "number",
+    },
+    {
+      name: "total",
+      type: "number",
     },
     {
       name: "vendor",

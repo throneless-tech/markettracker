@@ -179,6 +179,10 @@ export const Applications: CollectionConfig = {
       name: "vendorStanding",
       type: "text",
     },
+    {
+      name: "marketFee",
+      type: "number",
+    },
   ],
   hooks: {
     afterRead: [afterReadStats],

@@ -169,6 +169,26 @@ export const SalesReports: CollectionConfig = {
       },
     },
     {
+      name: "penalty",
+      label: "Penalty",
+      type: "number",
+    },
+    {
+      name: "penaltyDescription",
+      label: "Penalty Description",
+      type: "text",
+    },
+    {
+      name: "penaltyType",
+      label: "Penalty Type",
+      type: "text",
+    },
+    {
+      name: "marketFee",
+      label: "Market fee percentage",
+      type: "number",
+    },
+    {
       name: "invoiceDate",
       label: "Invoice date",
       type: "date",
