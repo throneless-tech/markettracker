@@ -34,22 +34,11 @@ export const Invoices: CollectionConfig = {
     //   name: "id",
     //   type: "text",
     // },
-    {
-      name: "amountOwed",
-      type: "number",
-    },
+
     {
       name: "paid",
       type: "checkbox",
       defaultValue: false,
-    },
-    {
-      name: "penalty",
-      type: "number",
-    },
-    {
-      name: "credit",
-      type: "number",
     },
     {
       name: "date",
@@ -127,6 +116,40 @@ export const Invoices: CollectionConfig = {
           type: "number",
         },
       ],
+    },
+    {
+      name: "penalties",
+      type: "array",
+      fields: [
+        {
+          name: "season",
+          type: "text",
+        },
+        {
+          name: "penalty",
+          type: "number",
+        },
+        {
+          name: "description",
+          type: "text",
+        },
+        {
+          name: "type",
+          type: "text",
+        },
+      ],
+    },
+    {
+      name: "salesSubtotal",
+      type: "number",
+    },
+    {
+      name: "penaltySubtotal",
+      type: "number",
+    },
+    {
+      name: "total",
+      type: "number",
     },
     {
       name: "vendor",
