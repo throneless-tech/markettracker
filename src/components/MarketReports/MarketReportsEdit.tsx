@@ -52,7 +52,7 @@ type AttendanceArray =
 
 export const MarketReportsEdit: React.FC<any> = () => {
   const { id } = useDocumentInfo();
-  const { submit } = useForm();
+  const { getData, submit, addFieldRow, removeFieldRow } = useForm();
   const [vendors, setVendors] = useState([]);
   const history: any = useHistory();
   const [shadowDate, setShadowDate] = useState<string>();
@@ -71,10 +71,10 @@ export const MarketReportsEdit: React.FC<any> = () => {
     path: "season",
   });
 
-  const { value: vendorAttendance, setValue: setVendorAttendance } =
-    useField<AttendanceArray>({
-      path: "vendorAttendance.vendorAttendance",
-    });
+  const data = getData();
+  const vendorAttendance = data.vendorAttendance
+    ? data.vendorAttendance.vendorAttendance
+    : [];
 
   // get date, operator and market info from state
   useEffect(() => {
@@ -88,25 +88,67 @@ export const MarketReportsEdit: React.FC<any> = () => {
   // update the attendance for a vendor on click
   const updateAttendance = (vendorId) => {
     if (!id && shadowSeason && shadowSeason.id) {
+      setDate(shadowDate);
       setSeason(shadowSeason);
     }
 
-    let vendAttend = vendorAttendance.map((v) => {
-      if (v.vendor == vendorId) {
-        if (v.status == "undetermined") {
-          v.status = "present";
-        } else if (v.status == "present") {
-          v.status = "late";
-        } else if (v.status == "late") {
-          v.status = "absent";
-        } else if (v.status == "absent") {
-          v.status = "undetermined";
-        }
-      }
-    });
+    let statusFound =
+      vendorAttendance && vendorAttendance.length
+        ? vendorAttendance.find((item) => item.vendor === vendorId)
+        : false;
+    if (statusFound) {
+      let statusIndex = vendorAttendance.findIndex(
+        (item) => item.vendor === vendorId,
+      );
+      removeFieldRow({
+        path: "vendorAttendance.vendorAttendance",
+        rowIndex: statusIndex,
+      });
 
-    // let vendAttend = [...vendorAttendance, {vendor: vendorId, status: status}]
-    // setVendorAttendance(vendAttend);
+      addFieldRow({
+        path: "vendorAttendance.vendorAttendance",
+        data: {
+          vendor: vendorId,
+          status:
+            statusFound.status == "undetermined"
+              ? "present"
+              : statusFound.status == "present"
+              ? "late"
+              : statusFound.status == "late"
+              ? "absent"
+              : "undetermined",
+        },
+      });
+    } else {
+      addFieldRow({
+        path: "vendorAttendance.vendorAttendance",
+        data: {
+          vendor: vendorId,
+          status: "present",
+        },
+      });
+    }
+  };
+
+  // get the current attendance for each vendor
+  const getVendorStatus = (vendorId) => {
+    const vendAttend =
+      vendorAttendance && vendorAttendance.length
+        ? vendorAttendance.find((item) => item.vendor == vendorId)
+        : [];
+    if (vendAttend) {
+      if (vendAttend.status == "present") {
+        return <GreenCheckIcon height="50px" width="50px" />;
+      } else if (vendAttend.status == "late") {
+        return <YellowClockIcon height="50px" width="50px" />;
+      } else if (vendAttend.status == "absent") {
+        return <RedXIcon height="50px" width="50px" />;
+      } else {
+        return <GrayCheckIcon height="50px" width="50px" />;
+      }
+    } else {
+      return <GrayCheckIcon height="50px" width="50px" />;
+    }
   };
 
   // find vendors for this specific market date
@@ -121,7 +163,7 @@ export const MarketReportsEdit: React.FC<any> = () => {
           and: [
             {
               season: {
-                equals: shadowSeason.id,
+                equals: season ? season.id : shadowSeason.id,
               },
             },
             {
@@ -142,7 +184,7 @@ export const MarketReportsEdit: React.FC<any> = () => {
     );
 
     // fetch applications to see if vendor was scheduled for this date
-    if (shadowSeason.id) {
+    if ((season && season.id) || (shadowSeason && shadowSeason.id)) {
       try {
         const res = await fetch(`/api/applications${stringifiedQuery}`, {
           headers: {
@@ -165,10 +207,23 @@ export const MarketReportsEdit: React.FC<any> = () => {
               const d = new Date(thisDate.date);
               const dateString = d.toLocaleDateString("en-US", options);
 
-              if (dateString == shadowDate) {
-                return application.vendor;
-              } else {
-                return false;
+              if (date) {
+                const marketDate = new Date(date);
+                const marketDateString = marketDate.toLocaleDateString(
+                  "en-US",
+                  options,
+                );
+                if (dateString == marketDateString) {
+                  return application.vendor;
+                } else {
+                  return false;
+                }
+              } else if (shadowDate) {
+                if (dateString == shadowDate) {
+                  return application.vendor;
+                } else {
+                  return false;
+                }
               }
             });
 
@@ -178,32 +233,43 @@ export const MarketReportsEdit: React.FC<any> = () => {
           });
         }
         todaysVendors = todaysVendors.filter((vendor) => vendor !== undefined);
+        todaysVendors = todaysVendors.sort((a, b) => a.name > b.name);
         setVendors(todaysVendors);
-
-        let vendAttend = [];
-        todaysVendors.map((vendor) => {
-          let thisVendorAttendance = {
-            vendor: vendor.id,
-            status: "undetermined",
-          };
-          vendAttend.push(thisVendorAttendance);
-        });
-        setVendorAttendance(vendAttend);
       } catch (err) {
         console.error(err);
       }
     }
-  }, [shadowSeason]);
+  }, [season, shadowSeason]);
 
   useEffect(() => {
-    if (shadowDate && shadowSeason) {
+    if (
+      (shadowDate && shadowSeason) ||
+      (season && typeof season === "object")
+    ) {
       getVendors();
     }
-  }, [shadowDate, shadowSeason]);
+  }, [season, shadowDate, shadowSeason]);
 
+  // fetch season data if market report is already a draft
   useEffect(() => {
-    console.log(season);
-  }, [date, season, vendors, vendorAttendance]);
+    if (id && typeof season === "string") {
+      const fetchData = async () => {
+        try {
+          const response = await fetch(`/api/seasons/${season}`);
+          if (!response.ok) {
+            throw new Error(response.statusText);
+          }
+          const data = await response.json();
+          setSeason(data);
+        } catch (error) {
+          console.error(error);
+        }
+      };
+      fetchData();
+    }
+  }, [id, season]);
+
+  useEffect(() => {}, [date, season, vendors, vendorAttendance]);
 
   if (id && season && typeof season === "object") {
     return (
@@ -238,7 +304,7 @@ export const MarketReportsEdit: React.FC<any> = () => {
                     textStyle="bodyMain"
                     textTransform={"uppercase"}
                   >
-                    on {date}
+                    on {formatDate(date)}
                   </Text>
                 </HStack>
                 <Spacer />
@@ -369,18 +435,28 @@ export const MarketReportsEdit: React.FC<any> = () => {
                     <Text>0- or 4-clicks, clear, no report</Text>
                   </HStack>
                 </Stack>
-                <Flex direction={["column", "row"]} marginTop={8}>
+                <Flex
+                  direction={["column", "row"]}
+                  flexWrap={"wrap"}
+                  gap={4}
+                  marginTop={8}
+                >
                   {vendors && vendors.length
                     ? vendors.map((vendor) => (
                         <Card
                           border="2px solid"
                           borderColor="gray.100"
                           key={vendor.id}
+                          width={[300, 440]}
                         >
                           <CardBody>
                             <LinkBox>
-                              <Stack direction={["column", "row"]}>
-                                <Stack>
+                              <Stack
+                                direction={["column", "row"]}
+                                align={"center"}
+                                justify={"space-between"}
+                              >
+                                <Stack align={"flex-start"}>
                                   <LinkOverlay
                                     as="button"
                                     onClick={() => updateAttendance(vendor.id)}
@@ -393,7 +469,7 @@ export const MarketReportsEdit: React.FC<any> = () => {
                                       {vendor.name}
                                     </Text>
                                   </LinkOverlay>
-                                  <HStack>
+                                  <Stack>
                                     {vendor.contacts &&
                                     vendor.contacts.length ? (
                                       <>
@@ -405,7 +481,7 @@ export const MarketReportsEdit: React.FC<any> = () => {
                                           Contact:{" "}
                                         </Text>
                                         {vendor.contacts.map((contact) => (
-                                          <Text>
+                                          <Text key={contact.id}>
                                             {contact.name}{" "}
                                             {contact.phone
                                               ? contact.phone
@@ -414,17 +490,11 @@ export const MarketReportsEdit: React.FC<any> = () => {
                                         ))}
                                       </>
                                     ) : null}
-                                  </HStack>
+                                  </Stack>
                                 </Stack>
-                                {vendor.status == "present" ? (
-                                  <GreenCheckIcon height="50px" width="50px" />
-                                ) : vendor.status == "late" ? (
-                                  <YellowClockIcon height="50px" width="50px" />
-                                ) : vendor.status == "absent" ? (
-                                  <RedXIcon height="50px" width="50px" />
-                                ) : (
-                                  <GrayCheckIcon height="50px" width="50px" />
-                                )}
+                                <Box width={"50px"}>
+                                  {getVendorStatus(vendor.id)}
+                                </Box>
                               </Stack>
                             </LinkBox>
                           </CardBody>
@@ -604,18 +674,28 @@ export const MarketReportsEdit: React.FC<any> = () => {
                     <Text>0- or 4-clicks, clear, no report</Text>
                   </HStack>
                 </Stack>
-                <Flex direction={["column", "row"]} marginTop={8}>
+                <Flex
+                  direction={["column", "row"]}
+                  flexWrap={"wrap"}
+                  marginTop={8}
+                  gap={4}
+                >
                   {vendors && vendors.length
                     ? vendors.map((vendor) => (
                         <Card
                           border="2px solid"
                           borderColor="gray.100"
                           key={vendor.id}
+                          width={[300, 440]}
                         >
                           <CardBody>
                             <LinkBox>
-                              <Stack direction={["column", "row"]}>
-                                <Stack>
+                              <Stack
+                                direction={["column", "row"]}
+                                align={"center"}
+                                justify={"space-between"}
+                              >
+                                <Stack align={"flex-start"}>
                                   <LinkOverlay
                                     as="button"
                                     onClick={() => updateAttendance(vendor.id)}
@@ -628,7 +708,7 @@ export const MarketReportsEdit: React.FC<any> = () => {
                                       {vendor.name}
                                     </Text>
                                   </LinkOverlay>
-                                  <HStack>
+                                  <Stack>
                                     {vendor.contacts &&
                                     vendor.contacts.length ? (
                                       <>
@@ -640,7 +720,7 @@ export const MarketReportsEdit: React.FC<any> = () => {
                                           Contact:{" "}
                                         </Text>
                                         {vendor.contacts.map((contact) => (
-                                          <Text>
+                                          <Text key={contact.id}>
                                             {contact.name}{" "}
                                             {contact.phone
                                               ? contact.phone
@@ -649,17 +729,11 @@ export const MarketReportsEdit: React.FC<any> = () => {
                                         ))}
                                       </>
                                     ) : null}
-                                  </HStack>
+                                  </Stack>
                                 </Stack>
-                                {vendor.status == "present" ? (
-                                  <GreenCheckIcon height="50px" width="50px" />
-                                ) : vendor.status == "late" ? (
-                                  <YellowClockIcon height="50px" width="50px" />
-                                ) : vendor.status == "absent" ? (
-                                  <RedXIcon height="50px" width="50px" />
-                                ) : (
-                                  <GrayCheckIcon height="50px" width="50px" />
-                                )}
+                                <Box width={"50px"}>
+                                  {getVendorStatus(vendor.id)}
+                                </Box>
                               </Stack>
                             </LinkBox>
                           </CardBody>
