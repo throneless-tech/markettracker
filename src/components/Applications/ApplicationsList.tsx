@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useHistory, useLocation } from "react-router-dom";
 import { Link as ReactRouterLink } from "react-router-dom";
 import qs from "qs";
@@ -147,176 +147,179 @@ export const ApplicationsList: React.FC<any> = () => {
   }, []);
 
   // table
-  const columns: ColumnDef<Application>[] = [
-    {
-      accessorKey: "id",
-      cell: (info) => {
-        const value: any = info.getValue();
-        return <span>{value}</span>;
+  const columns = useMemo<ColumnDef<Application>[]>(
+    () => [
+      {
+        accessorKey: "id",
+        cell: (info) => {
+          const value: any = info.getValue();
+          return <span>{value}</span>;
+        },
       },
-    },
-    {
-      header: "Vendor name",
-      accessorKey: "vendorName",
-      filterFn: "fuzzy",
-      enableSorting: false,
-      cell: (info) => {
-        const value: any = info.getValue();
-        const app: Application = info.row.original;
-        // console.log("***info.getValue()", value);
-        return (
-          <span>
-            <ChakraLink
-              as={ReactRouterLink}
-              to={{
-                pathname: `/admin/collections/reviews/create`,
-                state: season ? { ...app, season } : app,
-              }}
-            >
-              {value}
-            </ChakraLink>
-          </span>
-        );
+      {
+        header: "Vendor name",
+        accessorKey: "vendorName",
+        filterFn: "fuzzy",
+        enableSorting: false,
+        cell: (info) => {
+          const value: any = info.getValue();
+          const app: Application = info.row.original;
+          // console.log("***info.getValue()", value);
+          return (
+            <span>
+              <ChakraLink
+                as={ReactRouterLink}
+                to={{
+                  pathname: `/admin/collections/reviews/create`,
+                  state: season ? { ...app, season } : app,
+                }}
+              >
+                {value}
+              </ChakraLink>
+            </span>
+          );
+        },
       },
-    },
-    {
-      header: "Schedule",
-      accessorKey: "schedule",
-      enableSorting: false,
-      cell: (info) => {
-        const value: any = info.getValue();
-        if (value) {
-          return <Tag>{value}</Tag>;
-        }
+      {
+        header: "Schedule",
+        accessorKey: "schedule",
+        enableSorting: false,
+        cell: (info) => {
+          const value: any = info.getValue();
+          if (value) {
+            return <Tag>{value}</Tag>;
+          }
+        },
       },
-    },
-    {
-      header: "Meet product gap",
-      accessorKey: "gapsMet",
-      cell: (gaps) => {
-        const gapsMet: any = gaps.getValue();
-        return (
-          <Wrap>
-            {gapsMet.map((gap: Product) => (
-              <WrapItem key={gap.id}>
-                <Tag marginRight={1} key={gap.id}>
-                  {gap.product}
-                </Tag>
-              </WrapItem>
-            ))}
-          </Wrap>
-        );
+      {
+        header: "Meet product gap",
+        accessorKey: "gapsMet",
+        cell: (gaps) => {
+          const gapsMet: any = gaps.getValue();
+          return (
+            <Wrap>
+              {gapsMet.map((gap: Product) => (
+                <WrapItem key={gap.id}>
+                  <Tag marginRight={1} key={gap.id}>
+                    {gap.product}
+                  </Tag>
+                </WrapItem>
+              ))}
+            </Wrap>
+          );
+        },
       },
-    },
-    {
-      header: "Market name",
-      accessorKey: "seasonName",
-      enableSorting: false,
-      cell: (info) => {
-        const value: any = info.getValue();
-        return <span>{value}</span>;
+      {
+        header: "Market name",
+        accessorKey: "seasonName",
+        enableSorting: false,
+        cell: (info) => {
+          const value: any = info.getValue();
+          return <span>{value}</span>;
+        },
       },
-    },
-    {
-      header: "# of applications",
-      accessorKey: "numberOfApplications",
-      enableSorting: false,
-      cell: (info) => {
-        const value: any = info.getValue();
-        return <span>{value}</span>;
+      {
+        header: "# of applications",
+        accessorKey: "numberOfApplications",
+        enableSorting: false,
+        cell: (info) => {
+          const value: any = info.getValue();
+          return <span>{value}</span>;
+        },
       },
-    },
-    {
-      header: "# of markets",
-      accessorKey: "numberOfMarkets",
-      enableSorting: false,
-      cell: (info) => {
-        const value: any = info.getValue();
-        return <span>{value}</span>;
+      {
+        header: "# of markets",
+        accessorKey: "numberOfMarkets",
+        enableSorting: false,
+        cell: (info) => {
+          const value: any = info.getValue();
+          return <span>{value}</span>;
+        },
       },
-    },
-    {
-      header: "Priority group",
-      accessorKey: "vendorDemographics",
-      enableSorting: false,
-      cell: (demoCell) => {
-        const demos: any = demoCell.getValue();
-        return (
-          <Wrap spacing={1} maxW={170}>
-            {demos && typeof demos === "object"
-              ? Object.entries(demos).map((key, _) => {
-                  if (key[1] == "yes") {
-                    if (key[0] == "firstGeneration") {
-                      return <Tag key={key[0]}>First generation farmer</Tag>;
+      {
+        header: "Priority group",
+        accessorKey: "vendorDemographics",
+        enableSorting: false,
+        cell: (demoCell) => {
+          const demos: any = demoCell.getValue();
+          return (
+            <Wrap spacing={1} maxW={170}>
+              {demos && typeof demos === "object"
+                ? Object.entries(demos).map((key, _) => {
+                    if (key[1] == "yes") {
+                      if (key[0] == "firstGeneration") {
+                        return <Tag key={key[0]}>First generation farmer</Tag>;
+                      }
+                      if (key[0] == "veteranOwned") {
+                        return <Tag key={key[0]}>Veteran-owned</Tag>;
+                      }
+                      if (key[0] == "bipoc") {
+                        return <Tag key={key[0]}>BIPOC</Tag>;
+                      }
+                      if (key[0] == "immigrantOrRefugee") {
+                        return (
+                          <Tag padding={1} key={key[0]}>
+                            Immigrant or refugee
+                          </Tag>
+                        );
+                      }
+                      if (key[0] == "lgbtqia") {
+                        return <Tag key={key[0]}>LGBTQIA</Tag>;
+                      }
                     }
-                    if (key[0] == "veteranOwned") {
-                      return <Tag key={key[0]}>Veteran-owned</Tag>;
-                    }
-                    if (key[0] == "bipoc") {
-                      return <Tag key={key[0]}>BIPOC</Tag>;
-                    }
-                    if (key[0] == "immigrantOrRefugee") {
-                      return (
-                        <Tag padding={1} key={key[0]}>
-                          Immigrant or refugee
-                        </Tag>
-                      );
-                    }
-                    if (key[0] == "lgbtqia") {
-                      return <Tag key={key[0]}>LGBTQIA</Tag>;
-                    }
-                  }
-                })
-              : null}
-          </Wrap>
-        );
+                  })
+                : null}
+            </Wrap>
+          );
+        },
       },
-    },
-    {
-      header: "Standing",
-      accessorKey: "vendorStanding",
-      enableSorting: false,
-      cell: (standingCell) => {
-        const standing: any = standingCell.getValue();
-        return (
-          <Tag textTransform="capitalize">
-            {standing == "underReview"
-              ? "Under review"
-              : standing == "approvedWithEdits"
-              ? "Approved with edits"
-              : standing == "tentativelyApproved"
-              ? "Tentatively approved"
-              : standing == "tentativelyRejected"
-              ? "Tentatively rejected"
-              : standing}
-          </Tag>
-        );
+      {
+        header: "Standing",
+        accessorKey: "vendorStanding",
+        enableSorting: false,
+        cell: (standingCell) => {
+          const standing: any = standingCell.getValue();
+          return (
+            <Tag textTransform="capitalize">
+              {standing == "underReview"
+                ? "Under review"
+                : standing == "approvedWithEdits"
+                ? "Approved with edits"
+                : standing == "tentativelyApproved"
+                ? "Tentatively approved"
+                : standing == "tentativelyRejected"
+                ? "Tentatively rejected"
+                : standing}
+            </Tag>
+          );
+        },
       },
-    },
-    {
-      header: "Reviewers",
-      accessorKey: "reviews",
-      cell: (info) => {
-        const value: any = info.getValue();
-        return <span>{value?.length ? value.length : 0}/2 reviewers</span>;
+      {
+        header: "Reviewers",
+        accessorKey: "reviews",
+        cell: (info) => {
+          const value: any = info.getValue();
+          return <span>{value?.length ? value.length : 0}/2 reviewers</span>;
+        },
       },
-    },
-    {
-      header: "Grade (AVG)",
-      accessorKey: "reviewScore",
-      enableSorting: false,
-      cell: (info) => {
-        const value: any = info.getValue();
-        return <span>{value}</span>;
+      {
+        header: "Grade (AVG)",
+        accessorKey: "reviewScore",
+        enableSorting: false,
+        cell: (info) => {
+          const value: any = info.getValue();
+          return <span>{value}</span>;
+        },
       },
-    },
-    {
-      header: "Application status",
-      accessorKey: "status",
-      enableSorting: false,
-      // cell not included because it is defined as editable in ../DataTable.tsx
-    },
-  ];
+      {
+        header: "Application status",
+        accessorKey: "status",
+        enableSorting: false,
+        // cell not included because it is defined as editable in ../DataTable.tsx
+      },
+    ],
+    [],
+  );
 
   useEffect(() => {
     let seasonId: string;
