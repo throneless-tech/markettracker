@@ -1,6 +1,7 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 import { useAuth } from "payload/components/utilities";
+import qs from "qs";
 
 // chakra ui imports
 import {
@@ -27,17 +28,52 @@ export const MarketReportCard: React.FC<any> = (props) => {
   const { user } = useAuth();
   const { market } = props;
   const history = useHistory();
+  const [marketReports, setMarketReports] = useState([]);
+
+  const query = {
+    season: {
+      equals: market.id,
+    },
+  };
+  const getMarketReports = async () => {
+    const stringifiedQuery = qs.stringify(
+      {
+        where: query,
+      },
+      { addQueryPrefix: true },
+    );
+
+    const response = await fetch(`/api/market-reports${stringifiedQuery}`);
+    let theseMarketReports = await response.json();
+    theseMarketReports = theseMarketReports.docs;
+    setMarketReports(theseMarketReports);
+  };
+
+  useEffect(() => {
+    getMarketReports();
+  }, []);
+
+  useEffect(() => {
+    console.log(marketReports);
+  }, [marketReports]);
 
   // direct user to create a report; send state including market and user
   const createReport = () => {
-    history.push({
-      pathname: `/admin/collections/market-reports/create`,
-      state: {
-        season: market,
-        operator: user,
-        date: nextMarketDate(market.marketDates.startDate),
-      },
-    });
+    if (marketReports && marketReports.length) {
+      const thisReport = marketReports[0].id;
+      history.push({
+        pathname: `/admin/collections/market-reports/${thisReport}`,
+      });
+    } else {
+      history.push({
+        pathname: `/admin/collections/market-reports/create`,
+        state: {
+          season: market,
+          operator: user,
+          date: nextMarketDate(market.marketDates.startDate),
+        },
+      });
+    }
   };
 
   // figure out which market days are in the future

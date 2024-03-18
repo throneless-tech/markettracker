@@ -23,32 +23,43 @@ export const MarketReportsList: React.FC<any> = () => {
   const { user } = useAuth();
   const [markets, setMarkets] = useState([]);
 
-  useEffect(() => {
-    if (user.role != "operator") return;
-
-    const query = {
-      operators: {
-        contains: user.id,
+  // query and call for operator-specific markets
+  const query = {
+    operators: {
+      contains: user.id,
+    },
+  };
+  const getOperatorMarkets = async () => {
+    const stringifiedQuery = qs.stringify(
+      {
+        where: query,
       },
-    };
-    const getOperatorMarkets = async () => {
-      const stringifiedQuery = qs.stringify(
-        {
-          where: query,
-        },
-        { addQueryPrefix: true },
-      );
+      { addQueryPrefix: true },
+    );
 
-      const response = await fetch(`/api/seasons${stringifiedQuery}`);
-      let operatorMarkets = await response.json();
-      operatorMarkets = operatorMarkets.docs.filter(
-        (market) => !market.marketReports || !market.marketReports.length,
-      );
-      setMarkets(operatorMarkets);
-    };
-    // TODO filter by market dates as well
+    const response = await fetch(`/api/seasons${stringifiedQuery}`);
+    let operatorMarkets = await response.json();
+    operatorMarkets = operatorMarkets.docs.filter(
+      (market) => !market.marketReports || !market.marketReports.length,
+    );
+    setMarkets(operatorMarkets);
+  };
 
-    getOperatorMarkets();
+  const getMarkets = async () => {
+    const response = await fetch(`/api/seasons`);
+    let markets = await response.json();
+    markets = markets.docs;
+    setMarkets(markets);
+  };
+
+  useEffect(() => {
+    if (user.role == "vendor") return;
+
+    if (user.role == "operator") {
+      getOperatorMarkets();
+    } else {
+      getMarkets();
+    }
   }, []);
 
   useEffect(() => {}, [markets]);
