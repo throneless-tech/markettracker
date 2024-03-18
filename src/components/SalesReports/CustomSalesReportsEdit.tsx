@@ -626,8 +626,8 @@ const CustomSalesReportsEdit: React.FC<any> = () => {
                     Penalty
                   </Text>
                 </Container>
-                <Grid templateColumns="repeat(2, 5fr)" gap={4}>
-                  <GridItem>
+                <Grid templateColumns="repeat(5, 1fr)" gap={4}>
+                  <GridItem colSpan={5}>
                     <NumberField
                       path="penalty"
                       label="Penalty amount"
@@ -640,10 +640,10 @@ const CustomSalesReportsEdit: React.FC<any> = () => {
                       }}
                     />
                   </GridItem>
-                  <GridItem>
+                  <GridItem colSpan={1}>
                     <TextField label="Type of penalty" path="penaltyType" />
                   </GridItem>
-                  <GridItem>
+                  <GridItem colSpan={2}>
                     <TextField
                       label="Describe the penalty"
                       path="penaltyDescription"
