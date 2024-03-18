@@ -229,6 +229,7 @@ export function DataTable<Data extends object>({
       className="p-2 block max-w-full overflow-x-scroll overflow-y-hidden"
     >
       <Box
+        className="h-2"
         onScroll={(e) => fetchMore(e.target as HTMLDivElement)}
         ref={tableContainerRef}
         sx={

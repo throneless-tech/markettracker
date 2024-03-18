@@ -184,7 +184,7 @@ export function DataTable<Data extends object>({
     if (isVisible) {
       fetchMore(tableContainerRef.current);
     }
-  }, [fetchMore]);
+  }, [fetchMore, isVisible]);
 
   const table = useReactTable({
     data: flatData,
