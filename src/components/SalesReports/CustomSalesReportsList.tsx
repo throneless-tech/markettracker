@@ -108,6 +108,58 @@ const CustomSalesReportsList: React.FC<any> = () => {
     });
   };
 
+  const needsAction = (report) => {
+    const {
+      season,
+      invoiceDate,
+      day,
+      producePlus,
+      cashAndCredit,
+      wic,
+      sfmnp,
+      ebt,
+      snapBonus,
+      fmnpBonus,
+      cardCoupon,
+      marketGoods,
+      gWorld,
+      penalty,
+    } = report;
+
+    if (
+      !cashAndCredit &&
+      (!producePlus ||
+        !wic ||
+        !sfmnp ||
+        !ebt ||
+        !snapBonus ||
+        !fmnpBonus ||
+        !cardCoupon ||
+        !marketGoods ||
+        !gWorld)
+    ) {
+      return "Staff & vendor actions needed";
+    }
+
+    if (!cashAndCredit) {
+      return "Vendor action needed";
+    }
+
+    if (
+      !producePlus ||
+      !wic ||
+      !sfmnp ||
+      !ebt ||
+      !snapBonus ||
+      !fmnpBonus ||
+      !cardCoupon ||
+      !marketGoods ||
+      !gWorld
+    ) {
+      return "Staff action needed";
+    }
+  };
+
   const handleDelete = async (report) => {
     // TODO: A POPUP FOR "ARE YOU SURE YOU WANT TO DELETE THIS REPORT"
     try {
@@ -377,6 +429,11 @@ const CustomSalesReportsList: React.FC<any> = () => {
                 <Th
                   sx={{ color: "gray.900", fontFamily: "'Outfit', sans-serif" }}
                 >
+                  Action needed
+                </Th>
+                <Th
+                  sx={{ color: "gray.900", fontFamily: "'Outfit', sans-serif" }}
+                >
                   Penalties/Credits
                 </Th>
                 <Th
@@ -419,6 +476,7 @@ const CustomSalesReportsList: React.FC<any> = () => {
                       cardCoupon,
                       marketGoods,
                       gWorld,
+                      penalty,
                     } = report;
                     return (
                       <Tr>
@@ -429,7 +487,8 @@ const CustomSalesReportsList: React.FC<any> = () => {
                             : null}
                         </Td>
                         <Td>{new Date(day).toLocaleDateString("en-US")}</Td>
-                        <Td>$0</Td>
+                        <Td>{needsAction(report)}</Td>
+                        <Td>{penalty ? `$${penalty}` : "$0"}</Td>
                         <Td>{cashAndCredit ? `$${cashAndCredit}` : ""}</Td>
                         <Td>
                           $
