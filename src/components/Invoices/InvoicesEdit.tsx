@@ -3,7 +3,6 @@ import React, { useCallback, useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 
 // utils and payload
-// import getSeasons from "../../utils/getSeasons";
 import { Invoice } from "payload/generated-types";
 
 // components

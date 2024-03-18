@@ -5,7 +5,6 @@ import { useHistory } from "react-router-dom";
 
 // utils and payload
 import { useAuth } from "payload/components/utilities";
-// import getSeasons from "../../utils/getSeasons";
 import { Market, Season, Vendor } from "payload/generated-types";
 
 // components

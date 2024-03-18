@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 import { useInView } from "react-intersection-observer";
 import qs from "qs";
@@ -8,6 +8,10 @@ import { SalesReportsTabs } from "./SalesReportsTabs";
 // import { Dropdown } from "../Dropdown";
 // import { MonthDropdown } from "../MonthDropdown";
 // import { GreenCheckIcon } from "../../assets/icons/green-check";
+
+// utils
+import fetchAllSeasons from "../../utils/fetchAllSeasons";
+import fetchAllVendors from "../../utils/fetchAllVendors";
 
 // payload
 import { useAuth } from "payload/components/utilities";
@@ -122,7 +126,7 @@ const CustomSalesReportsList: React.FC<any> = () => {
         },
       });
     } catch (err) {
-      console.log("ERROR DELETING REPORT: ", err);
+      console.log("Error deleting report: ", err);
     }
   };
 
@@ -130,19 +134,68 @@ const CustomSalesReportsList: React.FC<any> = () => {
     await handleDelete(report);
   };
 
-  const getSalesReports = async () => {
-    const stringQuery = qs.stringify(
-      {
-        depth: 1,
-        page,
-      },
-      { addQueryPrefix: true },
+  const getSalesReports = useCallback(async () => {
+    const queries = [];
+    console.log("***vendorValue in getSalesReports: ", vendorValue);
+    console.log("***marketValue in getSalesReports: ", marketValue);
+    console.log("***monthValue in getSalesReports: ", monthValue);
+
+    if (vendorValue.toLowerCase() !== "all") {
+      queries.push({ vendor: { equals: vendorValue } });
+    }
+
+    if (monthValue.toLowerCase() !== "all") {
+      queries.push({ month: { equals: monthValue } });
+    }
+
+    if (marketValue.toLowerCase() !== "all") {
+      queries.push({ season: { equals: marketValue } });
+    }
+
+    let stringifiedQuery: string;
+
+    if (queries.length === 1) {
+      stringifiedQuery = qs.stringify(
+        {
+          where: queries[0],
+          depth: 1,
+          page,
+          // sort,
+        },
+        { addQueryPrefix: true },
+      );
+    } else if (queries.length > 1) {
+      stringifiedQuery = qs.stringify(
+        {
+          where: {
+            and: queries,
+          },
+          depth: 1,
+          page,
+          // sort,
+        },
+        { addQueryPrefix: true },
+      );
+    } else {
+      stringifiedQuery = qs.stringify(
+        {
+          page,
+          depth: 1,
+          // limit,
+          // sort,
+        },
+        { addQueryPrefix: true },
+      );
+    }
+    const response = await fetch(
+      `/api/sales-reports${stringifiedQuery ? stringifiedQuery : ""}`,
     );
-    const response = await fetch(`/api/sales-reports${stringQuery}`);
     const json = await response.json();
     const newReports = json ? json.docs : [];
+    console.log("reports->", reports);
+    console.log("newReports =>", newReports);
     setReports(reports.concat(newReports));
-  };
+  }, [page, vendorValue, marketValue, monthValue]);
 
   const handleMonthChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setMonthValue(event.target.value);
@@ -158,74 +211,91 @@ const CustomSalesReportsList: React.FC<any> = () => {
 
   useEffect(() => {
     role == "vendor" ? getVendorSalesReports() : getSalesReports();
-  }, []);
-
-  useEffect(() => {
-    getSalesReports();
   }, [page]);
 
-  useEffect(() => {
-    if (inView) {
-      setPage((prevState) => prevState + 1);
-    }
-  }, [inView]);
+  // useEffect(() => {
+  //   getSalesReports();
+  // }, [page]);
+
+  // useEffect(() => {
+  //   if (inView) {
+  //     setPage((prevState) => prevState + 1);
+  //   }
+  // }, [inView]);
+
+  // useEffect(() => {
+  //   setPage(1)
+  // }, [marketValue, monthValue, vendorValue])
 
   useEffect(() => {
-    if (reports.length) {
-      const dedupSeasons = new Map();
-      reports.map((report) =>
-        dedupSeasons.set(
-          report.season && typeof report.season == "object"
-            ? report.season.id
-            : null,
-          report.season,
-        ),
-      );
-      const seasons = Array.from(dedupSeasons.values());
+    const getSeasons = async () => {
+      try {
+        const seasons = await fetchAllSeasons();
+        setMarkets([...markets, ...seasons.docs]);
+      } catch (error) {
+        console.log(`Error occured when fetching seasons: ${error}`);
+      }
+    };
 
-      const dedupVendors = new Map();
-      reports.map((report) =>
-        dedupVendors.set(
-          report.vendor && typeof report.vendor == "object"
-            ? report.vendor.id
-            : null,
-          report.vendor,
-        ),
-      );
-      const vendorsList = Array.from(dedupVendors.values());
+    getSeasons();
+  }, []);
 
-      setVendors([...vendors, ...vendorsList]);
-      setMarkets([...markets, ...seasons]);
-    }
-  }, [reports]);
+  // useEffect(() => {
+  //   let filtered = reports;
 
-  useEffect(() => {
-    let filtered = reports;
+  //   if (monthValue.toLowerCase() !== "all") {
+  //     filtered = filtered.filter(
+  //       (report: SalesReportMonth) => report.month == monthValue,
+  //     );
+  //   }
 
-    if (monthValue.toLowerCase() !== "all") {
-      filtered = filtered.filter(
-        (report: SalesReportMonth) => report.month == monthValue,
-      );
-    }
+  //   if (marketValue.toLowerCase() !== "all") {
+  //     filtered = filtered.filter((report: SalesReportMonth) =>
+  //       typeof report.season === "object"
+  //         ? report.season.id === marketValue
+  //         : report.season === marketValue,
+  //     );
+  //   }
 
-    if (marketValue.toLowerCase() !== "all") {
-      filtered = filtered.filter((report: SalesReportMonth) =>
-        typeof report.season === "object"
-          ? report.season.id === marketValue
-          : report.season === marketValue,
-      );
-    }
+  //   if (vendorValue.toLowerCase() !== "all") {
+  //     filtered = filtered.filter((report: SalesReportMonth) =>
+  //       typeof report.vendor === "object"
+  //         ? report.vendor.id === vendorValue
+  //         : report.vendor === vendorValue,
+  //     );
+  //   }
 
-    if (vendorValue.toLowerCase() !== "all") {
-      filtered = filtered.filter((report: SalesReportMonth) =>
-        typeof report.vendor === "object"
-          ? report.vendor.id === vendorValue
-          : report.vendor === vendorValue,
-      );
-    }
+  //   setFilteredReports(filtered);
+  // }, [monthValue, marketValue, vendorValue, reports]);
 
-    setFilteredReports(filtered);
-  }, [monthValue, marketValue, vendorValue, reports]);
+  // useEffect(() => {
+  //   // if (reports.length) {
+  //   //   const dedupSeasons = new Map();
+  //   //   reports.map((report) =>
+  //   //     dedupSeasons.set(
+  //   //       report.season && typeof report.season == "object"
+  //   //         ? report.season.id
+  //   //         : null,
+  //   //       report.season,
+  //   //     ),
+  //   //   );
+  //   //   const seasons = Array.from(dedupSeasons.values());
+
+  //   //   const dedupVendors = new Map();
+  //   //   reports.map((report) =>
+  //   //     dedupVendors.set(
+  //   //       report.vendor && typeof report.vendor == "object"
+  //   //         ? report.vendor.id
+  //   //         : null,
+  //   //       report.vendor,
+  //   //     ),
+  //   //   );
+  //   //   const vendorsList = Array.from(dedupVendors.values());
+
+  //   //   setVendors([...vendors, ...vendorsList]);
+  //   //   setMarkets([...markets, ...seasons]);
+  //   // }
+  // }, [reports]);
 
   return (
     <>
@@ -345,7 +415,6 @@ const CustomSalesReportsList: React.FC<any> = () => {
                   width={360}
                   onChange={handleVendorChange}
                 >
-                  {/* *commented out because goddamn type errors */}
                   {vendors.length
                     ? vendors.map((vendor) => {
                         return (
@@ -413,8 +482,8 @@ const CustomSalesReportsList: React.FC<any> = () => {
               </Tr>
             </Thead>
             <Tbody>
-              {filteredReports.length
-                ? filteredReports.map((report, index) => {
+              {reports.length
+                ? reports.map((report, index) => {
                     const {
                       season,
                       invoiceDate,
@@ -433,7 +502,7 @@ const CustomSalesReportsList: React.FC<any> = () => {
                     return (
                       <Tr
                         key={report.id}
-                        ref={index === filteredReports.length - 1 ? ref : null}
+                        // ref={index === reports.length - 1 ? ref : null}
                       >
                         <Td>{typeof season === "object" ? season.name : ""}</Td>
                         <Td>
