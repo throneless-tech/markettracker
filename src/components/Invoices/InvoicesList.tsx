@@ -124,7 +124,6 @@ const InvoicesList: React.FC<any> = (props) => {
     const response = await fetch("/api/invoices/generate");
     const json = await response.json();
     setInvoices(json.invoices);
-    console.log("test...");
   };
 
   useEffect(() => {
