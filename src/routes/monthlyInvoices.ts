@@ -151,9 +151,9 @@ const monthlyInvoices = async (req, res, next) => {
           }
           console.log("***existing", existing);
 
-          existing.marketDays += report.marketDays ?? 0;
+          existing.marketDays += 1;
           existing.cashAndCredit += report.cashAndCredit ?? 0;
-          existing.marketFee += report.marketFee ?? 0;
+          existing.marketFee = report.marketFee ?? 0;
           existing.ebt += report.ebt ?? 0;
           existing.snapBonus += report.snapBonus ?? 0;
           existing.producePlus += report.producePlus ?? 0;

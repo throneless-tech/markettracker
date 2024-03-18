@@ -1,6 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
+import { useField, useForm } from "payload/components/forms";
 
 // utils and payload
 // import getSeasons from "../../utils/getSeasons";
@@ -9,6 +10,7 @@ import { Invoice } from "payload/generated-types";
 // components
 import {
   Box,
+  Button,
   Container,
   Flex,
   Heading,
@@ -28,6 +30,15 @@ const InvoicesEdit: React.FC<any> = () => {
 
   const [invoice, setInvoice] = useState<Invoice>();
   const history = useHistory();
+  const { value: isApproved, setValue: setIsApproved } = useField<boolean>({
+    path: "approved",
+  });
+  const { submit } = useForm();
+
+  const toggleApproval = () => {
+    setIsApproved(!isApproved);
+    submit();
+  };
 
   useEffect(() => {
     if (history.location.state) {
@@ -290,7 +301,7 @@ const InvoicesEdit: React.FC<any> = () => {
                           width: 100,
                         }}
                       >
-                        {}
+                        {row.marketFee}
                       </Td>
                       <Td
                         isNumeric
@@ -505,6 +516,16 @@ const InvoicesEdit: React.FC<any> = () => {
           >
             {invoice?.total}
           </Text>
+        </Flex>
+        <Flex align="center" justify="center" marginTop={6}>
+          <Button
+            onClick={(e) => {
+              e.preventDefault;
+              toggleApproval();
+            }}
+          >
+            {isApproved ? "Mark as on hold" : "Mark as Approved"}
+          </Button>{" "}
         </Flex>
       </Container>
     </Container>

@@ -2,6 +2,7 @@ import { CollectionConfig } from "payload/types";
 import InvoicesList from "../components/Invoices/InvoicesList";
 import InvoicesEdit from "../components/Invoices/InvoicesEdit";
 import { monthlyInvoices } from "../routes/monthlyInvoices";
+import { exportInvoices } from "../routes/exportInvoices";
 
 const FullMonths = [
   "january",
@@ -28,7 +29,10 @@ export const Invoices: CollectionConfig = {
       },
     },
   },
-  endpoints: [{ path: "/generate", method: "get", handler: monthlyInvoices }],
+  endpoints: [
+    { path: "/generate", method: "get", handler: monthlyInvoices },
+    { path: "/export", method: "get", handler: exportInvoices },
+  ],
   fields: [
     // {
     //   name: "id",
@@ -37,6 +41,11 @@ export const Invoices: CollectionConfig = {
 
     {
       name: "paid",
+      type: "checkbox",
+      defaultValue: false,
+    },
+    {
+      name: "approved",
       type: "checkbox",
       defaultValue: false,
     },
