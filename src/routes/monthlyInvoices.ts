@@ -136,7 +136,7 @@ const monthlyInvoices = async (req, res, next) => {
               season: report.season.name,
               marketDays: 0,
               cashAndCredit: 0,
-              marketFees: 0,
+              marketFee: 0,
               ebt: 0,
               snapBonus: 0,
               producePlus: 0,
@@ -153,7 +153,7 @@ const monthlyInvoices = async (req, res, next) => {
 
           existing.marketDays += report.marketDays ?? 0;
           existing.cashAndCredit += report.cashAndCredit ?? 0;
-          existing.marketFees += report.marketFees ?? 0;
+          existing.marketFee += report.marketFee ?? 0;
           existing.ebt += report.ebt ?? 0;
           existing.snapBonus += report.snapBonus ?? 0;
           existing.producePlus += report.producePlus ?? 0;
@@ -164,7 +164,7 @@ const monthlyInvoices = async (req, res, next) => {
           existing.marketGoods += report.marketGoods ?? 0;
           existing.gWorld += report.gWorld ?? 0;
           existing.total =
-            (report.cashAndCredit ?? 0) * ((report.marketFees ?? 0) / 100) -
+            (report.cashAndCredit ?? 0) * ((report.marketFee ?? 0) / 100) -
             ((report.ebt ?? 0) +
               (report.snapBonus ?? 0) +
               (report.producePlus ?? 0) +
