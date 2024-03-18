@@ -5,7 +5,7 @@ import { useField, useForm } from "payload/components/forms";
 
 // utils and payload
 // import getSeasons from "../../utils/getSeasons";
-import { Invoice } from "payload/generated-types";
+import { Invoice, Vendor } from "payload/generated-types";
 
 // components
 import {
@@ -27,18 +27,30 @@ import {
 
 const InvoicesEdit: React.FC<any> = () => {
   // TODO USER PERMISSIONS
-
+  const [doSubmit, setDoSubmit] = useState(false);
   const [invoice, setInvoice] = useState<Invoice>();
   const history = useHistory();
-  const { value: isApproved, setValue: setIsApproved } = useField<boolean>({
+  const { value: approved, setValue: setApproved } = useField<boolean>({
     path: "approved",
   });
+
   const { submit } = useForm();
 
   const toggleApproval = () => {
-    setIsApproved(!isApproved);
-    submit();
+    if (approved == undefined) {
+      setApproved(true);
+    } else {
+      setApproved(!approved);
+    }
+    setDoSubmit(true);
   };
+
+  useEffect(() => {
+    if (doSubmit) {
+      submit();
+      history.push("/admin/collections/invoices");
+    }
+  }, [doSubmit]);
 
   useEffect(() => {
     if (history.location.state) {
@@ -262,7 +274,7 @@ const InvoicesEdit: React.FC<any> = () => {
             <Tbody>
               {invoice?.sales && invoice?.sales.length
                 ? invoice.sales.map((row) => (
-                    <Tr>
+                    <Tr key={row.id}>
                       <Td
                         sx={{
                           border: "1px solid",
@@ -452,7 +464,7 @@ const InvoicesEdit: React.FC<any> = () => {
             <Tbody>
               {invoice?.penalties && invoice?.penalties.length
                 ? invoice.penalties.map((row) => (
-                    <Tr>
+                    <Tr key={row.id}>
                       <Td
                         sx={{
                           border: "1px solid",
@@ -518,13 +530,8 @@ const InvoicesEdit: React.FC<any> = () => {
           </Text>
         </Flex>
         <Flex align="center" justify="center" marginTop={6}>
-          <Button
-            onClick={(e) => {
-              e.preventDefault;
-              toggleApproval();
-            }}
-          >
-            {isApproved ? "Mark as on hold" : "Mark as Approved"}
+          <Button onClick={() => toggleApproval()}>
+            {approved ? "Mark as on hold" : "Mark as approved"}
           </Button>{" "}
         </Flex>
       </Container>

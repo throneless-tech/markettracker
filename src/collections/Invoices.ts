@@ -3,6 +3,7 @@ import InvoicesList from "../components/Invoices/InvoicesList";
 import InvoicesEdit from "../components/Invoices/InvoicesEdit";
 import { monthlyInvoices } from "../routes/monthlyInvoices";
 import { exportInvoices } from "../routes/exportInvoices";
+import { withFormContext } from "../utils/withFormContext";
 
 const FullMonths = [
   "january",
@@ -25,7 +26,7 @@ export const Invoices: CollectionConfig = {
     components: {
       views: {
         List: InvoicesList,
-        Edit: InvoicesEdit,
+        Edit: withFormContext(InvoicesEdit),
       },
     },
   },
