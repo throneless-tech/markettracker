@@ -121,11 +121,11 @@ const InvoicesList: React.FC<any> = (props) => {
 
   // trigger to generate invoices
   const generateInvoices = async () => {
-    const response = await fetch("/api/invoices/generate")    
+    const response = await fetch("/api/invoices/generate");
     const json = await response.json();
     setInvoices(json.invoices);
-    
-  }
+    console.log("test...");
+  };
 
   useEffect(() => {
     getInvoices(false);
@@ -165,11 +165,11 @@ const InvoicesList: React.FC<any> = (props) => {
             </>
           ) : (
             <>
-                <Spacer />
-                <Button onClick={() => generateInvoices()}>
-                  Generate invoices
-                </Button>
-              </>
+              <Spacer />
+              <Button onClick={() => generateInvoices()}>
+                Generate invoices
+              </Button>
+            </>
           )}
         </Flex>
         <Divider color="gray.900" borderBottomWidth={2} opacity={1} />
@@ -384,9 +384,16 @@ const InvoicesList: React.FC<any> = (props) => {
                       paid,
                     } = invoice;
                     return (
-                      <Tr key={`invoices-${idx}`} ref={idx === invoices.length - 1 ? ref : null}>
+                      <Tr
+                        key={`invoices-${idx}`}
+                        ref={idx === invoices.length - 1 ? ref : null}
+                      >
                         <Td>{reports[0].vendor.name}</Td>
-                        <Td>{reports[0].vendor.contacts.length ? reports[0].vendor.contacts[0].email : ""}</Td>
+                        <Td>
+                          {reports[0].vendor.contacts.length
+                            ? reports[0].vendor.contacts[0].email
+                            : ""}
+                        </Td>
                         <Td>${salesSubtotal}</Td>
                         <Td>${penaltySubtotal}</Td>
                         <Td>${total}</Td>
