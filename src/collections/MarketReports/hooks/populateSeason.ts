@@ -15,7 +15,6 @@ export const afterReadSeason: CollectionAfterReadHook = async ({
     });
     return { ...doc, season: season };
   }
-
   return doc;
 };
 
