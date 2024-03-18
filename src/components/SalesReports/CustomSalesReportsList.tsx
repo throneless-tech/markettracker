@@ -80,8 +80,10 @@ const CustomSalesReportsList: React.FC<any> = () => {
   const [vendorValue, setVendorValue] = useState<string>("All");
 
   // lazy loading
+  const [isFetching, setIsFetching] = useState<boolean>(false);
   const { ref, inView } = useInView({});
   const [page, setPage] = useState<number>(1);
+  const [hasNextPage, setHasNextPage] = useState<boolean>(false);
 
   const getVendorSalesReports = async () => {
     const salesReportsQuery = {
@@ -134,68 +136,92 @@ const CustomSalesReportsList: React.FC<any> = () => {
     await handleDelete(report);
   };
 
-  const getSalesReports = useCallback(async () => {
-    const queries = [];
-    console.log("***vendorValue in getSalesReports: ", vendorValue);
-    console.log("***marketValue in getSalesReports: ", marketValue);
-    console.log("***monthValue in getSalesReports: ", monthValue);
+  const getSalesReports = useCallback(
+    async (clear: boolean) => {
+      const queries = [];
+      console.log("***vendorValue in getSalesReports: ", vendorValue);
+      console.log("***marketValue in getSalesReports: ", marketValue);
+      console.log("***monthValue in getSalesReports: ", monthValue);
 
-    if (vendorValue.toLowerCase() !== "all") {
-      queries.push({ vendor: { equals: vendorValue } });
-    }
+      if (vendorValue.toLowerCase() !== "all") {
+        queries.push({ vendor: { equals: vendorValue } });
+      }
 
-    if (monthValue.toLowerCase() !== "all") {
-      queries.push({ month: { equals: monthValue } });
-    }
+      if (monthValue.toLowerCase() !== "all") {
+        queries.push({ month: { equals: monthValue } });
+      }
 
-    if (marketValue.toLowerCase() !== "all") {
-      queries.push({ season: { equals: marketValue } });
-    }
+      if (marketValue.toLowerCase() !== "all") {
+        queries.push({ season: { equals: marketValue } });
+      }
 
-    let stringifiedQuery: string;
+      if (isFetching) return;
 
-    if (queries.length === 1) {
-      stringifiedQuery = qs.stringify(
-        {
-          where: queries[0],
-          depth: 1,
-          page,
-          // sort,
-        },
-        { addQueryPrefix: true },
-      );
-    } else if (queries.length > 1) {
-      stringifiedQuery = qs.stringify(
-        {
-          where: {
-            and: queries,
+      let stringifiedQuery: string;
+
+      if (queries.length === 1) {
+        stringifiedQuery = qs.stringify(
+          {
+            where: queries[0],
+            depth: 1,
+            limit: 10,
+            page,
+            // sort,
           },
-          depth: 1,
-          page,
-          // sort,
-        },
-        { addQueryPrefix: true },
-      );
-    } else {
-      stringifiedQuery = qs.stringify(
-        {
-          page,
-          depth: 1,
-          // limit,
-          // sort,
-        },
-        { addQueryPrefix: true },
-      );
-    }
-    const response = await fetch(
-      `/api/sales-reports${stringifiedQuery ? stringifiedQuery : ""}`,
-    );
-    const json = await response.json();
-    const newReports = json ? json.docs : [];
-    console.log("reports->", reports);
-    console.log("newReports =>", newReports);
-    setReports(reports.concat(newReports));
-  }, [page, vendorValue, marketValue, monthValue]);
+          { addQueryPrefix: true },
+        );
+      } else if (queries.length > 1) {
+        stringifiedQuery = qs.stringify(
+          {
+            where: {
+              and: queries,
+            },
+            depth: 1,
+            limit: 10,
+            page,
+            // sort,
+          },
+          { addQueryPrefix: true },
+        );
+      } else {
+        stringifiedQuery = qs.stringify(
+          {
+            page,
+            depth: 1,
+            limit: 10,
+            // limit,
+            // sort,
+          },
+          { addQueryPrefix: true },
+        );
+      }
+
+      setIsFetching(true);
+
+      try {
+        const response = await fetch(
+          `/api/sales-reports${stringifiedQuery ? stringifiedQuery : ""}`,
+        );
+        const json = await response.json();
+        const newReports = json ? json.docs : [];
+        if (clear) {
+          console.log("json =>", json);
+          console.log("clear is true =>", newReports);
+          setPage(1);
+          setHasNextPage(json.hasNextPage);
+          setReports(newReports);
+        } else {
+          setHasNextPage(json.hasNextPage);
+          setReports(reports.concat(newReports));
+        }
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setIsFetching(false);
+      }
+    },
+    [page, vendorValue, marketValue, monthValue],
+  );
 
   const handleMonthChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setMonthValue(event.target.value);
@@ -209,23 +235,25 @@ const CustomSalesReportsList: React.FC<any> = () => {
     setVendorValue(event.target.value);
   };
 
-  useEffect(() => {
-    role == "vendor" ? getVendorSalesReports() : getSalesReports();
-  }, [page]);
-
   // useEffect(() => {
-  //   getSalesReports();
+  //   role == "vendor" ? getVendorSalesReports() : getSalesReports();
   // }, [page]);
 
-  // useEffect(() => {
-  //   if (inView) {
-  //     setPage((prevState) => prevState + 1);
-  //   }
-  // }, [inView]);
+  useEffect(() => {
+    if (hasNextPage) {
+      getSalesReports(false);
+    }
+  }, [page]);
 
-  // useEffect(() => {
-  //   setPage(1)
-  // }, [marketValue, monthValue, vendorValue])
+  useEffect(() => {
+    getSalesReports(true);
+  }, [marketValue, monthValue, vendorValue]);
+
+  useEffect(() => {
+    if (inView) {
+      setPage((prevState) => prevState + 1);
+    }
+  }, [inView]);
 
   useEffect(() => {
     const getSeasons = async () => {
@@ -502,7 +530,7 @@ const CustomSalesReportsList: React.FC<any> = () => {
                     return (
                       <Tr
                         key={report.id}
-                        // ref={index === reports.length - 1 ? ref : null}
+                        ref={index === reports.length - 1 ? ref : null}
                       >
                         <Td>{typeof season === "object" ? season.name : ""}</Td>
                         <Td>
