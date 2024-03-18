@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 import { useAuth } from "payload/components/utilities";
+import { useInView } from "react-intersection-observer";
+import qs from "qs";
 
 // Chakra imports
 import {
@@ -48,11 +50,13 @@ const months = [
   "December",
 ];
 
-const InvoicesList: React.FC<any> = () => {
+const InvoicesList: React.FC<any> = (props) => {
   const { user } = useAuth();
   const [invoices, setInvoices] = useState([]);
-  const [toDisplay, setToDisplay] = useState([]);
   const [monthValue, setMonthValue] = useState("All");
+  //const [market, setMarket] = useState("All");
+  const [page, setPage] = useState<number>(1);
+  const { ref, inView } = useInView({});
 
   const history = useHistory();
 
@@ -69,68 +73,72 @@ const InvoicesList: React.FC<any> = () => {
     });
   };
 
-  const getInvoices = async () => {
-    const response = await fetch(`/api/invoices`);
+  const getInvoices = async (clear: boolean) => {
+    const queries = [];
+    if (monthValue !== "All") {
+      queries.push({ marketMonth: { equals: monthValue.toLowerCase() } });
+    }
+
+    let stringifiedQuery: string;
+    if (queries.length === 1) {
+      stringifiedQuery = qs.stringify(
+        {
+          where: queries[0],
+          page,
+        },
+        { addQueryPrefix: true },
+      );
+    } else if (queries.length > 1) {
+      stringifiedQuery = qs.stringify(
+        {
+          where: {
+            and: queries[0],
+          },
+          page,
+        },
+        { addQueryPrefix: true },
+      );
+    } else {
+      stringifiedQuery = qs.stringify(
+        {
+          page,
+        },
+        { addQueryPrefix: true },
+      );
+    }
+    const response = await fetch(
+      `/api/invoices${stringifiedQuery ? stringifiedQuery : ""}`,
+    );
     const json = await response.json();
-    const invoices = json ? json.docs : [];
-    setInvoices(invoices);
+    const newInvoices = json ? json.docs : [];
+    if (clear) {
+      setPage(1);
+      setInvoices(newInvoices);
+    } else {
+      setInvoices(invoices.concat(newInvoices));
+    }
+  };
+
+  // trigger to generate invoices
+  const generateInvoices = async () => {
+    const response = await fetch("/api/invoices/generate");
+    const json = await response.json();
+    setInvoices(json.invoices);
   };
 
   useEffect(() => {
-    getInvoices();
-    // console.log("user->", user);
-  }, []);
+    getInvoices(false);
+  }, [page]);
 
   useEffect(() => {
-    let withTotals = [];
+    getInvoices(true);
+  }, [monthValue]);
 
-    if (invoices.length) {
-      withTotals = invoices.map((invoice) => {
-        // this is to calculate invoice amounts
-        /**
-         * from FF point of view, an invoice amount is:
-         * market fee (that the vendor owes calculated from cash and credit * percentage) MINUS the coupon amounts
-         * that FF owes the vendor
-         */
-        const totals = invoice.reports.reduce((acc, report) => {
-          const {
-            producePlus,
-            cashAndCredit,
-            wic,
-            sfmnp,
-            ebt,
-            snapBonus,
-            fmnpBonus,
-            cardCoupon,
-            marketGoods,
-            gWorld,
-          } = report;
-          acc =
-            acc +
-            cashAndCredit -
-            (producePlus ? producePlus : 0) +
-            (wic ? wic : 0) +
-            (sfmnp ? sfmnp : 0) +
-            (ebt ? ebt : 0) +
-            (snapBonus ? snapBonus : 0) +
-            (fmnpBonus ? fmnpBonus : 0) +
-            (cardCoupon ? cardCoupon : 0) +
-            (marketGoods ? marketGoods : 0) +
-            (gWorld ? gWorld : 0);
-          return acc;
-        }, 0);
-
-        return {
-          ...invoice,
-          total: totals,
-        };
-      });
+  useEffect(() => {
+    if (inView) {
+      setPage((prevState) => prevState + 1);
     }
-
-    if (withTotals.length) {
-      setToDisplay(withTotals);
-    }
-  }, [invoices]);
+  }, [inView]);
 
   return (
     <>
@@ -142,7 +150,7 @@ const InvoicesList: React.FC<any> = () => {
               {user.role == "vendor" ? "Invoices" : "Vendors Ready to Invoice"}
             </Heading>
           </Box>
-          {/* {user.role == "vendor" ? (
+          {user.role == "vendor" ? (
             <>
               <Spacer />
               <HStack flexGrow={1} spacing={4} justify={"flex-end"}>
@@ -154,7 +162,14 @@ const InvoicesList: React.FC<any> = () => {
                 </Button>
               </HStack>
             </>
-          ) : null} */}
+          ) : (
+            <>
+              <Spacer />
+              <Button onClick={() => generateInvoices()}>
+                Generate invoices
+              </Button>
+            </>
+          )}
         </Flex>
         <Divider color="gray.900" borderBottomWidth={2} opacity={1} />
         <Grid templateColumns="repeat(2, 5fr)" gap={4} marginTop={10}>
@@ -195,6 +210,7 @@ const InvoicesList: React.FC<any> = () => {
           <GridItem>
             <Spacer />
             <Box>
+              {/*
               <FormControl sx={{ alignItems: "center", display: "flex" }}>
                 <FormLabel>
                   <Text
@@ -209,7 +225,7 @@ const InvoicesList: React.FC<any> = () => {
                     Choose a market
                   </Text>
                 </FormLabel>
-                {/* <Select
+                <Select
                   value={marketValue}
                   maxWidth={"360px"}
                   onChange={handleMarketChange}
@@ -225,8 +241,9 @@ const InvoicesList: React.FC<any> = () => {
                       </option>
                     );
                   })}
-                </Select> */}
+                </Select>
               </FormControl>
+              */}
             </Box>
           </GridItem>
         </Grid>
@@ -355,30 +372,29 @@ const InvoicesList: React.FC<any> = () => {
               </Tr>
             </Thead>
             <Tbody>
-              {toDisplay.length
-                ? toDisplay.map((invoice) => {
+              {invoices.length
+                ? invoices.map((invoice, idx) => {
                     const {
                       reports,
                       date,
                       total,
-                      amountOwed,
-                      penalty,
-                      credit,
+                      salesSubtotal,
+                      penaltySubtotal,
                       paid,
                     } = invoice;
                     return (
-                      <Tr>
+                      <Tr
+                        key={`invoices-${idx}`}
+                        ref={idx === invoices.length - 1 ? ref : null}
+                      >
                         <Td>{reports[0].vendor.name}</Td>
-                        <Td>{reports[0].vendor.contacts[0].email}</Td>
                         <Td>
-                          $
-                          {total +
-                            (credit ? credit : 0) -
-                            (penalty ? penalty : 0)}
+                          {reports[0].vendor.contacts.length
+                            ? reports[0].vendor.contacts[0].email
+                            : ""}
                         </Td>
-                        <Td>
-                          ${(credit ? credit : 0) - (penalty ? penalty : 0)}
-                        </Td>
+                        <Td>${salesSubtotal}</Td>
+                        <Td>${penaltySubtotal}</Td>
                         <Td>${total}</Td>
                         <Td>{new Date(date).toLocaleDateString("en-US")}</Td>
                         <Td>{paid ? "Paid" : "Open"}</Td>

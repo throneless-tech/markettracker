@@ -22,7 +22,7 @@ export const Seasons: CollectionConfig = {
     useAsTitle: "name",
     components: {
       views: {
-        Edit: withFormContext(SeasonsEdit),
+        // Edit: withFormContext(SeasonsEdit),
         List: SeasonsList,
       },
     },
@@ -320,6 +320,35 @@ export const Seasons: CollectionConfig = {
           };
         }
       },
+    },
+    {
+      name: "fees",
+      label: "Default market fee schedule",
+      type: "array",
+      fields: [
+        {
+          name: "fee",
+          type: "group",
+          label: "Market fee",
+          fields: [
+            {
+              name: "label",
+              type: "text",
+              label: "Label",
+            },
+            {
+              name: "percentage",
+              type: "number",
+              label: "Percentage",
+            },
+            {
+              name: "type",
+              type: "select",
+              options: ["farmer", "producer"],
+            },
+          ],
+        },
+      ],
     },
   ],
 };

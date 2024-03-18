@@ -281,7 +281,7 @@ export const VendorsAppTab: React.FC<any> = () => {
         );
         if (!res.ok) throw new Error(res.statusText);
         const newVendors = await res.json();
-        console.log("vendors: ", newVendors);
+        // console.log("vendors: ", newVendors);
         setVendors(newVendors);
         return newVendors;
       } catch (err) {
@@ -383,7 +383,7 @@ export const VendorsAppTab: React.FC<any> = () => {
           </Box>
           <Box
             sx={{
-              maxWidth: { base: 400, sm: 600, md: 900, lg: 1200, xl: 1660 },
+              maxWidth: { base: 400, sm: 700, md: 900, lg: 1200, xl: 1660 },
             }}
           >
             <Box

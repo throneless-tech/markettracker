@@ -382,7 +382,7 @@ export const VendorsTab: React.FC<any> = () => {
           </Box>
           <Box
             sx={{
-              maxWidth: { base: 400, sm: 600, md: 900, lg: 1200, xl: 1660 },
+              maxWidth: { base: 400, sm: 700, md: 900, lg: 1200, xl: 1660 },
             }}
           >
             <Box
