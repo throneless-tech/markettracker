@@ -22,7 +22,7 @@ export const Seasons: CollectionConfig = {
     useAsTitle: "name",
     components: {
       views: {
-        // Edit: withFormContext(SeasonsEdit),
+        Edit: withFormContext(SeasonsEdit),
         List: SeasonsList,
       },
     },
