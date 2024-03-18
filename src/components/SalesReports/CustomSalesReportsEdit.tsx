@@ -10,6 +10,7 @@ import { Application, Season, Vendor } from "payload/generated-types";
 
 // components
 import { NumberField } from "../fields/NumberField";
+import { TextField } from "../fields/TextField";
 import { Dropdown } from "../Dropdown";
 import { FooterAdmin } from "../FooterAdmin";
 import { useField, useForm } from "payload/components/forms";
@@ -455,6 +456,20 @@ const CustomSalesReportsEdit: React.FC<any> = () => {
         </Flex>
         <Divider color="gray.900" borderBottomWidth={2} opacity={1} />
         <Container maxW="container.xl" marginTop={6} marginBottom={4}>
+          <Container maxW="container.xl" marginTop={6} marginBottom={4}>
+            <Text
+              fontFamily="Zilla Slab"
+              lineHeight="1"
+              fontWeight="semibold"
+              fontSize="24px"
+              letterSpacing="0.03em"
+              textTransform="capitalize"
+              color="gray.600"
+              width={200}
+            >
+              Sales
+            </Text>
+          </Container>
           <FormControl isRequired>
             <Grid templateColumns="repeat(2, 5fr)" gap={4}>
               <GridItem>
@@ -594,6 +609,44 @@ const CustomSalesReportsEdit: React.FC<any> = () => {
                           "Enter the sum total of GWorld coupon sales",
                         placeholder: "SNAP bonus sales",
                       }}
+                    />
+                  </GridItem>
+                </Grid>
+                <Container maxW="container.xl" marginTop={6} marginBottom={4}>
+                  <Text
+                    fontFamily="Zilla Slab"
+                    lineHeight="1"
+                    fontWeight="semibold"
+                    fontSize="24px"
+                    letterSpacing="0.03em"
+                    textTransform="capitalize"
+                    color="gray.600"
+                    width={200}
+                  >
+                    Penalty
+                  </Text>
+                </Container>
+                <Grid templateColumns="repeat(2, 5fr)" gap={4}>
+                  <GridItem>
+                    <NumberField
+                      path="penalty"
+                      label="Penalty amount"
+                      // isDisabled={role == "vendor" ? true : false}
+                      min={0}
+                      admin={{
+                        description:
+                          "Enter a penalty for this vendor for this market day, if any",
+                        placeholder: "SNAP bonus sales",
+                      }}
+                    />
+                  </GridItem>
+                  <GridItem>
+                    <TextField label="Type of penalty" path="penaltyType" />
+                  </GridItem>
+                  <GridItem>
+                    <TextField
+                      label="Describe the penalty"
+                      path="penaltyDescription"
                     />
                   </GridItem>
                 </Grid>
