@@ -15,6 +15,7 @@ const YellowClockIcon = createIcon({
     />,
     <path
       stroke="#fff"
+      fill="#E6B223"
       strokeLinecap="round"
       strokeLinejoin="round"
       strokeWidth="3"

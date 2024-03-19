@@ -6,7 +6,7 @@ export const createCollectionSeason: CollectionAfterChangeHook = async (
 ) => {
   const { doc, operation } = props;
 
-  console.log("***createCollection doc", doc);
+  // console.log("***createCollection doc", doc);
   if (operation === "create") {
     let market;
     let marketId;

@@ -1,13 +1,15 @@
 import { CollectionConfig } from "payload/types";
-import { withFormContext } from "../utils/withFormContext";
-import { MarketReportsList } from "../components/MarketReports/MarketReportsList";
+import { withFormContext } from "../../utils/withFormContext";
+import { MarketReportsEdit } from "../../components/MarketReports/MarketReportsEdit";
+import { MarketReportsList } from "../../components/MarketReports/MarketReportsList";
+import { afterReadSeason, beforeValidateSeason } from "./hooks/populateSeason";
 
 export const MarketReports: CollectionConfig = {
   slug: "market-reports",
   admin: {
     components: {
       views: {
-        // Edit: withFormContext(MarketReportsEdit),
+        Edit: withFormContext(MarketReportsEdit),
         List: withFormContext(MarketReportsList),
       },
     },
@@ -16,12 +18,43 @@ export const MarketReports: CollectionConfig = {
     },
     useAsTitle: "name",
   },
+  hooks: {
+    afterRead: [afterReadSeason],
+    beforeValidate: [beforeValidateSeason],
+  },
+  versions: {
+    drafts: {
+      autosave: true,
+    },
+  },
   fields: [
     {
       name: "market",
       label: "Market",
       type: "relationship",
       relationTo: "markets",
+    },
+    {
+      name: "season",
+      label: "Season",
+      type: "relationship",
+      relationTo: "seasons",
+    },
+    {
+      name: "operator",
+      label: "Operator",
+      type: "relationship",
+      relationTo: "contacts",
+    },
+    {
+      name: "date",
+      type: "date",
+      admin: {
+        date: {
+          pickerAppearance: "dayOnly",
+          displayFormat: "d MMM yyy",
+        },
+      },
     },
     {
       type: "tabs",

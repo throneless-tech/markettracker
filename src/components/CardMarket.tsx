@@ -19,6 +19,7 @@ const dayNames = [
 export const CardMarket: FC<CardProps> = ({ applications }) => {
   const [approvedApps, setApprovedApps] = React.useState([]);
 
+  // figure out which market days are in the future
   const options: any = {
     year: "numeric",
     month: "numeric",

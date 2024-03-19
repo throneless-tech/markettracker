@@ -73,9 +73,9 @@ const InvoicesList: React.FC<any> = (props) => {
     });
   };
 
-  const getInvoices = async (clear: boolean) => {
+  const getInvoices = async (nextPage: number) => {
     const queries = [];
-    if (monthValue !== "All") {
+    if (monthValue.toLowerCase() !== "all") {
       queries.push({ marketMonth: { equals: monthValue.toLowerCase() } });
     }
 
@@ -84,7 +84,7 @@ const InvoicesList: React.FC<any> = (props) => {
       stringifiedQuery = qs.stringify(
         {
           where: queries[0],
-          page,
+          page: nextPage,
         },
         { addQueryPrefix: true },
       );
@@ -94,7 +94,7 @@ const InvoicesList: React.FC<any> = (props) => {
           where: {
             and: queries[0],
           },
-          page,
+          page: nextPage,
         },
         { addQueryPrefix: true },
       );
@@ -111,8 +111,7 @@ const InvoicesList: React.FC<any> = (props) => {
     );
     const json = await response.json();
     const newInvoices = json ? json.docs : [];
-    if (clear) {
-      setPage(1);
+    if (nextPage === 1) {
       setInvoices(newInvoices);
     } else {
       setInvoices(invoices.concat(newInvoices));
@@ -127,11 +126,16 @@ const InvoicesList: React.FC<any> = (props) => {
   };
 
   useEffect(() => {
-    getInvoices(false);
+    getInvoices(page);
+    console.log("user->", user);
+    console.log("***invoices", invoices);
   }, [page]);
 
   useEffect(() => {
-    getInvoices(true);
+    getInvoices(1);
+    setPage(1);
+    console.log("user->", user);
+    console.log("***invoices", invoices);
   }, [monthValue]);
 
   useEffect(() => {
@@ -165,9 +169,14 @@ const InvoicesList: React.FC<any> = (props) => {
           ) : (
             <>
               <Spacer />
-              <Button onClick={() => generateInvoices()}>
-                Generate invoices
-              </Button>
+              <HStack flexGrow={1} spacing={4} justify={"flex-end"}>
+                <Button onClick={() => generateInvoices()}>
+                  Generate invoices
+                </Button>
+                <Button as="a" href="/api/invoices/export">
+                  Download invoice data
+                </Button>
+              </HStack>
             </>
           )}
         </Flex>
@@ -249,7 +258,8 @@ const InvoicesList: React.FC<any> = (props) => {
         </Grid>
         <TableContainer marginTop={8}>
           <Table
-            variant="simple"
+            variant="striped"
+            colorScheme={"green"}
             sx={{
               border: "1px solid",
               borderColor: "gray.100",
@@ -381,23 +391,29 @@ const InvoicesList: React.FC<any> = (props) => {
                       salesSubtotal,
                       penaltySubtotal,
                       paid,
+                      approved,
                     } = invoice;
                     return (
-                      <Tr
-                        key={`invoices-${idx}`}
-                        ref={idx === invoices.length - 1 ? ref : null}
-                      >
-                        <Td>{reports[0].vendor.name}</Td>
+                      <Tr ref={idx === invoices.length - 1 ? ref : null}>
                         <Td>
-                          {reports[0].vendor.contacts.length
-                            ? reports[0].vendor.contacts[0].email
+                          {reports?.length && reports[0]?.vendor?.name
+                            ? reports[0].vendor.name
+                            : ""}
+                        </Td>
+                        <Td>
+                          {reports?.length &&
+                          reports[0]?.vendor?.contacts?.length
+                            ? reports[0]?.vendor.contacts[0].email
                             : ""}
                         </Td>
                         <Td>${salesSubtotal}</Td>
                         <Td>${penaltySubtotal}</Td>
                         <Td>${total}</Td>
                         <Td>{new Date(date).toLocaleDateString("en-US")}</Td>
-                        <Td>{paid ? "Paid" : "Open"}</Td>
+                        <Td>
+                          {paid ? "Paid" : "Open"}
+                          {approved ? ", approved" : ", not approved"}
+                        </Td>
                         <Td>
                           <Button
                             onClick={(e) => {
