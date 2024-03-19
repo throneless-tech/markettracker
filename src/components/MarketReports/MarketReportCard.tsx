@@ -94,18 +94,23 @@ export const MarketReportCard: React.FC<any> = (props) => {
 
       return date.toLocaleDateString("en-US", options);
     } else {
-      today.setDate(today.getDate() + ((dayNum + (7 - today.getDay())) % 7));
+      today.setDate(today.getDate() + ((dayNum - (7 + today.getDay())) % 7));
 
       return today.toLocaleDateString("en-US", options);
     }
   };
 
   return (
-    <Card border={"2px solid"} borderColor={"gray.600"} maxWidth={[330, 436]}>
+    <Card
+      border={"2px solid"}
+      borderColor={"gray.600"}
+      maxWidth={[330, 436]}
+      height={"100%"}
+    >
       <CardBody>
         <LinkBox>
-          <LinkOverlay as="button" onClick={() => createReport()}>
-            <Flex>
+          <Flex>
+            <LinkOverlay as="button" onClick={() => createReport()}>
               <HStack>
                 <MarketIcon
                   sx={{
@@ -117,12 +122,17 @@ export const MarketReportCard: React.FC<any> = (props) => {
                     },
                   }}
                 />
-                <Text>{market.name}</Text>
+                <Text textAlign={"left"}>{market.name}</Text>
               </HStack>
-              <Spacer />
-              <Text>{nextMarketDate(market.marketDates.startDate)}</Text>
-            </Flex>
-          </LinkOverlay>
+            </LinkOverlay>
+            <Spacer />
+            <Text>{nextMarketDate(market.marketDates.startDate)}</Text>
+          </Flex>
+          {marketReports && marketReports.length ? (
+            <Text color={"teal.700"} fontWeight={600} textAlign={"left"}>
+              Report in progress...
+            </Text>
+          ) : null}
           <Divider
             borderColor="teal.500"
             color="teal.500"

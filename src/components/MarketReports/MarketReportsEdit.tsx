@@ -113,9 +113,9 @@ export const MarketReportsEdit: React.FC<any> = () => {
             statusFound.status == "undetermined"
               ? "present"
               : statusFound.status == "present"
-              ? "late"
-              : statusFound.status == "late"
               ? "absent"
+              : statusFound.status == "absent"
+              ? "late"
               : "undetermined",
         },
       });
