@@ -11,7 +11,7 @@ import { Application, Season, Vendor } from "payload/generated-types";
 // components
 import { NumberField } from "../fields/NumberField";
 import { TextField } from "../fields/TextField";
-import { Dropdown } from "../Dropdown";
+// import { Dropdown } from "../Dropdown";
 import { FooterAdmin } from "../FooterAdmin";
 import { useField, useForm } from "payload/components/forms";
 import {
@@ -85,6 +85,17 @@ const CustomSalesReportsEdit: React.FC<any> = () => {
     path: "marketFee",
   });
 
+  const { value: pp, setValue: setPp } = useField<number>({
+    path: "producePlus",
+  });
+
+  const { value: wic, setValue: setWic } = useField<number>({
+    path: "wic",
+  });
+
+  const { value: sfmnp, setValue: setSfmnp } = useField<number>({
+    path: "sfmnp",
+  });
   // dropdown
   const handleSeasonChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setSeasonId(event.target.value);
@@ -233,6 +244,7 @@ const CustomSalesReportsEdit: React.FC<any> = () => {
       setWicDisable(false);
       setSfmnpDisable(false);
     } else {
+      setPp(0);
       setPpDisable(true);
       setWicDisable(true);
       setSfmnpDisable(true);
@@ -240,25 +252,32 @@ const CustomSalesReportsEdit: React.FC<any> = () => {
 
     // SFMNP
     // only editable by vendor in VA or MD
-    if (role == "vendor" && (location == "VA" || location == "MD")) {
+    if (
+      role == "admin" ||
+      (role == "vendor" && (location == "VA" || location == "MD"))
+    ) {
       setSfmnpDisable(false);
     } else {
+      setSfmnp(0);
       setSfmnpDisable(true);
     }
 
-    if (role == "vendor" && location == "MD") {
+    if (role == "admin" || (role == "vendor" && location == "MD")) {
       setWicDisable(false);
     } else {
+      setWic(0);
       setWicDisable(true);
     }
 
-    if (role == "vendor" && location == "VA") {
+    if (location == "VA") {
+      setWic(0);
       setWicDisable(true);
     }
   }, [location]);
 
   useEffect(() => {
     getSeasons();
+    console.log("USER.ROLE =>", user);
   }, []);
 
   useEffect(() => {
@@ -533,11 +552,6 @@ const CustomSalesReportsEdit: React.FC<any> = () => {
                     <NumberField
                       path="ebt"
                       label="EBT/SNAP sales"
-                      // isDisabled={
-                      //   location && location == "DC" && role !== "vendor"
-                      //     ? false
-                      //     : true
-                      // }
                       min={0}
                       admin={{
                         description: "Enter the sum total of EBT/SNAP sales",
@@ -549,7 +563,6 @@ const CustomSalesReportsEdit: React.FC<any> = () => {
                     <NumberField
                       path="snapBonus"
                       label="SNAP Bonus sales"
-                      // isDisabled={role == "vendor" ? true : false}
                       admin={{
                         description: "Enter the sum total of SNAP Bonus sales",
                         placeholder: "SNAP bonus sales",
@@ -562,7 +575,6 @@ const CustomSalesReportsEdit: React.FC<any> = () => {
                     <NumberField
                       path="fmnpBonus"
                       label="FMNP Bonus sales"
-                      // isDisabled={role == "vendor" ? true : false}
                       min={0}
                       admin={{
                         description: "Enter the sum total of FMNP Bonus sales",
@@ -574,7 +586,6 @@ const CustomSalesReportsEdit: React.FC<any> = () => {
                     <NumberField
                       path="cardCoupon"
                       label="Credit card coupon sales"
-                      // isDisabled={role == "vendor" ? true : false}
                       min={0}
                       admin={{
                         description:
@@ -589,7 +600,6 @@ const CustomSalesReportsEdit: React.FC<any> = () => {
                     <NumberField
                       path="marketGoods"
                       label="Market Goods coupon sales"
-                      // isDisabled={role == "vendor" ? true : false}
                       min={0}
                       admin={{
                         description:
@@ -602,7 +612,6 @@ const CustomSalesReportsEdit: React.FC<any> = () => {
                     <NumberField
                       path="gWorld"
                       label="GWorld coupon coupon sales (green)"
-                      // isDisabled={role == "vendor" ? true : false}
                       min={0}
                       admin={{
                         description:
@@ -631,7 +640,6 @@ const CustomSalesReportsEdit: React.FC<any> = () => {
                     <NumberField
                       path="penalty"
                       label="Penalty amount"
-                      // isDisabled={role == "vendor" ? true : false}
                       min={0}
                       admin={{
                         description:
