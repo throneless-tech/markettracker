@@ -74,7 +74,7 @@ export const NumberField: FC<Props> = ({
     if (!path) {
       return "none";
     }
-    let color;
+    let color = "";
     switch (path) {
       case "fmnpBonus":
         color = "#fa706f";
@@ -105,7 +105,7 @@ export const NumberField: FC<Props> = ({
     if (!path) {
       return "";
     }
-    let colorName;
+    let colorName = "";
     switch (path) {
       case "cashAndCredit":
         colorName = "";
