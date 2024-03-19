@@ -308,7 +308,7 @@ export function DataTable<Data extends object>({
                           isNumeric={meta?.isNumeric}
                           sx={{
                             display: "flex",
-                            minW: 150,
+                            minW: 166,
                             width: cell.column.getSize(),
                           }}
                         >
