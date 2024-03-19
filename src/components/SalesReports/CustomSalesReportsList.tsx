@@ -135,11 +135,11 @@ const CustomSalesReportsList: React.FC<any> = () => {
         !marketGoods ||
         !gWorld)
     ) {
-      return "Staff & vendor actions needed";
+      return "Staff & vendor";
     }
 
     if (!cashAndCredit) {
-      return "Vendor action needed";
+      return "Vendor";
     }
 
     if (
@@ -153,7 +153,7 @@ const CustomSalesReportsList: React.FC<any> = () => {
       !marketGoods ||
       !gWorld
     ) {
-      return "Staff action needed";
+      return "Staff";
     }
   };
 
@@ -405,16 +405,28 @@ const CustomSalesReportsList: React.FC<any> = () => {
           ) : null}
         </VStack>
         <TableContainer>
-          <Table variant="striped" colorScheme={"green"}>
+          <Table
+            variant="striped"
+            colorScheme={"green"}
+            sx={{ tableLayout: "fixed", width: "100%" }}
+          >
             <Thead background={"gray.100"}>
               <Tr>
                 <Th
-                  sx={{ color: "gray.900", fontFamily: "'Outfit', sans-serif" }}
+                  sx={{
+                    color: "gray.900",
+                    fontFamily: "'Outfit', sans-serif",
+                    maxW: 160,
+                  }}
                 >
                   Market
                 </Th>
                 <Th
-                  sx={{ color: "gray.900", fontFamily: "'Outfit', sans-serif" }}
+                  sx={{
+                    color: "gray.900",
+                    fontFamily: "'Outfit', sans-serif",
+                    maxW: 160,
+                  }}
                 >
                   Vendor
                 </Th>
@@ -426,22 +438,33 @@ const CustomSalesReportsList: React.FC<any> = () => {
                 <Th
                   sx={{ color: "gray.900", fontFamily: "'Outfit', sans-serif" }}
                 >
-                  Action needed
+                  Action <br />
+                  needed
+                </Th>
+                <Th
+                  sx={{
+                    color: "gray.900",
+                    fontFamily: "'Outfit', sans-serif",
+                    maxW: 120,
+                    whiteSpace: "normal",
+                    wordBreak: "break-all",
+                  }}
+                >
+                  Penalties/
+                  <br />
+                  Credits
                 </Th>
                 <Th
                   sx={{ color: "gray.900", fontFamily: "'Outfit', sans-serif" }}
                 >
-                  Penalties/Credits
+                  Sales
+                  <br /> Total
                 </Th>
                 <Th
                   sx={{ color: "gray.900", fontFamily: "'Outfit', sans-serif" }}
                 >
-                  Sales Total
-                </Th>
-                <Th
-                  sx={{ color: "gray.900", fontFamily: "'Outfit', sans-serif" }}
-                >
-                  Coupon Total
+                  Coupon
+                  <br /> Total
                 </Th>
                 <Th
                   sx={{ color: "gray.900", fontFamily: "'Outfit', sans-serif" }}
@@ -477,8 +500,24 @@ const CustomSalesReportsList: React.FC<any> = () => {
                     } = report;
                     return (
                       <Tr>
-                        <Td>{typeof season === "object" ? season.name : ""}</Td>
-                        <Td>
+                        <Td
+                          sx={{
+                            inlineSize: 160,
+                            maxW: 160,
+                            whiteSpace: "normal",
+                            wordBreak: "break-all",
+                          }}
+                        >
+                          {typeof season === "object" ? season.name : ""}
+                        </Td>
+                        <Td
+                          sx={{
+                            inlineSize: 160,
+                            maxW: 160,
+                            whiteSpace: "normal",
+                            wordBreak: "break-all",
+                          }}
+                        >
                           {typeof report.vendor == "object"
                             ? report.vendor.name
                             : null}
