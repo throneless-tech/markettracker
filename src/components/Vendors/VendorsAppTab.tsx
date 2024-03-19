@@ -142,19 +142,39 @@ export const VendorsAppTab: React.FC<any> = () => {
               ? Object.entries(demos).map((key, _) => {
                   if (key[1] == "yes") {
                     if (key[0] == "firstGeneration") {
-                      return <Tag key={key[0]}>First generation farmer</Tag>;
+                      return (
+                        <Tag paddingY={1} key={key[0]}>
+                          First generation farmer
+                        </Tag>
+                      );
                     }
                     if (key[0] == "veteranOwned") {
-                      return <Tag key={key[0]}>Veteran-owned</Tag>;
+                      return (
+                        <Tag paddingY={1} key={key[0]}>
+                          Veteran-owned
+                        </Tag>
+                      );
                     }
                     if (key[0] == "bipoc") {
-                      return <Tag key={key[0]}>BIPOC</Tag>;
+                      return (
+                        <Tag paddingY={1} key={key[0]}>
+                          BIPOC
+                        </Tag>
+                      );
                     }
                     if (key[0] == "immigrantOrRefugee") {
-                      return <Tag key={key[0]}>Immigrant or refugee</Tag>;
+                      return (
+                        <Tag paddingY={1} key={key[0]}>
+                          Immigrant or refugee
+                        </Tag>
+                      );
                     }
                     if (key[0] == "lgbtqia") {
-                      return <Tag key={key[0]}>LGBTQIA</Tag>;
+                      return (
+                        <Tag paddingY={1} key={key[0]}>
+                          LGBTQIA
+                        </Tag>
+                      );
                     }
                   }
                 })
@@ -179,7 +199,7 @@ export const VendorsAppTab: React.FC<any> = () => {
       cell: (standingCell) => {
         const standing: any = standingCell.getValue();
         return (
-          <Tag textTransform="capitalize">
+          <Tag sx={{ maxHeight: 30 }} textTransform="capitalize">
             {standing == "underReview"
               ? "Under review"
               : standing == "approvedWithEdits"
