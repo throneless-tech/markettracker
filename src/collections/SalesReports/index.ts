@@ -5,6 +5,7 @@ import CustomSalesReportsList from "../../components/SalesReports/CustomSalesRep
 import CustomSalesReportsEdit from "../../components/SalesReports/CustomSalesReportsEdit";
 
 import { reportMonth } from "./populateMonth";
+import { needsAction } from "./needsAction";
 
 export const SalesReports: CollectionConfig = {
   slug: "sales-reports",
@@ -17,6 +18,9 @@ export const SalesReports: CollectionConfig = {
       },
     },
     // useAsTitle: "name",
+  },
+  hooks: {
+    beforeChange: [reportMonth, needsAction],
   },
   fields: [
     {
@@ -184,6 +188,16 @@ export const SalesReports: CollectionConfig = {
       type: "text",
     },
     {
+      name: "credit",
+      label: "Credit",
+      type: "number",
+    },
+    {
+      name: "creditDescription",
+      label: "Credit Description",
+      type: "text",
+    },
+    {
       name: "marketFee",
       label: "Market fee percentage",
       type: "number",
@@ -193,8 +207,17 @@ export const SalesReports: CollectionConfig = {
       label: "Invoice date",
       type: "date",
     },
+    {
+      name: "needsVendorAction",
+      label: "Vendor has edited this report",
+      type: "checkbox",
+      //required: true,
+    },
+    {
+      name: "needsStaffAction",
+      label: "Staff has entered all coupons for this report",
+      type: "checkbox",
+      //required: true,
+    },
   ],
-  hooks: {
-    beforeChange: [reportMonth],
-  },
 };
