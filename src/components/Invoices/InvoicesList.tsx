@@ -128,10 +128,14 @@ const InvoicesList: React.FC<any> = (props) => {
 
   useEffect(() => {
     getInvoices(false);
+    console.log("user->", user);
+    console.log("***invoices", invoices);
   }, [page]);
 
   useEffect(() => {
     getInvoices(true);
+    console.log("user->", user);
+    console.log("***invoices", invoices);
   }, [monthValue]);
 
   useEffect(() => {
@@ -381,23 +385,29 @@ const InvoicesList: React.FC<any> = (props) => {
                       salesSubtotal,
                       penaltySubtotal,
                       paid,
+                      approved,
                     } = invoice;
                     return (
-                      <Tr
-                        key={`invoices-${idx}`}
-                        ref={idx === invoices.length - 1 ? ref : null}
-                      >
-                        <Td>{reports[0].vendor.name}</Td>
+                      <Tr ref={idx === invoices.length - 1 ? ref : null}>
                         <Td>
-                          {reports[0].vendor.contacts.length
-                            ? reports[0].vendor.contacts[0].email
+                          {reports?.length && reports[0]?.vendor?.name
+                            ? reports[0].vendor.name
+                            : ""}
+                        </Td>
+                        <Td>
+                          {reports?.length &&
+                          reports[0]?.vendor?.contacts?.length
+                            ? reports[0]?.vendor.contacts[0].email
                             : ""}
                         </Td>
                         <Td>${salesSubtotal}</Td>
                         <Td>${penaltySubtotal}</Td>
                         <Td>${total}</Td>
                         <Td>{new Date(date).toLocaleDateString("en-US")}</Td>
-                        <Td>{paid ? "Paid" : "Open"}</Td>
+                        <Td>
+                          {paid ? "Paid" : "Open"}
+                          {approved ? ", approved" : ", not approved"}
+                        </Td>
                         <Td>
                           <Button
                             onClick={(e) => {
