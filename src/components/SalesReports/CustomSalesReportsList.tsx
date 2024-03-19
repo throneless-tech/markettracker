@@ -137,7 +137,7 @@ const CustomSalesReportsList: React.FC<any> = () => {
   };
 
   const getSalesReports = useCallback(
-    async (clear: boolean) => {
+    async (nextPage: number) => {
       const queries = [];
       console.log("***vendorValue in getSalesReports: ", vendorValue);
       console.log("***marketValue in getSalesReports: ", marketValue);
@@ -165,7 +165,7 @@ const CustomSalesReportsList: React.FC<any> = () => {
             where: queries[0],
             depth: 1,
             limit: 10,
-            page,
+            page: nextPage,
             // sort,
           },
           { addQueryPrefix: true },
@@ -178,7 +178,7 @@ const CustomSalesReportsList: React.FC<any> = () => {
             },
             depth: 1,
             limit: 10,
-            page,
+            page: nextPage,
             // sort,
           },
           { addQueryPrefix: true },
@@ -186,7 +186,7 @@ const CustomSalesReportsList: React.FC<any> = () => {
       } else {
         stringifiedQuery = qs.stringify(
           {
-            page,
+            page: nextPage,
             depth: 1,
             limit: 10,
             // limit,
@@ -204,10 +204,9 @@ const CustomSalesReportsList: React.FC<any> = () => {
         );
         const json = await response.json();
         const newReports = json ? json.docs : [];
-        if (clear) {
+        if (nextPage === 1) {
           console.log("json =>", json);
           console.log("clear is true =>", newReports);
-          setPage(1);
           setHasNextPage(json.hasNextPage);
           setReports(newReports);
         } else {
@@ -241,12 +240,13 @@ const CustomSalesReportsList: React.FC<any> = () => {
 
   useEffect(() => {
     if (hasNextPage) {
-      getSalesReports(false);
+      getSalesReports(page);
     }
   }, [page]);
 
   useEffect(() => {
-    getSalesReports(true);
+    getSalesReports(1);
+    setPage(1);
   }, [marketValue, monthValue, vendorValue]);
 
   useEffect(() => {
