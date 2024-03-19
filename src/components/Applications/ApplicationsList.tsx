@@ -280,7 +280,7 @@ export const ApplicationsList: React.FC<any> = () => {
         cell: (standingCell) => {
           const standing: any = standingCell.getValue();
           return (
-            <Tag textTransform="capitalize">
+            <Tag sx={{ maxHeight: 30 }} textTransform="capitalize">
               {standing == "underReview"
                 ? "Under review"
                 : standing == "approvedWithEdits"
