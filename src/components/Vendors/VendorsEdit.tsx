@@ -76,6 +76,8 @@ export const VendorsEdit: React.FC<any> = ({ data: vendor }) => {
   async function getVendorUser(userId) {
     const response = await fetch(`/api/users/${userId}`);
     const user = await response.json();
+    console.log(user);
+
     setVendorUser(user);
   }
 
@@ -1250,6 +1252,39 @@ export const VendorsEdit: React.FC<any> = ({ data: vendor }) => {
                               <Radio value="false">No</Radio>
                             </Stack>
                           </RadioGroup>
+                        </AccordionPanel>
+                      </>
+                    )}
+                  </AccordionItem>
+                  <AccordionItem sx={{ border: "1px solid #000", marginY: 8 }}>
+                    {({ isExpanded }) => (
+                      <>
+                        <h2>
+                          <AccordionButton>
+                            <Box as="span" flex="1" textAlign="left">
+                              <Text
+                                textStyle="bodyMain"
+                                sx={{
+                                  fontWeight: 900,
+                                  textTransform: "uppercase",
+                                }}
+                              >
+                                Documents
+                              </Text>
+                            </Box>
+                            {isExpanded ? (
+                              <Text textStyle="bodyMain">Hide information</Text>
+                            ) : (
+                              <Text textStyle="bodyMain">Show information</Text>
+                            )}
+                          </AccordionButton>
+                        </h2>
+                        <AccordionPanel>
+                          {vendor.licenses && vendor.licenses.length ? (
+                            <></>
+                          ) : (
+                            <Text>No uploaded documents to display.</Text>
+                          )}
                         </AccordionPanel>
                       </>
                     )}
