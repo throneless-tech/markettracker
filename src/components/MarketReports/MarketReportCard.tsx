@@ -29,6 +29,7 @@ export const MarketReportCard: React.FC<any> = (props) => {
   const { market } = props;
   const history = useHistory();
   const [marketReports, setMarketReports] = useState([]);
+  const [disabled, setDisabled] = useState(false);
 
   const query = {
     season: {
@@ -53,9 +54,7 @@ export const MarketReportCard: React.FC<any> = (props) => {
     getMarketReports();
   }, []);
 
-  useEffect(() => {
-    console.log(marketReports);
-  }, [marketReports]);
+  useEffect(() => {}, [disabled, marketReports]);
 
   // direct user to create a report; send state including market and user
   const createReport = () => {
@@ -83,14 +82,22 @@ export const MarketReportCard: React.FC<any> = (props) => {
     day: "numeric",
   };
 
-  const nextMarketDate = (stringDate) => {
+  const nextMarketDate = (startDate) => {
     let today = new Date();
-    const date = new Date(stringDate);
+    const date = new Date(startDate);
     const dayNum = date.getDay();
 
-    today.setDate(today.getDate() + ((dayNum + (7 - today.getDay())) % 7));
+    // show correct date for market reports if it is before market begins
+    if (today < date) {
+      console.log(date);
+      date.setDate(date.getDate() + ((dayNum + (7 - date.getDay())) % 7));
 
-    return today.toLocaleDateString("en-US", options);
+      return date.toLocaleDateString("en-US", options);
+    } else {
+      today.setDate(today.getDate() + ((dayNum + (7 - today.getDay())) % 7));
+
+      return today.toLocaleDateString("en-US", options);
+    }
   };
 
   return (
