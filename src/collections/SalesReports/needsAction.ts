@@ -7,7 +7,7 @@ export const needsAction: CollectionBeforeChangeHook = async ({
 }) => {
   if (operation === "create" || operation === "update") {
     console.log("DATA =>", data);
-    const {
+    let {
       producePlus,
       cashAndCredit,
       wic,
@@ -18,7 +18,18 @@ export const needsAction: CollectionBeforeChangeHook = async ({
       cardCoupon,
       marketGoods,
       gWorld,
+      location,
     } = data;
+
+    // in Virginia and Maryland, Produce Plus doesn't apply, and therefore always 0
+    if (location === "VA" || location === "MD") {
+      producePlus = 0;
+    }
+
+    // in Virginia, WIC does not apply, and therefore always 0
+    if (location === "VA") {
+      wic = 0;
+    }
 
     let needsVendorAction;
     let needsStaffAction;
@@ -47,6 +58,8 @@ export const needsAction: CollectionBeforeChangeHook = async ({
 
     return {
       ...data,
+      producePlus,
+      wic,
       needsVendorAction,
       needsStaffAction,
     };

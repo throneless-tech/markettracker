@@ -219,5 +219,10 @@ export const SalesReports: CollectionConfig = {
       type: "checkbox",
       //required: true,
     },
+    {
+      name: "location",
+      label: "Market location",
+      type: "text",
+    },
   ],
 };
