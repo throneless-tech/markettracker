@@ -57,6 +57,9 @@ import stats1 from "../../assets/images/FF-sample-stats-1.jpg";
 import stats2 from "../../assets/images/FF-sample-stats-2.jpg";
 import stats3 from "../../assets/images/FF-sample-stats-3.jpg";
 import stats4 from "../../assets/images/FF-sample-stats-4.jpg";
+import { application } from "express";
+import { Products } from "../../collections/Products";
+import { FooterAdmin } from "../FooterAdmin";
 
 const dayNames = [
   "sunday",
@@ -168,17 +171,17 @@ export const ApplicationsEdit: React.FC<any> = (props) => {
     let dateFound = dates.findIndex((item) => item.date === dateString);
 
     if (dateFound >= 0) {
-      console.log("date is found", dateString);
+      // console.log("date is found", dateString);
 
       removeFieldRow({ path: "dates", rowIndex: dateFound });
     } else {
-      console.log("no date found");
+      // console.log("no date found");
 
       addFieldRow({ path: "dates", data: { date: dateString } });
     }
   };
 
-  useEffect(() => {}, [dates]);
+  useEffect(() => {}, [dates, status]);
 
   useEffect(() => {
     if (selectAllDates) {
@@ -622,234 +625,410 @@ export const ApplicationsEdit: React.FC<any> = (props) => {
                 {thisSeason.market.name} ({thisSeason.market.days[0]})
               </Text>
             </Box>
-            <HStack marginTop={4}>
-              <Text
-                color={"gray.700"}
-                fontSize={"2xl"}
-                fontWeight={700}
-                textTransform={"uppercase"}
-                width={"260px"}
-              >
-                Market dates
-              </Text>
-              <Divider sx={{ borderColor: "gray.600", borderBottomWidth: 2 }} />
-            </HStack>
-            <Text color={"gray.600"} marginTop={4} fontSize={"md"}>
-              Select all the dates you would like to apply to{" "}
-              {thisSeason.market.name} this season
-            </Text>
-            <Wrap spacing={8} marginY={8}>
-              <Checkbox
-                colorScheme={"green"}
-                onChange={updateSelectAll}
-                isChecked={selectAllDates}
-              >
-                Select all available
-              </Checkbox>
-              <Text fontSize="sm" fontWeight={700} textTransform="uppercase">
-                Legend:
-              </Text>
-              <HStack>
-                <Text color={"gray.600"} fontSize={"xl"}>
-                  1
-                </Text>
-                <Text>Not available</Text>
-              </HStack>
-              <HStack>
-                <Text
-                  borderColor={"green.600"}
-                  borderRadius={8}
-                  borderStyle={"solid"}
-                  borderWidth={"1.5px"}
-                  fontSize={"xl"}
-                  paddingX={3}
-                >
-                  1
-                </Text>
-                <Text>Available</Text>
-              </HStack>
-              <HStack>
-                <Text
-                  background={"green.600"}
-                  borderColor={"green.400"}
-                  borderRadius={8}
-                  borderStyle={"solid"}
-                  borderWidth={"1.5px"}
-                  color={"gray.50"}
-                  fontSize={"xl"}
-                  paddingX={3}
-                >
-                  1
-                </Text>
-                <Text>Selected</Text>
-              </HStack>
-            </Wrap>
-            <HStack className="datepicker-wrap">
-              <DatePicker
-                inline
-                dayClassName={(date) => {
-                  let dateFound = null;
-                  if (dates) {
-                    dateFound = dates.find((item) => {
-                      return item.date === date.toISOString();
-                    });
-                  }
-                  if (dateFound) {
-                    //console.log("dayClassName dateFound", dateFound);
-                    return "vendor-select";
-                  } else {
-                    return "";
-                  }
-                }}
-                startDate={startDate}
-                endDate={endDate}
-                onChange={(date) => updateSelectedDates(date)}
-                includeDates={marketDates}
-                monthsShown={numMonths + 1}
-              />
-            </HStack>
-            <Text marginTop={4}>
-              How would you characterize your market attendance?
-            </Text>
-            <RadioGroup
-              marginTop={2}
-              onChange={(newValue) => setSchedule(newValue)}
-              value={schedule}
-            >
-              <HStack spacing={4}>
-                <Radio value="fulltime">Full-time</Radio>
-                <Radio value="parttime">Part-time</Radio>
-                <Radio value="popup">Pop-up</Radio>
-              </HStack>
-            </RadioGroup>
-            <HStack marginTop={4}>
-              <Text
-                color={"gray.700"}
-                fontSize={"2xl"}
-                fontWeight={700}
-                textTransform={"uppercase"}
-                width={"180px"}
-              >
-                Products
-              </Text>
-              <Divider sx={{ borderColor: "gray.600", borderBottomWidth: 2 }} />
-            </HStack>
-            <Text color={"gray.600"} marginTop={4} fontSize={"md"}>
-              Select the products you would like to sell at{" "}
-              {thisSeason.market.name} this season
-            </Text>
-            <ProductsField
-              path="products"
-              products={(user.vendor as Vendor).products as Product[]}
-            />
-            <Text marginTop={4}>
-              Do you intend to sell and coordinate CSA share pickups at the
-              market?
-            </Text>
-            <RadioGroup
-              marginTop={2}
-              onChange={(newValue) => setIsCSA(newValue === "true")}
-              value={typeof isCSA === "boolean" ? isCSA.toString() : undefined}
-            >
-              <Stack spacing={2}>
-                <Radio value="true">Yes</Radio>
-                <Radio value="false">No</Radio>
-              </Stack>
-            </RadioGroup>
-            {user.role !== "vendor" ? (
+            {status === "approved" || status === "approvedWithEdits" ? (
               <>
-                <Text marginTop={4}>Special market fee percentage</Text>
-                <NumberField
-                  path="marketFee"
-                  isDisabled={false}
-                  min={0}
-                  // required
-                  admin={{
-                    description:
-                      "Vendor-specific market fee to override market-wide fee. Do not touch or enter this field unless you are setting a special fee.",
+                <HStack marginTop={4}>
+                  <Text
+                    color={"gray.700"}
+                    fontSize={"2xl"}
+                    fontWeight={700}
+                    textTransform={"uppercase"}
+                    width={"260px"}
+                  >
+                    Market dates
+                  </Text>
+                  <Divider
+                    sx={{ borderColor: "gray.600", borderBottomWidth: 2 }}
+                  />
+                </HStack>
+                <Text color={"gray.600"} marginTop={4} fontSize={"md"}>
+                  You are approved for the following dates at{" "}
+                  {thisSeason.market.name} this season
+                </Text>
+                <Wrap spacing={8} marginY={8}>
+                  <Text
+                    fontSize="sm"
+                    fontWeight={700}
+                    textTransform="uppercase"
+                  >
+                    Legend:
+                  </Text>
+                  <HStack>
+                    <Text color={"gray.600"} fontSize={"xl"}>
+                      1
+                    </Text>
+                    <Text>Not available</Text>
+                  </HStack>
+                  <HStack>
+                    <Text
+                      borderColor={"green.600"}
+                      borderRadius={8}
+                      borderStyle={"solid"}
+                      borderWidth={"1.5px"}
+                      fontSize={"xl"}
+                      paddingX={3}
+                    >
+                      1
+                    </Text>
+                    <Text>Available</Text>
+                  </HStack>
+                  <HStack>
+                    <Text
+                      background={"green.600"}
+                      borderColor={"green.400"}
+                      borderRadius={8}
+                      borderStyle={"solid"}
+                      borderWidth={"1.5px"}
+                      color={"gray.50"}
+                      fontSize={"xl"}
+                      paddingX={3}
+                    >
+                      1
+                    </Text>
+                    <Text>Selected</Text>
+                  </HStack>
+                </Wrap>
+                <HStack className="datepicker-wrap">
+                  <DatePicker
+                    inline
+                    dayClassName={(date) => {
+                      let dateFound = null;
+                      if (dates) {
+                        dateFound = dates.find((item) => {
+                          return item.date === date.toISOString();
+                        });
+                      }
+
+                      if (dateFound) {
+                        return "vendor-select";
+                      } else {
+                        return "";
+                      }
+                    }}
+                    includeDates={marketDates}
+                    minDate={startDate}
+                    maxDate={endDate}
+                    monthsShown={numMonths + 1}
+                  />
+                </HStack>
+                <Text marginTop={4}>Your market attendance is {schedule}.</Text>
+                <HStack marginTop={4}>
+                  <Text
+                    color={"gray.700"}
+                    fontSize={"2xl"}
+                    fontWeight={700}
+                    textTransform={"uppercase"}
+                    width={"180px"}
+                  >
+                    Products
+                  </Text>
+                  <Divider
+                    sx={{ borderColor: "gray.600", borderBottomWidth: 2 }}
+                  />
+                </HStack>
+                <Text color={"gray.600"} marginTop={4} fontSize={"md"}>
+                  You are approved to sell the following products at{" "}
+                  {thisSeason.market.name} this season.
+                </Text>
+                {user.vendor.products && user.vendor.products.length
+                  ? user.vendor.products.map((product) => (
+                      <>
+                        <Box key={product.id}>
+                          <Tag bg={"gray.50"} fontWeight={700}>
+                            {product.name}
+                          </Tag>
+                        </Box>
+                      </>
+                    ))
+                  : null}
+                <Text marginTop={4}>
+                  You {isCSA ? "do" : "do not"} intend to sell and coordinate
+                  CSA share pickups at the market.
+                </Text>
+                <HStack marginTop={4}>
+                  <Text
+                    color={"gray.700"}
+                    fontSize={"2xl"}
+                    fontWeight={700}
+                    textTransform={"uppercase"}
+                    width={"120px"}
+                  >
+                    Staff
+                  </Text>
+                  <Divider
+                    sx={{ borderColor: "gray.600", borderBottomWidth: 2 }}
+                  />
+                </HStack>
+                <Text color={"gray.600"} marginTop={4} fontSize={"md"}>
+                  The following people will be staffing your booth at{" "}
+                  {thisSeason.market.name} this season.
+                </Text>
+                <Box marginBottom={8}>
+                  {contacts && contacts.length ? (
+                    <HStack spacing={4}>
+                      {contacts.map((contact) => (
+                        <Box key={contact.id}>
+                          {contact.name}
+                          <Tag bg={"gray.50"} fontWeight={700}>
+                            {contact.type}
+                          </Tag>
+                        </Box>
+                      ))}
+                    </HStack>
+                  ) : (
+                    ""
+                  )}
+                </Box>
+              </>
+            ) : (
+              <>
+                <HStack marginTop={4}>
+                  <Text
+                    color={"gray.700"}
+                    fontSize={"2xl"}
+                    fontWeight={700}
+                    textTransform={"uppercase"}
+                    width={"260px"}
+                  >
+                    Market dates
+                  </Text>
+                  <Divider
+                    sx={{ borderColor: "gray.600", borderBottomWidth: 2 }}
+                  />
+                </HStack>
+                <Text color={"gray.600"} marginTop={4} fontSize={"md"}>
+                  Select all the dates you would like to apply to{" "}
+                  {thisSeason.market.name} this season
+                </Text>
+                <Wrap spacing={8} marginY={8}>
+                  <Checkbox
+                    colorScheme={"green"}
+                    onChange={updateSelectAll}
+                    isChecked={selectAllDates}
+                  >
+                    Select all available
+                  </Checkbox>
+                  <Text
+                    fontSize="sm"
+                    fontWeight={700}
+                    textTransform="uppercase"
+                  >
+                    Legend:
+                  </Text>
+                  <HStack>
+                    <Text color={"gray.600"} fontSize={"xl"}>
+                      1
+                    </Text>
+                    <Text>Not available</Text>
+                  </HStack>
+                  <HStack>
+                    <Text
+                      borderColor={"green.600"}
+                      borderRadius={8}
+                      borderStyle={"solid"}
+                      borderWidth={"1.5px"}
+                      fontSize={"xl"}
+                      paddingX={3}
+                    >
+                      1
+                    </Text>
+                    <Text>Available</Text>
+                  </HStack>
+                  <HStack>
+                    <Text
+                      background={"green.600"}
+                      borderColor={"green.400"}
+                      borderRadius={8}
+                      borderStyle={"solid"}
+                      borderWidth={"1.5px"}
+                      color={"gray.50"}
+                      fontSize={"xl"}
+                      paddingX={3}
+                    >
+                      1
+                    </Text>
+                    <Text>Selected</Text>
+                  </HStack>
+                </Wrap>
+                <HStack className="datepicker-wrap">
+                  <DatePicker
+                    inline
+                    dayClassName={(date) => {
+                      let dateFound = null;
+                      if (dates) {
+                        dateFound = dates.find((item) => {
+                          return item.date === date.toISOString();
+                        });
+                      }
+                      if (dateFound) {
+                        //console.log("dayClassName dateFound", dateFound);
+                        return "vendor-select";
+                      } else {
+                        return "";
+                      }
+                    }}
+                    startDate={startDate}
+                    endDate={endDate}
+                    onChange={(date) => updateSelectedDates(date)}
+                    includeDates={marketDates}
+                    monthsShown={numMonths + 1}
+                  />
+                </HStack>
+                <Text marginTop={4}>
+                  How would you characterize your market attendance?
+                </Text>
+                <RadioGroup
+                  marginTop={2}
+                  onChange={(newValue) => setSchedule(newValue)}
+                  value={schedule}
+                >
+                  <HStack spacing={4}>
+                    <Radio value="fulltime">Full-time</Radio>
+                    <Radio value="parttime">Part-time</Radio>
+                    <Radio value="popup">Pop-up</Radio>
+                  </HStack>
+                </RadioGroup>
+                <HStack marginTop={4}>
+                  <Text
+                    color={"gray.700"}
+                    fontSize={"2xl"}
+                    fontWeight={700}
+                    textTransform={"uppercase"}
+                    width={"180px"}
+                  >
+                    Products
+                  </Text>
+                  <Divider
+                    sx={{ borderColor: "gray.600", borderBottomWidth: 2 }}
+                  />
+                </HStack>
+                <Text color={"gray.600"} marginTop={4} fontSize={"md"}>
+                  Select the products you would like to sell at{" "}
+                  {thisSeason.market.name} this season
+                </Text>
+                <ProductsField
+                  path="products"
+                  products={(user.vendor as Vendor).products as Product[]}
+                />
+                <Text marginTop={4}>
+                  Do you intend to sell and coordinate CSA share pickups at the
+                  market?
+                </Text>
+                <RadioGroup
+                  marginTop={2}
+                  onChange={(newValue) => setIsCSA(newValue === "true")}
+                  value={
+                    typeof isCSA === "boolean" ? isCSA.toString() : undefined
+                  }
+                >
+                  <Stack spacing={2}>
+                    <Radio value="true">Yes</Radio>
+                    <Radio value="false">No</Radio>
+                  </Stack>
+                </RadioGroup>
+                {user.role !== "vendor" ? (
+                  <>
+                    <Text marginTop={4}>Special market fee percentage</Text>
+                    <NumberField
+                      path="marketFee"
+                      isDisabled={false}
+                      min={0}
+                      // required
+                      admin={{
+                        description:
+                          "Vendor-specific market fee to override market-wide fee. Do not touch or enter this field unless you are setting a special fee.",
+                      }}
+                    />
+                  </>
+                ) : null}
+                <HStack marginTop={4}>
+                  <Text
+                    color={"gray.700"}
+                    fontSize={"2xl"}
+                    fontWeight={700}
+                    textTransform={"uppercase"}
+                    width={"120px"}
+                  >
+                    Staff
+                  </Text>
+                  <Divider
+                    sx={{ borderColor: "gray.600", borderBottomWidth: 2 }}
+                  />
+                </HStack>
+                <Text color={"gray.600"} marginTop={4} fontSize={"md"}>
+                  Select anyone who will be staffing your booth at{" "}
+                  {thisSeason.market.name} this season. You can add staff via
+                  your profile page.
+                </Text>
+                <CheckboxGroup
+                  onChange={(newValue) => setContacts(newValue)}
+                  value={contacts}
+                >
+                  {available && available.length ? (
+                    <HStack spacing={4}>
+                      {available.map((contact) => (
+                        <Checkbox key={contact.id} value={contact.id}>
+                          {contact.name}
+                          <Tag bg={"gray.50"} fontWeight={700}>
+                            {contact.type}
+                          </Tag>
+                        </Checkbox>
+                      ))}
+                    </HStack>
+                  ) : (
+                    ""
+                  )}
+                </CheckboxGroup>
+                {/*
+                  <Button
+                    onClick={onOpen}
+                    marginTop={4}
+                    rightIcon={<ArrowForwardIcon />}
+                  >
+                    Add a contact
+                  </Button>
+                  */}
+                <ContactsModal
+                  isOpen={isOpen}
+                  onSave={onSaveContact}
+                  onClose={onClose}
+                />
+                <Divider
+                  sx={{
+                    borderColor: "gray.600",
+                    borderBottomWidth: 2,
+                    marginY: 8,
                   }}
                 />
+                <Text fontSize={"xl"} textAlign={"center"}>
+                  Applications will be reviewed until all spaces have been
+                  filled. You will be notified by email once your application
+                  has been reviewed.
+                </Text>
+                <Center marginY={8}>
+                  <HStack spacing={4}>
+                    <Button
+                      colorScheme="teal"
+                      variant={"solid"}
+                      onClick={submitForm}
+                    >
+                      {user.role == "vendor"
+                        ? "Submit application now"
+                        : "Approve application with edits"}
+                    </Button>
+                    <Button
+                      as={"a"}
+                      variant={"outline"}
+                      href="/admin/collections/applications?limit=10"
+                    >
+                      Cancel
+                    </Button>
+                  </HStack>
+                </Center>
               </>
-            ) : null}
-            <HStack marginTop={4}>
-              <Text
-                color={"gray.700"}
-                fontSize={"2xl"}
-                fontWeight={700}
-                textTransform={"uppercase"}
-                width={"120px"}
-              >
-                Staff
-              </Text>
-              <Divider sx={{ borderColor: "gray.600", borderBottomWidth: 2 }} />
-            </HStack>
-            <Text color={"gray.600"} marginTop={4} fontSize={"md"}>
-              Select anyone who will be staffing your booth at{" "}
-              {thisSeason.market.name} this season. You can add staff via your
-              profile page.
-            </Text>
-            <CheckboxGroup
-              onChange={(newValue) => setContacts(newValue)}
-              value={contacts}
-            >
-              {available && available.length ? (
-                <HStack spacing={4}>
-                  {available.map((contact) => (
-                    <Checkbox key={contact.id} value={contact.id}>
-                      {contact.name}
-                      <Tag bg={"gray.50"} fontWeight={700}>
-                        {contact.type}
-                      </Tag>
-                    </Checkbox>
-                  ))}
-                </HStack>
-              ) : (
-                ""
-              )}
-            </CheckboxGroup>
-            {/*
-            <Button
-              onClick={onOpen}
-              marginTop={4}
-              rightIcon={<ArrowForwardIcon />}
-            >
-              Add a contact
-            </Button>
-            */}
-            <ContactsModal
-              isOpen={isOpen}
-              onSave={onSaveContact}
-              onClose={onClose}
-            />
-            <Divider
-              sx={{ borderColor: "gray.600", borderBottomWidth: 2, marginY: 8 }}
-            />
-            <Text fontSize={"xl"} textAlign={"center"}>
-              Applications will be reviewed until all spaces have been filled.
-              You will be notified by email once your application has been
-              reviewed.
-            </Text>
-            <Center marginY={8}>
-              <HStack spacing={4}>
-                <Button
-                  colorScheme="teal"
-                  variant={"solid"}
-                  onClick={submitForm}
-                >
-                  {user.role == "vendor"
-                    ? "Submit application now"
-                    : "Approve application with edits"}
-                </Button>
-                <Button
-                  as={"a"}
-                  variant={"outline"}
-                  href="/admin/collections/applications?limit=10"
-                >
-                  Cancel
-                </Button>
-              </HStack>
-            </Center>
+            )}
           </Container>
+          <FooterAdmin />
         </Box>
       );
     } else {
@@ -1282,19 +1461,20 @@ export const ApplicationsEdit: React.FC<any> = (props) => {
               )}
             </CheckboxGroup>
             {/*
-            <Button
-              onClick={onOpen}
-              marginTop={4}
-              rightIcon={<ArrowForwardIcon />}
-            >
-              Add a contact
-            </Button>
-            */}
+                  <Button
+                    onClick={onOpen}
+                    marginTop={4}
+                    rightIcon={<ArrowForwardIcon />}
+                  >
+                    Add a contact
+                  </Button>
+                  */}
             <ContactsModal
               isOpen={isOpen}
               onSave={onSaveContact}
               onClose={onClose}
             />
+
             <Divider
               sx={{ borderColor: "gray.600", borderBottomWidth: 2, marginY: 8 }}
             />
@@ -1615,6 +1795,7 @@ export const ApplicationsEdit: React.FC<any> = (props) => {
               </HStack>
             </Center>
           </Container>
+          <FooterAdmin />
         </Box>
       </>
     );
