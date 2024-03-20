@@ -98,6 +98,7 @@ export const ApplicationsEdit: React.FC<any> = (props) => {
   const [doSubmit, setDoSubmit] = useState(false);
   const [available, setAvailable] = useState<Contact[]>([]);
   const [market, setMarket] = useState(null);
+  const [approvedVendors, setApprovedVendors] = useState([]);
   const [vendors, setVendors] = useState([]);
   const [markets, setMarkets] = useState([]);
   const [thisSeason, setThisSeason] = useState(null);
@@ -343,7 +344,48 @@ export const ApplicationsEdit: React.FC<any> = (props) => {
     };
 
     getVendors();
-  }, []);
+
+    if (thisSeason || shadowSeason) {
+      const vendorsQuery = {
+        and: [
+          {
+            season: {
+              equals: thisSeason ? thisSeason.id : shadowSeason.id,
+            },
+          },
+          {
+            or: [
+              {
+                status: {
+                  equals: "approved",
+                },
+              },
+              {
+                status: {
+                  equals: "approvedWithEdits",
+                },
+              },
+            ],
+          },
+        ],
+      };
+
+      const getApprovedVendors = async () => {
+        const stringifiedQuery = qs.stringify(
+          {
+            where: vendorsQuery, // ensure that `qs` adds the `where` property, too!
+          },
+          { addQueryPrefix: true },
+        );
+        const response = await fetch(`/api/applications${stringifiedQuery}`);
+        let vendorsData = await response.json();
+        vendorsData = vendorsData.docs;
+        setApprovedVendors(vendorsData);
+      };
+
+      getApprovedVendors();
+    }
+  }, [thisSeason, shadowSeason]);
 
   useEffect(() => {
     if (id && season) {
@@ -374,6 +416,7 @@ export const ApplicationsEdit: React.FC<any> = (props) => {
   }, [season]);
 
   useEffect(() => {}, [
+    approvedVendors,
     endDate,
     market,
     marketDates,
@@ -394,18 +437,16 @@ export const ApplicationsEdit: React.FC<any> = (props) => {
             <Box>
               <Box background="green.600" padding={6}>
                 <Flex borderBottom={"2px solid #F6F5F4"} paddingBottom={6}>
-                  <HStack>
-                    <Text
-                      as={"span"}
-                      color={"gray.50"}
-                      fontFamily={"Zilla Slab"}
-                      fontSize="3xl"
-                      fontWeight={700}
-                      textTransform={"uppercase"}
-                    >
-                      {thisSeason.market.name}
-                    </Text>
-                  </HStack>
+                  <Text
+                    as={"span"}
+                    color={"gray.50"}
+                    fontFamily={"Zilla Slab"}
+                    fontSize="3xl"
+                    fontWeight={700}
+                    textTransform={"uppercase"}
+                  >
+                    {thisSeason.market.name}
+                  </Text>
                   {thisSeason.isAccepting ? (
                     <>
                       <Spacer />
@@ -427,7 +468,7 @@ export const ApplicationsEdit: React.FC<any> = (props) => {
                   ) : null}
                 </Flex>
                 <Flex marginTop={4}>
-                  <HStack>
+                  <Stack direction={["column", "row"]} marginTop={4}>
                     {thisSeason.marketTime &&
                     thisSeason.market &&
                     typeof thisSeason.market === "object" ? (
@@ -467,7 +508,7 @@ export const ApplicationsEdit: React.FC<any> = (props) => {
                       {", "}
                       {thisSeason.market.address.zipcode}
                     </Text>
-                  </HStack>
+                  </Stack>
                   {thisSeason.market.contact ? (
                     <>
                       <Spacer />
@@ -508,7 +549,7 @@ export const ApplicationsEdit: React.FC<any> = (props) => {
                     ? thisSeason.market.description
                     : ""}
                 </Text>
-                <HStack sx={{ flexWrap: "wrap" }}>
+                <HStack sx={{ flexWrap: "wrap" }} marginTop={4}>
                   <Text
                     fontSize={"sm"}
                     textTransform={"uppercase"}
@@ -519,7 +560,7 @@ export const ApplicationsEdit: React.FC<any> = (props) => {
                   </Text>
                   {thisSeason.productGaps && thisSeason.productGaps.length ? (
                     thisSeason.productGaps.map((product) => (
-                      <Tag bg={"gray.50"} fontWeight={700}>
+                      <Tag key={product.id} bg={"gray.50"} fontWeight={700}>
                         {product.product}
                       </Tag>
                     ))
@@ -533,7 +574,7 @@ export const ApplicationsEdit: React.FC<any> = (props) => {
             </Box>
           </Container>
           <Container marginTop={8} maxW={"container.lg"}>
-            <HStack>
+            <Stack direction={["column", "row"]}>
               <Text
                 color={"gray.700"}
                 fontSize={"2xl"}
@@ -553,7 +594,7 @@ export const ApplicationsEdit: React.FC<any> = (props) => {
                 {thisSeason.market.size}
               </Text>
               <Divider sx={{ borderColor: "gray.600", borderBottomWidth: 2 }} />
-            </HStack>
+            </Stack>
             <Text color={"gray.600"} marginTop={4} fontSize={"md"}>
               {thisSeason.market.size == "flagship"
                 ? "Daily sales for the entire market are upwards of $150,000. This market can support upwards of 20 produce vendors, 14 prepared food vendors, 9 baked goods vendors, 6 alcohol vendors, 5 dairy vendors, and 2 to 4 vendors from each additional category."
@@ -576,22 +617,28 @@ export const ApplicationsEdit: React.FC<any> = (props) => {
                 (avg)
               </Text>
             </HStack>
-            <HStack marginTop={4}>
+            <Stack direction={["column", "row"]} marginTop={4}>
               <Text
                 color={"gray.700"}
                 fontSize={"2xl"}
                 fontWeight={700}
                 textTransform={"uppercase"}
-                width={"720px"}
+                width={["100%", "720px"]}
               >
                 Vendors scheduled for this market
               </Text>
               <Divider sx={{ borderColor: "gray.600", borderBottomWidth: 2 }} />
+            </Stack>
+            <HStack spacing={2} marginTop={2} wrap={"wrap"}>
+              {approvedVendors && approvedVendors.length ? (
+                approvedVendors.map((app) => (
+                  <Tag bg={"gray.50"}>{app.vendor.name}</Tag>
+                ))
+              ) : (
+                <Text>No vendors scheduled yet.</Text>
+              )}
             </HStack>
-            <HStack marginTop={2}>
-              {/* <Tag bg={"gray.50"}>Vendor 1</Tag> */}
-            </HStack>
-            <HStack marginTop={4}>
+            <Stack direction={["column", "row"]} marginTop={4}>
               <Text
                 color={"gray.700"}
                 fontSize={"2xl"}
@@ -602,7 +649,7 @@ export const ApplicationsEdit: React.FC<any> = (props) => {
                 Stats & info
               </Text>
               <Divider sx={{ borderColor: "gray.600", borderBottomWidth: 2 }} />
-            </HStack>
+            </Stack>
             <Image
               src={stats1}
               alt="A sample of a pie chart showing product make up, to be filled in with an interactive graph in the future."
@@ -619,7 +666,12 @@ export const ApplicationsEdit: React.FC<any> = (props) => {
               src={stats4}
               alt="A sample of a bar graph showing monthly sales by vendor, to be filled in with an interactive graph in the future."
             />
-            <Box background="green.600" padding={2} margin={4}>
+            <Box
+              background="green.600"
+              padding={2}
+              marginBottom={6}
+              marginTop={12}
+            >
               <Text color="gray.50">
                 Fill out the information below to apply to{" "}
                 {thisSeason.market.name} ({thisSeason.market.days[0]})
@@ -627,7 +679,7 @@ export const ApplicationsEdit: React.FC<any> = (props) => {
             </Box>
             {status === "approved" || status === "approvedWithEdits" ? (
               <>
-                <HStack marginTop={4}>
+                <Stack direction={["column", "row"]} marginTop={4}>
                   <Text
                     color={"gray.700"}
                     fontSize={"2xl"}
@@ -640,12 +692,12 @@ export const ApplicationsEdit: React.FC<any> = (props) => {
                   <Divider
                     sx={{ borderColor: "gray.600", borderBottomWidth: 2 }}
                   />
-                </HStack>
+                </Stack>
                 <Text color={"gray.600"} marginTop={4} fontSize={"md"}>
                   You are approved for the following dates at{" "}
                   {thisSeason.market.name} this season
                 </Text>
-                <Wrap spacing={8} marginY={8}>
+                <Stack direction={["column", "row"]} spacing={8} marginY={8}>
                   <Text
                     fontSize="sm"
                     fontWeight={700}
@@ -687,7 +739,7 @@ export const ApplicationsEdit: React.FC<any> = (props) => {
                     </Text>
                     <Text>Selected</Text>
                   </HStack>
-                </Wrap>
+                </Stack>
                 <HStack className="datepicker-wrap">
                   <DatePicker
                     inline
@@ -712,7 +764,7 @@ export const ApplicationsEdit: React.FC<any> = (props) => {
                   />
                 </HStack>
                 <Text marginTop={4}>Your market attendance is {schedule}.</Text>
-                <HStack marginTop={4}>
+                <Stack direction={["column", "row"]} marginTop={4}>
                   <Text
                     color={"gray.700"}
                     fontSize={"2xl"}
@@ -725,27 +777,27 @@ export const ApplicationsEdit: React.FC<any> = (props) => {
                   <Divider
                     sx={{ borderColor: "gray.600", borderBottomWidth: 2 }}
                   />
-                </HStack>
+                </Stack>
                 <Text color={"gray.600"} marginTop={4} fontSize={"md"}>
                   You are approved to sell the following products at{" "}
                   {thisSeason.market.name} this season.
                 </Text>
-                {user.vendor.products && user.vendor.products.length
-                  ? user.vendor.products.map((product) => (
-                      <>
+                <Stack direction={["column", "row"]} marginTop={4}>
+                  {user.vendor.products && user.vendor.products.length
+                    ? user.vendor.products.map((product) => (
                         <Box key={product.id}>
                           <Tag bg={"gray.50"} fontWeight={700}>
-                            {product.name}
+                            {product.product}
                           </Tag>
                         </Box>
-                      </>
-                    ))
-                  : null}
+                      ))
+                    : null}
+                </Stack>
                 <Text marginTop={4}>
                   You {isCSA ? "do" : "do not"} intend to sell and coordinate
                   CSA share pickups at the market.
                 </Text>
-                <HStack marginTop={4}>
+                <Stack direction={["column", "row"]} marginTop={4}>
                   <Text
                     color={"gray.700"}
                     fontSize={"2xl"}
@@ -758,12 +810,12 @@ export const ApplicationsEdit: React.FC<any> = (props) => {
                   <Divider
                     sx={{ borderColor: "gray.600", borderBottomWidth: 2 }}
                   />
-                </HStack>
+                </Stack>
                 <Text color={"gray.600"} marginTop={4} fontSize={"md"}>
                   The following people will be staffing your booth at{" "}
                   {thisSeason.market.name} this season.
                 </Text>
-                <Box marginBottom={8}>
+                <Stack direction={["column", "row"]} marginTop={4}>
                   {contacts && contacts.length ? (
                     <HStack spacing={4}>
                       {contacts.map((contact) => (
@@ -778,11 +830,11 @@ export const ApplicationsEdit: React.FC<any> = (props) => {
                   ) : (
                     ""
                   )}
-                </Box>
+                </Stack>
               </>
             ) : (
               <>
-                <HStack marginTop={4}>
+                <Stack direction={["column", "row"]} marginTop={4}>
                   <Text
                     color={"gray.700"}
                     fontSize={"2xl"}
@@ -795,12 +847,12 @@ export const ApplicationsEdit: React.FC<any> = (props) => {
                   <Divider
                     sx={{ borderColor: "gray.600", borderBottomWidth: 2 }}
                   />
-                </HStack>
+                </Stack>
                 <Text color={"gray.600"} marginTop={4} fontSize={"md"}>
                   Select all the dates you would like to apply to{" "}
                   {thisSeason.market.name} this season
                 </Text>
-                <Wrap spacing={8} marginY={8}>
+                <Stack direction={["column", "row"]} spacing={8} marginY={8}>
                   <Checkbox
                     colorScheme={"green"}
                     onChange={updateSelectAll}
@@ -849,8 +901,11 @@ export const ApplicationsEdit: React.FC<any> = (props) => {
                     </Text>
                     <Text>Selected</Text>
                   </HStack>
-                </Wrap>
-                <HStack className="datepicker-wrap">
+                </Stack>
+                <Stack
+                  className="datepicker-wrap"
+                  direction={["column", "row"]}
+                >
                   <DatePicker
                     inline
                     dayClassName={(date) => {
@@ -873,7 +928,7 @@ export const ApplicationsEdit: React.FC<any> = (props) => {
                     includeDates={marketDates}
                     monthsShown={numMonths + 1}
                   />
-                </HStack>
+                </Stack>
                 <Text marginTop={4}>
                   How would you characterize your market attendance?
                 </Text>
@@ -888,7 +943,7 @@ export const ApplicationsEdit: React.FC<any> = (props) => {
                     <Radio value="popup">Pop-up</Radio>
                   </HStack>
                 </RadioGroup>
-                <HStack marginTop={4}>
+                <Stack direction={["column", "row"]} marginTop={4}>
                   <Text
                     color={"gray.700"}
                     fontSize={"2xl"}
@@ -901,7 +956,7 @@ export const ApplicationsEdit: React.FC<any> = (props) => {
                   <Divider
                     sx={{ borderColor: "gray.600", borderBottomWidth: 2 }}
                   />
-                </HStack>
+                </Stack>
                 <Text color={"gray.600"} marginTop={4} fontSize={"md"}>
                   Select the products you would like to sell at{" "}
                   {thisSeason.market.name} this season
@@ -941,7 +996,7 @@ export const ApplicationsEdit: React.FC<any> = (props) => {
                     />
                   </>
                 ) : null}
-                <HStack marginTop={4}>
+                <Stack direction={["column", "row"]} marginTop={4}>
                   <Text
                     color={"gray.700"}
                     fontSize={"2xl"}
@@ -954,7 +1009,7 @@ export const ApplicationsEdit: React.FC<any> = (props) => {
                   <Divider
                     sx={{ borderColor: "gray.600", borderBottomWidth: 2 }}
                   />
-                </HStack>
+                </Stack>
                 <Text color={"gray.600"} marginTop={4} fontSize={"md"}>
                   Select anyone who will be staffing your booth at{" "}
                   {thisSeason.market.name} this season. You can add staff via
@@ -1006,7 +1061,7 @@ export const ApplicationsEdit: React.FC<any> = (props) => {
                   has been reviewed.
                 </Text>
                 <Center marginY={8}>
-                  <HStack spacing={4}>
+                  <Stack direction={["column", "row"]} spacing={4}>
                     <Button
                       colorScheme="teal"
                       variant={"solid"}
@@ -1023,7 +1078,7 @@ export const ApplicationsEdit: React.FC<any> = (props) => {
                     >
                       Cancel
                     </Button>
-                  </HStack>
+                  </Stack>
                 </Center>
               </>
             )}
@@ -1091,7 +1146,7 @@ export const ApplicationsEdit: React.FC<any> = (props) => {
                   ) : null}
                 </Flex>
                 <Flex marginTop={4}>
-                  <HStack>
+                  <Stack direction={["column", "row"]} marginTop={4}>
                     {shadowSeason.marketTime &&
                     shadowSeason.market &&
                     typeof shadowSeason.market === "object" ? (
@@ -1131,7 +1186,7 @@ export const ApplicationsEdit: React.FC<any> = (props) => {
                       {", "}
                       {shadowSeason.market.address.zipcode}
                     </Text>
-                  </HStack>
+                  </Stack>
                   {shadowSeason.market.contact ? (
                     <>
                       <Spacer />
@@ -1172,7 +1227,7 @@ export const ApplicationsEdit: React.FC<any> = (props) => {
                     ? shadowSeason.market.description
                     : ""}
                 </Text>
-                <HStack sx={{ flexWrap: "wrap" }}>
+                <HStack sx={{ flexWrap: "wrap" }} marginTop={4}>
                   <Text
                     fontSize={"sm"}
                     textTransform={"uppercase"}
@@ -1184,7 +1239,7 @@ export const ApplicationsEdit: React.FC<any> = (props) => {
                   {shadowSeason.productGaps &&
                   shadowSeason.productGaps.length ? (
                     shadowSeason.productGaps.map((product) => (
-                      <Tag bg={"gray.50"} fontWeight={700}>
+                      <Tag bg={"gray.50"} key={product.id} fontWeight={700}>
                         {product.product}
                       </Tag>
                     ))
@@ -1198,7 +1253,7 @@ export const ApplicationsEdit: React.FC<any> = (props) => {
             </Box>
           </Container>
           <Container marginTop={8} maxW={"container.lg"}>
-            <HStack>
+            <Stack direction={["column", "row"]}>
               <Text
                 color={"gray.700"}
                 fontSize={"2xl"}
@@ -1218,7 +1273,7 @@ export const ApplicationsEdit: React.FC<any> = (props) => {
                 {shadowSeason.market.size}
               </Text>
               <Divider sx={{ borderColor: "gray.600", borderBottomWidth: 2 }} />
-            </HStack>
+            </Stack>
             <Text color={"gray.600"} marginTop={4} fontSize={"md"}>
               {shadowSeason.market.size == "flagship"
                 ? "Daily sales for the entire market are upwards of $150,000. This market can support upwards of 20 produce vendors, 14 prepared food vendors, 9 baked goods vendors, 6 alcohol vendors, 5 dairy vendors, and 2 to 4 vendors from each additional category."
@@ -1241,22 +1296,28 @@ export const ApplicationsEdit: React.FC<any> = (props) => {
                 (avg)
               </Text>
             </HStack>
-            <HStack marginTop={4}>
+            <Stack direction={["column", "row"]} marginTop={4}>
               <Text
                 color={"gray.700"}
                 fontSize={"2xl"}
                 fontWeight={700}
                 textTransform={"uppercase"}
-                width={"720px"}
+                width={["350px", "720px"]}
               >
                 Vendors scheduled for this market
               </Text>
               <Divider sx={{ borderColor: "gray.600", borderBottomWidth: 2 }} />
-            </HStack>
+            </Stack>
             <HStack marginTop={2}>
-              {/* <Tag bg={"gray.50"}>Vendor 1</Tag> */}
+              {approvedVendors && approvedVendors.length ? (
+                approvedVendors.map((app) => (
+                  <Tag bg={"gray.50"}>{app.vendor.name}</Tag>
+                ))
+              ) : (
+                <Text>No vendors scheduled yet.</Text>
+              )}
             </HStack>
-            <HStack marginTop={4}>
+            <Stack direction={["column", "row"]} marginTop={4}>
               <Text
                 color={"gray.700"}
                 fontSize={"2xl"}
@@ -1267,7 +1328,7 @@ export const ApplicationsEdit: React.FC<any> = (props) => {
                 Stats & info
               </Text>
               <Divider sx={{ borderColor: "gray.600", borderBottomWidth: 2 }} />
-            </HStack>
+            </Stack>
             <Image
               src={stats1}
               alt="A sample of a pie chart showing product make up, to be filled in with an interactive graph in the future."
@@ -1290,7 +1351,7 @@ export const ApplicationsEdit: React.FC<any> = (props) => {
                 {shadowSeason.market.name} ({shadowSeason.market.days[0]})
               </Text>
             </Box>
-            <HStack marginTop={4}>
+            <Stack direction={["column", "row"]} marginTop={4}>
               <Text
                 color={"gray.700"}
                 fontSize={"2xl"}
@@ -1301,12 +1362,12 @@ export const ApplicationsEdit: React.FC<any> = (props) => {
                 Market dates
               </Text>
               <Divider sx={{ borderColor: "gray.600", borderBottomWidth: 2 }} />
-            </HStack>
+            </Stack>
             <Text color={"gray.600"} marginTop={4} fontSize={"md"}>
               Select all the dates you would like to apply to{" "}
               {shadowSeason.market.name} this season
             </Text>
-            <Wrap spacing={8} marginY={8}>
+            <Stack direction={["column", "row"]} spacing={8} marginY={8}>
               <Checkbox
                 colorScheme={"green"}
                 onChange={updateSelectAll}
@@ -1351,7 +1412,7 @@ export const ApplicationsEdit: React.FC<any> = (props) => {
                 </Text>
                 <Text>Selected</Text>
               </HStack>
-            </Wrap>
+            </Stack>
             <HStack className="datepicker-wrap">
               <DatePicker
                 inline
@@ -1390,7 +1451,7 @@ export const ApplicationsEdit: React.FC<any> = (props) => {
                 <Radio value="popup">Pop-up</Radio>
               </HStack>
             </RadioGroup>
-            <HStack marginTop={4}>
+            <Stack direction={["column", "row"]} marginTop={4}>
               <Text
                 color={"gray.700"}
                 fontSize={"2xl"}
@@ -1401,7 +1462,7 @@ export const ApplicationsEdit: React.FC<any> = (props) => {
                 Products
               </Text>
               <Divider sx={{ borderColor: "gray.600", borderBottomWidth: 2 }} />
-            </HStack>
+            </Stack>
             <Text color={"gray.600"} marginTop={4} fontSize={"md"}>
               Select the products you would like to sell at{" "}
               {shadowSeason.market.name} this season
@@ -1424,7 +1485,7 @@ export const ApplicationsEdit: React.FC<any> = (props) => {
                 <Radio value="false">No</Radio>
               </Stack>
             </RadioGroup>
-            <HStack marginTop={4}>
+            <Stack direction={["column", "row"]} marginTop={4}>
               <Text
                 color={"gray.700"}
                 fontSize={"2xl"}
@@ -1435,7 +1496,7 @@ export const ApplicationsEdit: React.FC<any> = (props) => {
                 Staff
               </Text>
               <Divider sx={{ borderColor: "gray.600", borderBottomWidth: 2 }} />
-            </HStack>
+            </Stack>
             <Text color={"gray.600"} marginTop={4} fontSize={"md"}>
               Select anyone who will be staffing your booth at{" "}
               {shadowSeason.market.name} this season. You can add staff via your
@@ -1484,7 +1545,7 @@ export const ApplicationsEdit: React.FC<any> = (props) => {
               reviewed.
             </Text>
             <Center marginY={8}>
-              <HStack spacing={4}>
+              <Stack direction={["column", "row"]} marginTop={4} spacing={4}>
                 <Button
                   colorScheme="teal"
                   variant={"solid"}
@@ -1501,7 +1562,7 @@ export const ApplicationsEdit: React.FC<any> = (props) => {
                 >
                   Cancel
                 </Button>
-              </HStack>
+              </Stack>
             </Center>
           </Container>
         </Box>
@@ -1807,7 +1868,7 @@ export const ApplicationsEdit: React.FC<any> = (props) => {
             Applications will be reviewed until all spaces have been filled. You
             will be notified by email once your application has been reviewed.
           </Text>
-          <HStack marginTop={8} justify={"center"}>
+          <Stack direction={["column", "row"]} marginTop={8} justify={"center"}>
             <Button
               variant={"solid"}
               as={"a"}
@@ -1818,7 +1879,7 @@ export const ApplicationsEdit: React.FC<any> = (props) => {
             <Button as={"a"} href="/admin/collections/seasons">
               View my markets
             </Button>
-          </HStack>
+          </Stack>
         </AbsoluteCenter>
       </Container>
     );

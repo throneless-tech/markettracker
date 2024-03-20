@@ -29,8 +29,6 @@ export const SeasonCard: React.FC<any> = forwardRef<any, any>((props, ref) => {
   const history = useHistory();
   const { appId, isApplication, season, status } = props;
 
-  console.log(season);
-
   const viewSeason = (season) => {
     history.push({
       pathname: `/admin/collections/seasons/${season.id}`,
