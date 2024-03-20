@@ -70,6 +70,10 @@ const CustomSalesReportsEdit: React.FC<any> = () => {
   const [wicDisable, setWicDisable] = useState<boolean>(true); // enable/disable WIC
 
   // the form
+  const { value: locationToSubmit, setValue: setLocationToSubmit } = useField({
+    path: "location",
+  });
+
   const { value: seasonId, setValue: setSeasonId } = useField<"string">({
     path: "season",
   });
@@ -85,17 +89,6 @@ const CustomSalesReportsEdit: React.FC<any> = () => {
     path: "marketFee",
   });
 
-  const { value: pp, setValue: setPp } = useField<number>({
-    path: "producePlus",
-  });
-
-  const { value: wic, setValue: setWic } = useField<number>({
-    path: "wic",
-  });
-
-  const { value: sfmnp, setValue: setSfmnp } = useField<number>({
-    path: "sfmnp",
-  });
   // dropdown
   const handleSeasonChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setSeasonId(event.target.value);
@@ -114,7 +107,6 @@ const CustomSalesReportsEdit: React.FC<any> = () => {
       console.log("error: ", err);
     }
     history.push("/admin/collections/sales-reports");
-    console.log("get Data ->", getData());
   };
 
   const getSeasons = useCallback(async () => {
@@ -207,7 +199,7 @@ const CustomSalesReportsEdit: React.FC<any> = () => {
   }, [seasonId]);
 
   useEffect(() => {
-    // a create page won't have
+    // a 'create' page won't have
     // history.location.state
     if (history.location.state) {
       setIsEditView(true);
@@ -239,12 +231,11 @@ const CustomSalesReportsEdit: React.FC<any> = () => {
     // market location determines editability of some coupon forms
 
     // PRODUCE PLUS
-    if (location == "DC" && role !== "vendor") {
+    if (location === "DC" && role !== "vendor") {
       setPpDisable(false);
       setWicDisable(false);
       setSfmnpDisable(false);
     } else {
-      setPp(0);
       setPpDisable(true);
       setWicDisable(true);
       setSfmnpDisable(true);
@@ -254,30 +245,28 @@ const CustomSalesReportsEdit: React.FC<any> = () => {
     // only editable by vendor in VA or MD
     if (
       role == "admin" ||
-      (role == "vendor" && (location == "VA" || location == "MD"))
+      (role == "vendor" && (location === "VA" || location == "MD"))
     ) {
       setSfmnpDisable(false);
     } else {
-      setSfmnp(0);
       setSfmnpDisable(true);
     }
 
-    if (role == "admin" || (role == "vendor" && location == "MD")) {
+    // WIC
+    // only editable by vendor in MD, but admin can edit
+    if (
+      (role == "admin" && location !== "VA") ||
+      (role == "vendor" && location == "MD")
+    ) {
       setWicDisable(false);
     } else {
-      setWic(0);
-      setWicDisable(true);
-    }
-
-    if (location == "VA") {
-      setWic(0);
+      // unavailable in VA
       setWicDisable(true);
     }
   }, [location]);
 
   useEffect(() => {
     getSeasons();
-    console.log("USER.ROLE =>", user);
   }, []);
 
   useEffect(() => {
@@ -296,6 +285,7 @@ const CustomSalesReportsEdit: React.FC<any> = () => {
 
     if (selected && !history.location.state) {
       setLocation(selected ? selected.market.address.state : "");
+      setLocationToSubmit(selected ? selected.market.address.state : "");
     }
   }, [seasonId]);
 
@@ -611,7 +601,7 @@ const CustomSalesReportsEdit: React.FC<any> = () => {
                   <GridItem>
                     <NumberField
                       path="gWorld"
-                      label="GWorld coupon coupon sales (green)"
+                      label="GWorld coupon coupon sales"
                       min={0}
                       admin={{
                         description:
@@ -658,13 +648,48 @@ const CustomSalesReportsEdit: React.FC<any> = () => {
                     />
                   </GridItem>
                 </Grid>
+                <Container maxW="container.xl" marginTop={6} marginBottom={4}>
+                  <Text
+                    fontFamily="Zilla Slab"
+                    lineHeight="1"
+                    fontWeight="semibold"
+                    fontSize="24px"
+                    letterSpacing="0.03em"
+                    textTransform="capitalize"
+                    color="gray.600"
+                    width={200}
+                  >
+                    Credit
+                  </Text>
+                </Container>
+                <Grid templateColumns="repeat(5, 1fr)" gap={4}>
+                  <GridItem colSpan={5}>
+                    <NumberField
+                      path="credit"
+                      label="Credit amount"
+                      min={0}
+                      admin={{
+                        description: "Enter a credit for this vendor, if any",
+                        placeholder: "SNAP bonus sales",
+                      }}
+                    />
+                  </GridItem>
+                  <GridItem colSpan={2}>
+                    <TextField
+                      label="Describe the reason for this credit"
+                      path="creditDescription"
+                    />
+                  </GridItem>
+                </Grid>
               </>
             ) : null}
-            <Center marginTop={6}>
-              <Button onClick={submitForm}>
-                Confirm and Submit Sales Report
-              </Button>
-            </Center>
+            {
+              <Center marginTop={6}>
+                <Button onClick={submitForm}>
+                  Confirm and Submit Sales Report
+                </Button>
+              </Center>
+            }
           </FormControl>
         </Container>
       </Container>
