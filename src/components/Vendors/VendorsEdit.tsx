@@ -20,6 +20,7 @@ import {
   Heading,
   HStack,
   Input,
+  Link,
   Radio,
   RadioGroup,
   Select,
@@ -72,6 +73,11 @@ export const VendorsEdit: React.FC<any> = ({ data: vendor }) => {
   const [contacts, setContacts] = useState([]);
   const [vendorUser, setVendorUser] = useState<User>();
   const [primaryContact, setPrimaryContact] = useState<PrimaryContact>(null);
+
+  const formatDate = (dateString) => {
+    const d = new Date(dateString);
+    return d.toLocaleDateString("en-US");
+  };
 
   async function getVendorUser(userId) {
     const response = await fetch(`/api/users/${userId}`);
@@ -1281,9 +1287,33 @@ export const VendorsEdit: React.FC<any> = ({ data: vendor }) => {
                         </h2>
                         <AccordionPanel>
                           {vendor.licenses && vendor.licenses.length ? (
-                            <></>
+                            vendor.licenses.map((license) => (
+                              <Box key={license.id} marginBottom={8}>
+                                {typeof license.document === "object" ? (
+                                  <Link
+                                    href={`/documents/${license.document.filename}`}
+                                    color="teal.600"
+                                    fontSize={20}
+                                  >
+                                    {license.document.filename}
+                                  </Link>
+                                ) : (
+                                  ""
+                                )}
+                                <Text>
+                                  {license.type == "license"
+                                    ? "Business license"
+                                    : "Business insurance document"}{" "}
+                                  uploaded on {formatDate(license.createdAt)}.
+                                </Text>
+                              </Box>
+                            ))
                           ) : (
-                            <Text>No uploaded documents to display.</Text>
+                            <>
+                              <Text fontSize={24} marginTop={8}>
+                                No documents found.
+                              </Text>
+                            </>
                           )}
                         </AccordionPanel>
                       </>
