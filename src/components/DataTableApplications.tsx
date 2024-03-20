@@ -85,7 +85,7 @@ const onChange = async (newStatus: string, id: string) => {
 const defaultColumn: Partial<ColumnDef<Application>> = {
   cell: ({ getValue, row: { index, original }, column: { id }, table }) => {
     const initialValue = getValue();
-    const appId: any = original.id;
+    const appId: any = original ? original.id : "cell";
     // We need to keep and update the state of the cell normally
     const [value, setValue] = React.useState(initialValue);
 
@@ -181,7 +181,6 @@ export function DataTable<Data extends object>({
   // console.log("global filter:", globalFilter);
 
   React.useEffect(() => {
-    console.log(isVisible);
     if (isVisible) {
       fetchMore(tableContainerRef.current);
     }

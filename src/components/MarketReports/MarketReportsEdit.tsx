@@ -232,9 +232,13 @@ export const MarketReportsEdit: React.FC<any> = () => {
             }
           });
         }
-        todaysVendors = todaysVendors.filter((vendor) => vendor !== undefined);
-        todaysVendors = todaysVendors.sort((a, b) => a.name > b.name);
-        setVendors(todaysVendors);
+        if (todaysVendors) {
+          todaysVendors = todaysVendors.filter(
+            (vendor) => vendor !== undefined,
+          );
+          todaysVendors = todaysVendors.sort((a, b) => a.name > b.name);
+          setVendors(todaysVendors);
+        }
       } catch (err) {
         console.error(err);
       }
@@ -284,14 +288,15 @@ export const MarketReportsEdit: React.FC<any> = () => {
             }}
           >
             <Box background="blue.600" borderRadius="8px" padding={6}>
-              <Flex paddingBottom={6}>
-                <HStack>
+              <Flex direction={["column-reverse", "row"]} paddingBottom={6}>
+                <Stack direction={["column", "row"]}>
                   <Text
                     as={"span"}
                     color={"gray.50"}
                     fontFamily={"Zilla Slab"}
                     fontSize="3xl"
                     fontWeight={700}
+                    lineHeight={"1.2"}
                     textStyle="bodyMain"
                     textTransform={"uppercase"}
                   >
@@ -306,23 +311,22 @@ export const MarketReportsEdit: React.FC<any> = () => {
                   >
                     on {formatDate(date)}
                   </Text>
-                </HStack>
+                </Stack>
                 <Spacer />
-                <HStack>
-                  <Text
-                    color={"gray.50"}
-                    fontSize="2xl"
-                    textAlign={"right"}
-                    textStyle="bodyMain"
-                    textTransform={"uppercase"}
-                  >
-                    Market report
-                  </Text>
-                </HStack>
+                <Text
+                  color={"gray.50"}
+                  fontSize="2xl"
+                  marginBottom={[4, 0]}
+                  textAlign={"right"}
+                  textStyle="bodyMain"
+                  textTransform={"uppercase"}
+                >
+                  Market report
+                </Text>
               </Flex>
               <Divider color="gray.50" borderBottomWidth={2} opacity={1} />
               <Flex marginTop={4}>
-                <HStack>
+                <Stack direction={["column", "row"]}>
                   {season.marketTime.startTime ? (
                     <Text
                       as={"span"}
@@ -352,6 +356,7 @@ export const MarketReportsEdit: React.FC<any> = () => {
                     as={"span"}
                     color={"gray.50"}
                     fontSize="2xl"
+                    lineHeight={"1.2"}
                   >
                     {typeof season.market == "object" && season.market.address
                       ? season.market.address.street
@@ -369,7 +374,7 @@ export const MarketReportsEdit: React.FC<any> = () => {
                       ? season.market.address.zipcode
                       : ""}
                   </Text>
-                </HStack>
+                </Stack>
                 <Spacer />
                 {typeof season.market == "object" &&
                 typeof season.market.contact == "object" &&
@@ -411,7 +416,7 @@ export const MarketReportsEdit: React.FC<any> = () => {
               Submit market report
             </Button>
           </Box>
-          <Tabs variant="enclosed">
+          <Tabs variant="enclosed" marginTop={[8, 2]}>
             <TabList>
               <Tab>Vendor attendance</Tab>
             </TabList>
@@ -530,14 +535,15 @@ export const MarketReportsEdit: React.FC<any> = () => {
             }}
           >
             <Box background="blue.600" borderRadius="8px" padding={6}>
-              <Flex paddingBottom={6}>
-                <HStack>
+              <Flex direction={["column-reverse", "row"]} paddingBottom={6}>
+                <Stack direction={["column", "row"]}>
                   <Text
                     as={"span"}
                     color={"gray.50"}
                     fontFamily={"Zilla Slab"}
                     fontSize="3xl"
                     fontWeight={700}
+                    lineHeight={"1.2"}
                     textStyle="bodyMain"
                     textTransform={"uppercase"}
                   >
@@ -552,12 +558,13 @@ export const MarketReportsEdit: React.FC<any> = () => {
                   >
                     on {shadowDate}
                   </Text>
-                </HStack>
+                </Stack>
                 <Spacer />
                 <HStack>
                   <Text
                     color={"gray.50"}
                     fontSize="2xl"
+                    marginBottom={[4, 0]}
                     textAlign={"right"}
                     textStyle="bodyMain"
                     textTransform={"uppercase"}
@@ -568,7 +575,7 @@ export const MarketReportsEdit: React.FC<any> = () => {
               </Flex>
               <Divider color="gray.50" borderBottomWidth={2} opacity={1} />
               <Flex marginTop={4}>
-                <HStack>
+                <Stack direction={["column", "row"]}>
                   {shadowSeason.marketTime &&
                   shadowSeason.marketTime.startTime ? (
                     <Text
@@ -599,6 +606,7 @@ export const MarketReportsEdit: React.FC<any> = () => {
                     as={"span"}
                     color={"gray.50"}
                     fontSize="2xl"
+                    lineHeight={"1.2"}
                   >
                     {shadowSeason.market.address.street}
                     {", "}
@@ -608,7 +616,7 @@ export const MarketReportsEdit: React.FC<any> = () => {
                     {", "}
                     {shadowSeason.market.address.zipcode}
                   </Text>
-                </HStack>
+                </Stack>
                 <Spacer />
                 {typeof shadowSeason.market == "object" &&
                 typeof shadowSeason.market.contact == "object" &&
@@ -650,7 +658,7 @@ export const MarketReportsEdit: React.FC<any> = () => {
               Submit market report
             </Button>
           </Box>
-          <Tabs variant="enclosed">
+          <Tabs variant="enclosed" marginTop={[8, 2]}>
             <TabList>
               <Tab>Vendor attendance</Tab>
             </TabList>

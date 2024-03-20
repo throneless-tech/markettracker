@@ -682,7 +682,7 @@ export const MarketsEdit: React.FC<any> = (props) => {
                                     onChange={(newValue) => setDays([newValue])}
                                     value={days[0]}
                                   >
-                                    <HStack>
+                                    <Wrap wrap="wrap">
                                       <Radio colorScheme="green" value="monday">
                                         Monday
                                       </Radio>
@@ -716,7 +716,7 @@ export const MarketsEdit: React.FC<any> = (props) => {
                                       <Radio colorScheme="green" value="sunday">
                                         Sunday
                                       </Radio>
-                                    </HStack>
+                                    </Wrap>
                                   </RadioGroup>
                                 </FormControl>
                                 <FormControl marginTop={4}>

@@ -326,14 +326,14 @@ export const SeasonsEdit: React.FC<any> = (props) => {
               </>
             )}
             <Container maxW="container.xl">
-              <Flex>
+              <Flex direction={["column", "row"]} marginTop={8}>
                 <Heading as="h1" color={"gray.700"} textTransform={"uppercase"}>
                   {name}
                 </Heading>
                 {user.role == "vendor" ? null : (
                   <>
                     <Spacer />
-                    <HStack spacing={4}>
+                    <Stack direction={["column", "row"]} spacing={4}>
                       <Button
                         as="a"
                         onClick={() =>
@@ -359,7 +359,7 @@ export const SeasonsEdit: React.FC<any> = (props) => {
                       >
                         Create a new season
                       </Button>
-                    </HStack>
+                    </Stack>
                   </>
                 )}
               </Flex>
@@ -374,14 +374,23 @@ export const SeasonsEdit: React.FC<any> = (props) => {
                 }}
               >
                 <Box background="green.600" padding={6}>
-                  <Flex borderBottom={"2px solid #F6F5F4"} paddingBottom={6}>
-                    <HStack>
+                  <Flex
+                    borderBottom={"2px solid #F6F5F4"}
+                    direction={["column-reverse", "row"]}
+                    paddingBottom={6}
+                  >
+                    <Stack
+                      direction={["column", "row"]}
+                      marginTop={[1, 4]}
+                      spacing={[4, 1]}
+                    >
                       <Text
                         as={"span"}
                         color={"gray.50"}
                         fontFamily={"Zilla Slab"}
                         fontSize="3xl"
                         fontWeight={700}
+                        lineHeight={"1.2"}
                         textStyle="bodyMain"
                         textTransform={"uppercase"}
                       >
@@ -391,6 +400,7 @@ export const SeasonsEdit: React.FC<any> = (props) => {
                         as={"span"}
                         color={"gray.50"}
                         fontSize="2xl"
+                        lineHeight={"1.2"}
                         textStyle="bodyMain"
                         textTransform={"uppercase"}
                       >
@@ -405,7 +415,7 @@ export const SeasonsEdit: React.FC<any> = (props) => {
                           </>
                         )}
                       </Text>
-                    </HStack>
+                    </Stack>
                     {isAccepting ? (
                       <>
                         <Spacer />
@@ -417,7 +427,7 @@ export const SeasonsEdit: React.FC<any> = (props) => {
                             textAlign={"right"}
                             textStyle="bodyMain"
                             textTransform={"uppercase"}
-                            width={28}
+                            width={["100%", 28]}
                           >
                             Accepting applications
                           </Text>
@@ -427,7 +437,7 @@ export const SeasonsEdit: React.FC<any> = (props) => {
                     ) : null}
                   </Flex>
                   <Flex marginTop={4}>
-                    <HStack>
+                    <Stack direction={["column", "row"]}>
                       {startTime ? (
                         <Text
                           as={"span"}
@@ -461,7 +471,7 @@ export const SeasonsEdit: React.FC<any> = (props) => {
                         {", "}
                         {market.address.zipcode}
                       </Text>
-                    </HStack>
+                    </Stack>
                     <Spacer />
                     {data.market.contact && data.market.contact.name ? (
                       <HStack>
@@ -555,7 +565,7 @@ export const SeasonsEdit: React.FC<any> = (props) => {
                           as="h2"
                           color={"gray.700"}
                           textTransform={"uppercase"}
-                          marginBottom={2}
+                          marginY={2}
                         >
                           Edit market information
                         </Heading>
@@ -584,7 +594,7 @@ export const SeasonsEdit: React.FC<any> = (props) => {
                             borderBottomWidth: 2,
                           }}
                         />
-                        <Container>
+                        <Box marginTop={4}>
                           <FormControl fontSize={"small"}>
                             <FormLabel>Season name (required)</FormLabel>
                             <Input
@@ -595,6 +605,7 @@ export const SeasonsEdit: React.FC<any> = (props) => {
                           </FormControl>
                           <Flex
                             align="center"
+                            direction={["column", "row"]}
                             justify="space-between"
                             marginTop={8}
                           >
@@ -612,7 +623,7 @@ export const SeasonsEdit: React.FC<any> = (props) => {
                               }
                               value={isAccepting.toString()}
                             >
-                              <HStack marginRight={2}>
+                              <HStack marginBottom={[4, 0]} marginRight={2}>
                                 <Radio colorScheme="green" value="true">
                                   Yes
                                 </Radio>
@@ -632,7 +643,7 @@ export const SeasonsEdit: React.FC<any> = (props) => {
                             justify="space-between"
                             marginTop={8}
                           >
-                            <HStack marginTop={4}>
+                            <Stack direction={["column", "row"]} marginTop={4}>
                               <Text
                                 color={"gray.700"}
                                 fontSize={"2xl"}
@@ -648,7 +659,7 @@ export const SeasonsEdit: React.FC<any> = (props) => {
                                   borderBottomWidth: 2,
                                 }}
                               />
-                            </HStack>
+                            </Stack>
                             <Text
                               color={"gray.600"}
                               marginTop={4}
@@ -679,6 +690,7 @@ export const SeasonsEdit: React.FC<any> = (props) => {
                           </Stack>
                           <Flex
                             align="center"
+                            direction={["column", "row"]}
                             justify="space-between"
                             marginTop={8}
                           >
@@ -686,7 +698,7 @@ export const SeasonsEdit: React.FC<any> = (props) => {
                               as="h2"
                               textStyle="h4"
                               size="md"
-                              width={"70%"}
+                              width={["100%", "70%"]}
                             >
                               Market time & dates
                             </Heading>
@@ -696,10 +708,19 @@ export const SeasonsEdit: React.FC<any> = (props) => {
                               opacity={1}
                             />
                           </Flex>
-                          <Text textStyle="bodyMain" as="div" color="gray.500">
+                          <Text
+                            textStyle="bodyMain"
+                            as="div"
+                            color="gray.500"
+                            marginTop={[4, 0]}
+                          >
                             Select a start and end date for the season
                           </Text>
-                          <HStack marginTop={4} spacing={4}>
+                          <Stack
+                            direction={["column", "row"]}
+                            marginTop={4}
+                            spacing={4}
+                          >
                             <Stack>
                               <Text
                                 textStyle="bodyMain"
@@ -736,7 +757,7 @@ export const SeasonsEdit: React.FC<any> = (props) => {
                                 }
                               />
                             </Stack>
-                          </HStack>
+                          </Stack>
                           <Text
                             textStyle="bodyMain"
                             as="div"
@@ -745,7 +766,11 @@ export const SeasonsEdit: React.FC<any> = (props) => {
                           >
                             Select a start and end time for the season
                           </Text>
-                          <HStack spacing={4} marginTop={2}>
+                          <Stack
+                            direction={["column", "row"]}
+                            spacing={4}
+                            marginTop={2}
+                          >
                             <Stack>
                               <Text
                                 textStyle="bodyMain"
@@ -782,7 +807,7 @@ export const SeasonsEdit: React.FC<any> = (props) => {
                                 }}
                               />
                             </Stack>
-                          </HStack>
+                          </Stack>
                           <Flex
                             align="center"
                             justify="space-between"
@@ -803,10 +828,10 @@ export const SeasonsEdit: React.FC<any> = (props) => {
                             />
                           </Flex>
                           <ProductsField path="productGaps" useObjects={true} />
-                        </Container>
+                        </Box>
                       </ModalBody>
                       <ModalFooter>
-                        <HStack spacing={4}>
+                        <Stack direction={["column", "row"]} spacing={4}>
                           <Button
                             colorScheme="teal"
                             variant={"solid"}
@@ -821,13 +846,13 @@ export const SeasonsEdit: React.FC<any> = (props) => {
                           >
                             Close
                           </Button>
-                        </HStack>
+                        </Stack>
                       </ModalFooter>
                     </ModalContent>
                   </Modal>
                 </>
               )}
-              <HStack>
+              <Stack direction={["column", "row"]} marginTop={4}>
                 <Text
                   color={"gray.700"}
                   fontSize={"2xl"}
@@ -849,7 +874,7 @@ export const SeasonsEdit: React.FC<any> = (props) => {
                 <Divider
                   sx={{ borderColor: "gray.600", borderBottomWidth: 2 }}
                 />
-              </HStack>
+              </Stack>
               <Text color={"gray.600"} marginTop={4} fontSize={"md"}>
                 {data.size == "flagship"
                   ? "Daily sales for the entire market are upwards of $150,000. This market can support upwards of 20 produce vendors, 14 prepared food vendors, 9 baked goods vendors, 6 alcohol vendors, 5 dairy vendors, and 2 to 4 vendors from each additional category."
@@ -872,20 +897,20 @@ export const SeasonsEdit: React.FC<any> = (props) => {
                   (avg)
                 </Text>
               </HStack>
-              <HStack marginTop={4}>
+              <Stack direction={["column", "row"]} marginTop={4}>
                 <Text
                   color={"gray.700"}
                   fontSize={"2xl"}
                   fontWeight={700}
                   textTransform={"uppercase"}
-                  width={"700px"}
+                  width={["100%", "700px"]}
                 >
                   Operators scheduled for this market
                 </Text>
                 <Divider
                   sx={{ borderColor: "gray.600", borderBottomWidth: 2 }}
                 />
-              </HStack>
+              </Stack>
               <HStack marginTop={2}>
                 {users.reduce((acc, user) => {
                   if (operators && operators.includes(user.id)) {
@@ -901,20 +926,20 @@ export const SeasonsEdit: React.FC<any> = (props) => {
                   return acc;
                 }, [])}
               </HStack>
-              <HStack marginTop={4}>
+              <Stack direction={["column", "row"]} marginTop={4}>
                 <Text
                   color={"gray.700"}
                   fontSize={"2xl"}
                   fontWeight={700}
                   textTransform={"uppercase"}
-                  width={"720px"}
+                  width={["100%", "720px"]}
                 >
                   Vendors scheduled for this market
                 </Text>
                 <Divider
                   sx={{ borderColor: "gray.600", borderBottomWidth: 2 }}
                 />
-              </HStack>
+              </Stack>
               <HStack marginTop={2} wrap={"wrap"}>
                 {vendors?.length &&
                   vendors.map((vendor) => (
@@ -926,7 +951,7 @@ export const SeasonsEdit: React.FC<any> = (props) => {
                   ))}
                 {/* <Tag bg={"gray.50"}>Vendor 1</Tag> */}
               </HStack>
-              <HStack marginTop={4}>
+              <Stack direction={["column", "row"]} marginTop={4}>
                 <Text
                   color={"gray.700"}
                   fontSize={"2xl"}
@@ -939,7 +964,7 @@ export const SeasonsEdit: React.FC<any> = (props) => {
                 <Divider
                   sx={{ borderColor: "gray.600", borderBottomWidth: 2 }}
                 />
-              </HStack>
+              </Stack>
               <Image
                 src={stats1}
                 alt="A sample of a pie chart showing product make up, to be filled in with an interactive graph in the future."
@@ -976,6 +1001,7 @@ export const SeasonsEdit: React.FC<any> = (props) => {
             </Container>
           </Box>
         </Tabs>
+        <FooterAdmin />
       </Box>
     );
   }

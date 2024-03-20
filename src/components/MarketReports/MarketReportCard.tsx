@@ -89,13 +89,10 @@ export const MarketReportCard: React.FC<any> = (props) => {
 
     // show correct date for market reports if it is before market begins
     if (today < date) {
-      console.log(date);
       date.setDate(date.getDate() + ((dayNum + (7 - date.getDay())) % 7));
-
       return date.toLocaleDateString("en-US", options);
     } else {
       today.setDate(today.getDate() + ((dayNum - (7 + today.getDay())) % 7));
-
       return today.toLocaleDateString("en-US", options);
     }
   };
