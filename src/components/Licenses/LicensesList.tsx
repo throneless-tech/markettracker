@@ -47,9 +47,6 @@ const LicensesList: React.FC<any> = () => {
     const response = await fetch(`/api/licenses${stringQuery}`);
     const json = await response.json();
     const licenses = json ? json.docs : [];
-
-    console.log(licenses);
-
     setLicenses(licenses);
   };
 

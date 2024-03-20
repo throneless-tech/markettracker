@@ -42,9 +42,10 @@ import {
 } from "@chakra-ui/react";
 
 // components
+import { ContactsModal } from "../Contacts/ContactsModal";
+import { FooterAdmin } from "../FooterAdmin";
 import { NumberField } from "../fields/NumberField";
 import { ProductsField } from "../fields/ProductsField";
-import { ContactsModal } from "../Contacts/ContactsModal";
 
 // utils
 import formatTime from "../../utils/formatTime.js";
@@ -57,9 +58,6 @@ import stats1 from "../../assets/images/FF-sample-stats-1.jpg";
 import stats2 from "../../assets/images/FF-sample-stats-2.jpg";
 import stats3 from "../../assets/images/FF-sample-stats-3.jpg";
 import stats4 from "../../assets/images/FF-sample-stats-4.jpg";
-import { application } from "express";
-import { Products } from "../../collections/Products";
-import { FooterAdmin } from "../FooterAdmin";
 
 const dayNames = [
   "sunday",
@@ -677,7 +675,8 @@ export const ApplicationsEdit: React.FC<any> = (props) => {
                 {thisSeason.market.name} ({thisSeason.market.days[0]})
               </Text>
             </Box>
-            {status === "approved" || status === "approvedWithEdits" ? (
+            {user.role == "vendor" &&
+            (status === "approved" || status === "approvedWithEdits") ? (
               <>
                 <Stack direction={["column", "row"]} marginTop={4}>
                   <Text

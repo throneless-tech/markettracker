@@ -1,5 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
+import qs from "qs";
 
 // Payload imports
 import { useField, useForm } from "payload/components/forms";
@@ -63,7 +64,6 @@ type PrimaryContact = {
 };
 
 export const VendorsEdit: React.FC<any> = ({ data: vendor }) => {
-  // console.log("***vendor:", vendor);
   const { submit } = useForm();
   const { value: notes, setValue: setNotes } = useField<string>({
     path: "notes",
@@ -71,6 +71,7 @@ export const VendorsEdit: React.FC<any> = ({ data: vendor }) => {
   const [standing, setStanding] = useState<string>();
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
   const [contacts, setContacts] = useState([]);
+  const [licenses, setLicenses] = useState([]);
   const [vendorUser, setVendorUser] = useState<User>();
   const [primaryContact, setPrimaryContact] = useState<PrimaryContact>(null);
 
@@ -82,8 +83,6 @@ export const VendorsEdit: React.FC<any> = ({ data: vendor }) => {
   async function getVendorUser(userId) {
     const response = await fetch(`/api/users/${userId}`);
     const user = await response.json();
-    console.log(user);
-
     setVendorUser(user);
   }
 
@@ -99,7 +98,28 @@ export const VendorsEdit: React.FC<any> = ({ data: vendor }) => {
     }
 
     if (vendor && vendor.user) {
+      const query = {
+        owner: {
+          equals: vendor.id,
+        },
+      };
+
+      const getVendorLicenses = async () => {
+        const stringifiedQuery = qs.stringify(
+          {
+            where: query, // ensure that `qs` adds the `where` property, too!
+          },
+          { addQueryPrefix: true },
+        );
+
+        const response = await fetch(`/api/licenses${stringifiedQuery}`);
+        let data = await response.json();
+        data = data.docs;
+        setLicenses(data);
+      };
+
       getVendorUser(vendor.user);
+      getVendorLicenses();
     }
   }, [vendor]);
 
@@ -119,6 +139,8 @@ export const VendorsEdit: React.FC<any> = ({ data: vendor }) => {
       setPrimaryContact(primary);
     }
   }, [contacts, vendorUser]);
+
+  useEffect(() => {}, [licenses]);
 
   const onChange = async (standing: string) => {
     try {
@@ -1286,8 +1308,8 @@ export const VendorsEdit: React.FC<any> = ({ data: vendor }) => {
                           </AccordionButton>
                         </h2>
                         <AccordionPanel>
-                          {vendor.licenses && vendor.licenses.length ? (
-                            vendor.licenses.map((license) => (
+                          {licenses && licenses.length ? (
+                            licenses.map((license) => (
                               <Box key={license.id} marginBottom={8}>
                                 {typeof license.document === "object" ? (
                                   <Link
@@ -1310,9 +1332,7 @@ export const VendorsEdit: React.FC<any> = ({ data: vendor }) => {
                             ))
                           ) : (
                             <>
-                              <Text fontSize={24} marginTop={8}>
-                                No documents found.
-                              </Text>
+                              <Text fontSize={18}>No documents found.</Text>
                             </>
                           )}
                         </AccordionPanel>
