@@ -3,6 +3,7 @@ import { useHistory } from "react-router-dom";
 import { useAuth } from "payload/components/utilities";
 import { useInView } from "react-intersection-observer";
 import qs from "qs";
+import { Vendor } from "payload/generated-types";
 
 // Chakra imports
 import {
@@ -75,8 +76,13 @@ const InvoicesList: React.FC<any> = (props) => {
 
   const getInvoices = async (clear: boolean) => {
     const queries = [];
+
     if (monthValue !== "All") {
       queries.push({ marketMonth: { equals: monthValue.toLowerCase() } });
+    }
+
+    if (user.role === "vendor") {
+      queries.push({ vendor: { equals: (user.vendor as Vendor).id } });
     }
 
     let stringifiedQuery: string;
@@ -92,7 +98,7 @@ const InvoicesList: React.FC<any> = (props) => {
       stringifiedQuery = qs.stringify(
         {
           where: {
-            and: queries[0],
+            and: queries,
           },
           page,
         },
@@ -106,6 +112,8 @@ const InvoicesList: React.FC<any> = (props) => {
         { addQueryPrefix: true },
       );
     }
+
+    console.log("STRINGIFIED QUERY->", stringifiedQuery);
     const response = await fetch(
       `/api/invoices${stringifiedQuery ? stringifiedQuery : ""}`,
     );
