@@ -19,6 +19,7 @@ import { Season, SalesReport, Vendor } from "payload/generated-types";
 
 // Chakra imports
 import {
+  Center,
   Container,
   Box,
   Divider,
@@ -136,6 +137,12 @@ const CustomSalesReportsList: React.FC<any> = () => {
     await handleDelete(report);
   };
 
+  const loadMore = () => {
+    console.log("hasNextPage?  ", hasNextPage);
+    console.log("page? ", page);
+    getSalesReports(page + 1);
+  };
+
   const getSalesReports = useCallback(
     async (nextPage: number) => {
       const queries = [];
@@ -204,12 +211,16 @@ const CustomSalesReportsList: React.FC<any> = () => {
         );
         const json = await response.json();
         const newReports = json ? json.docs : [];
+        console.log("json =>", json);
+
         if (nextPage === 1) {
-          console.log("json =>", json);
-          console.log("clear is true =>", newReports);
-          setHasNextPage(json.hasNextPage);
+          console.log("nextPage in the function,", nextPage);
+          setPage(json.page);
+          console.log("reports???", reports);
           setReports(newReports);
+          setHasNextPage(json.hasNextPage);
         } else {
+          setPage(json.page);
           setHasNextPage(json.hasNextPage);
           setReports(reports.concat(newReports));
         }
@@ -238,22 +249,22 @@ const CustomSalesReportsList: React.FC<any> = () => {
   //   role == "vendor" ? getVendorSalesReports() : getSalesReports();
   // }, [page]);
 
-  useEffect(() => {
-    if (hasNextPage) {
-      getSalesReports(page);
-    }
-  }, [page]);
+  // useEffect(() => {
+  //   if (hasNextPage) {
+  //     getSalesReports(page);
+  //   }
+  // }, [page]);
 
   useEffect(() => {
+    console.log("is this happening?");
     getSalesReports(1);
-    setPage(1);
   }, [marketValue, monthValue, vendorValue]);
 
-  useEffect(() => {
-    if (inView) {
-      setPage((prevState) => prevState + 1);
-    }
-  }, [inView]);
+  // useEffect(() => {
+  //   if (inView) {
+  //     setPage((prevState) => prevState + 1);
+  //   }
+  // }, [inView]);
 
   useEffect(() => {
     const getSeasons = async () => {
@@ -528,10 +539,7 @@ const CustomSalesReportsList: React.FC<any> = () => {
                       gWorld,
                     } = report;
                     return (
-                      <Tr
-                        key={report.id}
-                        ref={index === reports.length - 1 ? ref : null}
-                      >
+                      <Tr key={report.id}>
                         <Td>{typeof season === "object" ? season.name : ""}</Td>
                         <Td>
                           {typeof report.vendor == "object"
@@ -589,6 +597,11 @@ const CustomSalesReportsList: React.FC<any> = () => {
             </Tbody>
           </Table>
         </TableContainer>
+        {hasNextPage ? (
+          <Center marginTop={6}>
+            <Button onClick={loadMore}>Load more</Button>
+          </Center>
+        ) : null}
       </Container>
       <FooterAdmin />
     </>
