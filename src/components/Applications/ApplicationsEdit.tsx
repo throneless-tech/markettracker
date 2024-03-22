@@ -88,8 +88,8 @@ export const ApplicationsEdit: React.FC<any> = (props) => {
   const { getData, submit, addFieldRow, removeFieldRow } = useForm();
   const { id } = useDocumentInfo();
   const { isOpen, onClose } = useDisclosure();
-  const [startDate, setStartDate] = useState(new Date());
-  const [endDate, setEndDate] = useState(new Date());
+  const [startDate, setStartDate] = useState(null);
+  const [endDate, setEndDate] = useState(null);
   const [numMonths, setNumMonths] = useState(1);
   const [marketDates, setMarketDates] = useState([]);
   const [selectAllDates, setSelectAllDates] = useState(false);
@@ -184,6 +184,8 @@ export const ApplicationsEdit: React.FC<any> = (props) => {
 
   useEffect(() => {
     if (selectAllDates) {
+      console.log("here...");
+
       setDates(
         marketDates.map((date) => {
           return { date: date.toISOString() };
@@ -393,8 +395,8 @@ export const ApplicationsEdit: React.FC<any> = (props) => {
         setThisSeason(seasonData);
         const firstDate = new Date(seasonData.marketDates.startDate);
         const lastDate = new Date(seasonData.marketDates.endDate);
-        setStartDate(firstDate);
-        setEndDate(lastDate);
+        setStartDate(new Date(seasonData.marketDates.startDate));
+        setEndDate(new Date(seasonData.marketDates.endDate));
 
         let calLength = monthDiff(firstDate, lastDate);
         setNumMonths(calLength);
@@ -406,6 +408,7 @@ export const ApplicationsEdit: React.FC<any> = (props) => {
             days.push(new Date(d));
           }
         }
+
         setMarketDates(days);
       };
 
@@ -742,6 +745,7 @@ export const ApplicationsEdit: React.FC<any> = (props) => {
                 <HStack className="datepicker-wrap">
                   <DatePicker
                     inline
+                    showPreviousMonths={startDate < new Date() ? true : false}
                     dayClassName={(date) => {
                       let dateFound = null;
                       if (dates) {
@@ -907,6 +911,7 @@ export const ApplicationsEdit: React.FC<any> = (props) => {
                 >
                   <DatePicker
                     inline
+                    showPreviousMonths={startDate < new Date() ? true : false}
                     dayClassName={(date) => {
                       let dateFound = null;
                       if (dates) {
