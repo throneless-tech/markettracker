@@ -74,10 +74,9 @@ const InvoicesList: React.FC<any> = (props) => {
     });
   };
 
-  const getInvoices = async (clear: boolean) => {
+  const getInvoices = async (nextPage: number) => {
     const queries = [];
-
-    if (monthValue !== "All") {
+    if (monthValue.toLowerCase() !== "all") {
       queries.push({ marketMonth: { equals: monthValue.toLowerCase() } });
     }
 
@@ -90,7 +89,7 @@ const InvoicesList: React.FC<any> = (props) => {
       stringifiedQuery = qs.stringify(
         {
           where: queries[0],
-          page,
+          page: nextPage,
         },
         { addQueryPrefix: true },
       );
@@ -100,7 +99,7 @@ const InvoicesList: React.FC<any> = (props) => {
           where: {
             and: queries,
           },
-          page,
+          page: nextPage,
         },
         { addQueryPrefix: true },
       );
@@ -119,22 +118,29 @@ const InvoicesList: React.FC<any> = (props) => {
     );
     const json = await response.json();
     const newInvoices = json ? json.docs : [];
-    if (clear) {
-      setPage(1);
+    if (nextPage === 1) {
       setInvoices(newInvoices);
     } else {
       setInvoices(invoices.concat(newInvoices));
     }
   };
 
+  // trigger to generate invoices
+  const generateInvoices = async () => {
+    const response = await fetch("/api/invoices/generate");
+    const json = await response.json();
+    setInvoices(json.invoices);
+  };
+
   useEffect(() => {
-    getInvoices(false);
+    getInvoices(page);
     console.log("user->", user);
     console.log("***invoices", invoices);
   }, [page]);
 
   useEffect(() => {
-    getInvoices(true);
+    getInvoices(1);
+    setPage(1);
     console.log("user->", user);
     console.log("***invoices", invoices);
   }, [monthValue]);
@@ -155,7 +161,7 @@ const InvoicesList: React.FC<any> = (props) => {
               {user.role == "vendor" ? "Invoices" : "Vendors Ready to Invoice"}
             </Heading>
           </Box>
-          {/* {user.role == "vendor" ? (
+          {user.role == "vendor" ? (
             <>
               <Spacer />
               <HStack flexGrow={1} spacing={4} justify={"flex-end"}>
@@ -167,7 +173,19 @@ const InvoicesList: React.FC<any> = (props) => {
                 </Button>
               </HStack>
             </>
-          ) : null} */}
+          ) : (
+            <>
+              <Spacer />
+              <HStack flexGrow={1} spacing={4} justify={"flex-end"}>
+                <Button onClick={() => generateInvoices()}>
+                  Generate invoices
+                </Button>
+                <Button as="a" href="/api/invoices/export">
+                  Download invoice data
+                </Button>
+              </HStack>
+            </>
+          )}
         </Flex>
         <Divider color="gray.900" borderBottomWidth={2} opacity={1} />
         <Grid templateColumns="repeat(2, 5fr)" gap={4} marginTop={10}>
@@ -247,7 +265,8 @@ const InvoicesList: React.FC<any> = (props) => {
         </Grid>
         <TableContainer marginTop={8}>
           <Table
-            variant="simple"
+            variant="striped"
+            colorScheme={"green"}
             sx={{
               border: "1px solid",
               borderColor: "gray.100",

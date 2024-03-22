@@ -187,7 +187,7 @@ export const ApplicationsList: React.FC<any> = () => {
         cell: (info) => {
           const value: any = info.getValue();
           if (value) {
-            return <Tag>{value}</Tag>;
+            return <Tag sx={{ maxHeight: 30 }}>{value}</Tag>;
           }
         },
       },
@@ -200,7 +200,7 @@ export const ApplicationsList: React.FC<any> = () => {
             <Wrap>
               {gapsMet.map((gap: Product) => (
                 <WrapItem key={gap.id}>
-                  <Tag marginRight={1} key={gap.id}>
+                  <Tag marginRight={1} paddingY={1} key={gap.id}>
                     {gap.product}
                   </Tag>
                 </WrapItem>
@@ -280,7 +280,7 @@ export const ApplicationsList: React.FC<any> = () => {
         cell: (standingCell) => {
           const standing: any = standingCell.getValue();
           return (
-            <Tag textTransform="capitalize">
+            <Tag sx={{ maxHeight: 30 }} textTransform="capitalize">
               {standing == "underReview"
                 ? "Under review"
                 : standing == "approvedWithEdits"
@@ -837,7 +837,7 @@ export const ApplicationsList: React.FC<any> = () => {
             </Box>
             <Box
               sx={{
-                maxWidth: { base: 400, sm: 600, md: 900, lg: 1200, xl: 1660 },
+                maxWidth: { base: 400, sm: 700, md: 900, lg: 1200, xl: 1660 },
               }}
             >
               <Box marginBottom={3} textAlign={"right"}>
