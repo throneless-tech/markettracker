@@ -63,6 +63,9 @@ const CustomSalesReportsEdit: React.FC<any> = () => {
   const [thisMarket, setThisMarket] = useState<string>("");
   const [thisDate, setThisDate] = useState<string>("");
 
+  // FOR EDITABILITY
+  const [invoiced, setInvoiced] = useState<boolean>(false);
+
   // FOR PERMISSIONS
   const [location, setLocation] = useState<string>("");
   const [ppDisable, setPpDisable] = useState<boolean>(true); // enable/disable produce plus fields
@@ -212,6 +215,10 @@ const CustomSalesReportsEdit: React.FC<any> = () => {
       setThisVendor(thisReport.vendor.name);
       setThisMarket(thisReport.season.name);
       setThisDate(new Date(thisReport.day).toLocaleDateString("en-US"));
+    }
+
+    if (thisReport && thisReport.invoiceDate) {
+      setInvoiced(true);
     }
 
     if (
@@ -652,11 +659,14 @@ const CustomSalesReportsEdit: React.FC<any> = () => {
                 </Grid>
               </>
             ) : null}
-            <Center marginTop={6}>
-              <Button onClick={submitForm}>
-                Confirm and Submit Sales Report
-              </Button>
-            </Center>
+            {/** if a report has been invoiced, it can no longer be edited */}
+            {!invoiced ? (
+              <Center marginTop={6}>
+                <Button onClick={submitForm}>
+                  Confirm and Submit Sales Report
+                </Button>
+              </Center>
+            ) : null}
           </FormControl>
         </Container>
       </Container>
