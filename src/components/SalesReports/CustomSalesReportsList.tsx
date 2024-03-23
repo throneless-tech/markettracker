@@ -187,7 +187,6 @@ const CustomSalesReportsList: React.FC<any> = () => {
 
     const response = await fetch(`/api/sales-reports${stringQuery}`);
     const json = await response.json();
-    console.log("json,", json);
     const reports = json ? json.docs : [];
 
     setReports(reports);

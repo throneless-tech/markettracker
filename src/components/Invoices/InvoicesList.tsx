@@ -57,6 +57,7 @@ const InvoicesList: React.FC<any> = (props) => {
   //const [market, setMarket] = useState("All");
   const [page, setPage] = useState<number>(1);
   const { ref, inView } = useInView({});
+  const [isNotExported, setIsNotExported] = useState(false);
 
   const history = useHistory();
 
@@ -73,8 +74,11 @@ const InvoicesList: React.FC<any> = (props) => {
     });
   };
 
-  const getInvoices = async (nextPage: number) => {
+  const getInvoices = async (nextPage: number, isNotExported: boolean) => {
     const queries = [];
+    if (isNotExported) {
+      queries.push({ exported: { equals: false } });
+    }
     if (monthValue.toLowerCase() !== "all") {
       queries.push({ marketMonth: { equals: monthValue.toLowerCase() } });
     }
@@ -125,24 +129,50 @@ const InvoicesList: React.FC<any> = (props) => {
     setInvoices(json.invoices);
   };
 
-  useEffect(() => {
-    getInvoices(page);
-    console.log("user->", user);
-    console.log("***invoices", invoices);
-  }, [page]);
+  // trigger to export invoices
+  const exportInvoices = async () => {
+    console.log("here...");
+
+    const response = await fetch("/api/invoices/export");
+    const json = await response.json();
+    console.log("response: ", json);
+    history.push("/admin/collections/invoices?where[exported][equals]=false");
+  };
 
   useEffect(() => {
-    getInvoices(1);
+    console.log(isNotExported);
+
+    const params = new URLSearchParams(location.search);
+    const isNotExportedParam = params.get("where[exported][equals]");
+
+    if (isNotExportedParam) {
+      setIsNotExported(true);
+      getInvoices(page, true);
+    } else {
+      setIsNotExported(false);
+      getInvoices(page, false);
+    }
+  }, [isNotExported, page]);
+
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const isNotExportedParam = params.get("where[exported][equals]");
+
+    if (isNotExportedParam) {
+      setIsNotExported(true);
+      getInvoices(1, true);
+    } else {
+      setIsNotExported(false);
+      getInvoices(1, false);
+    }
     setPage(1);
-    console.log("user->", user);
-    console.log("***invoices", invoices);
   }, [monthValue]);
 
   useEffect(() => {
     if (inView) {
       setPage((prevState) => prevState + 1);
     }
-  }, [inView]);
+  }, [inView, isNotExported]);
 
   return (
     <>
@@ -173,7 +203,7 @@ const InvoicesList: React.FC<any> = (props) => {
                 <Button onClick={() => generateInvoices()}>
                   Generate invoices
                 </Button>
-                <Button as="a" href="/api/invoices/export">
+                <Button onClick={() => exportInvoices()}>
                   Download invoice data
                 </Button>
               </HStack>
@@ -267,7 +297,7 @@ const InvoicesList: React.FC<any> = (props) => {
               // borderTopRightRadius: "8px !important",
             }}
           >
-            <Thead sx={{ backgroundColor: "gray.50" }}>
+            <Thead sx={{ backgroundColor: "gray.100" }}>
               <Tr>
                 <Th
                   sx={{
@@ -275,10 +305,8 @@ const InvoicesList: React.FC<any> = (props) => {
                     borderColor: "gray.100",
                     color: "gray.900",
                     fontFamily: "'Outfit', sans-serif",
-                    fontSize: 16,
                     fontWeight: 500,
-                    maxWidth: 300,
-                    textTransform: "none",
+                    maxWidth: 160,
                   }}
                 >
                   Vendor
@@ -289,10 +317,8 @@ const InvoicesList: React.FC<any> = (props) => {
                     borderColor: "gray.100",
                     color: "gray.900",
                     fontFamily: "'Outfit', sans-serif",
-                    fontSize: 16,
                     fontWeight: 500,
-                    maxWidth: 300,
-                    textTransform: "none",
+                    maxWidth: 160,
                   }}
                 >
                   Vendor email
@@ -303,10 +329,7 @@ const InvoicesList: React.FC<any> = (props) => {
                     borderColor: "gray.100",
                     color: "gray.900",
                     fontFamily: "'Outfit', sans-serif",
-                    fontSize: 16,
                     fontWeight: 500,
-                    maxWidth: 300,
-                    textTransform: "none",
                   }}
                 >
                   Subtotal
@@ -317,13 +340,12 @@ const InvoicesList: React.FC<any> = (props) => {
                     borderColor: "gray.100",
                     color: "gray.900",
                     fontFamily: "'Outfit', sans-serif",
-                    fontSize: 16,
                     fontWeight: 500,
-                    maxWidth: 300,
-                    textTransform: "none",
                   }}
                 >
-                  Penalties/Credits
+                  Penalties/
+                  <br />
+                  Credits
                 </Th>
                 <Th
                   sx={{
@@ -331,13 +353,11 @@ const InvoicesList: React.FC<any> = (props) => {
                     borderColor: "gray.100",
                     color: "gray.900",
                     fontFamily: "'Outfit', sans-serif",
-                    fontSize: 16,
                     fontWeight: 500,
-                    maxWidth: 300,
-                    textTransform: "none",
                   }}
                 >
-                  Invoice amount
+                  Invoice <br />
+                  amount
                 </Th>
                 <Th
                   sx={{
@@ -345,13 +365,11 @@ const InvoicesList: React.FC<any> = (props) => {
                     borderColor: "gray.100",
                     color: "gray.900",
                     fontFamily: "'Outfit', sans-serif",
-                    fontSize: 16,
                     fontWeight: 500,
-                    maxWidth: 300,
-                    textTransform: "none",
                   }}
                 >
-                  Invoice sent on
+                  Ready to <br />
+                  invoice
                 </Th>
                 <Th
                   sx={{
@@ -359,10 +377,7 @@ const InvoicesList: React.FC<any> = (props) => {
                     borderColor: "gray.100",
                     color: "gray.900",
                     fontFamily: "'Outfit', sans-serif",
-                    fontSize: 16,
                     fontWeight: 500,
-                    maxWidth: 300,
-                    textTransform: "none",
                   }}
                 >
                   Invoice status
@@ -373,61 +388,81 @@ const InvoicesList: React.FC<any> = (props) => {
                     borderColor: "gray.100",
                     color: "gray.900",
                     fontFamily: "'Outfit', sans-serif",
-                    fontSize: 16,
                     fontWeight: 500,
-                    maxWidth: 300,
-                    textTransform: "none",
                   }}
                 ></Th>
               </Tr>
             </Thead>
             <Tbody>
-              {invoices.length
-                ? invoices.map((invoice, idx) => {
-                    const {
-                      reports,
-                      date,
-                      total,
-                      salesSubtotal,
-                      penaltySubtotal,
-                      paid,
-                      approved,
-                    } = invoice;
-                    return (
-                      <Tr ref={idx === invoices.length - 1 ? ref : null}>
-                        <Td>
-                          {reports?.length && reports[0]?.vendor?.name
-                            ? reports[0].vendor.name
-                            : ""}
-                        </Td>
-                        <Td>
-                          {reports?.length &&
-                          reports[0]?.vendor?.contacts?.length
-                            ? reports[0]?.vendor.contacts[0].email
-                            : ""}
-                        </Td>
-                        <Td>${salesSubtotal}</Td>
-                        <Td>${penaltySubtotal}</Td>
-                        <Td>${total}</Td>
-                        <Td>{new Date(date).toLocaleDateString("en-US")}</Td>
-                        <Td>
-                          {paid ? "Paid" : "Open"}
-                          {approved ? ", approved" : ", not approved"}
-                        </Td>
-                        <Td>
-                          <Button
-                            onClick={(e) => {
-                              e.preventDefault;
-                              viewInvoice(invoice);
-                            }}
-                          >
-                            View invoice
-                          </Button>
-                        </Td>
-                      </Tr>
-                    );
-                  })
-                : null}
+              {invoices.length ? (
+                invoices.map((invoice, idx) => {
+                  const {
+                    reports,
+                    date,
+                    total,
+                    salesSubtotal,
+                    penaltySubtotal,
+                    paid,
+                    approved,
+                  } = invoice;
+                  return (
+                    <Tr
+                      key={invoice.id}
+                      ref={idx === invoices.length - 1 ? ref : null}
+                    >
+                      <Td
+                        sx={{
+                          inlineSize: 160,
+                          maxW: 160,
+                          whiteSpace: "normal",
+                          wordBreak: "break-all",
+                        }}
+                      >
+                        {reports?.length && reports[0]?.vendor?.name
+                          ? reports[0].vendor.name
+                          : ""}
+                      </Td>
+                      <Td
+                        sx={{
+                          inlineSize: 160,
+                          maxW: 160,
+                          whiteSpace: "normal",
+                          wordBreak: "break-all",
+                        }}
+                      >
+                        {reports?.length && reports[0]?.vendor?.contacts?.length
+                          ? reports[0]?.vendor.contacts[0].email
+                          : ""}
+                      </Td>
+                      <Td>${salesSubtotal}</Td>
+                      <Td>${penaltySubtotal}</Td>
+                      <Td>${total}</Td>
+                      <Td>{new Date(date).toLocaleDateString("en-US")}</Td>
+                      <Td>
+                        {paid ? "Paid" : "Unpaid"}
+                        {approved ? ", approved" : ", not approved"}
+                      </Td>
+                      <Td>
+                        <Button
+                          onClick={(e) => {
+                            e.preventDefault;
+                            viewInvoice(invoice);
+                          }}
+                        >
+                          View invoice
+                        </Button>
+                      </Td>
+                    </Tr>
+                  );
+                })
+              ) : (
+                <Tr>
+                  <Td p={4}>
+                    No new invoices to export. Try generating invoices for new
+                    data.
+                  </Td>
+                </Tr>
+              )}
             </Tbody>
           </Table>
         </TableContainer>

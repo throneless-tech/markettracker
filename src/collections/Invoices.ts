@@ -48,6 +48,11 @@ export const Invoices: CollectionConfig = {
     {
       name: "approved",
       type: "checkbox",
+      defaultValue: true,
+    },
+    {
+      name: "exported",
+      type: "checkbox",
       defaultValue: false,
     },
     {

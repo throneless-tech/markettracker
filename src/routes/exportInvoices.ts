@@ -1,4 +1,5 @@
 import Papa from "papaparse";
+import payload from "payload";
 
 const exportInvoices = async (req, res, next) => {
   const reports = await req.payload.find({
@@ -15,8 +16,23 @@ const exportInvoices = async (req, res, next) => {
     };
   });
 
+  // if date and exported == false, update to true
+  const result = await payload.update({
+    collection: "invoices", // required
+    where: {
+      exported: { equals: false },
+    },
+    data: {
+      exported: true,
+    },
+    depth: 0,
+  });
+
+  const today = new Date();
+  const todayString = today.toISOString();
+
   const file = await Papa.unparse(exported);
-  res.attachment("export.csv");
+  res.attachment(`invoices-export-${todayString}.csv`);
   res.type("txt");
   return res.status(200).send(file);
 };
