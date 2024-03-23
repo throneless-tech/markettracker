@@ -48,7 +48,7 @@ export const Invoices: CollectionConfig = {
     {
       name: "approved",
       type: "checkbox",
-      defaultValue: false,
+      defaultValue: true,
     },
     {
       name: "date",

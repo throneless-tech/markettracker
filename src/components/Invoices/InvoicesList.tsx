@@ -34,6 +34,7 @@ import {
 // components
 import { FooterAdmin } from "../FooterAdmin";
 import { InvoicesTabs } from "./InvoicesTabs";
+import { StatusDropdown } from "./StatusDropdown";
 
 const months = [
   "All",
@@ -392,6 +393,7 @@ const InvoicesList: React.FC<any> = (props) => {
               {invoices.length
                 ? invoices.map((invoice, idx) => {
                     const {
+                      id,
                       reports,
                       date,
                       total,
@@ -418,8 +420,12 @@ const InvoicesList: React.FC<any> = (props) => {
                         <Td>${total}</Td>
                         <Td>{new Date(date).toLocaleDateString("en-US")}</Td>
                         <Td>
-                          {paid ? "Paid" : "Open"}
-                          {approved ? ", approved" : ", not approved"}
+                          {/* {paid ? "Paid" : "Open"}
+                          {approved ? ", approved" : ", not approved"} */}
+                          <StatusDropdown
+                            status={approved ? approved.toString() : "lol"}
+                            id={id}
+                          />
                         </Td>
                         <Td>
                           <Button
