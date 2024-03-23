@@ -423,7 +423,7 @@ const InvoicesList: React.FC<any> = (props) => {
                           {/* {paid ? "Paid" : "Open"}
                           {approved ? ", approved" : ", not approved"} */}
                           <StatusDropdown
-                            status={approved ? approved.toString() : "lol"}
+                            status={approved ? "true" : "false"}
                             id={id}
                           />
                         </Td>
