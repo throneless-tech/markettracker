@@ -50,6 +50,49 @@ const months = [
   "December",
 ];
 
+// update paid or unpaid status
+function PaidColumn(props) {
+  const { paid, invoiceId } = props;
+  const [isPaid, setIsPaid] = useState(paid);
+
+  const onChangePaid = async (paid: string, invoiceId: string) => {
+    const paidStatus = paid === "true" ? false : true;
+    try {
+      const res = await fetch(`/api/invoices/${invoiceId}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          paid: paidStatus,
+        }),
+      });
+      setIsPaid(paidStatus);
+      if (!res.ok) throw new Error(res.statusText);
+    } catch (err) {
+      console.error(err.message);
+    }
+  };
+
+  useEffect(() => {}, [isPaid]);
+
+  return (
+    <Td minW={120}>
+      <Select
+        value={isPaid ? "false" : "true"}
+        colorScheme="teal"
+        variant="filled"
+        onChange={(e) => {
+          onChangePaid(e.target.value, invoiceId);
+        }}
+      >
+        <option value={"true"}>Paid</option>
+        <option value={"false"}>Unpaid</option>
+      </Select>
+    </Td>
+  );
+}
+
 const InvoicesList: React.FC<any> = (props) => {
   const { user } = useAuth();
   const [invoices, setInvoices] = useState([]);
@@ -131,17 +174,13 @@ const InvoicesList: React.FC<any> = (props) => {
 
   // trigger to export invoices
   const exportInvoices = async () => {
-    console.log("here...");
-
     const response = await fetch("/api/invoices/export");
     const json = await response.json();
     console.log("response: ", json);
-    history.push("/admin/collections/invoices?where[exported][equals]=false");
+    history.go(0);
   };
 
   useEffect(() => {
-    console.log(isNotExported);
-
     const params = new URLSearchParams(location.search);
     const isNotExportedParam = params.get("where[exported][equals]");
 
@@ -196,7 +235,7 @@ const InvoicesList: React.FC<any> = (props) => {
                 </Button>
               </HStack>
             </>
-          ) : (
+          ) : isNotExported ? (
             <>
               <Spacer />
               <HStack flexGrow={1} spacing={4} justify={"flex-end"}>
@@ -208,7 +247,7 @@ const InvoicesList: React.FC<any> = (props) => {
                 </Button>
               </HStack>
             </>
-          )}
+          ) : null}
         </Flex>
         <Divider color="gray.900" borderBottomWidth={2} opacity={1} />
         <Grid templateColumns="repeat(2, 5fr)" gap={4} marginTop={10}>
@@ -380,8 +419,22 @@ const InvoicesList: React.FC<any> = (props) => {
                     fontWeight: 500,
                   }}
                 >
-                  Invoice status
+                  Invoice <br />
+                  status
                 </Th>
+                {isNotExported ? null : (
+                  <Th
+                    sx={{
+                      border: "1px solid",
+                      borderColor: "gray.100",
+                      color: "gray.900",
+                      fontFamily: "'Outfit', sans-serif",
+                      fontWeight: 500,
+                    }}
+                  >
+                    Paid?
+                  </Th>
+                )}
                 <Th
                   sx={{
                     border: "1px solid",
@@ -438,10 +491,12 @@ const InvoicesList: React.FC<any> = (props) => {
                       <Td>${penaltySubtotal}</Td>
                       <Td>${total}</Td>
                       <Td>{new Date(date).toLocaleDateString("en-US")}</Td>
-                      <Td>
-                        {paid ? "Paid" : "Unpaid"}
-                        {approved ? ", approved" : ", not approved"}
-                      </Td>
+                      <Td>{approved ? "Approved" : "Not approved"}</Td>
+                      {isNotExported ? null : (
+                        <>
+                          <PaidColumn paid={paid} invoiceId={invoice.id} />
+                        </>
+                      )}
                       <Td>
                         <Button
                           onClick={(e) => {

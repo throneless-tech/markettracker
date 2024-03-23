@@ -20,7 +20,15 @@ const exportInvoices = async (req, res, next) => {
   const result = await payload.update({
     collection: "invoices", // required
     where: {
-      exported: { equals: false },
+      and: [
+        // nested array of AND conditions
+        {
+          exported: { equals: false },
+        },
+        {
+          approved: { equals: true },
+        },
+      ],
     },
     data: {
       exported: true,
