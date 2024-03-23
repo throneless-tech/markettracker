@@ -11,7 +11,7 @@ import { Application, Season, Vendor } from "payload/generated-types";
 // components
 import { NumberField } from "../fields/NumberField";
 import { TextField } from "../fields/TextField";
-import { Dropdown } from "../Dropdown";
+// import { Dropdown } from "../Dropdown";
 import { FooterAdmin } from "../FooterAdmin";
 import { useField, useForm } from "payload/components/forms";
 import {
@@ -73,6 +73,10 @@ const CustomSalesReportsEdit: React.FC<any> = () => {
   const [wicDisable, setWicDisable] = useState<boolean>(true); // enable/disable WIC
 
   // the form
+  const { value: locationToSubmit, setValue: setLocationToSubmit } = useField({
+    path: "location",
+  });
+
   const { value: seasonId, setValue: setSeasonId } = useField<"string">({
     path: "season",
   });
@@ -106,7 +110,6 @@ const CustomSalesReportsEdit: React.FC<any> = () => {
       console.log("error: ", err);
     }
     history.push("/admin/collections/sales-reports");
-    console.log("get Data ->", getData());
   };
 
   const getSeasons = useCallback(async () => {
@@ -199,7 +202,7 @@ const CustomSalesReportsEdit: React.FC<any> = () => {
   }, [seasonId]);
 
   useEffect(() => {
-    // a create page won't have
+    // a 'create' page won't have
     // history.location.state
     if (history.location.state) {
       setIsEditView(true);
@@ -235,7 +238,7 @@ const CustomSalesReportsEdit: React.FC<any> = () => {
     // market location determines editability of some coupon forms
 
     // PRODUCE PLUS
-    if (location == "DC" && role !== "vendor") {
+    if (location === "DC" && role !== "vendor") {
       setPpDisable(false);
       setWicDisable(false);
       setSfmnpDisable(false);
@@ -247,19 +250,24 @@ const CustomSalesReportsEdit: React.FC<any> = () => {
 
     // SFMNP
     // only editable by vendor in VA or MD
-    if (role == "vendor" && (location == "VA" || location == "MD")) {
+    if (
+      role == "admin" ||
+      (role == "vendor" && (location === "VA" || location == "MD"))
+    ) {
       setSfmnpDisable(false);
     } else {
       setSfmnpDisable(true);
     }
 
-    if (role == "vendor" && location == "MD") {
+    // WIC
+    // only editable by vendor in MD, but admin can edit
+    if (
+      (role == "admin" && location !== "VA") ||
+      (role == "vendor" && location == "MD")
+    ) {
       setWicDisable(false);
     } else {
-      setWicDisable(true);
-    }
-
-    if (role == "vendor" && location == "VA") {
+      // unavailable in VA
       setWicDisable(true);
     }
   }, [location]);
@@ -284,6 +292,7 @@ const CustomSalesReportsEdit: React.FC<any> = () => {
 
     if (selected && !history.location.state) {
       setLocation(selected ? selected.market.address.state : "");
+      setLocationToSubmit(selected ? selected.market.address.state : "");
     }
   }, [seasonId]);
 
@@ -540,11 +549,6 @@ const CustomSalesReportsEdit: React.FC<any> = () => {
                     <NumberField
                       path="ebt"
                       label="EBT/SNAP sales"
-                      // isDisabled={
-                      //   location && location == "DC" && role !== "vendor"
-                      //     ? false
-                      //     : true
-                      // }
                       min={0}
                       admin={{
                         description: "Enter the sum total of EBT/SNAP sales",
@@ -556,7 +560,6 @@ const CustomSalesReportsEdit: React.FC<any> = () => {
                     <NumberField
                       path="snapBonus"
                       label="SNAP Bonus sales"
-                      // isDisabled={role == "vendor" ? true : false}
                       admin={{
                         description: "Enter the sum total of SNAP Bonus sales",
                         placeholder: "SNAP bonus sales",
@@ -569,7 +572,6 @@ const CustomSalesReportsEdit: React.FC<any> = () => {
                     <NumberField
                       path="fmnpBonus"
                       label="FMNP Bonus sales"
-                      // isDisabled={role == "vendor" ? true : false}
                       min={0}
                       admin={{
                         description: "Enter the sum total of FMNP Bonus sales",
@@ -581,7 +583,6 @@ const CustomSalesReportsEdit: React.FC<any> = () => {
                     <NumberField
                       path="cardCoupon"
                       label="Credit card coupon sales"
-                      // isDisabled={role == "vendor" ? true : false}
                       min={0}
                       admin={{
                         description:
@@ -596,7 +597,6 @@ const CustomSalesReportsEdit: React.FC<any> = () => {
                     <NumberField
                       path="marketGoods"
                       label="Market Goods coupon sales"
-                      // isDisabled={role == "vendor" ? true : false}
                       min={0}
                       admin={{
                         description:
@@ -608,8 +608,7 @@ const CustomSalesReportsEdit: React.FC<any> = () => {
                   <GridItem>
                     <NumberField
                       path="gWorld"
-                      label="GWorld coupon coupon sales (green)"
-                      // isDisabled={role == "vendor" ? true : false}
+                      label="GWorld coupon coupon sales"
                       min={0}
                       admin={{
                         description:
@@ -638,7 +637,6 @@ const CustomSalesReportsEdit: React.FC<any> = () => {
                     <NumberField
                       path="penalty"
                       label="Penalty amount"
-                      // isDisabled={role == "vendor" ? true : false}
                       min={0}
                       admin={{
                         description:
@@ -654,6 +652,39 @@ const CustomSalesReportsEdit: React.FC<any> = () => {
                     <TextField
                       label="Describe the penalty"
                       path="penaltyDescription"
+                    />
+                  </GridItem>
+                </Grid>
+                <Container maxW="container.xl" marginTop={6} marginBottom={4}>
+                  <Text
+                    fontFamily="Zilla Slab"
+                    lineHeight="1"
+                    fontWeight="semibold"
+                    fontSize="24px"
+                    letterSpacing="0.03em"
+                    textTransform="capitalize"
+                    color="gray.600"
+                    width={200}
+                  >
+                    Credit
+                  </Text>
+                </Container>
+                <Grid templateColumns="repeat(5, 1fr)" gap={4}>
+                  <GridItem colSpan={5}>
+                    <NumberField
+                      path="credit"
+                      label="Credit amount"
+                      min={0}
+                      admin={{
+                        description: "Enter a credit for this vendor, if any",
+                        placeholder: "SNAP bonus sales",
+                      }}
+                    />
+                  </GridItem>
+                  <GridItem colSpan={2}>
+                    <TextField
+                      label="Describe the reason for this credit"
+                      path="creditDescription"
                     />
                   </GridItem>
                 </Grid>
