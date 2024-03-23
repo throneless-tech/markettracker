@@ -22,6 +22,9 @@ import { Supplies } from "./collections/Supplies";
 import { Users } from "./collections/Users";
 import { Vendors } from "./collections/Vendors";
 
+// globals
+import { Settings } from "./globals/Settings";
+
 // custom components
 import { Account } from "./components/Base/Account";
 import { AfterLogin } from "./components/Base/AfterLogin";
@@ -120,6 +123,7 @@ export default buildConfig({
   }),
   debug: true,
   editor: slateEditor({}),
+  globals: [Settings],
   plugins: [payloadCloud()],
   typescript: {
     outputFile: path.resolve(__dirname, "payload-types.ts"),

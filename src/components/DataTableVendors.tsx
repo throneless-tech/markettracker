@@ -10,6 +10,7 @@ import {
   Th,
   Td,
   Text,
+  VisuallyHidden,
   chakra,
 } from "@chakra-ui/react";
 import { TriangleDownIcon, TriangleUpIcon } from "@chakra-ui/icons";
@@ -29,7 +30,7 @@ import {
   rankItem,
   compareItems,
 } from "@tanstack/match-sorter-utils";
-import { useVirtual } from "react-virtual";
+import { useVirtualizer } from "@tanstack/react-virtual";
 
 import type { Vendor } from "payload/generated-types";
 
@@ -181,7 +182,7 @@ export function DataTable<Data extends object>({
     if (isVisible) {
       fetchMore(tableContainerRef.current);
     }
-  }, [fetchMore]);
+  }, [fetchMore, isVisible]);
 
   const table = useReactTable({
     data: flatData,
@@ -210,37 +211,36 @@ export function DataTable<Data extends object>({
   const { rows } = table.getRowModel();
 
   //Virtualizing is optional, but might be necessary if we are going to potentially have hundreds or thousands of rows
-  const rowVirtualizer = useVirtual({
-    parentRef: tableContainerRef,
-    size: rows.length,
-    overscan: 10,
+  const rowVirtualizer = useVirtualizer({
+    count: rows.length,
+    estimateSize: () => 96, //estimate row height for accurate scrollbar dragging
+    getScrollElement: () => tableContainerRef.current,
+    //measure dynamic row height, except in firefox because it measures table border height incorrectly
+    measureElement:
+      typeof window !== "undefined" &&
+      navigator.userAgent.indexOf("Firefox") === -1
+        ? (element) => element?.getBoundingClientRect().height
+        : undefined,
+    overscan: 5,
   });
-  const { virtualItems: virtualRows, totalSize } = rowVirtualizer;
-  const paddingTop = virtualRows.length > 0 ? virtualRows?.[0]?.start || 0 : 0;
-  const paddingBottom =
-    virtualRows.length > 0
-      ? totalSize - (virtualRows?.[virtualRows.length - 1]?.end || 0)
-      : 0;
 
   return (
     <Container
       maxW="container.2xl"
-      width={"80vw"}
       className="p-2 block max-w-full overflow-x-scroll overflow-y-hidden"
     >
       <Box
+        className="h-2"
         onScroll={(e) => fetchMore(e.target as HTMLDivElement)}
         ref={tableContainerRef}
-        sx={
-          {
-            // containIntrinsicHeight: "100vh",
-            // height: "100vh",
-            // maxWidth: "3000px !important;",
-            // overflowAnchor: "none !important",
-            // overflowX: "scroll",
-            // overflowY: "auto",
-          }
-        }
+        sx={{
+          // containIntrinsicHeight: "100vh",
+          height: "100vh",
+          // maxWidth: "3000px !important;",
+          // overflowAnchor: "none !important",
+          // overflowX: "scroll",
+          overflowY: "scroll",
+        }}
       >
         <Table variant="striped" colorScheme="green" className="w-full">
           <Thead sx={{ position: "sticky", top: 0, zIndex: 5 }}>
@@ -280,17 +280,22 @@ export function DataTable<Data extends object>({
               </Tr>
             ))}
           </Thead>
-          <Tbody>
-            {paddingTop > 0 && (
-              <tr>
-                <td style={{ height: `${paddingTop}px` }} />
-              </tr>
-            )}
-            {virtualRows.length >= 1 ? (
-              virtualRows.map((virtualRow) => {
+          <Tbody sx={{ position: "relative" }}>
+            {rowVirtualizer.getVirtualItems().length >= 1 ? (
+              rowVirtualizer.getVirtualItems().map((virtualRow) => {
                 const row = rows[virtualRow.index] as Row<any>;
                 return (
-                  <Tr key={row.id}>
+                  <Tr
+                    data-index={virtualRow.index} //needed for dynamic row height measurement
+                    key={row.id}
+                    ref={(node) => rowVirtualizer.measureElement(node)} //measure dynamic row height
+                    sx={{
+                      display: "flex",
+                      position: "absolute",
+                      transform: `translateY(${virtualRow.start}px)`, //this should always be a `style` as it changes on scroll
+                      width: "100%",
+                    }}
+                  >
                     {row.getVisibleCells().map((cell) => {
                       // see https://tanstack.com/table/v8/docs/api/core/column-def#meta to type this correctly
                       const meta: any = cell.column.columnDef.meta;
@@ -301,7 +306,11 @@ export function DataTable<Data extends object>({
                         <Td
                           key={cell.id}
                           isNumeric={meta?.isNumeric}
-                          sx={{ minWidth: 150 }}
+                          sx={{
+                            display: "flex",
+                            minW: 166,
+                            width: cell.column.getSize(),
+                          }}
                         >
                           {flexRender(
                             cell.column.columnDef.cell,
@@ -317,11 +326,6 @@ export function DataTable<Data extends object>({
               <Text>Loading...</Text>
             ) : (
               <Text>No results found.</Text>
-            )}
-            {paddingBottom > 0 && (
-              <tr>
-                <td style={{ height: `${paddingBottom}px` }} />
-              </tr>
             )}
             {/* {table.getRowModel().rows.map((row) => (
               <Tr key={row.id}>

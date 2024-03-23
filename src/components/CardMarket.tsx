@@ -19,6 +19,7 @@ const dayNames = [
 export const CardMarket: FC<CardProps> = ({ applications }) => {
   const [approvedApps, setApprovedApps] = React.useState([]);
 
+  // figure out which market days are in the future
   const options: any = {
     year: "numeric",
     month: "numeric",
@@ -92,28 +93,22 @@ export const CardMarket: FC<CardProps> = ({ applications }) => {
           <Text
             lineHeight="1.6"
             fontWeight="semibold"
-            fontSize="10px"
+            fontSize={12}
             textTransform="uppercase"
             textDecoration="underline"
-            color="#000000"
+            color="#000"
             textAlign="end"
           >
             Market Date
           </Text>
           <Stack justify="flex-start" align="flex-start" spacing={4}>
             {approvedApps.map((app) => (
-              <Flex
-                key={app.id}
-                minWidth="404px"
-                paddingY={1}
-                width="100%"
-                direction="row"
-              >
+              <Flex key={app.id} paddingY={1} width="100%" direction="row">
                 <Text
                   fontFamily="Outfit"
                   lineHeight="1.14"
                   fontWeight="semibold"
-                  fontSize="14px"
+                  fontSize={14}
                   textTransform="capitalize"
                   color="#000000"
                 >
@@ -142,7 +137,7 @@ export const CardMarket: FC<CardProps> = ({ applications }) => {
                   fontFamily="Outfit"
                   lineHeight="1.14"
                   fontWeight="regular"
-                  fontSize="14px"
+                  fontSize={14}
                   textTransform="capitalize"
                   color="#000000"
                   textAlign="end"

@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 import { useAuth } from "payload/components/utilities";
+import { useInView } from "react-intersection-observer";
+import qs from "qs";
 
 // Chakra imports
 import {
@@ -48,11 +50,57 @@ const months = [
   "December",
 ];
 
-const InvoicesList: React.FC<any> = () => {
+// update paid or unpaid status
+function PaidColumn(props) {
+  const { paid, invoiceId } = props;
+  const [isPaid, setIsPaid] = useState(paid);
+
+  const onChangePaid = async (paid: string, invoiceId: string) => {
+    const paidStatus = paid === "true" ? false : true;
+    try {
+      const res = await fetch(`/api/invoices/${invoiceId}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          paid: paidStatus,
+        }),
+      });
+      setIsPaid(paidStatus);
+      if (!res.ok) throw new Error(res.statusText);
+    } catch (err) {
+      console.error(err.message);
+    }
+  };
+
+  useEffect(() => {}, [isPaid]);
+
+  return (
+    <Td minW={120}>
+      <Select
+        value={isPaid ? "false" : "true"}
+        colorScheme="teal"
+        variant="filled"
+        onChange={(e) => {
+          onChangePaid(e.target.value, invoiceId);
+        }}
+      >
+        <option value={"true"}>Paid</option>
+        <option value={"false"}>Unpaid</option>
+      </Select>
+    </Td>
+  );
+}
+
+const InvoicesList: React.FC<any> = (props) => {
   const { user } = useAuth();
   const [invoices, setInvoices] = useState([]);
-  const [toDisplay, setToDisplay] = useState([]);
   const [monthValue, setMonthValue] = useState("All");
+  //const [market, setMarket] = useState("All");
+  const [page, setPage] = useState<number>(1);
+  const { ref, inView } = useInView({});
+  const [isNotExported, setIsNotExported] = useState(false);
 
   const history = useHistory();
 
@@ -69,68 +117,101 @@ const InvoicesList: React.FC<any> = () => {
     });
   };
 
-  const getInvoices = async () => {
-    const response = await fetch(`/api/invoices`);
+  const getInvoices = async (nextPage: number, isNotExported: boolean) => {
+    const queries = [];
+    if (isNotExported) {
+      queries.push({ exported: { equals: false } });
+    }
+    if (monthValue.toLowerCase() !== "all") {
+      queries.push({ marketMonth: { equals: monthValue.toLowerCase() } });
+    }
+
+    let stringifiedQuery: string;
+    if (queries.length === 1) {
+      stringifiedQuery = qs.stringify(
+        {
+          where: queries[0],
+          page: nextPage,
+        },
+        { addQueryPrefix: true },
+      );
+    } else if (queries.length > 1) {
+      stringifiedQuery = qs.stringify(
+        {
+          where: {
+            and: queries[0],
+          },
+          page: nextPage,
+        },
+        { addQueryPrefix: true },
+      );
+    } else {
+      stringifiedQuery = qs.stringify(
+        {
+          page,
+        },
+        { addQueryPrefix: true },
+      );
+    }
+    const response = await fetch(
+      `/api/invoices${stringifiedQuery ? stringifiedQuery : ""}`,
+    );
     const json = await response.json();
-    const invoices = json ? json.docs : [];
-    setInvoices(invoices);
+    const newInvoices = json ? json.docs : [];
+    if (nextPage === 1) {
+      setInvoices(newInvoices);
+    } else {
+      setInvoices(invoices.concat(newInvoices));
+    }
+  };
+
+  // trigger to generate invoices
+  const generateInvoices = async () => {
+    const response = await fetch("/api/invoices/generate");
+    const json = await response.json();
+    setInvoices(json.invoices);
+  };
+
+  // trigger to export invoices
+  const exportInvoices = async () => {
+    const response = await fetch("/api/invoices/export");
+    const json = await response.json();
+    console.log("response: ", json);
+    history.go(0);
   };
 
   useEffect(() => {
-    getInvoices();
-    // console.log("user->", user);
-  }, []);
+    const params = new URLSearchParams(location.search);
+    const isNotExportedParam = params.get("where[exported][equals]");
+
+    if (isNotExportedParam) {
+      setIsNotExported(true);
+      getInvoices(page, true);
+    } else {
+      setIsNotExported(false);
+      getInvoices(page, false);
+    }
+  }, [isNotExported, page]);
 
   useEffect(() => {
-    let withTotals = [];
+    const params = new URLSearchParams(location.search);
+    const isNotExportedParam = params.get("where[exported][equals]");
 
-    if (invoices.length) {
-      withTotals = invoices.map((invoice) => {
-        // this is to calculate invoice amounts
-        /**
-         * from FF point of view, an invoice amount is:
-         * market fee (that the vendor owes calculated from cash and credit * percentage) MINUS the coupon amounts
-         * that FF owes the vendor
-         */
-        const totals = invoice.reports.reduce((acc, report) => {
-          const {
-            producePlus,
-            cashAndCredit,
-            wic,
-            sfmnp,
-            ebt,
-            snapBonus,
-            fmnpBonus,
-            cardCoupon,
-            marketGoods,
-            gWorld,
-          } = report;
-          acc =
-            acc +
-            cashAndCredit -
-            (producePlus ? producePlus : 0) +
-            (wic ? wic : 0) +
-            (sfmnp ? sfmnp : 0) +
-            (ebt ? ebt : 0) +
-            (snapBonus ? snapBonus : 0) +
-            (fmnpBonus ? fmnpBonus : 0) +
-            (cardCoupon ? cardCoupon : 0) +
-            (marketGoods ? marketGoods : 0) +
-            (gWorld ? gWorld : 0);
-          return acc;
-        }, 0);
-
-        return {
-          ...invoice,
-          total: totals,
-        };
-      });
+    if (isNotExportedParam) {
+      setIsNotExported(true);
+      getInvoices(1, true);
+    } else {
+      setIsNotExported(false);
+      getInvoices(1, false);
     }
+    setPage(1);
+  }, [monthValue]);
 
-    if (withTotals.length) {
-      setToDisplay(withTotals);
+  useEffect(() => {
+    if (inView) {
+      setPage((prevState) => prevState + 1);
     }
-  }, [invoices]);
+  }, [inView, isNotExported]);
 
   return (
     <>
@@ -142,7 +223,7 @@ const InvoicesList: React.FC<any> = () => {
               {user.role == "vendor" ? "Invoices" : "Vendors Ready to Invoice"}
             </Heading>
           </Box>
-          {/* {user.role == "vendor" ? (
+          {user.role == "vendor" ? (
             <>
               <Spacer />
               <HStack flexGrow={1} spacing={4} justify={"flex-end"}>
@@ -154,7 +235,19 @@ const InvoicesList: React.FC<any> = () => {
                 </Button>
               </HStack>
             </>
-          ) : null} */}
+          ) : isNotExported ? (
+            <>
+              <Spacer />
+              <HStack flexGrow={1} spacing={4} justify={"flex-end"}>
+                <Button onClick={() => generateInvoices()}>
+                  Generate invoices
+                </Button>
+                <Button onClick={() => exportInvoices()}>
+                  Download invoice data
+                </Button>
+              </HStack>
+            </>
+          ) : null}
         </Flex>
         <Divider color="gray.900" borderBottomWidth={2} opacity={1} />
         <Grid templateColumns="repeat(2, 5fr)" gap={4} marginTop={10}>
@@ -195,6 +288,7 @@ const InvoicesList: React.FC<any> = () => {
           <GridItem>
             <Spacer />
             <Box>
+              {/*
               <FormControl sx={{ alignItems: "center", display: "flex" }}>
                 <FormLabel>
                   <Text
@@ -209,7 +303,7 @@ const InvoicesList: React.FC<any> = () => {
                     Choose a market
                   </Text>
                 </FormLabel>
-                {/* <Select
+                <Select
                   value={marketValue}
                   maxWidth={"360px"}
                   onChange={handleMarketChange}
@@ -225,14 +319,16 @@ const InvoicesList: React.FC<any> = () => {
                       </option>
                     );
                   })}
-                </Select> */}
+                </Select>
               </FormControl>
+              */}
             </Box>
           </GridItem>
         </Grid>
         <TableContainer marginTop={8}>
           <Table
-            variant="simple"
+            variant="striped"
+            colorScheme={"green"}
             sx={{
               border: "1px solid",
               borderColor: "gray.100",
@@ -240,7 +336,7 @@ const InvoicesList: React.FC<any> = () => {
               // borderTopRightRadius: "8px !important",
             }}
           >
-            <Thead sx={{ backgroundColor: "gray.50" }}>
+            <Thead sx={{ backgroundColor: "gray.100" }}>
               <Tr>
                 <Th
                   sx={{
@@ -248,10 +344,8 @@ const InvoicesList: React.FC<any> = () => {
                     borderColor: "gray.100",
                     color: "gray.900",
                     fontFamily: "'Outfit', sans-serif",
-                    fontSize: 16,
                     fontWeight: 500,
-                    maxWidth: 300,
-                    textTransform: "none",
+                    maxWidth: 160,
                   }}
                 >
                   Vendor
@@ -262,10 +356,8 @@ const InvoicesList: React.FC<any> = () => {
                     borderColor: "gray.100",
                     color: "gray.900",
                     fontFamily: "'Outfit', sans-serif",
-                    fontSize: 16,
                     fontWeight: 500,
-                    maxWidth: 300,
-                    textTransform: "none",
+                    maxWidth: 160,
                   }}
                 >
                   Vendor email
@@ -276,10 +368,7 @@ const InvoicesList: React.FC<any> = () => {
                     borderColor: "gray.100",
                     color: "gray.900",
                     fontFamily: "'Outfit', sans-serif",
-                    fontSize: 16,
                     fontWeight: 500,
-                    maxWidth: 300,
-                    textTransform: "none",
                   }}
                 >
                   Subtotal
@@ -290,13 +379,12 @@ const InvoicesList: React.FC<any> = () => {
                     borderColor: "gray.100",
                     color: "gray.900",
                     fontFamily: "'Outfit', sans-serif",
-                    fontSize: 16,
                     fontWeight: 500,
-                    maxWidth: 300,
-                    textTransform: "none",
                   }}
                 >
-                  Penalties/Credits
+                  Penalties/
+                  <br />
+                  Credits
                 </Th>
                 <Th
                   sx={{
@@ -304,13 +392,11 @@ const InvoicesList: React.FC<any> = () => {
                     borderColor: "gray.100",
                     color: "gray.900",
                     fontFamily: "'Outfit', sans-serif",
-                    fontSize: 16,
                     fontWeight: 500,
-                    maxWidth: 300,
-                    textTransform: "none",
                   }}
                 >
-                  Invoice amount
+                  Invoice <br />
+                  amount
                 </Th>
                 <Th
                   sx={{
@@ -318,13 +404,11 @@ const InvoicesList: React.FC<any> = () => {
                     borderColor: "gray.100",
                     color: "gray.900",
                     fontFamily: "'Outfit', sans-serif",
-                    fontSize: 16,
                     fontWeight: 500,
-                    maxWidth: 300,
-                    textTransform: "none",
                   }}
                 >
-                  Invoice sent on
+                  Ready to <br />
+                  invoice
                 </Th>
                 <Th
                   sx={{
@@ -332,70 +416,108 @@ const InvoicesList: React.FC<any> = () => {
                     borderColor: "gray.100",
                     color: "gray.900",
                     fontFamily: "'Outfit', sans-serif",
-                    fontSize: 16,
                     fontWeight: 500,
-                    maxWidth: 300,
-                    textTransform: "none",
                   }}
                 >
-                  Invoice status
+                  Invoice <br />
+                  status
                 </Th>
+                {isNotExported ? null : (
+                  <Th
+                    sx={{
+                      border: "1px solid",
+                      borderColor: "gray.100",
+                      color: "gray.900",
+                      fontFamily: "'Outfit', sans-serif",
+                      fontWeight: 500,
+                    }}
+                  >
+                    Paid?
+                  </Th>
+                )}
                 <Th
                   sx={{
                     border: "1px solid",
                     borderColor: "gray.100",
                     color: "gray.900",
                     fontFamily: "'Outfit', sans-serif",
-                    fontSize: 16,
                     fontWeight: 500,
-                    maxWidth: 300,
-                    textTransform: "none",
                   }}
                 ></Th>
               </Tr>
             </Thead>
             <Tbody>
-              {toDisplay.length
-                ? toDisplay.map((invoice) => {
-                    const {
-                      reports,
-                      date,
-                      total,
-                      amountOwed,
-                      penalty,
-                      credit,
-                      paid,
-                    } = invoice;
-                    return (
-                      <Tr>
-                        <Td>{reports[0].vendor.name}</Td>
-                        <Td>{reports[0].vendor.contacts[0].email}</Td>
-                        <Td>
-                          $
-                          {total +
-                            (credit ? credit : 0) -
-                            (penalty ? penalty : 0)}
-                        </Td>
-                        <Td>
-                          ${(credit ? credit : 0) - (penalty ? penalty : 0)}
-                        </Td>
-                        <Td>${total}</Td>
-                        <Td>{new Date(date).toLocaleDateString("en-US")}</Td>
-                        <Td>{paid ? "Paid" : "Open"}</Td>
-                        <Td>
-                          <Button
-                            onClick={(e) => {
-                              e.preventDefault;
-                              viewInvoice(invoice);
-                            }}
-                          >
-                            View invoice
-                          </Button>
-                        </Td>
-                      </Tr>
-                    );
-                  })
-                : null}
+              {invoices.length ? (
+                invoices.map((invoice, idx) => {
+                  const {
+                    reports,
+                    date,
+                    total,
+                    salesSubtotal,
+                    penaltySubtotal,
+                    paid,
+                    approved,
+                  } = invoice;
+                  return (
+                    <Tr
+                      key={invoice.id}
+                      ref={idx === invoices.length - 1 ? ref : null}
+                    >
+                      <Td
+                        sx={{
+                          inlineSize: 160,
+                          maxW: 160,
+                          whiteSpace: "normal",
+                          wordBreak: "break-all",
+                        }}
+                      >
+                        {reports?.length && reports[0]?.vendor?.name
+                          ? reports[0].vendor.name
+                          : ""}
+                      </Td>
+                      <Td
+                        sx={{
+                          inlineSize: 160,
+                          maxW: 160,
+                          whiteSpace: "normal",
+                          wordBreak: "break-all",
+                        }}
+                      >
+                        {reports?.length && reports[0]?.vendor?.contacts?.length
+                          ? reports[0]?.vendor.contacts[0].email
+                          : ""}
+                      </Td>
+                      <Td>${salesSubtotal}</Td>
+                      <Td>${penaltySubtotal}</Td>
+                      <Td>${total}</Td>
+                      <Td>{new Date(date).toLocaleDateString("en-US")}</Td>
+                      <Td>{approved ? "Approved" : "Not approved"}</Td>
+                      {isNotExported ? null : (
+                        <>
+                          <PaidColumn paid={paid} invoiceId={invoice.id} />
+                        </>
+                      )}
+                      <Td>
+                        <Button
+                          onClick={(e) => {
+                            e.preventDefault;
+                            viewInvoice(invoice);
+                          }}
+                        >
+                          View invoice
+                        </Button>
+                      </Td>
+                    </Tr>
+                  );
+                })
+              ) : (
+                <Tr>
+                  <Td p={4}>
+                    No new invoices to export. Try generating invoices for new
+                    data.
+                  </Td>
+                </Tr>
+              )}
             </Tbody>
           </Table>
         </TableContainer>

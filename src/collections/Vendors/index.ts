@@ -17,6 +17,10 @@ import { beforeValidateUser } from "./hooks/populateUser";
 import { beforeValidateProducts } from "./hooks/populateProducts";
 import { afterReadStats } from "./hooks/populateStats";
 import { validateRoute } from "../../routes/validate";
+import {
+  afterReadLicenses,
+  beforeValidateLicenses,
+} from "./hooks/populateLicenses";
 
 export const Vendors: CollectionConfig = {
   slug: "vendors",
@@ -768,18 +772,27 @@ export const Vendors: CollectionConfig = {
       hasMany: true,
       relationTo: "applications",
     },
+    {
+      name: "licenses",
+      label: "Licenses",
+      type: "relationship",
+      hasMany: true,
+      relationTo: "licenses",
+    },
   ],
   hooks: {
     afterRead: [
       afterReadApplications,
       afterReadContacts,
+      afterReadLicenses,
       afterReadSalesReports,
       afterReadStats,
     ],
     beforeValidate: [
       beforeValidateContacts,
-      beforeValidateUser,
+      beforeValidateLicenses,
       beforeValidateProducts,
+      beforeValidateUser,
     ],
   },
 };

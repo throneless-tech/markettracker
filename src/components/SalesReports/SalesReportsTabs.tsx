@@ -20,7 +20,6 @@ export const SalesReportsTabs: React.FC<any> = ({ selected }) => {
           >
             <Box
               mb="-1px"
-              as="a"
               display="block"
               px="5"
               py="3"
@@ -37,10 +36,28 @@ export const SalesReportsTabs: React.FC<any> = ({ selected }) => {
           </ChakraLink>
         </Box>
         <Box as="li">
-          <ChakraLink as={ReactRouterLink} to="/admin/collections/invoices">
+          <ChakraLink href="/admin/collections/invoices?where[exported][equals]=false">
             <Box
               mb="-1px"
-              as="a"
+              display="block"
+              px="5"
+              py="3"
+              borderBottom="2px solid transparent"
+              data-selected={selected == "applications" ? "" : undefined}
+              _selected={{
+                borderColor: "teal.500",
+                color: "#000",
+                fontWeight: "700",
+              }}
+            >
+              Ready to invoice
+            </Box>
+          </ChakraLink>
+        </Box>
+        <Box as="li">
+          <ChakraLink href="/admin/collections/invoices">
+            <Box
+              mb="-1px"
               display="block"
               px="5"
               py="3"

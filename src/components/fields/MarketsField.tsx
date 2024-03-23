@@ -285,7 +285,7 @@ export const MarketField: FC<Props> = ({
           onChange={(newValue) => setDays([newValue] as Day[])}
           value={days ? days[0] : null}
         >
-          <HStack>
+          <HStack wrap="wrap">
             <Radio colorScheme="green" value="monday">
               Monday
             </Radio>
@@ -318,7 +318,7 @@ export const MarketField: FC<Props> = ({
           onChange={(newValue) => setSize(newValue as Size)}
           value={size}
         >
-          <HStack>
+          <HStack wrap="wrap">
             <Radio colorScheme="green" value="flagship">
               Flagship
             </Radio>
@@ -356,7 +356,7 @@ export const MarketField: FC<Props> = ({
           value={focus}
           onChange={(newValue) => setFocus(newValue as Focus[])}
         >
-          <HStack>
+          <HStack wrap="wrap">
             <Checkbox value="neighborhood">Neighborhood</Checkbox>
             <Checkbox value="downtown">Downtown</Checkbox>
             <Checkbox value="grocery">Grocery shopping</Checkbox>

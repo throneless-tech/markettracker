@@ -96,7 +96,7 @@ export const CardSalesDue: FC<CardProps> = ({ reports }) => {
           <Text
             lineHeight="1.6"
             fontWeight="semibold"
-            fontSize="10px"
+            fontSize={12}
             textTransform="uppercase"
             textDecoration="underline"
             color="#000000"
@@ -106,12 +106,12 @@ export const CardSalesDue: FC<CardProps> = ({ reports }) => {
           </Text>
           {approvedReports.map((report) => (
             <Stack justify="flex-start" align="flex-start" spacing={4}>
-              <Flex minWidth="404px" paddingY={1} width="100%" direction="row">
+              <Flex paddingY={1} width="100%" direction="row">
                 <Text
                   fontFamily="Outfit"
                   lineHeight="1.14"
                   fontWeight="semibold"
-                  fontSize="14px"
+                  fontSize={14}
                   textTransform="capitalize"
                   color="#000000"
                 >
@@ -140,7 +140,7 @@ export const CardSalesDue: FC<CardProps> = ({ reports }) => {
                   fontFamily="Outfit"
                   lineHeight="1.14"
                   fontWeight="regular"
-                  fontSize="14px"
+                  fontSize={14}
                   textTransform="capitalize"
                   color="#000000"
                   textAlign="end"

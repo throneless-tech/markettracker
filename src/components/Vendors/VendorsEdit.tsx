@@ -1,5 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
+import qs from "qs";
 
 // Payload imports
 import { useField, useForm } from "payload/components/forms";
@@ -20,6 +21,7 @@ import {
   Heading,
   HStack,
   Input,
+  Link,
   Radio,
   RadioGroup,
   Select,
@@ -62,7 +64,6 @@ type PrimaryContact = {
 };
 
 export const VendorsEdit: React.FC<any> = ({ data: vendor }) => {
-  // console.log("***vendor:", vendor);
   const { submit } = useForm();
   const { value: notes, setValue: setNotes } = useField<string>({
     path: "notes",
@@ -70,8 +71,14 @@ export const VendorsEdit: React.FC<any> = ({ data: vendor }) => {
   const [standing, setStanding] = useState<string>();
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
   const [contacts, setContacts] = useState([]);
+  const [licenses, setLicenses] = useState([]);
   const [vendorUser, setVendorUser] = useState<User>();
   const [primaryContact, setPrimaryContact] = useState<PrimaryContact>(null);
+
+  const formatDate = (dateString) => {
+    const d = new Date(dateString);
+    return d.toLocaleDateString("en-US");
+  };
 
   async function getVendorUser(userId) {
     const response = await fetch(`/api/users/${userId}`);
@@ -91,7 +98,28 @@ export const VendorsEdit: React.FC<any> = ({ data: vendor }) => {
     }
 
     if (vendor && vendor.user) {
+      const query = {
+        owner: {
+          equals: vendor.id,
+        },
+      };
+
+      const getVendorLicenses = async () => {
+        const stringifiedQuery = qs.stringify(
+          {
+            where: query, // ensure that `qs` adds the `where` property, too!
+          },
+          { addQueryPrefix: true },
+        );
+
+        const response = await fetch(`/api/licenses${stringifiedQuery}`);
+        let data = await response.json();
+        data = data.docs;
+        setLicenses(data);
+      };
+
       getVendorUser(vendor.user);
+      getVendorLicenses();
     }
   }, [vendor]);
 
@@ -111,6 +139,8 @@ export const VendorsEdit: React.FC<any> = ({ data: vendor }) => {
       setPrimaryContact(primary);
     }
   }, [contacts, vendorUser]);
+
+  useEffect(() => {}, [licenses]);
 
   const onChange = async (standing: string) => {
     try {
@@ -1250,6 +1280,61 @@ export const VendorsEdit: React.FC<any> = ({ data: vendor }) => {
                               <Radio value="false">No</Radio>
                             </Stack>
                           </RadioGroup>
+                        </AccordionPanel>
+                      </>
+                    )}
+                  </AccordionItem>
+                  <AccordionItem sx={{ border: "1px solid #000", marginY: 8 }}>
+                    {({ isExpanded }) => (
+                      <>
+                        <h2>
+                          <AccordionButton>
+                            <Box as="span" flex="1" textAlign="left">
+                              <Text
+                                textStyle="bodyMain"
+                                sx={{
+                                  fontWeight: 900,
+                                  textTransform: "uppercase",
+                                }}
+                              >
+                                Documents
+                              </Text>
+                            </Box>
+                            {isExpanded ? (
+                              <Text textStyle="bodyMain">Hide information</Text>
+                            ) : (
+                              <Text textStyle="bodyMain">Show information</Text>
+                            )}
+                          </AccordionButton>
+                        </h2>
+                        <AccordionPanel>
+                          {licenses && licenses.length ? (
+                            licenses.map((license) => (
+                              <Box key={license.id} marginBottom={8}>
+                                {typeof license.document === "object" ? (
+                                  <Link
+                                    href={`/documents/${license.document.filename}`}
+                                    color="teal.600"
+                                    fontSize={20}
+                                  >
+                                    {license.document.filename}
+                                  </Link>
+                                ) : (
+                                  ""
+                                )}
+                                <Text>
+                                  {license.type == "license"
+                                    ? "Business license"
+                                    : "Business insurance document"}{" "}
+                                  uploaded on {formatDate(license.createdAt)}.
+                                </Text>
+                              </Box>
+                            ))
+                          ) : (
+                            <>
+                              <Text fontSize={18}>No documents found.</Text>
+                            </>
+                          )}
                         </AccordionPanel>
                       </>
                     )}
