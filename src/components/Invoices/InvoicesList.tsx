@@ -33,6 +33,7 @@ import {
 // components
 import { FooterAdmin } from "../FooterAdmin";
 import { InvoicesTabs } from "./InvoicesTabs";
+import { StatusDropdown } from "./StatusDropdown";
 
 const months = [
   "All",
@@ -491,7 +492,12 @@ const InvoicesList: React.FC<any> = (props) => {
                       <Td>${penaltySubtotal}</Td>
                       <Td>${total}</Td>
                       <Td>{new Date(date).toLocaleDateString("en-US")}</Td>
-                      <Td>{approved ? "Approved" : "Not approved"}</Td>
+                      <Td>
+                        <StatusDropdown
+                          status={approved ? "true" : "false"}
+                          id={invoice.id}
+                        />
+                      </Td>
                       {isNotExported ? null : (
                         <>
                           <PaidColumn paid={paid} invoiceId={invoice.id} />
