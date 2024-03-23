@@ -140,10 +140,10 @@ const CustomSalesReportsList: React.FC<any> = () => {
   const loadMore = () => {
     console.log("hasNextPage?  ", hasNextPage);
     console.log("load more fetching what page? ", page + 1);
-    getSalesReports(page + 1);
+    getSalesReports(false, page + 1);
   };
 
-  const getSalesReports = async (nextPage: number) => {
+  const getSalesReports = async (clear: boolean, pageToFetch: number) => {
     const queries = [];
     console.log("***vendorValue in getSalesReports: ", vendorValue);
     console.log("***marketValue in getSalesReports: ", marketValue);
@@ -170,8 +170,8 @@ const CustomSalesReportsList: React.FC<any> = () => {
         {
           where: queries[0],
           depth: 1,
-          limit: 10,
-          page: nextPage,
+          // limit: 10,
+          page: pageToFetch,
           // sort,
         },
         { addQueryPrefix: true },
@@ -183,8 +183,8 @@ const CustomSalesReportsList: React.FC<any> = () => {
             and: queries,
           },
           depth: 1,
-          limit: 10,
-          page: nextPage,
+          // limit: 10,
+          page: pageToFetch,
           // sort,
         },
         { addQueryPrefix: true },
@@ -192,9 +192,9 @@ const CustomSalesReportsList: React.FC<any> = () => {
     } else {
       stringifiedQuery = qs.stringify(
         {
-          page: nextPage,
+          page: pageToFetch,
           depth: 1,
-          limit: 10,
+          // limit: 10,
           // limit,
           // sort,
         },
@@ -204,21 +204,24 @@ const CustomSalesReportsList: React.FC<any> = () => {
 
     setIsFetching(true);
 
+    console.log("Stringified query: ", stringifiedQuery);
+
     try {
       const response = await fetch(
         `/api/sales-reports${stringifiedQuery ? stringifiedQuery : ""}`,
       );
       const json = await response.json();
       const newReports = json ? json.docs : [];
-      console.log("json =>", json);
 
-      if (nextPage === 1) {
-        console.log("nextPage in the function,", nextPage);
+      if (clear) {
+        console.log("CLEAR IS TRUE, page in the function,", page);
         setPage(json.page);
-        console.log("if nextPage is 1 reports???", reports);
+        console.log("newReports?!", newReports);
         setReports(newReports);
         setHasNextPage(json.hasNextPage);
       } else {
+        console.log("CONCAT, DON'T CLEAR what's the page=>", json.page);
+        console.log("reports that shouldn't be cleared =>", reports);
         setPage(json.page);
         setHasNextPage(json.hasNextPage);
         setReports(reports.concat(newReports));
@@ -229,96 +232,6 @@ const CustomSalesReportsList: React.FC<any> = () => {
       setIsFetching(false);
     }
   };
-
-  const getSalesReportsOld = useCallback(
-    async (nextPage: number) => {
-      const queries = [];
-      console.log("***vendorValue in getSalesReports: ", vendorValue);
-      console.log("***marketValue in getSalesReports: ", marketValue);
-      console.log("***monthValue in getSalesReports: ", monthValue);
-
-      if (vendorValue.toLowerCase() !== "all") {
-        queries.push({ vendor: { equals: vendorValue } });
-      }
-
-      if (monthValue.toLowerCase() !== "all") {
-        queries.push({ month: { equals: monthValue } });
-      }
-
-      if (marketValue.toLowerCase() !== "all") {
-        queries.push({ season: { equals: marketValue } });
-      }
-
-      if (isFetching) return;
-
-      let stringifiedQuery: string;
-
-      if (queries.length === 1) {
-        stringifiedQuery = qs.stringify(
-          {
-            where: queries[0],
-            depth: 1,
-            limit: 10,
-            page: nextPage,
-            // sort,
-          },
-          { addQueryPrefix: true },
-        );
-      } else if (queries.length > 1) {
-        stringifiedQuery = qs.stringify(
-          {
-            where: {
-              and: queries,
-            },
-            depth: 1,
-            limit: 10,
-            page: nextPage,
-            // sort,
-          },
-          { addQueryPrefix: true },
-        );
-      } else {
-        stringifiedQuery = qs.stringify(
-          {
-            page: nextPage,
-            depth: 1,
-            limit: 10,
-            // limit,
-            // sort,
-          },
-          { addQueryPrefix: true },
-        );
-      }
-
-      setIsFetching(true);
-
-      try {
-        const response = await fetch(
-          `/api/sales-reports${stringifiedQuery ? stringifiedQuery : ""}`,
-        );
-        const json = await response.json();
-        const newReports = json ? json.docs : [];
-        console.log("json =>", json);
-
-        if (nextPage === 1) {
-          console.log("nextPage in the function,", nextPage);
-          setPage(json.page);
-          console.log("if nextPage is 1 reports???", reports);
-          setReports(newReports);
-          setHasNextPage(json.hasNextPage);
-        } else {
-          setPage(json.page);
-          setHasNextPage(json.hasNextPage);
-          setReports(reports.concat(newReports));
-        }
-      } catch (error) {
-        console.error(error);
-      } finally {
-        setIsFetching(false);
-      }
-    },
-    [page, vendorValue, marketValue, monthValue],
-  );
 
   const handleMonthChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setMonthValue(event.target.value);
@@ -343,8 +256,8 @@ const CustomSalesReportsList: React.FC<any> = () => {
   // }, [page]);
 
   useEffect(() => {
-    console.log("is this happening?");
-    getSalesReports(1);
+    console.log("USE EFFECT FOR MARKETVALUE MONTHVALUE VENDORVALUE CHANGE");
+    getSalesReports(true, 1);
   }, [marketValue, monthValue, vendorValue]);
 
   // useEffect(() => {
@@ -352,6 +265,11 @@ const CustomSalesReportsList: React.FC<any> = () => {
   //     setPage((prevState) => prevState + 1);
   //   }
   // }, [inView]);
+
+  useEffect(() => {
+    // reports.forEach(report => console.log("report!!!", report.vendor.name, report.season.name, new Date(report.day).toLocaleDateString("en-US")))
+    console.log("that was the reports useEffect");
+  }, [reports]);
 
   useEffect(() => {
     const getSeasons = async () => {
@@ -696,3 +614,93 @@ const CustomSalesReportsList: React.FC<any> = () => {
 };
 
 export default CustomSalesReportsList;
+
+// const getSalesReportsOld = useCallback(
+//   async (nextPage: number) => {
+//     const queries = [];
+//     console.log("***vendorValue in getSalesReports: ", vendorValue);
+//     console.log("***marketValue in getSalesReports: ", marketValue);
+//     console.log("***monthValue in getSalesReports: ", monthValue);
+
+//     if (vendorValue.toLowerCase() !== "all") {
+//       queries.push({ vendor: { equals: vendorValue } });
+//     }
+
+//     if (monthValue.toLowerCase() !== "all") {
+//       queries.push({ month: { equals: monthValue } });
+//     }
+
+//     if (marketValue.toLowerCase() !== "all") {
+//       queries.push({ season: { equals: marketValue } });
+//     }
+
+//     if (isFetching) return;
+
+//     let stringifiedQuery: string;
+
+//     if (queries.length === 1) {
+//       stringifiedQuery = qs.stringify(
+//         {
+//           where: queries[0],
+//           depth: 1,
+//           limit: 10,
+//           page: nextPage,
+//           // sort,
+//         },
+//         { addQueryPrefix: true },
+//       );
+//     } else if (queries.length > 1) {
+//       stringifiedQuery = qs.stringify(
+//         {
+//           where: {
+//             and: queries,
+//           },
+//           depth: 1,
+//           limit: 10,
+//           page: nextPage,
+//           // sort,
+//         },
+//         { addQueryPrefix: true },
+//       );
+//     } else {
+//       stringifiedQuery = qs.stringify(
+//         {
+//           page: nextPage,
+//           depth: 1,
+//           limit: 10,
+//           // limit,
+//           // sort,
+//         },
+//         { addQueryPrefix: true },
+//       );
+//     }
+
+//     setIsFetching(true);
+
+//     try {
+//       const response = await fetch(
+//         `/api/sales-reports${stringifiedQuery ? stringifiedQuery : ""}`,
+//       );
+//       const json = await response.json();
+//       const newReports = json ? json.docs : [];
+//       console.log("json =>", json);
+
+//       if (nextPage === 1) {
+//         console.log("nextPage in the function,", nextPage);
+//         setPage(json.page);
+//         console.log("if nextPage is 1 reports???", reports);
+//         setReports(newReports);
+//         setHasNextPage(json.hasNextPage);
+//       } else {
+//         setPage(json.page);
+//         setHasNextPage(json.hasNextPage);
+//         setReports(reports.concat(newReports));
+//       }
+//     } catch (error) {
+//       console.error(error);
+//     } finally {
+//       setIsFetching(false);
+//     }
+//   },
+//   [page, vendorValue, marketValue, monthValue],
+// );
