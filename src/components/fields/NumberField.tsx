@@ -162,7 +162,11 @@ export const NumberField: FC<Props> = ({
       ) : (
         ""
       )}
-      {description ? <FormHelperText>{description}</FormHelperText> : ""}
+      {description ? (
+        <FormHelperText marginBottom={1}>{description}</FormHelperText>
+      ) : (
+        ""
+      )}
       <ErrorTooltip message={errorMessage} showError={showError}>
         <NumberInput
           isDisabled={isDisabled}
@@ -170,7 +174,6 @@ export const NumberField: FC<Props> = ({
           colorScheme="green"
           min={min}
           max={max}
-          // sx={{ width: 16 }}
           value={value}
           onChange={(newValue) => setValue(Number(newValue))}
           sx={{ width: 260 }}

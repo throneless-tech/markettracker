@@ -344,7 +344,40 @@ export const Seasons: CollectionConfig = {
             {
               name: "type",
               type: "select",
-              options: ["farmer", "producer"],
+              options: [
+                {
+                  label: "Farm",
+                  value: "farm",
+                },
+                {
+                  label: "Farm producer",
+                  value: "farmProducer",
+                },
+                {
+                  label: "Farm concessionaire",
+                  value: "farmConcessionaire",
+                },
+                {
+                  label: "Non-farm producer",
+                  value: "nonFarmProducer",
+                },
+                {
+                  label: "Concessionaire",
+                  value: "concessionaire",
+                },
+                {
+                  label: "Farm-sourced alcohol",
+                  value: "farmSourcedAlcohol",
+                },
+                {
+                  label: "Coffee/exceptions",
+                  value: "coffeeExceptions",
+                },
+                {
+                  label: "Specially defined",
+                  value: "speciallyDefined",
+                },
+              ],
             },
           ],
         },

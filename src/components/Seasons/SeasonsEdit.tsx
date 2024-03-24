@@ -36,6 +36,8 @@ import {
   ModalFooter,
   ModalHeader,
   ModalOverlay,
+  NumberInput,
+  NumberInputField,
   Radio,
   RadioGroup,
   Select,
@@ -81,6 +83,7 @@ import stats2 from "../../assets/images/FF-sample-stats-2.jpg";
 import stats3 from "../../assets/images/FF-sample-stats-3.jpg";
 import stats4 from "../../assets/images/FF-sample-stats-4.jpg";
 import { SeasonsTabs } from "./SeasonsTabs";
+import { number } from "payload/dist/fields/validations";
 
 export const SeasonsEdit: React.FC<any> = (props) => {
   const { submit } = useForm();
@@ -112,6 +115,37 @@ export const SeasonsEdit: React.FC<any> = (props) => {
   const { value: operators, setValue: setOperators } = useField<string[]>({
     path: "operators",
   });
+  const { value: farmFee, setValue: setFarmFee } = useField<string>({
+    path: "fees.fee.farm",
+  });
+  const { value: farmProducerFee, setValue: setFarmProducerFee } =
+    useField<string>({
+      path: "fees.fee.farmProducer",
+    });
+  const { value: farmConcessionaireFee, setValue: setFarmConcessionaireFee } =
+    useField<string>({
+      path: "fees.fee.farmConcessionaire",
+    });
+  const { value: nonFarmProducerFee, setValue: setNonFarmProducerFee } =
+    useField<string>({
+      path: "fees.fee.nonFarmProducer",
+    });
+  const { value: concessionaireFee, setValue: setConcessionaireFee } =
+    useField<string>({
+      path: "fees.fee.concessionaire",
+    });
+  const { value: farmSourcedAlcoholFee, setValue: setFarmSourcedAlcoholFee } =
+    useField<string>({
+      path: "fees.fee.farmSourcedAlcohol",
+    });
+  const { value: coffeeExceptionsFee, setValue: setCoffeeExceptionsFee } =
+    useField<string>({
+      path: "fees.fee.coffeeExceptions",
+    });
+  const { value: speciallyDefinedFee, setValue: setSpeciallyDefinedFee } =
+    useField<string>({
+      path: "fees.fee.speciallyDefined",
+    });
   const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
 
@@ -143,6 +177,8 @@ export const SeasonsEdit: React.FC<any> = (props) => {
       endpoint = `/api/seasons`;
     }
     try {
+      console.log(fields);
+
       const response = await fetch(endpoint, {
         method: method,
         credentials: "include",
@@ -559,7 +595,7 @@ export const SeasonsEdit: React.FC<any> = (props) => {
                   </Button>
                   <Modal isOpen={isOpen} onClose={onClose} size={"full"}>
                     <ModalOverlay />
-                    <ModalContent>
+                    <ModalContent maxW={"container.lg"}>
                       <ModalHeader>
                         <Heading
                           as="h2"
@@ -608,12 +644,15 @@ export const SeasonsEdit: React.FC<any> = (props) => {
                             direction={["column", "row"]}
                             justify="space-between"
                             marginTop={8}
+                            wrap="nowrap"
                           >
                             <Heading
                               as="h2"
                               textStyle="h4"
                               size="md"
-                              width={"100%"}
+                              marginBottom={[4, 0]}
+                              marginRight={[0, 4]}
+                              width={["100%", 700]}
                             >
                               Accepting applications (required)
                             </Heading>
@@ -643,23 +682,181 @@ export const SeasonsEdit: React.FC<any> = (props) => {
                             justify="space-between"
                             marginTop={8}
                           >
-                            <Stack direction={["column", "row"]} marginTop={4}>
-                              <Text
-                                color={"gray.700"}
-                                fontSize={"2xl"}
-                                fontWeight={700}
-                                textTransform={"uppercase"}
-                                width={"160px"}
+                            <Flex
+                              align="center"
+                              direction={["column", "row"]}
+                              justify="space-between"
+                              marginTop={4}
+                              wrap="nowrap"
+                              width={"100%"}
+                            >
+                              <Heading
+                                as="h2"
+                                marginBottom={[4, 0]}
+                                textStyle="h4"
+                                size="md"
+                                width={["100%", 200]}
+                              >
+                                Market fee
+                              </Heading>
+                              <Divider
+                                color="gray.700"
+                                borderBottomWidth={2}
+                                opacity={1}
+                                width={"100%"}
+                              />
+                            </Flex>
+                            <Text
+                              color={"gray.600"}
+                              marginTop={4}
+                              fontSize={"md"}
+                            >
+                              Fill out the market fee percentages for this
+                              season. If a specific vendor has a one-off market
+                              fee, add it via their application for the related
+                              market.
+                            </Text>
+                            <Flex
+                              align={"flex-start"}
+                              direction={["column", "row"]}
+                              gap={4}
+                              justify={"flex-start"}
+                              wrap="wrap"
+                            >
+                              <FormControl
+                                fontSize={"small"}
+                                maxWidth={"180px"}
+                              >
+                                <FormLabel>Farm</FormLabel>
+                                <NumberInput
+                                  min={0}
+                                  value={farmFee}
+                                  onChange={(value) => setFarmFee(value)}
+                                >
+                                  <NumberInputField />
+                                </NumberInput>
+                              </FormControl>
+                              <FormControl
+                                fontSize={"small"}
+                                maxWidth={"180px"}
+                              >
+                                <FormLabel>Farm producer</FormLabel>
+                                <NumberInput
+                                  min={0}
+                                  value={farmProducerFee}
+                                  onChange={(value) =>
+                                    setFarmProducerFee(value)
+                                  }
+                                >
+                                  <NumberInputField />
+                                </NumberInput>
+                              </FormControl>
+                              <FormControl
+                                fontSize={"small"}
+                                maxWidth={"180px"}
+                              >
+                                <FormLabel>Farm Concessionaire</FormLabel>
+                                <NumberInput
+                                  min={0}
+                                  value={farmConcessionaireFee}
+                                  onChange={(value) =>
+                                    setFarmConcessionaireFee(value)
+                                  }
+                                >
+                                  <NumberInputField />
+                                </NumberInput>
+                              </FormControl>
+                              <FormControl
+                                fontSize={"small"}
+                                maxWidth={"180px"}
+                              >
+                                <FormLabel>Non-farm Producer</FormLabel>
+                                <NumberInput
+                                  min={0}
+                                  value={nonFarmProducerFee}
+                                  onChange={(value) =>
+                                    setNonFarmProducerFee(value)
+                                  }
+                                >
+                                  <NumberInputField />
+                                </NumberInput>
+                              </FormControl>
+                              <FormControl
+                                fontSize={"small"}
+                                maxWidth={"180px"}
+                              >
+                                <FormLabel>Concessionaire</FormLabel>
+                                <NumberInput
+                                  min={0}
+                                  value={concessionaireFee}
+                                  onChange={(value) =>
+                                    setConcessionaireFee(value)
+                                  }
+                                >
+                                  <NumberInputField />
+                                </NumberInput>
+                              </FormControl>
+                              <FormControl
+                                fontSize={"small"}
+                                maxWidth={"180px"}
+                              >
+                                <FormLabel>Farm-sourced Alcohol</FormLabel>
+                                <NumberInput
+                                  min={0}
+                                  value={farmSourcedAlcoholFee}
+                                  onChange={(value) =>
+                                    setFarmSourcedAlcoholFee(value)
+                                  }
+                                >
+                                  <NumberInputField />
+                                </NumberInput>
+                              </FormControl>
+                              <FormControl
+                                fontSize={"small"}
+                                maxWidth={"180px"}
+                              >
+                                <FormLabel>Coffee/exceptions</FormLabel>
+                                <NumberInput
+                                  min={0}
+                                  value={coffeeExceptionsFee}
+                                  onChange={(value) =>
+                                    setCoffeeExceptionsFee(value)
+                                  }
+                                >
+                                  <NumberInputField />
+                                </NumberInput>
+                              </FormControl>
+                            </Flex>
+                          </Stack>
+                          <Stack
+                            align="flex-start"
+                            justify="space-between"
+                            marginTop={8}
+                          >
+                            <Flex
+                              align="center"
+                              direction={["column", "row"]}
+                              justify="space-between"
+                              marginTop={4}
+                              width={"100%"}
+                              wrap="nowrap"
+                            >
+                              <Heading
+                                as="h2"
+                                marginBottom={[4, 0]}
+                                textStyle="h4"
+                                size="md"
+                                width={["100%", 200]}
                               >
                                 Operators
-                              </Text>
+                              </Heading>
                               <Divider
-                                sx={{
-                                  borderColor: "gray.600",
-                                  borderBottomWidth: 2,
-                                }}
+                                color="gray.700"
+                                borderBottomWidth={2}
+                                opacity={1}
+                                width={"100%"}
                               />
-                            </Stack>
+                            </Flex>
                             <Text
                               color={"gray.600"}
                               marginTop={4}
