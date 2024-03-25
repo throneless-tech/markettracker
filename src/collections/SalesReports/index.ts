@@ -209,15 +209,25 @@ export const SalesReports: CollectionConfig = {
     },
     {
       name: "needsVendorAction",
-      label: "Vendor has edited this report",
+      label: "Vendor still needs to update this report",
       type: "checkbox",
-      //required: true,
     },
     {
       name: "needsStaffAction",
       label: "Staff has entered all coupons for this report",
       type: "checkbox",
-      //required: true,
+    },
+    {
+      name: "vendorEdited",
+      label: "Vendor has edited this report",
+      type: "checkbox",
+      defaultValue: false,
+    },
+    {
+      name: "operatorEdited",
+      label: "Marker operator has edited this report",
+      type: "checkbox",
+      defaultValue: false,
     },
     {
       name: "location",

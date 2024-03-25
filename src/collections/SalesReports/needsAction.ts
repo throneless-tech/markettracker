@@ -6,7 +6,6 @@ export const needsAction: CollectionBeforeChangeHook = async ({
   operation,
 }) => {
   if (operation === "create" || operation === "update") {
-    console.log("DATA =>", data);
     let {
       producePlus,
       cashAndCredit,
@@ -54,6 +53,14 @@ export const needsAction: CollectionBeforeChangeHook = async ({
       needsStaffAction = true;
     } else {
       needsStaffAction = false;
+    }
+
+    if (location === "MD" && (sfmnp === undefined || wic === undefined)) {
+      needsVendorAction = true;
+    }
+
+    if (location === "VA" && sfmnp === undefined) {
+      needsVendorAction = true;
     }
 
     return {
