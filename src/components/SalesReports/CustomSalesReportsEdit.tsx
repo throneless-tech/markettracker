@@ -92,6 +92,14 @@ const CustomSalesReportsEdit: React.FC<any> = () => {
     path: "marketFee",
   });
 
+  const { value: vendorEdited, setValue: setVendorEdited } = useField({
+    path: "vendorEdited",
+  });
+
+  const { value: operatorEdited, setValue: setOperatorEdited } = useField({
+    path: "operatorEdited",
+  });
+
   // dropdown
   const handleSeasonChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setSeasonId(event.target.value);
@@ -104,6 +112,18 @@ const CustomSalesReportsEdit: React.FC<any> = () => {
   };
 
   const submitForm = async () => {
+    // if vendor or operator hasn't edited, set to true upon submit
+    if (role === "vendor" && !vendorEdited) {
+      console.log(`role === "vendor" && !vendorEdited is happening`);
+      setVendorEdited(true);
+    }
+
+    if (role === "operator" && !operatorEdited) {
+      setOperatorEdited(true);
+    }
+
+    console.log("vendorEdited=>", vendorEdited);
+
     try {
       await submit();
     } catch (err) {
@@ -224,6 +244,14 @@ const CustomSalesReportsEdit: React.FC<any> = () => {
       setInvoiced(true);
     }
 
+    if (thisReport && thisReport.vendorEdited) {
+      setVendorEdited(true);
+    }
+
+    if (thisReport && thisReport.operatorEdited) {
+      setOperatorEdited(true);
+    }
+
     if (
       thisReport &&
       thisReport.season &&
@@ -236,7 +264,7 @@ const CustomSalesReportsEdit: React.FC<any> = () => {
 
   useEffect(() => {
     // market location determines editability of some coupon forms
-
+    console.log("**** ROLE", role);
     // PRODUCE PLUS
     if (location === "DC" && role !== "vendor") {
       setPpDisable(false);
@@ -255,16 +283,13 @@ const CustomSalesReportsEdit: React.FC<any> = () => {
       (role == "vendor" && (location === "VA" || location == "MD"))
     ) {
       setSfmnpDisable(false);
-    } else {
+    } else if (role == "vendor" && location == "DC") {
       setSfmnpDisable(true);
     }
 
     // WIC
     // only editable by vendor in MD, but admin can edit
-    if (
-      (role == "admin" && location !== "VA") ||
-      (role == "vendor" && location == "MD")
-    ) {
+    if (role == "admin" || (role == "vendor" && location == "MD")) {
       setWicDisable(false);
     } else {
       // unavailable in VA
