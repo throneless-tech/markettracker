@@ -4,8 +4,15 @@ import { useAuth } from "payload/components/utilities";
 import { useInView } from "react-intersection-observer";
 import qs from "qs";
 
+// utils
+import fetchAllSeasons from "../../utils/fetchAllSeasons";
+import fetchAllVendors from "../../utils/fetchAllVendors";
+
+import { Season, Vendor } from "payload/generated-types";
+
 // Chakra imports
 import {
+  Center,
   Container,
   Box,
   Divider,
@@ -28,6 +35,7 @@ import {
   Th,
   Td,
   TableContainer,
+  VStack,
 } from "@chakra-ui/react";
 
 // components
@@ -98,20 +106,30 @@ const InvoicesList: React.FC<any> = (props) => {
   const { user } = useAuth();
   const role = user.role;
   const [invoices, setInvoices] = useState([]);
-  const [monthValue, setMonthValue] = useState("All");
-  //const [market, setMarket] = useState("All");
-  const [page, setPage] = useState<number>(1);
-  const { ref, inView } = useInView({});
+  // const { ref, inView } = useInView({});
   const [isNotExported, setIsNotExported] = useState(false);
 
   const history = useHistory();
 
   //   const [filtered, setFiltered] = useState([])
 
+  const [monthValue, setMonthValue] = useState("All");
+  // const [market, setMarket] = useState("All");
+  const [vendorValue, setVendorValue] = useState<string>("All");
+  const [vendors, setVendors] = useState<(Vendor | string)[]>(["All"]);
+
+  // lazy loading
+  const [isFetching, setIsFetching] = useState<boolean>(false);
+  const [page, setPage] = useState<number>(1);
+  const [hasNextPage, setHasNextPage] = useState<boolean>(false);
+
   const handleMonthChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setMonthValue(event.target.value);
   };
 
+  const handleVendorChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    setVendorValue(event.target.value);
+  };
   const viewInvoice = (invoice) => {
     history.push({
       pathname: `/admin/collections/invoices/${invoice.id}`,
@@ -119,11 +137,24 @@ const InvoicesList: React.FC<any> = (props) => {
     });
   };
 
-  const getInvoices = async (nextPage: number, isNotExported: boolean) => {
+  const getInvoices = async (
+    clear: boolean,
+    nextPage: number,
+    isNotExported: boolean,
+  ) => {
     const queries = [];
     if (isNotExported) {
       queries.push({ exported: { equals: false } });
     }
+
+    if (role === "vendor") {
+      queries.push({ vendor: { equals: (user.vendor as Vendor).id } });
+    }
+
+    if (vendorValue.toLowerCase() !== "all") {
+      queries.push({ vendor: { equals: vendorValue } });
+    }
+
     if (monthValue.toLowerCase() !== "all") {
       queries.push({ marketMonth: { equals: monthValue.toLowerCase() } });
     }
@@ -141,7 +172,7 @@ const InvoicesList: React.FC<any> = (props) => {
       stringifiedQuery = qs.stringify(
         {
           where: {
-            and: queries[0],
+            and: queries,
           },
           page: nextPage,
         },
@@ -155,15 +186,26 @@ const InvoicesList: React.FC<any> = (props) => {
         { addQueryPrefix: true },
       );
     }
-    const response = await fetch(
-      `/api/invoices${stringifiedQuery ? stringifiedQuery : ""}`,
-    );
-    const json = await response.json();
-    const newInvoices = json ? json.docs : [];
-    if (nextPage === 1) {
-      setInvoices(newInvoices);
-    } else {
-      setInvoices(invoices.concat(newInvoices));
+
+    console.log("stringifiedquery: ", stringifiedQuery);
+    try {
+      const response = await fetch(
+        `/api/invoices${stringifiedQuery ? stringifiedQuery : ""}`,
+      );
+      const json = await response.json();
+      const newInvoices = json ? json.docs : [];
+
+      if (clear) {
+        setPage(json.page);
+        setInvoices(newInvoices);
+        setHasNextPage(json.hasNextPage);
+      } else {
+        setPage(json.page);
+        setHasNextPage(json.hasNextPage);
+        setInvoices(invoices.concat(newInvoices));
+      }
+    } catch (error) {
+      console.error(error);
     }
   };
 
@@ -188,32 +230,53 @@ const InvoicesList: React.FC<any> = (props) => {
 
     if (isNotExportedParam) {
       setIsNotExported(true);
-      getInvoices(page, true);
+      getInvoices(true, page, true);
     } else {
       setIsNotExported(false);
-      getInvoices(page, false);
+      getInvoices(true, page, false);
     }
   }, [isNotExported, page]);
 
-  useEffect(() => {
-    const params = new URLSearchParams(location.search);
-    const isNotExportedParam = params.get("where[exported][equals]");
+  // useEffect(() => {
+  //   const params = new URLSearchParams(location.search);
+  //   const isNotExportedParam = params.get("where[exported][equals]");
 
-    if (isNotExportedParam) {
-      setIsNotExported(true);
-      getInvoices(1, true);
-    } else {
-      setIsNotExported(false);
-      getInvoices(1, false);
-    }
-    setPage(1);
-  }, [monthValue]);
+  //   if (isNotExportedParam) {
+  //     setIsNotExported(true);
+  //     getInvoices(1, true);
+  //   } else {
+  //     setIsNotExported(false);
+  //     getInvoices(1, false);
+  //   }
+  //   setPage(1);
+  // }, [monthValue]);
+
+  // useEffect(() => {
+  //   if (inView) {
+  //     setPage((prevState) => prevState + 1);
+  //   }
+  // }, [inView, isNotExported]);
+
+  const loadMore = () => {
+    getInvoices(false, page + 1, isNotExported);
+  };
 
   useEffect(() => {
-    if (inView) {
-      setPage((prevState) => prevState + 1);
-    }
-  }, [inView, isNotExported]);
+    getInvoices(true, 1, isNotExported);
+  }, [monthValue, vendorValue]);
+
+  useEffect(() => {
+    const getVendors = async () => {
+      try {
+        const fetched = await fetchAllVendors();
+        setVendors([...vendors, ...fetched.docs]);
+      } catch (error) {
+        console.log(`Error occurred fetching vendors: `, error);
+      }
+    };
+
+    getVendors();
+  }, []);
 
   return (
     <>
@@ -255,81 +318,73 @@ const InvoicesList: React.FC<any> = (props) => {
           ) : null}
         </Flex>
         <Divider color="gray.900" borderBottomWidth={2} opacity={1} />
-        <Grid templateColumns="repeat(2, 5fr)" gap={4} marginTop={10}>
-          <GridItem>
-            <Spacer />
-            <Box>
-              <FormControl sx={{ alignItems: "center", display: "flex" }}>
-                <FormLabel>
-                  <Text
-                    fontFamily="Zilla Slab"
-                    lineHeight="1"
-                    fontWeight="semibold"
-                    fontSize="24px"
-                    letterSpacing="0.03em"
-                    textTransform="capitalize"
-                    color="gray.600"
-                  >
-                    Market month
-                  </Text>
-                </FormLabel>
-                <Select
-                  value={monthValue}
-                  maxWidth={"360px"}
-                  onChange={handleMonthChange}
-                  sx={{ color: "gray.700" }}
+        <VStack align="flex-start" marginY={8}>
+          <Box>
+            <FormControl sx={{ alignItems: "center", display: "flex" }}>
+              <FormLabel>
+                <Text
+                  fontFamily="Zilla Slab"
+                  lineHeight="1"
+                  fontWeight="semibold"
+                  fontSize="24px"
+                  letterSpacing="0.03em"
+                  textTransform="capitalize"
+                  color="gray.600"
                 >
-                  {months.map((month: string, idx: React.Key) => {
-                    return (
-                      <option value={month.toLowerCase()} key={idx}>
-                        {month}
-                      </option>
-                    );
-                  })}
-                </Select>
-              </FormControl>
-            </Box>
-          </GridItem>
-          <GridItem>
-            <Spacer />
-            <Box>
-              {/*
-              <FormControl sx={{ alignItems: "center", display: "flex" }}>
-                <FormLabel>
-                  <Text
-                    fontFamily="Zilla Slab"
-                    lineHeight="1"
-                    fontWeight="semibold"
-                    fontSize="24px"
-                    letterSpacing="0.03em"
-                    textTransform="capitalize"
-                    color="gray.600"
-                  >
-                    Choose a market
-                  </Text>
-                </FormLabel>
-                <Select
-                  value={marketValue}
-                  maxWidth={"360px"}
-                  onChange={handleMarketChange}
-                  sx={{ color: "gray.700" }}
+                  Market month
+                </Text>
+              </FormLabel>
+              <Select
+                value={monthValue}
+                maxWidth={"360px"}
+                onChange={handleMonthChange}
+                sx={{ color: "gray.700" }}
+              >
+                {months.map((month: string, idx: React.Key) => {
+                  return (
+                    <option value={month.toLowerCase()} key={idx}>
+                      {month}
+                    </option>
+                  );
+                })}
+              </Select>
+            </FormControl>
+          </Box>
+          <Box>
+            <FormControl sx={{ alignItems: "center", display: "flex" }}>
+              <FormLabel>
+                <Text
+                  fontFamily="Zilla Slab"
+                  lineHeight="1"
+                  fontWeight="semibold"
+                  fontSize="24px"
+                  letterSpacing="0.03em"
+                  textTransform="capitalize"
+                  color="gray.600"
                 >
-                  {markets.map((market) => {
-                    return (
-                      <option
-                        value={typeof market === "object" ? market.id : "all"}
-                        key={typeof market === "object" ? market.id : "All"}
-                      >
-                        {typeof market === "object" ? market.name : "All"}
-                      </option>
-                    );
-                  })}
-                </Select>
-              </FormControl>
-              */}
-            </Box>
-          </GridItem>
-        </Grid>
+                  Choose a vendor
+                </Text>
+              </FormLabel>
+              <Select
+                value={vendorValue}
+                maxWidth={"360px"}
+                onChange={handleVendorChange}
+                sx={{ color: "gray.700" }}
+              >
+                {vendors.map((vendor) => {
+                  return (
+                    <option
+                      value={typeof vendor === "object" ? vendor.id : "all"}
+                      key={typeof vendor === "object" ? vendor.id : "All"}
+                    >
+                      {typeof vendor === "object" ? vendor.name : "All"}
+                    </option>
+                  );
+                })}
+              </Select>
+            </FormControl>
+          </Box>
+        </VStack>
         <TableContainer marginTop={8}>
           <Table
             variant="striped"
@@ -466,7 +521,7 @@ const InvoicesList: React.FC<any> = (props) => {
                   return (
                     <Tr
                       key={invoice.id}
-                      ref={idx === invoices.length - 1 ? ref : null}
+                      // ref={idx === invoices.length - 1 ? ref : null}
                     >
                       <Td
                         sx={{
@@ -531,6 +586,11 @@ const InvoicesList: React.FC<any> = (props) => {
             </Tbody>
           </Table>
         </TableContainer>
+        {hasNextPage ? (
+          <Center marginTop={6}>
+            <Button onClick={loadMore}>Load more</Button>
+          </Center>
+        ) : null}
       </Container>
       <FooterAdmin />
     </>
