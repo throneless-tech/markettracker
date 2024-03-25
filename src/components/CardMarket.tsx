@@ -121,7 +121,7 @@ export const CardMarket: FC<CardProps> = ({ applications }) => {
                 <Spacer
                   sx={{ position: "relative" }}
                   _before={{
-                    borderBottom: "1px dotted black",
+                    borderBottom: "1px dotted #000",
                     borderWidth: "2px",
                     bottom: 0,
                     content: '" "',

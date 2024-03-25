@@ -21,20 +21,24 @@ import {
   Center,
   Divider,
   Flex,
+  FormControl,
+  FormLabel,
   Grid,
   GridItem,
   Heading,
-  HStack,
-  Input,
-  LinkBox,
-  LinkOverlay,
+  Modal,
+  ModalBody,
+  ModalCloseButton,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  ModalOverlay,
+  Select,
   Spacer,
   Stack,
   Text,
-  FormControl,
-  FormLabel,
-  FormHelperText,
-  Select,
+  useDisclosure,
+  HStack,
 } from "@chakra-ui/react";
 
 const CustomSalesReportsEdit: React.FC<any> = () => {
@@ -42,6 +46,27 @@ const CustomSalesReportsEdit: React.FC<any> = () => {
   const role = user.role;
   const history: any = useHistory();
   const { submit, getData } = useForm();
+
+  // for the submit confirmation modal
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const [cashAndCreditSales, setCashAndCreditSales] = useState(0);
+  const { value: cashAndCredit } = useField<string>({
+    path: "cashAndCredit",
+  });
+  const { value: producePlus } = useField<string>({
+    path: "producePlus",
+  });
+  const { value: sfmnp } = useField<string>({
+    path: "sfmnp",
+  });
+  const { value: wic } = useField<string>({
+    path: "wic",
+  });
+
+  const calculateTotal = () => {
+    const sum = (cashAndCredit ? Number(cashAndCredit) : 0) + (producePlus ? Number(producePlus) : 0)  + (sfmnp ? Number(sfmnp) : 0) + (wic ? Number(wic) : 0)
+    return sum;
+  }
 
   // for the dropdown options
   const [seasons, setSeasons] = useState([]);
@@ -114,7 +139,7 @@ const CustomSalesReportsEdit: React.FC<any> = () => {
   const submitForm = async () => {
     // if vendor or operator hasn't edited, set to true upon submit
     if (role === "vendor" && !vendorEdited) {
-      console.log(`role === "vendor" && !vendorEdited is happening`);
+      // console.log(`role === "vendor" && !vendorEdited is happening`);
       setVendorEdited(true);
     }
 
@@ -122,7 +147,7 @@ const CustomSalesReportsEdit: React.FC<any> = () => {
       setOperatorEdited(true);
     }
 
-    console.log("vendorEdited=>", vendorEdited);
+    // console.log("vendorEdited=>", vendorEdited);
 
     try {
       await submit();
@@ -264,7 +289,7 @@ const CustomSalesReportsEdit: React.FC<any> = () => {
 
   useEffect(() => {
     // market location determines editability of some coupon forms
-    console.log("**** ROLE", role);
+    // console.log("**** ROLE", role);
     // PRODUCE PLUS
     if (location === "DC" && role !== "vendor") {
       setPpDisable(false);
@@ -358,6 +383,9 @@ const CustomSalesReportsEdit: React.FC<any> = () => {
     }
   }, [application, season, vendor]);
 
+  useEffect(() => {
+  }, [cashAndCreditSales])
+
   return (
     <>
       <Container maxW="container.xl" marginBottom={4}>
@@ -400,17 +428,17 @@ const CustomSalesReportsEdit: React.FC<any> = () => {
                   >
                     {seasons.length
                       ? seasons.map((season) => {
-                          return (
-                            <option
-                              value={
-                                typeof season === "object" ? season.id : ""
-                              }
-                              key={typeof season === "object" ? season.id : ""}
-                            >
-                              {typeof season === "object" ? season.name : ""}
-                            </option>
-                          );
-                        })
+                        return (
+                          <option
+                            value={
+                              typeof season === "object" ? season.id : ""
+                            }
+                            key={typeof season === "object" ? season.id : ""}
+                          >
+                            {typeof season === "object" ? season.name : ""}
+                          </option>
+                        );
+                      })
                       : null}
                   </Select>
                 </FormControl>
@@ -440,17 +468,17 @@ const CustomSalesReportsEdit: React.FC<any> = () => {
                   >
                     {vendors && vendors.length
                       ? vendors.map((vendor) => {
-                          return (
-                            <option
-                              value={
-                                typeof vendor === "object" ? vendor.id : ""
-                              }
-                              key={typeof vendor === "object" ? vendor.id : ""}
-                            >
-                              {typeof vendor === "object" ? vendor.name : ""}
-                            </option>
-                          );
-                        })
+                        return (
+                          <option
+                            value={
+                              typeof vendor === "object" ? vendor.id : ""
+                            }
+                            key={typeof vendor === "object" ? vendor.id : ""}
+                          >
+                            {typeof vendor === "object" ? vendor.name : ""}
+                          </option>
+                        );
+                      })
                       : null}
                   </Select>
                 </FormControl>
@@ -480,14 +508,14 @@ const CustomSalesReportsEdit: React.FC<any> = () => {
                   >
                     {dateOptions && dateOptions.length
                       ? dateOptions.map((dateObj) => {
-                          return (
-                            <option value={dateObj.date} key={dateObj.id}>
-                              {new Date(dateObj.date).toLocaleDateString(
-                                "en-US",
-                              )}
-                            </option>
-                          );
-                        })
+                        return (
+                          <option value={dateObj.date} key={dateObj.id}>
+                            {new Date(dateObj.date).toLocaleDateString(
+                              "en-US",
+                            )}
+                          </option>
+                        );
+                      })
                       : null}
                   </Select>
                 </FormControl>
@@ -519,6 +547,8 @@ const CustomSalesReportsEdit: React.FC<any> = () => {
                   label="Cash and credit sales"
                   isDisabled={false}
                   min={0}
+                  stateValue={cashAndCreditSales}
+                  setStateValue={setCashAndCreditSales}
                   // required
                   admin={{
                     description: "Enter the sum total of Cash and Credit sales",
@@ -717,11 +747,194 @@ const CustomSalesReportsEdit: React.FC<any> = () => {
             ) : null}
             {/** if a report has been invoiced, it can no longer be edited */}
             {!invoiced ? (
-              <Center marginTop={6}>
-                <Button onClick={submitForm}>
-                  Confirm and Submit Sales Report
-                </Button>
-              </Center>
+              <>
+                <Center marginTop={6}>
+                  <Button onClick={onOpen}>
+                    Confirm and submit sales report
+                  </Button>
+                </Center>
+                <Modal isOpen={isOpen} onClose={onClose}>
+                  <ModalOverlay />
+                  <ModalContent maxW={"container.lg"} padding={8}>
+                    <ModalHeader fontSize={24}>Submit sales report</ModalHeader>
+                    <ModalCloseButton />
+                    <ModalBody>
+                      <Text fontSize={18}>Review and confirm the sales report, then press submit</Text>
+                      <Container maxW={550} marginY={8}>
+                        <Box border="2px solid" borderColor={"gray.500"}>
+                          <HStack backgroundColor={"gray.200"} justify={"space-between"} paddingX={2}>
+                            <HStack>
+                              <Text color={"gray.700"} fontSize={24} fontWeight={600}>
+                                {thisMarket}
+                              </Text>
+                              <Text fontSize={18}>{" "}on{" "}</Text>
+                            </HStack>
+                            <Text color={"gray.700"} fontSize={24} fontWeight={600} >
+                              {thisDate}
+                            </Text>
+                          </HStack>
+                          <Stack backgroundColor={"gray.50"} paddingX={2}>
+                            <Flex paddingY={1} width="100%" direction="row">
+                              <Text
+                                fontFamily="Outfit"
+                                lineHeight="1.14"
+                                fontSize={20}
+                                color="#000000"
+                              >
+                                Cash &amp; credit card
+                              </Text>
+                              <Spacer
+                                sx={{ position: "relative" }}
+                                _before={{
+                                  borderBottom: "1px dotted #000",
+                                  borderWidth: "2px",
+                                  bottom: 0,
+                                  content: '" "',
+                                  display: "block",
+                                  left: "50%",
+                                  position: "absolute",
+                                  top: "50%",
+                                  transform: "translate(-50%, -50%)",
+                                  width: "90%",
+                                }}
+                              />
+                              <Text
+                                fontFamily="Outfit"
+                                lineHeight="1.14"
+                                fontWeight="regular"
+                                fontSize={14}
+                                color="#000000"
+                                textAlign="end"
+                              >
+                                ${cashAndCredit ? cashAndCredit : 0}
+                              </Text>
+                            </Flex>
+                            <Flex paddingY={1} width="100%" direction="row">
+                              <Text
+                                fontFamily="Outfit"
+                                lineHeight="1.14"
+                                fontSize={20}
+                                color="#000000"
+                              >
+                                Produce Plus
+                              </Text>
+                              <Spacer
+                                sx={{ position: "relative" }}
+                                _before={{
+                                  borderBottom: "1px dotted #000",
+                                  borderWidth: "2px",
+                                  bottom: 0,
+                                  content: '" "',
+                                  display: "block",
+                                  left: "50%",
+                                  position: "absolute",
+                                  top: "50%",
+                                  transform: "translate(-50%, -50%)",
+                                  width: "90%",
+                                }}
+                              />
+                              <Text
+                                fontFamily="Outfit"
+                                lineHeight="1.14"
+                                fontWeight="regular"
+                                fontSize={14}
+                                color="#000000"
+                                textAlign="end"
+                              >
+                                ${producePlus ? producePlus : 0}
+                              </Text>
+                            </Flex>
+                            <Flex paddingY={1} width="100%" direction="row">
+                              <Text
+                                fontFamily="Outfit"
+                                lineHeight="1.14"
+                                fontSize={20}
+                                color="#000000"
+                              >
+                                SFMNP
+                              </Text>
+                              <Spacer
+                                sx={{ position: "relative" }}
+                                _before={{
+                                  borderBottom: "1px dotted #000",
+                                  borderWidth: "2px",
+                                  bottom: 0,
+                                  content: '" "',
+                                  display: "block",
+                                  left: "50%",
+                                  position: "absolute",
+                                  top: "50%",
+                                  transform: "translate(-50%, -50%)",
+                                  width: "90%",
+                                }}
+                              />
+                              <Text
+                                fontFamily="Outfit"
+                                lineHeight="1.14"
+                                fontWeight="regular"
+                                fontSize={14}
+                                color="#000000"
+                                textAlign="end"
+                              >
+                                ${sfmnp ? sfmnp : 0}
+                              </Text>
+                            </Flex>
+                            <Flex paddingY={1} width="100%" direction="row">
+                              <Text
+                                fontFamily="Outfit"
+                                lineHeight="1.14"
+                                fontSize={20}
+                                color="#000000"
+                              >
+                                WIC
+                              </Text>
+                              <Spacer
+                                sx={{ position: "relative" }}
+                                _before={{
+                                  borderBottom: "1px dotted #000",
+                                  borderWidth: "2px",
+                                  bottom: 0,
+                                  content: '" "',
+                                  display: "block",
+                                  left: "50%",
+                                  position: "absolute",
+                                  top: "50%",
+                                  transform: "translate(-50%, -50%)",
+                                  width: "90%",
+                                }}
+                              />
+                              <Text
+                                fontFamily="Outfit"
+                                lineHeight="1.14"
+                                fontWeight="regular"
+                                fontSize={14}
+                                color="#000000"
+                                textAlign="end"
+                              >
+                                ${wic ? wic : 0}
+                              </Text>
+                            </Flex>
+                          </Stack>
+                          <HStack backgroundColor={"gray.100"} justify={"space-between"} paddingX={2}>
+                            <Text color={"gray.700"} fontSize={20} fontWeight={600} textTransform="uppercase">
+                              Total
+                            </Text>
+                            <Text>
+                              ${calculateTotal()}
+                            </Text>
+                          </HStack>
+                        </Box>
+                      </Container>
+                    </ModalBody>
+                    <ModalFooter>
+                      <Button variant="solid" onClick={submitForm} mr={3}>Submit report</Button>
+                      <Button colorScheme='blue' onClick={onClose}>
+                        Close
+                      </Button>
+                    </ModalFooter>
+                  </ModalContent>
+                </Modal>
+              </>
             ) : null}
           </FormControl>
         </Container>
