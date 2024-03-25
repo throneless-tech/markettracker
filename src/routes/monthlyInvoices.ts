@@ -222,15 +222,15 @@ const monthlyInvoices = async (req, res, next) => {
         },
       });
       invoicesArray.push(invoice);
-      for (const report of value) {
-        const updated = await req.payload.update({
-          collection: "sales-reports",
-          id: report.id,
-          data: {
-            invoiceDate: new Date().toISOString(),
-          },
-        });
-      }
+      // for (const report of value) {
+      //   const updated = await req.payload.update({
+      //     collection: "sales-reports",
+      //     id: report.id,
+      //     data: {
+      //       invoiceDate: new Date().toISOString(),
+      //     },
+      //   });
+      // }
     }
   } catch (err) {
     res.status(500).send({

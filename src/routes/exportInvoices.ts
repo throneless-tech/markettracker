@@ -2,12 +2,14 @@ import Papa from "papaparse";
 import payload from "payload";
 
 const exportInvoices = async (req, res, next) => {
-  const reports = await req.payload.find({
+  const invoices = await req.payload.find({
     collection: "invoices",
     limit: 9999,
   });
 
-  const exported = reports.docs.map((report) => {
+  console.log("invoices??", invoices);
+
+  const exported = invoices.docs.map((report) => {
     return {
       invoiceDate: report.date,
       customerName: report.vendor.name,
@@ -34,6 +36,27 @@ const exportInvoices = async (req, res, next) => {
       exported: true,
     },
     depth: 0,
+  });
+
+  /**
+   * when an invoice has been exported,
+   * the sales reports that make up that invoice
+   * needs an invoice date
+   * */
+  // const reportsToUpdate = []
+  const approvedInvoices = invoices.docs.filter((invoice) => invoice.approved);
+  const reportsToUpdate = approvedInvoices
+    .map((invoice) => invoice.reports)
+    .flat();
+
+  reportsToUpdate.map(async (report) => {
+    const updated = await req.payload.update({
+      collection: "sales-reports",
+      id: report.id,
+      data: {
+        invoiceDate: new Date().toISOString(),
+      },
+    });
   });
 
   const today = new Date();
