@@ -198,6 +198,11 @@ export const SalesReports: CollectionConfig = {
       type: "text",
     },
     {
+      name: "creditType",
+      label: "Credit Type",
+      type: "text",
+    },
+    {
       name: "marketFee",
       label: "Market fee percentage",
       type: "number",

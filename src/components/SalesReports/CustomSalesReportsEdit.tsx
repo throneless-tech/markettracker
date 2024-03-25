@@ -64,9 +64,13 @@ const CustomSalesReportsEdit: React.FC<any> = () => {
   });
 
   const calculateTotal = () => {
-    const sum = (cashAndCredit ? Number(cashAndCredit) : 0) + (producePlus ? Number(producePlus) : 0)  + (sfmnp ? Number(sfmnp) : 0) + (wic ? Number(wic) : 0)
+    const sum =
+      (cashAndCredit ? Number(cashAndCredit) : 0) +
+      (producePlus ? Number(producePlus) : 0) +
+      (sfmnp ? Number(sfmnp) : 0) +
+      (wic ? Number(wic) : 0);
     return sum;
-  }
+  };
 
   // for the dropdown options
   const [seasons, setSeasons] = useState([]);
@@ -369,8 +373,8 @@ const CustomSalesReportsEdit: React.FC<any> = () => {
     // setting market fees
     let marketFee;
 
-    if (season && season.fees && season.fees.length && vendor) {
-      marketFee = season.fees.filter((fee) => fee.fee.label === vendor.type);
+    if (season && season.fees && vendor && vendor.subtype) {
+      marketFee = season.fees[vendor.subtype];
     }
 
     if (marketFee && marketFee.length) {
@@ -383,8 +387,7 @@ const CustomSalesReportsEdit: React.FC<any> = () => {
     }
   }, [application, season, vendor]);
 
-  useEffect(() => {
-  }, [cashAndCreditSales])
+  useEffect(() => {}, [cashAndCreditSales]);
 
   return (
     <>
@@ -392,8 +395,9 @@ const CustomSalesReportsEdit: React.FC<any> = () => {
         <Flex my={8} justify="space-between" flexWrap={"wrap"}>
           <Box>
             {isEditView && history ? (
-              <Heading as="h2" sx={{ textTransform: "uppercase" }}>
-                Updating {thisVendor}'s Sales Report: {thisMarket} on {thisDate}
+              <Heading as="h1" sx={{ textTransform: "uppercase" }}>
+                Updating {thisVendor}'s Sales Report: <br />
+                {thisMarket} on {thisDate}
               </Heading>
             ) : (
               <Heading as="h1" sx={{ textTransform: "uppercase" }}>
@@ -428,17 +432,17 @@ const CustomSalesReportsEdit: React.FC<any> = () => {
                   >
                     {seasons.length
                       ? seasons.map((season) => {
-                        return (
-                          <option
-                            value={
-                              typeof season === "object" ? season.id : ""
-                            }
-                            key={typeof season === "object" ? season.id : ""}
-                          >
-                            {typeof season === "object" ? season.name : ""}
-                          </option>
-                        );
-                      })
+                          return (
+                            <option
+                              value={
+                                typeof season === "object" ? season.id : ""
+                              }
+                              key={typeof season === "object" ? season.id : ""}
+                            >
+                              {typeof season === "object" ? season.name : ""}
+                            </option>
+                          );
+                        })
                       : null}
                   </Select>
                 </FormControl>
@@ -468,17 +472,17 @@ const CustomSalesReportsEdit: React.FC<any> = () => {
                   >
                     {vendors && vendors.length
                       ? vendors.map((vendor) => {
-                        return (
-                          <option
-                            value={
-                              typeof vendor === "object" ? vendor.id : ""
-                            }
-                            key={typeof vendor === "object" ? vendor.id : ""}
-                          >
-                            {typeof vendor === "object" ? vendor.name : ""}
-                          </option>
-                        );
-                      })
+                          return (
+                            <option
+                              value={
+                                typeof vendor === "object" ? vendor.id : ""
+                              }
+                              key={typeof vendor === "object" ? vendor.id : ""}
+                            >
+                              {typeof vendor === "object" ? vendor.name : ""}
+                            </option>
+                          );
+                        })
                       : null}
                   </Select>
                 </FormControl>
@@ -508,14 +512,14 @@ const CustomSalesReportsEdit: React.FC<any> = () => {
                   >
                     {dateOptions && dateOptions.length
                       ? dateOptions.map((dateObj) => {
-                        return (
-                          <option value={dateObj.date} key={dateObj.id}>
-                            {new Date(dateObj.date).toLocaleDateString(
-                              "en-US",
-                            )}
-                          </option>
-                        );
-                      })
+                          return (
+                            <option value={dateObj.date} key={dateObj.id}>
+                              {new Date(dateObj.date).toLocaleDateString(
+                                "en-US",
+                              )}
+                            </option>
+                          );
+                        })
                       : null}
                   </Select>
                 </FormControl>
@@ -525,30 +529,18 @@ const CustomSalesReportsEdit: React.FC<any> = () => {
         </Flex>
         <Divider color="gray.900" borderBottomWidth={2} opacity={1} />
         <Container maxW="container.xl" marginTop={6} marginBottom={4}>
-          <Container maxW="container.xl" marginTop={6} marginBottom={4}>
-            <Text
-              fontFamily="Zilla Slab"
-              lineHeight="1"
-              fontWeight="semibold"
-              fontSize="24px"
-              letterSpacing="0.03em"
-              textTransform="capitalize"
-              color="gray.600"
-              width={200}
-            >
-              Sales
-            </Text>
-          </Container>
+          <Heading as="h2">Sales</Heading>
           <FormControl isRequired>
-            <Grid templateColumns="repeat(2, 5fr)" gap={4}>
+            <Grid
+              templateColumns={["repeat(1, 1fr)", "repeat(2, 5fr)"]}
+              gap={4}
+            >
               <GridItem>
                 <NumberField
                   path="cashAndCredit"
                   label="Cash and credit sales"
                   isDisabled={false}
                   min={0}
-                  stateValue={cashAndCreditSales}
-                  setStateValue={setCashAndCreditSales}
                   // required
                   admin={{
                     description: "Enter the sum total of Cash and Credit sales",
@@ -556,7 +548,7 @@ const CustomSalesReportsEdit: React.FC<any> = () => {
                   }}
                 />
               </GridItem>
-              <GridItem w="100%" h="10">
+              <GridItem>
                 <NumberField
                   path="producePlus"
                   label="Produce Plus sales"
@@ -568,8 +560,6 @@ const CustomSalesReportsEdit: React.FC<any> = () => {
                   }}
                 />
               </GridItem>
-            </Grid>
-            <Grid templateColumns="repeat(2, 5fr)" gap={4}>
               <GridItem>
                 <NumberField
                   path="sfmnp"
@@ -599,7 +589,10 @@ const CustomSalesReportsEdit: React.FC<any> = () => {
             </Grid>
             {role !== "vendor" ? (
               <>
-                <Grid templateColumns="repeat(2, 5fr)" gap={4}>
+                <Grid
+                  templateColumns={["repeat(1, 1fr)", "repeat(2, 5fr)"]}
+                  gap={4}
+                >
                   <GridItem>
                     <NumberField
                       path="ebt"
@@ -621,8 +614,6 @@ const CustomSalesReportsEdit: React.FC<any> = () => {
                       }}
                     />
                   </GridItem>
-                </Grid>
-                <Grid templateColumns="repeat(2, 5fr)" gap={4}>
                   <GridItem>
                     <NumberField
                       path="fmnpBonus"
@@ -646,8 +637,6 @@ const CustomSalesReportsEdit: React.FC<any> = () => {
                       }}
                     />
                   </GridItem>
-                </Grid>
-                <Grid templateColumns="repeat(2, 5fr)" gap={4}>
                   <GridItem>
                     <NumberField
                       path="marketGoods"
@@ -664,6 +653,7 @@ const CustomSalesReportsEdit: React.FC<any> = () => {
                     <NumberField
                       path="gWorld"
                       label="GWorld coupon coupon sales"
+                      // isDisabled={role == "vendor" ? true : false}
                       min={0}
                       admin={{
                         description:
@@ -673,22 +663,14 @@ const CustomSalesReportsEdit: React.FC<any> = () => {
                     />
                   </GridItem>
                 </Grid>
-                <Container maxW="container.xl" marginTop={6} marginBottom={4}>
-                  <Text
-                    fontFamily="Zilla Slab"
-                    lineHeight="1"
-                    fontWeight="semibold"
-                    fontSize="24px"
-                    letterSpacing="0.03em"
-                    textTransform="capitalize"
-                    color="gray.600"
-                    width={200}
-                  >
-                    Penalty
-                  </Text>
-                </Container>
-                <Grid templateColumns="repeat(5, 1fr)" gap={4}>
-                  <GridItem colSpan={5}>
+                <Heading as="h2" marginTop={8}>
+                  Penalties and credits
+                </Heading>
+                <Grid
+                  templateColumns={["repeat(1, 1fr)", "repeat(5, 1fr)"]}
+                  gap={4}
+                >
+                  <GridItem colSpan={2}>
                     <NumberField
                       path="penalty"
                       label="Penalty amount"
@@ -696,7 +678,7 @@ const CustomSalesReportsEdit: React.FC<any> = () => {
                       admin={{
                         description:
                           "Enter a penalty for this vendor for this market day, if any",
-                        placeholder: "SNAP bonus sales",
+                        placeholder: "",
                       }}
                     />
                   </GridItem>
@@ -710,35 +692,30 @@ const CustomSalesReportsEdit: React.FC<any> = () => {
                     />
                   </GridItem>
                 </Grid>
-                <Container maxW="container.xl" marginTop={6} marginBottom={4}>
-                  <Text
-                    fontFamily="Zilla Slab"
-                    lineHeight="1"
-                    fontWeight="semibold"
-                    fontSize="24px"
-                    letterSpacing="0.03em"
-                    textTransform="capitalize"
-                    color="gray.600"
-                    width={200}
-                  >
-                    Credit
-                  </Text>
-                </Container>
-                <Grid templateColumns="repeat(5, 1fr)" gap={4}>
-                  <GridItem colSpan={5}>
+                <Grid
+                  templateColumns={["repeat(1, 1fr)", "repeat(5, 1fr)"]}
+                  gap={4}
+                  marginTop={4}
+                >
+                  <GridItem colSpan={2}>
                     <NumberField
                       path="credit"
                       label="Credit amount"
+                      // isDisabled={role == "vendor" ? true : false}
                       min={0}
                       admin={{
-                        description: "Enter a credit for this vendor, if any",
-                        placeholder: "SNAP bonus sales",
+                        description:
+                          "Enter a credit for this vendor for this market day, if any",
+                        placeholder: "",
                       }}
                     />
                   </GridItem>
+                  <GridItem colSpan={1}>
+                    <TextField label="Type of credit" path="creditType" />
+                  </GridItem>
                   <GridItem colSpan={2}>
                     <TextField
-                      label="Describe the reason for this credit"
+                      label="Describe the credit"
                       path="creditDescription"
                     />
                   </GridItem>
@@ -759,17 +736,31 @@ const CustomSalesReportsEdit: React.FC<any> = () => {
                     <ModalHeader fontSize={24}>Submit sales report</ModalHeader>
                     <ModalCloseButton />
                     <ModalBody>
-                      <Text fontSize={18}>Review and confirm the sales report, then press submit</Text>
+                      <Text fontSize={18}>
+                        Review and confirm the sales report, then press submit
+                      </Text>
                       <Container maxW={550} marginY={8}>
                         <Box border="2px solid" borderColor={"gray.500"}>
-                          <HStack backgroundColor={"gray.200"} justify={"space-between"} paddingX={2}>
+                          <HStack
+                            backgroundColor={"gray.200"}
+                            justify={"space-between"}
+                            paddingX={2}
+                          >
                             <HStack>
-                              <Text color={"gray.700"} fontSize={24} fontWeight={600}>
+                              <Text
+                                color={"gray.700"}
+                                fontSize={24}
+                                fontWeight={600}
+                              >
                                 {thisMarket}
                               </Text>
-                              <Text fontSize={18}>{" "}on{" "}</Text>
+                              <Text fontSize={18}> on </Text>
                             </HStack>
-                            <Text color={"gray.700"} fontSize={24} fontWeight={600} >
+                            <Text
+                              color={"gray.700"}
+                              fontSize={24}
+                              fontWeight={600}
+                            >
                               {thisDate}
                             </Text>
                           </HStack>
@@ -915,20 +906,29 @@ const CustomSalesReportsEdit: React.FC<any> = () => {
                               </Text>
                             </Flex>
                           </Stack>
-                          <HStack backgroundColor={"gray.100"} justify={"space-between"} paddingX={2}>
-                            <Text color={"gray.700"} fontSize={20} fontWeight={600} textTransform="uppercase">
+                          <HStack
+                            backgroundColor={"gray.100"}
+                            justify={"space-between"}
+                            paddingX={2}
+                          >
+                            <Text
+                              color={"gray.700"}
+                              fontSize={20}
+                              fontWeight={600}
+                              textTransform="uppercase"
+                            >
                               Total
                             </Text>
-                            <Text>
-                              ${calculateTotal()}
-                            </Text>
+                            <Text>${calculateTotal()}</Text>
                           </HStack>
                         </Box>
                       </Container>
                     </ModalBody>
                     <ModalFooter>
-                      <Button variant="solid" onClick={submitForm} mr={3}>Submit report</Button>
-                      <Button colorScheme='blue' onClick={onClose}>
+                      <Button variant="solid" onClick={submitForm} mr={3}>
+                        Submit report
+                      </Button>
+                      <Button colorScheme="blue" onClick={onClose}>
                         Close
                       </Button>
                     </ModalFooter>

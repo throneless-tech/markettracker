@@ -986,8 +986,8 @@ export const ApplicationsEdit: React.FC<any> = (props) => {
                   </Stack>
                 </RadioGroup>
                 {user.role !== "vendor" ? (
-                  <>
-                    <Text marginTop={4}>Special market fee percentage</Text>
+                  <Box marginY={4}>
+                    <Text marginY={2}>Special market fee percentage</Text>
                     <NumberField
                       path="marketFee"
                       isDisabled={false}
@@ -998,9 +998,13 @@ export const ApplicationsEdit: React.FC<any> = (props) => {
                           "Vendor-specific market fee to override market-wide fee. Do not touch or enter this field unless you are setting a special fee.",
                       }}
                     />
-                  </>
+                  </Box>
                 ) : null}
-                <Stack direction={["column", "row"]} marginTop={4}>
+                <Stack
+                  align="center"
+                  direction={["column", "row"]}
+                  marginTop={4}
+                >
                   <Text
                     color={"gray.700"}
                     fontSize={"2xl"}
@@ -1489,6 +1493,21 @@ export const ApplicationsEdit: React.FC<any> = (props) => {
                 <Radio value="false">No</Radio>
               </Stack>
             </RadioGroup>
+            {user.role !== "vendor" ? (
+              <Box marginY={4}>
+                <Text marginY={2}>Special market fee percentage</Text>
+                <NumberField
+                  path="marketFee"
+                  isDisabled={false}
+                  min={0}
+                  // required
+                  admin={{
+                    description:
+                      "Vendor-specific market fee to override market-wide fee. Do not touch or enter this field unless you are setting a special fee.",
+                  }}
+                />
+              </Box>
+            ) : null}
             <Stack direction={["column", "row"]} marginTop={4}>
               <Text
                 color={"gray.700"}
@@ -1806,6 +1825,21 @@ export const ApplicationsEdit: React.FC<any> = (props) => {
                 <Radio value="false">No</Radio>
               </Stack>
             </RadioGroup>
+            {user.role !== "vendor" ? (
+              <Box marginY={4}>
+                <Text marginY={2}>Special market fee percentage</Text>
+                <NumberField
+                  path="marketFee"
+                  isDisabled={false}
+                  min={0}
+                  // required
+                  admin={{
+                    description:
+                      "Vendor-specific market fee to override market-wide fee. Do not touch or enter this field unless you are setting a special fee.",
+                  }}
+                />
+              </Box>
+            ) : null}
             <HStack marginTop={4}>
               <Text
                 color={"gray.700"}

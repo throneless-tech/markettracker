@@ -709,6 +709,47 @@ export const VendorsEdit: React.FC<any> = ({ data: vendor }) => {
                               textStyle="bodyMain"
                               fontWeight={500}
                             >
+                              What subtype of vendor are you? (required)
+                            </Text>
+                            <Select
+                              value={vendor.subtype}
+                              placeholder="Select one"
+                              flex={2}
+                              isRequired
+                            >
+                              <option value="farm">Farm</option>
+                              <option value="farmProducer">
+                                Farm producer
+                              </option>
+                              <option value="farmConcessionaire">
+                                Farm concessionaire
+                              </option>
+                              <option value="nonFarmProducer">
+                                Non-farm producer
+                              </option>
+                              <option value="concessionaire">
+                                Concessionaire
+                              </option>
+                              <option value="farmSourcedAlcohol">
+                                Farm-sourced alcohol
+                              </option>
+                              <option value="coffeeExceptions">
+                                Coffee/exceptions
+                              </option>
+                              <option value="speciallyDefined">
+                                Specially defined
+                              </option>
+                            </Select>
+                            <Text as="div" color="gray.500">
+                              Select a subtype, related to market fees
+                            </Text>
+                          </Stack>
+                          <Stack marginTop={4}>
+                            <Text
+                              as="div"
+                              textStyle="bodyMain"
+                              fontWeight={500}
+                            >
                               What is the structure of your business? (required)
                             </Text>
                             <Select

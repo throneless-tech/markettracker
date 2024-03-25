@@ -31,24 +31,16 @@ export const CardSalesDue: FC<CardProps> = ({ reports }) => {
     return dayNames[dayNum];
   };
 
-  const nextMarketDate = () => {
-    let date = new Date();
-    let dt = date.getDate();
-    date.setDate(15);
-
-    if (dt >= 15) {
-      date.setMonth(date.getMonth() + 1);
-    }
-
+  const formatDate = (marketDate) => {
+    let date = new Date(marketDate);
     return date.toLocaleDateString("en-US", options);
   };
 
   useEffect(() => {
     if (reports && reports.length) {
-      console.log(reports);
-
+      // TODO limit this to last week's reports
       const selectReports = reports.filter(
-        (report) => report.status === "approved",
+        (report) => report.cashAndCredit == undefined,
       );
       // console.log(selectApplications);
 
@@ -105,7 +97,12 @@ export const CardSalesDue: FC<CardProps> = ({ reports }) => {
             Due by
           </Text>
           {approvedReports.map((report) => (
-            <Stack justify="flex-start" align="flex-start" spacing={4}>
+            <Stack
+              key={report.id}
+              justify="flex-start"
+              align="flex-start"
+              spacing={4}
+            >
               <Flex paddingY={1} width="100%" direction="row">
                 <Text
                   fontFamily="Outfit"
@@ -115,7 +112,7 @@ export const CardSalesDue: FC<CardProps> = ({ reports }) => {
                   textTransform="capitalize"
                   color="#000000"
                 >
-                  {report.name} [
+                  {report.season.name} [
                   {report.season.marketDates
                     ? marketDay(report.season.marketDates.startDate)
                     : null}
@@ -145,14 +142,14 @@ export const CardSalesDue: FC<CardProps> = ({ reports }) => {
                   color="#000000"
                   textAlign="end"
                 >
-                  {nextMarketDate()}
+                  {formatDate(report.day)}
                 </Text>
               </Flex>
             </Stack>
           ))}
         </>
       ) : (
-        <Text>No sales reports currently due.</Text>
+        <Text>No sales reports currently due for this week.</Text>
       )}
     </Box>
   );

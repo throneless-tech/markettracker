@@ -285,6 +285,47 @@ export const Vendors: CollectionConfig = {
       },
     },
     {
+      name: "subtype",
+      label: "What subtype of vendor are you?",
+      type: "select",
+      //required: true,
+      hasMany: false,
+      options: [
+        {
+          label: "Farm",
+          value: "farm",
+        },
+        {
+          label: "Farm producer",
+          value: "farmProducer",
+        },
+        {
+          label: "Farm concessionaire",
+          value: "farmConcessionaire",
+        },
+        {
+          label: "Non-farm producer",
+          value: "nonFarmProducer",
+        },
+        {
+          label: "Concessionaire",
+          value: "concessionaire",
+        },
+        {
+          label: "Farm sourced alcohol",
+          value: "farmSourcedAlcohol",
+        },
+        {
+          label: "Coffee/exceptions",
+          value: "coffeeExceptions",
+        },
+      ],
+      admin: {
+        description:
+          "Select the category that describes the majority of what you sell.",
+      },
+    },
+    {
       name: "structure",
       label: "What is the business structure of your business?",
       type: "select",
@@ -778,6 +819,13 @@ export const Vendors: CollectionConfig = {
       type: "relationship",
       hasMany: true,
       relationTo: "licenses",
+    },
+    {
+      name: "salesReports",
+      label: "Sales Reports",
+      type: "relationship",
+      hasMany: true,
+      relationTo: "sales-reports",
     },
   ],
   hooks: {

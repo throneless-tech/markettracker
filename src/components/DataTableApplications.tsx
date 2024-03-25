@@ -228,7 +228,7 @@ export function DataTable<Data extends object>({
 
   return (
     <Container
-      maxW="container.2xl"
+      maxW="container.xl"
       className="p-2 block max-w-full overflow-x-scroll overflow-y-hidden"
     >
       <Box
@@ -260,6 +260,8 @@ export function DataTable<Data extends object>({
                         color: "gray.900",
                         fontFamily: "Outfit, sans-serif",
                         minWidth: 150,
+                        position: "relative",
+                        width: header.getSize(),
                       }}
                     >
                       {flexRender(
@@ -295,7 +297,7 @@ export function DataTable<Data extends object>({
                       display: "flex",
                       position: "absolute",
                       transform: `translateY(${virtualRow.start}px)`, //this should always be a `style` as it changes on scroll
-                      width: "100%",
+                      // width: "100%",
                     }}
                   >
                     {row.getVisibleCells().map((cell) => {
@@ -310,7 +312,7 @@ export function DataTable<Data extends object>({
                           isNumeric={meta?.isNumeric}
                           sx={{
                             display: "flex",
-                            minW: 150,
+                            // minW: 150,
                             width: cell.column.getSize(),
                           }}
                         >

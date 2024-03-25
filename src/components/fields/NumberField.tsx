@@ -145,6 +145,7 @@ export const NumberField: FC<Props> = ({
     <FormControl sx={{ marginBottom: 4 }}>
       {label ? (
         <FormLabel
+          fontSize={"small"}
           sx={
             {
               // fontWeight: 900,
@@ -162,15 +163,18 @@ export const NumberField: FC<Props> = ({
       ) : (
         ""
       )}
-      {description ? <FormHelperText>{description}</FormHelperText> : ""}
+      {description ? (
+        <FormHelperText marginBottom={1}>{description}</FormHelperText>
+      ) : (
+        ""
+      )}
       <ErrorTooltip message={errorMessage} showError={showError}>
         <NumberInput
+          colorScheme="green"
           isDisabled={isDisabled}
           placeholder={placeholder}
-          colorScheme="green"
           min={min}
           max={max}
-          // sx={{ width: 16 }}
           value={value}
           onChange={(newValue) => setValue(Number(newValue))}
           sx={{ width: 260 }}
