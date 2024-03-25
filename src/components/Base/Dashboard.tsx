@@ -27,6 +27,8 @@ import { Vendor } from "payload/generated-types";
 export const Dashboard: React.FC<any> = () => {
   const { user } = useAuth();
 
+  console.log(user.vendor);
+
   return (
     <>
       <Container maxW="container.xl" marginBottom={4}>
@@ -94,14 +96,10 @@ export const Dashboard: React.FC<any> = () => {
             }
           />
           <CardSalesDue
-          // reports={
-          //   user.vendor ? (user.vendor as Vendor).salesReports : null
-          // }
+            reports={user.vendor ? (user.vendor as Vendor).salesReports : null}
           />
           <CardSalesSubmitted
-          //   reports={
-          //     user.vendor ? (user.vendor as Vendor).salesReports : null
-          //   }
+            reports={user.vendor ? (user.vendor as Vendor).salesReports : null}
           />
         </Wrap>
         <Stack spacing={8}>

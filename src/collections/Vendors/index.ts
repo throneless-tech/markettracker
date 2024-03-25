@@ -779,6 +779,13 @@ export const Vendors: CollectionConfig = {
       hasMany: true,
       relationTo: "licenses",
     },
+    {
+      name: "salesReports",
+      label: "Sales Reports",
+      type: "relationship",
+      hasMany: true,
+      relationTo: "sales-reports",
+    },
   ],
   hooks: {
     afterRead: [
