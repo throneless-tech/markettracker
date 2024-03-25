@@ -116,35 +116,31 @@ export const SeasonsEdit: React.FC<any> = (props) => {
     path: "operators",
   });
   const { value: farmFee, setValue: setFarmFee } = useField<string>({
-    path: "fees.fee.farm",
+    path: "fees.farm",
   });
   const { value: farmProducerFee, setValue: setFarmProducerFee } =
     useField<string>({
-      path: "fees.fee.farmProducer",
+      path: "fees.farmProducer",
     });
   const { value: farmConcessionaireFee, setValue: setFarmConcessionaireFee } =
     useField<string>({
-      path: "fees.fee.farmConcessionaire",
+      path: "fees.farmConcessionaire",
     });
   const { value: nonFarmProducerFee, setValue: setNonFarmProducerFee } =
     useField<string>({
-      path: "fees.fee.nonFarmProducer",
+      path: "fees.nonFarmProducer",
     });
   const { value: concessionaireFee, setValue: setConcessionaireFee } =
     useField<string>({
-      path: "fees.fee.concessionaire",
+      path: "fees.concessionaire",
     });
   const { value: farmSourcedAlcoholFee, setValue: setFarmSourcedAlcoholFee } =
     useField<string>({
-      path: "fees.fee.farmSourcedAlcohol",
+      path: "fees.farmSourcedAlcohol",
     });
   const { value: coffeeExceptionsFee, setValue: setCoffeeExceptionsFee } =
     useField<string>({
-      path: "fees.fee.coffeeExceptions",
-    });
-  const { value: speciallyDefinedFee, setValue: setSpeciallyDefinedFee } =
-    useField<string>({
-      path: "fees.fee.speciallyDefined",
+      path: "fees.coffeeExceptions",
     });
   const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
@@ -177,8 +173,6 @@ export const SeasonsEdit: React.FC<any> = (props) => {
       endpoint = `/api/seasons`;
     }
     try {
-      console.log(fields);
-
       const response = await fetch(endpoint, {
         method: method,
         credentials: "include",
@@ -190,6 +184,15 @@ export const SeasonsEdit: React.FC<any> = (props) => {
           isAccepting: fields.isAccepting.value,
           market: marketId,
           operators: fields.operators.value,
+          fees: {
+            farm: fields["fees.farm"].value,
+            farmProducer: fields["fees.farmProducer"].value,
+            farmConcessionaire: fields["fees.farmConcessionaire"].value,
+            nonFarmProducer: fields["fees.nonFarmProducer"].value,
+            concessionaire: fields["fees.concessionaire"].value,
+            farmSourcedAlcohol: fields["fees.farmSourcedAlcohol"].value,
+            coffeeExceptions: fields["fees.coffeeExceptions"].value,
+          },
           marketDates: {
             startDate: fields["marketDates.startDate"].value,
             endDate: fields["marketDates.endDate"].value,
@@ -201,6 +204,8 @@ export const SeasonsEdit: React.FC<any> = (props) => {
           productGaps: fields.productGaps.value,
         }),
       });
+      console.log(response);
+
       if (!response.ok) {
         throw new Error(response.statusText);
       }

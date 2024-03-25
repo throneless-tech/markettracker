@@ -40,7 +40,7 @@ export const CardSalesDue: FC<CardProps> = ({ reports }) => {
     if (reports && reports.length) {
       // TODO limit this to last week's reports
       const selectReports = reports.filter(
-        (report) => report.status === "approved",
+        (report) => report.cashAndCredit == undefined,
       );
       // console.log(selectApplications);
 

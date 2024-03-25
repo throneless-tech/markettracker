@@ -324,62 +324,35 @@ export const Seasons: CollectionConfig = {
     {
       name: "fees",
       label: "Default market fee schedule",
-      type: "array",
+      type: "group",
       fields: [
         {
-          name: "fee",
-          type: "group",
-          label: "Market fee",
-          fields: [
-            {
-              name: "label",
-              type: "text",
-              label: "Label",
-            },
-            {
-              name: "percentage",
-              type: "number",
-              label: "Percentage",
-            },
-            {
-              name: "type",
-              type: "select",
-              options: [
-                {
-                  label: "Farm",
-                  value: "farm",
-                },
-                {
-                  label: "Farm producer",
-                  value: "farmProducer",
-                },
-                {
-                  label: "Farm concessionaire",
-                  value: "farmConcessionaire",
-                },
-                {
-                  label: "Non-farm producer",
-                  value: "nonFarmProducer",
-                },
-                {
-                  label: "Concessionaire",
-                  value: "concessionaire",
-                },
-                {
-                  label: "Farm-sourced alcohol",
-                  value: "farmSourcedAlcohol",
-                },
-                {
-                  label: "Coffee/exceptions",
-                  value: "coffeeExceptions",
-                },
-                {
-                  label: "Specially defined",
-                  value: "speciallyDefined",
-                },
-              ],
-            },
-          ],
+          name: "farm",
+          type: "number",
+        },
+        {
+          name: "farmProducer",
+          type: "number",
+        },
+        {
+          name: "farmConcessionaire",
+          type: "number",
+        },
+        {
+          name: "nonFarmProducer",
+          type: "number",
+        },
+        {
+          name: "concessionaire",
+          type: "number",
+        },
+        {
+          name: "farmSourcedAlcohol",
+          type: "number",
+        },
+        {
+          name: "coffeeExceptions",
+          type: "number",
         },
       ],
     },
