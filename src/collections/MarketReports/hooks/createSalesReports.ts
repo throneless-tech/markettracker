@@ -56,6 +56,7 @@ export const createSalesReports: CollectionAfterChangeHook = async ({
     
          *
          */
+
     if (doc.vendorAttendance.vendorAttendance) {
       const attendanceArray = doc.vendorAttendance.vendorAttendance;
       const attended = [];
@@ -82,6 +83,6 @@ export const createSalesReports: CollectionAfterChangeHook = async ({
         }
       }
     }
-    return doc;
+    return { ...doc, _status: "published" };
   }
 };

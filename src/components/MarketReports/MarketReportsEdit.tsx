@@ -71,19 +71,14 @@ export const MarketReportsEdit: React.FC<any> = () => {
     path: "season",
   });
 
+  const { value: _status, setValue: setStatus } = useField<string>({
+    path: "_status",
+  });
+
   const data = getData();
   const vendorAttendance = data.vendorAttendance
     ? data.vendorAttendance.vendorAttendance
     : [];
-
-  const submitReport = async () => {
-    console.log("data on submit =>", data);
-    try {
-      await submit();
-    } catch (err) {
-      console.log("Error submitting market report: ", err);
-    }
-  };
 
   // get date, operator and market info from state
   useEffect(() => {
@@ -282,15 +277,34 @@ export const MarketReportsEdit: React.FC<any> = () => {
     }
   }, [id, season]);
 
-  // submit a market report
   const submitMarketReport = async () => {
-    submit();
+    setStatus("published");
+    console.log(_status);
+
+    try {
+      await submit({
+        overrides: {
+          _status: "published",
+        },
+        skipValidation: false,
+      });
+    } catch (err) {
+      console.log("error: ", err);
+    }
     history.push("/admin/collections/market-reports");
   };
 
-  useEffect(() => {}, [date, season, vendors, vendorAttendance]);
+  useEffect(() => {}, [date, season, _status, vendors, vendorAttendance]);
 
-  if (id && season && typeof season === "object") {
+  if (id && _status == "published") {
+    return (
+      <Container maxW="container.xl" marginY={8}>
+        <Text fontSize={24}>
+          This market report has already been submitted.
+        </Text>
+      </Container>
+    );
+  } else if (id && season && typeof season === "object") {
     return (
       <>
         <Container maxW="container.xl" marginY={8}>
