@@ -282,6 +282,12 @@ export const MarketReportsEdit: React.FC<any> = () => {
     }
   }, [id, season]);
 
+  // submit a market report
+  const submitMarketReport = async () => {
+    submit();
+    history.push("/admin/collections/market-reports");
+  };
+
   useEffect(() => {}, [date, season, vendors, vendorAttendance]);
 
   if (id && season && typeof season === "object") {
@@ -421,7 +427,11 @@ export const MarketReportsEdit: React.FC<any> = () => {
             </Box>
           </Box>
           <Box textAlign="right" marginTop={8}>
-            <Button onClick={submitReport} colorScheme="gray" width={200}>
+            <Button
+              colorScheme="gray"
+              onClick={() => submitMarketReport()}
+              width={200}
+            >
               Submit market report
             </Button>
           </Box>
