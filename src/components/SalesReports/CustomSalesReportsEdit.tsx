@@ -303,8 +303,8 @@ const CustomSalesReportsEdit: React.FC<any> = () => {
     // setting market fees
     let marketFee;
 
-    if (season && season.fees && season.fees.length && vendor) {
-      marketFee = season.fees.filter((fee) => fee.fee.label === vendor.type);
+    if (season && season.fees && vendor && vendor.subtype) {
+      marketFee = season.fees[vendor.subtype];
     }
 
     if (marketFee && marketFee.length) {
@@ -457,18 +457,7 @@ const CustomSalesReportsEdit: React.FC<any> = () => {
         <Divider color="gray.900" borderBottomWidth={2} opacity={1} />
         <Container maxW="container.xl" marginTop={6} marginBottom={4}>
           <Container maxW="container.xl" marginTop={6} marginBottom={4}>
-            <Text
-              fontFamily="Zilla Slab"
-              lineHeight="1"
-              fontWeight="semibold"
-              fontSize="24px"
-              letterSpacing="0.03em"
-              textTransform="capitalize"
-              color="gray.600"
-              width={200}
-            >
-              Sales
-            </Text>
+            <Heading as="h2">Sales</Heading>
           </Container>
           <FormControl isRequired>
             <Grid templateColumns="repeat(2, 5fr)" gap={4}>
@@ -613,18 +602,7 @@ const CustomSalesReportsEdit: React.FC<any> = () => {
                   </GridItem>
                 </Grid>
                 <Container maxW="container.xl" marginTop={6} marginBottom={4}>
-                  <Text
-                    fontFamily="Zilla Slab"
-                    lineHeight="1"
-                    fontWeight="semibold"
-                    fontSize="24px"
-                    letterSpacing="0.03em"
-                    textTransform="capitalize"
-                    color="gray.600"
-                    width={200}
-                  >
-                    Penalty
-                  </Text>
+                  <Heading as="h2">Penalty</Heading>
                 </Container>
                 <Grid templateColumns="repeat(5, 1fr)" gap={4}>
                   <GridItem colSpan={5}>
