@@ -76,8 +76,13 @@ export const MarketReportsEdit: React.FC<any> = () => {
     ? data.vendorAttendance.vendorAttendance
     : [];
 
-  const submitReport = () => {
+  const submitReport = async () => {
     console.log("data on submit =>", data);
+    try {
+      await submit();
+    } catch (err) {
+      console.log("Error submitting market report: ", err);
+    }
   };
 
   // get date, operator and market info from state
