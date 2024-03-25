@@ -96,6 +96,7 @@ function PaidColumn(props) {
 
 const InvoicesList: React.FC<any> = (props) => {
   const { user } = useAuth();
+  const role = user.role;
   const [invoices, setInvoices] = useState([]);
   const [monthValue, setMonthValue] = useState("All");
   //const [market, setMarket] = useState("All");
@@ -216,7 +217,10 @@ const InvoicesList: React.FC<any> = (props) => {
 
   return (
     <>
-      <InvoicesTabs />
+      <InvoicesTabs
+        role={role}
+        selected={isNotExported ? "readyToInvoice" : "invoices"}
+      />
       <Container maxW="container.xl" marginY={8}>
         <Flex my={6} justify="space-between" flexWrap={"wrap"}>
           <Box>
