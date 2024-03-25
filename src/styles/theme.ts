@@ -161,6 +161,7 @@ export const theme = extendTheme({
   components: {
     Button,
     Input: inputTheme,
+    NumberInput: inputTheme,
     Radio,
     Select: selectTheme,
     Tag,

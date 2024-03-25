@@ -330,8 +330,9 @@ const CustomSalesReportsEdit: React.FC<any> = () => {
         <Flex my={8} justify="space-between" flexWrap={"wrap"}>
           <Box>
             {isEditView && history ? (
-              <Heading as="h2" sx={{ textTransform: "uppercase" }}>
-                Updating {thisVendor}'s Sales Report: {thisMarket} on {thisDate}
+              <Heading as="h1" sx={{ textTransform: "uppercase" }}>
+                Updating {thisVendor}'s Sales Report: <br />
+                {thisMarket} on {thisDate}
               </Heading>
             ) : (
               <Heading as="h1" sx={{ textTransform: "uppercase" }}>
@@ -463,11 +464,12 @@ const CustomSalesReportsEdit: React.FC<any> = () => {
         </Flex>
         <Divider color="gray.900" borderBottomWidth={2} opacity={1} />
         <Container maxW="container.xl" marginTop={6} marginBottom={4}>
-          <Container maxW="container.xl" marginTop={6} marginBottom={4}>
-            <Heading as="h2">Sales</Heading>
-          </Container>
+          <Heading as="h2">Sales</Heading>
           <FormControl isRequired>
-            <Grid templateColumns="repeat(2, 5fr)" gap={4}>
+            <Grid
+              templateColumns={["repeat(1, 1fr)", "repeat(2, 5fr)"]}
+              gap={4}
+            >
               <GridItem>
                 <NumberField
                   path="cashAndCredit"
@@ -481,7 +483,7 @@ const CustomSalesReportsEdit: React.FC<any> = () => {
                   }}
                 />
               </GridItem>
-              <GridItem w="100%" h="10">
+              <GridItem>
                 <NumberField
                   path="producePlus"
                   label="Produce Plus sales"
@@ -493,8 +495,6 @@ const CustomSalesReportsEdit: React.FC<any> = () => {
                   }}
                 />
               </GridItem>
-            </Grid>
-            <Grid templateColumns="repeat(2, 5fr)" gap={4}>
               <GridItem>
                 <NumberField
                   path="sfmnp"
@@ -524,7 +524,10 @@ const CustomSalesReportsEdit: React.FC<any> = () => {
             </Grid>
             {role !== "vendor" ? (
               <>
-                <Grid templateColumns="repeat(2, 5fr)" gap={4}>
+                <Grid
+                  templateColumns={["repeat(1, 1fr)", "repeat(2, 5fr)"]}
+                  gap={4}
+                >
                   <GridItem>
                     <NumberField
                       path="ebt"
@@ -552,8 +555,6 @@ const CustomSalesReportsEdit: React.FC<any> = () => {
                       }}
                     />
                   </GridItem>
-                </Grid>
-                <Grid templateColumns="repeat(2, 5fr)" gap={4}>
                   <GridItem>
                     <NumberField
                       path="fmnpBonus"
@@ -579,8 +580,6 @@ const CustomSalesReportsEdit: React.FC<any> = () => {
                       }}
                     />
                   </GridItem>
-                </Grid>
-                <Grid templateColumns="repeat(2, 5fr)" gap={4}>
                   <GridItem>
                     <NumberField
                       path="marketGoods"
@@ -597,7 +596,7 @@ const CustomSalesReportsEdit: React.FC<any> = () => {
                   <GridItem>
                     <NumberField
                       path="gWorld"
-                      label="GWorld coupon coupon sales (green)"
+                      label="GWorld coupon coupon sales"
                       // isDisabled={role == "vendor" ? true : false}
                       min={0}
                       admin={{
@@ -608,11 +607,14 @@ const CustomSalesReportsEdit: React.FC<any> = () => {
                     />
                   </GridItem>
                 </Grid>
-                <Container maxW="container.xl" marginTop={6} marginBottom={4}>
-                  <Heading as="h2">Penalty</Heading>
-                </Container>
-                <Grid templateColumns="repeat(5, 1fr)" gap={4}>
-                  <GridItem colSpan={5}>
+                <Heading as="h2" marginTop={8}>
+                  Penalties and credits
+                </Heading>
+                <Grid
+                  templateColumns={["repeat(1, 1fr)", "repeat(5, 1fr)"]}
+                  gap={4}
+                >
+                  <GridItem colSpan={2}>
                     <NumberField
                       path="penalty"
                       label="Penalty amount"
@@ -621,7 +623,7 @@ const CustomSalesReportsEdit: React.FC<any> = () => {
                       admin={{
                         description:
                           "Enter a penalty for this vendor for this market day, if any",
-                        placeholder: "SNAP bonus sales",
+                        placeholder: "",
                       }}
                     />
                   </GridItem>
@@ -632,6 +634,34 @@ const CustomSalesReportsEdit: React.FC<any> = () => {
                     <TextField
                       label="Describe the penalty"
                       path="penaltyDescription"
+                    />
+                  </GridItem>
+                </Grid>
+                <Grid
+                  templateColumns={["repeat(1, 1fr)", "repeat(5, 1fr)"]}
+                  gap={4}
+                  marginTop={4}
+                >
+                  <GridItem colSpan={2}>
+                    <NumberField
+                      path="credit"
+                      label="Credit amount"
+                      // isDisabled={role == "vendor" ? true : false}
+                      min={0}
+                      admin={{
+                        description:
+                          "Enter a credit for this vendor for this market day, if any",
+                        placeholder: "",
+                      }}
+                    />
+                  </GridItem>
+                  <GridItem colSpan={1}>
+                    <TextField label="Type of credit" path="creditType" />
+                  </GridItem>
+                  <GridItem colSpan={2}>
+                    <TextField
+                      label="Describe the credit"
+                      path="creditDescription"
                     />
                   </GridItem>
                 </Grid>

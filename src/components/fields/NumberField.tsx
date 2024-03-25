@@ -145,6 +145,7 @@ export const NumberField: FC<Props> = ({
     <FormControl sx={{ marginBottom: 4 }}>
       {label ? (
         <FormLabel
+          fontSize={"small"}
           sx={
             {
               // fontWeight: 900,
@@ -169,9 +170,9 @@ export const NumberField: FC<Props> = ({
       )}
       <ErrorTooltip message={errorMessage} showError={showError}>
         <NumberInput
+          colorScheme="green"
           isDisabled={isDisabled}
           placeholder={placeholder}
-          colorScheme="green"
           min={min}
           max={max}
           value={value}
