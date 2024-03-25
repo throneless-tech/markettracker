@@ -50,6 +50,7 @@ export const Register: React.FC<any> = () => {
   const [h2a, setH2a] = useState();
   const [volunteers, setVolunteers] = useState();
   const [type, setType] = useState();
+  const [subtype, setSubtype] = useState();
   const [structure, setStructure] = useState();
   const [growingPractices, setGrowingPractices] = useState([]);
   const [sellingLocally, setSellingLocally] = useState();
@@ -90,12 +91,10 @@ export const Register: React.FC<any> = () => {
   const errorPasswordConfirm = passwordConfirm != password;
 
   function handleBackClick() {
-    console.log("***index", index);
     setIndex(index - 1);
   }
 
   function handleNextClick() {
-    console.log("***index", index);
     if (businessCheck == "none") {
       setIndex(8);
     } else if (index === 6) {
@@ -238,6 +237,7 @@ export const Register: React.FC<any> = () => {
     storeRevenue,
     street,
     structure,
+    subtype,
     tent,
     type,
     userName,
@@ -337,6 +337,7 @@ export const Register: React.FC<any> = () => {
               storeRevenue={storeRevenue}
               street={street}
               structure={structure}
+              subtype={subtype}
               tent={tent}
               type={type}
               userName={userName}
@@ -390,6 +391,7 @@ export const Register: React.FC<any> = () => {
               setStoreRevenue={setStoreRevenue}
               setStreet={setStreet}
               setStructure={setStructure}
+              setSubtype={setSubtype}
               setTent={setTent}
               setTwitter={setTwitter}
               setType={setType}
