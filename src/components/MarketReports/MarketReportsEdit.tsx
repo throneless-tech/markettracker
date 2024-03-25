@@ -76,6 +76,10 @@ export const MarketReportsEdit: React.FC<any> = () => {
     ? data.vendorAttendance.vendorAttendance
     : [];
 
+  const submitReport = () => {
+    console.log("data on submit =>", data);
+  };
+
   // get date, operator and market info from state
   useEffect(() => {
     if (history.location.state) {
@@ -412,7 +416,7 @@ export const MarketReportsEdit: React.FC<any> = () => {
             </Box>
           </Box>
           <Box textAlign="right" marginTop={8}>
-            <Button colorScheme="gray" width={200}>
+            <Button onClick={submitReport} colorScheme="gray" width={200}>
               Submit market report
             </Button>
           </Box>
