@@ -1,6 +1,5 @@
 import payload from "payload";
 import { CollectionAfterChangeHook } from "payload/types";
-import type { SalesReport } from "payload/generated-types";
 
 export const createSalesReports: CollectionAfterChangeHook = async ({
   doc,
@@ -86,6 +85,7 @@ export const createSalesReports: CollectionAfterChangeHook = async ({
         }
       }
     }
+
     return doc;
   }
 };
