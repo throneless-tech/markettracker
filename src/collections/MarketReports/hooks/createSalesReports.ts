@@ -58,15 +58,12 @@ export const createSalesReports: CollectionAfterChangeHook = async ({
          */
     if (doc.vendorAttendance.vendorAttendance) {
       const attendanceArray = doc.vendorAttendance.vendorAttendance;
-      console.log("**** attendanceArray=>", attendanceArray);
       const attended = [];
       attendanceArray.forEach((vendor) => {
         if (vendor.status === "present" || vendor.status === "late") {
           attended.push(vendor.vendor);
         }
       });
-      console.log("vendor Ids =>", attended);
-      // attended is an array of vendor Ids who were 'present' or 'late        }
 
       if (attended.length) {
         for (const vendorId of attended) {
@@ -85,7 +82,6 @@ export const createSalesReports: CollectionAfterChangeHook = async ({
         }
       }
     }
-
     return doc;
   }
 };
