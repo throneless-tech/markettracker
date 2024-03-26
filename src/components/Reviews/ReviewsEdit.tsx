@@ -129,11 +129,11 @@ export const ReviewsEdit: React.FC<any> = () => {
 
   useEffect(() => {
     const trySubmit = async () => {
-      console.log("getData->", await getData());
+      // console.log("getData->", await getData());
       await submit();
     };
     if (doSubmit) {
-      console.log("submitting");
+      // console.log("submitting");
       trySubmit();
     }
   }, [doSubmit]);

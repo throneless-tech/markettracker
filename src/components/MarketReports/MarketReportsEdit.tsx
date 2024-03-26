@@ -71,6 +71,10 @@ export const MarketReportsEdit: React.FC<any> = () => {
     path: "season",
   });
 
+  const { value: _status, setValue: setStatus } = useField<string>({
+    path: "_status",
+  });
+
   const data = getData();
   const vendorAttendance = data.vendorAttendance
     ? data.vendorAttendance.vendorAttendance
@@ -273,9 +277,34 @@ export const MarketReportsEdit: React.FC<any> = () => {
     }
   }, [id, season]);
 
-  useEffect(() => {}, [date, season, vendors, vendorAttendance]);
+  const submitMarketReport = async () => {
+    setStatus("published");
+    console.log(_status);
 
-  if (id && season && typeof season === "object") {
+    try {
+      await submit({
+        overrides: {
+          _status: "published",
+        },
+        skipValidation: false,
+      });
+    } catch (err) {
+      console.log("error: ", err);
+    }
+    history.push("/admin/collections/market-reports");
+  };
+
+  useEffect(() => {}, [date, season, _status, vendors, vendorAttendance]);
+
+  if (id && _status == "published") {
+    return (
+      <Container maxW="container.xl" marginY={8}>
+        <Text fontSize={24}>
+          This market report has already been submitted.
+        </Text>
+      </Container>
+    );
+  } else if (id && season && typeof season === "object") {
     return (
       <>
         <Container maxW="container.xl" marginY={8}>
@@ -412,7 +441,11 @@ export const MarketReportsEdit: React.FC<any> = () => {
             </Box>
           </Box>
           <Box textAlign="right" marginTop={8}>
-            <Button colorScheme="gray" width={200}>
+            <Button
+              colorScheme="gray"
+              onClick={() => submitMarketReport()}
+              width={200}
+            >
               Submit market report
             </Button>
           </Box>
