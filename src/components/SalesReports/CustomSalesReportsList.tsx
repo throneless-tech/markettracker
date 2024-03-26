@@ -203,6 +203,7 @@ const CustomSalesReportsList: React.FC<any> = () => {
           where: queries[0],
           depth: 1,
           page: pageToFetch,
+          limit: 11,
           // sort,
         },
         { addQueryPrefix: true },
@@ -215,6 +216,7 @@ const CustomSalesReportsList: React.FC<any> = () => {
           },
           depth: 1,
           page: pageToFetch,
+          limit: 11,
           // sort,
         },
         { addQueryPrefix: true },
@@ -224,6 +226,7 @@ const CustomSalesReportsList: React.FC<any> = () => {
         {
           page: pageToFetch,
           depth: 1,
+          limit: 11,
         },
         { addQueryPrefix: true },
       );
