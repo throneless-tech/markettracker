@@ -330,15 +330,16 @@ const InvoicesList: React.FC<any> = (props) => {
                   letterSpacing="0.03em"
                   textTransform="capitalize"
                   color="gray.600"
+                  width={200}
                 >
                   Market month
                 </Text>
               </FormLabel>
               <Select
                 value={monthValue}
-                maxWidth={"360px"}
                 onChange={handleMonthChange}
                 sx={{ color: "gray.700" }}
+                width={360}
               >
                 {months.map((month: string, idx: React.Key) => {
                   return (
@@ -361,15 +362,16 @@ const InvoicesList: React.FC<any> = (props) => {
                   letterSpacing="0.03em"
                   textTransform="capitalize"
                   color="gray.600"
+                  width={200}
                 >
                   Choose a vendor
                 </Text>
               </FormLabel>
               <Select
                 value={vendorValue}
-                maxWidth={"360px"}
                 onChange={handleVendorChange}
                 sx={{ color: "gray.700" }}
+                width={360}
               >
                 {vendors.map((vendor) => {
                   return (
