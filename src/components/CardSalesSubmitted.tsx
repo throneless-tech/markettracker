@@ -61,6 +61,7 @@ export const CardSalesSubmitted: FC<CardProps> = ({ reports }) => {
       borderTopWidth="2px"
       borderBottomWidth="2px"
       background="#F6F5F4"
+      width={[320, 420]}
     >
       <Stack paddingBottom="8px" maxWidth="100%" direction="row">
         <SalesIcon
