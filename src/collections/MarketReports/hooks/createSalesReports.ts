@@ -6,7 +6,7 @@ export const createSalesReports: CollectionAfterChangeHook = async ({
   req,
   operation,
 }) => {
-  if (operation === "create" || operation === "update") {
+  if (operation === "update") {
     /***
          * doc is the market report that's been created
          * with the Vendor attendance
@@ -57,7 +57,7 @@ export const createSalesReports: CollectionAfterChangeHook = async ({
          *
          */
 
-    if (doc.vendorAttendance.vendorAttendance) {
+    if (doc._status == "published" && doc.vendorAttendance.vendorAttendance) {
       const attendanceArray = doc.vendorAttendance.vendorAttendance;
       const attended = [];
       attendanceArray.forEach((vendor) => {
@@ -83,6 +83,6 @@ export const createSalesReports: CollectionAfterChangeHook = async ({
         }
       }
     }
-    return { ...doc, _status: "published" };
+    return doc;
   }
 };

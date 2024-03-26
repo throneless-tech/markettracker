@@ -55,9 +55,7 @@ export const MarketReportCard: React.FC<any> = (props) => {
     getMarketReports();
   }, []);
 
-  useEffect(() => {
-    console.log(marketReports);
-  }, [disabled, marketReports]);
+  useEffect(() => {}, [disabled, marketReports]);
 
   // direct user to create a report; send state including market and user
   const createReport = () => {
