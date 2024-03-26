@@ -159,24 +159,10 @@ const CustomSalesReportsList: React.FC<any> = () => {
 
   const getSalesReports = async (clear: boolean, pageToFetch: number) => {
     const queries = [];
-    console.log("***vendorValue in getSalesReports: ", vendorValue);
-    console.log("***marketValue in getSalesReports: ", marketValue);
-    console.log("***monthValue in getSalesReports: ", monthValue);
 
     if (user.role == "vendor") {
       queries.push({ vendor: { equals: (user.vendor as Vendor).id } });
     }
-
-    // <option value={"staff"} key={"staff"} >
-    //               FF Staff
-    //             </option>
-    //             <option value={"vendor"} key={"vendor"} >
-    //               Vendor
-    //             </option>
-    //             <option value={"both"} key={"both"} >
-    //               Both FF & Vendor
-    //             </option>
-    //             <option value={"none"} key={"none"}></option>
 
     if (needsActionBy === "staff") {
       queries.push({ needsStaffAction: { equals: true } });
@@ -381,7 +367,6 @@ const CustomSalesReportsList: React.FC<any> = () => {
               </Select>
             </FormControl>
           </Box>
-
           <Box>
             <FormControl sx={{ alignItems: "center", display: "flex" }}>
               <FormLabel>
