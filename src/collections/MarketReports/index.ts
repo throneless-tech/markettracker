@@ -3,6 +3,7 @@ import { withFormContext } from "../../utils/withFormContext";
 import { MarketReportsEdit } from "../../components/MarketReports/MarketReportsEdit";
 import { MarketReportsList } from "../../components/MarketReports/MarketReportsList";
 import { afterReadSeason, beforeValidateSeason } from "./hooks/populateSeason";
+import { createSalesReports } from "./hooks/createSalesReports";
 
 export const MarketReports: CollectionConfig = {
   slug: "market-reports",
@@ -21,6 +22,7 @@ export const MarketReports: CollectionConfig = {
   hooks: {
     afterRead: [afterReadSeason],
     beforeValidate: [beforeValidateSeason],
+    afterChange: [createSalesReports],
   },
   versions: {
     drafts: {
