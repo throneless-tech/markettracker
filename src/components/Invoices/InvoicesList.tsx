@@ -578,8 +578,10 @@ const InvoicesList: React.FC<any> = (props) => {
               ) : (
                 <Tr>
                   <Td p={4}>
-                    No new invoices to export. Try generating invoices for new
-                    data.
+                    No new invoices
+                    {user.role !== "vendor"
+                      ? " to export. Try generating invoices for new data."
+                      : "."}
                   </Td>
                 </Tr>
               )}

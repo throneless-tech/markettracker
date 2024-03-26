@@ -506,7 +506,7 @@ const CustomSalesReportsList: React.FC<any> = () => {
                   sx={{
                     color: "gray.900",
                     fontFamily: "'Outfit', sans-serif",
-                    maxW: 160,
+                    maxW: 180,
                   }}
                 >
                   Market
@@ -515,7 +515,7 @@ const CustomSalesReportsList: React.FC<any> = () => {
                   sx={{
                     color: "gray.900",
                     fontFamily: "'Outfit', sans-serif",
-                    maxW: 160,
+                    maxW: 180,
                   }}
                 >
                   Vendor
@@ -563,10 +563,15 @@ const CustomSalesReportsList: React.FC<any> = () => {
                 </Th>
                 <Th
                   sx={{ color: "gray.900", fontFamily: "'Outfit', sans-serif" }}
-                ></Th>
-                <Th
-                  sx={{ color: "gray.900", fontFamily: "'Outfit', sans-serif" }}
-                ></Th>
+                />
+                {role !== "vendor" ? (
+                  <Th
+                    sx={{
+                      color: "gray.900",
+                      fontFamily: "'Outfit', sans-serif",
+                    }}
+                  />
+                ) : null}
               </Tr>
             </Thead>
             <Tbody>
@@ -638,6 +643,7 @@ const CustomSalesReportsList: React.FC<any> = () => {
                         </Td>
                         <Td>
                           <Button
+                            width={110}
                             onClick={(e) => {
                               e.preventDefault;
                               viewReport(report);
