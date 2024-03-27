@@ -22,6 +22,7 @@ type Props = {
   maxLength?: number;
   path: string;
   required?: boolean;
+  isDisabled?: boolean;
   type?: string;
   validate?: Validate;
   admin?: {
@@ -37,6 +38,7 @@ export const TextField: FC<Props> = ({
   maxLength,
   path,
   required,
+  isDisabled,
   type = "text",
   validate = text,
   admin: { condition, description, placeholder } = {},
@@ -62,6 +64,7 @@ export const TextField: FC<Props> = ({
       {description ? <FormHelperText>{description}</FormHelperText> : ""}
       <ErrorTooltip message={errorMessage} showError={showError}>
         <Input
+          isDisabled={isDisabled}
           placeholder={placeholder}
           type={type}
           value={value}
