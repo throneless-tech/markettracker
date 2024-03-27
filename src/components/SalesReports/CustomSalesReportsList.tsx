@@ -498,7 +498,7 @@ const CustomSalesReportsList: React.FC<any> = () => {
           <Table
             variant="striped"
             colorScheme={"green"}
-            sx={{ tableLayout: "fixed", width: "100%" }}
+            sx={{ tableLayout: ["auto", "auto", "fixed"], width: "100%" }}
           >
             <Thead background={"gray.100"}>
               <Tr>

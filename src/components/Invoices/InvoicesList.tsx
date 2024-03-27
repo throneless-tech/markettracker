@@ -396,6 +396,8 @@ const InvoicesList: React.FC<any> = (props) => {
               borderColor: "gray.100",
               // borderTopLeftRadius: "8px !important",
               // borderTopRightRadius: "8px !important",
+              tableLayout: ["auto", "auto", "fixed"],
+              width: "100%",
             }}
           >
             <Thead sx={{ backgroundColor: "gray.100" }}>
@@ -528,7 +530,7 @@ const InvoicesList: React.FC<any> = (props) => {
                       <Td
                         sx={{
                           inlineSize: 160,
-                          maxW: 160,
+                          maxW: 200,
                           whiteSpace: "normal",
                           wordBreak: "break-all",
                         }}
@@ -553,7 +555,7 @@ const InvoicesList: React.FC<any> = (props) => {
                       <Td>${penaltySubtotal}</Td>
                       <Td>${total}</Td>
                       <Td>{new Date(date).toLocaleDateString("en-US")}</Td>
-                      <Td>
+                      <Td minW={120}>
                         <StatusDropdown
                           status={approved ? "true" : "false"}
                           id={invoice.id}
@@ -570,6 +572,7 @@ const InvoicesList: React.FC<any> = (props) => {
                             e.preventDefault;
                             viewInvoice(invoice);
                           }}
+                          width={120}
                         >
                           View invoice
                         </Button>
