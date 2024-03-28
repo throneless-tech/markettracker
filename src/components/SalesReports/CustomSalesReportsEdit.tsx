@@ -318,13 +318,22 @@ const CustomSalesReportsEdit: React.FC<any> = () => {
 
     // WIC
     // only editable by vendor in MD, but admin can edit
-    if (role == "admin" || (role == "vendor" && location == "MD")) {
+    if (
+      role == "admin" ||
+      role == "senior" ||
+      (role == "vendor" && location == "MD")
+    ) {
       setWicDisable(false);
     } else {
       // unavailable in VA
       setWicDisable(true);
     }
   }, [location]);
+
+  useEffect(() => {
+    console.log("pp", ppDisable);
+    console.log("wic", wicDisable);
+  }, [ppDisable, sfmnpDisable, wicDisable]);
 
   useEffect(() => {
     getSeasons();

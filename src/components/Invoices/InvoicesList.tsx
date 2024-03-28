@@ -195,6 +195,8 @@ const InvoicesList: React.FC<any> = (props) => {
       const json = await response.json();
       const newInvoices = json ? json.docs : [];
 
+      console.log(json.docs);
+
       if (clear) {
         setPage(json.page);
         setInvoices(newInvoices);
@@ -213,7 +215,16 @@ const InvoicesList: React.FC<any> = (props) => {
   const generateInvoices = async () => {
     const response = await fetch("/api/invoices/generate");
     const json = await response.json();
-    setInvoices(json.invoices);
+    console.log(json.invoices);
+
+    if (json.invoices.length) {
+      if (invoices.length) {
+        const newInvoices = [json.invoices, ...invoices];
+        setInvoices(newInvoices);
+      } else {
+        setInvoices(json.invoices);
+      }
+    }
   };
 
   // trigger to export invoices
@@ -446,8 +457,17 @@ const InvoicesList: React.FC<any> = (props) => {
                     fontWeight: 500,
                   }}
                 >
-                  Penalties/
-                  <br />
+                  Penalties
+                </Th>
+                <Th
+                  sx={{
+                    border: "1px solid",
+                    borderColor: "gray.100",
+                    color: "gray.900",
+                    fontFamily: "'Outfit', sans-serif",
+                    fontWeight: 500,
+                  }}
+                >
                   Credits
                 </Th>
                 <Th
@@ -519,6 +539,7 @@ const InvoicesList: React.FC<any> = (props) => {
                     total,
                     salesSubtotal,
                     penaltySubtotal,
+                    creditSubtotal,
                     paid,
                     approved,
                   } = invoice;
@@ -551,9 +572,10 @@ const InvoicesList: React.FC<any> = (props) => {
                           ? reports[0]?.vendor.contacts[0].email
                           : ""}
                       </Td>
-                      <Td>${salesSubtotal}</Td>
+                      <Td>${salesSubtotal.toFixed(2)}</Td>
                       <Td>${penaltySubtotal}</Td>
-                      <Td>${total}</Td>
+                      <Td>${creditSubtotal}</Td>
+                      <Td>${total.toFixed(2)}</Td>
                       <Td>{new Date(date).toLocaleDateString("en-US")}</Td>
                       <Td minW={120}>
                         <StatusDropdown

@@ -159,9 +159,9 @@ const CustomSalesReportsList: React.FC<any> = () => {
 
   const getSalesReports = async (clear: boolean, pageToFetch: number) => {
     const queries = [];
-    console.log("***vendorValue in getSalesReports: ", vendorValue);
-    console.log("***marketValue in getSalesReports: ", marketValue);
-    console.log("***monthValue in getSalesReports: ", monthValue);
+    // console.log("***vendorValue in getSalesReports: ", vendorValue);
+    // console.log("***marketValue in getSalesReports: ", marketValue);
+    // console.log("***monthValue in getSalesReports: ", monthValue);
 
     if (user.role == "vendor") {
       queries.push({ vendor: { equals: (user.vendor as Vendor).id } });
@@ -476,7 +476,7 @@ const CustomSalesReportsList: React.FC<any> = () => {
                 value={needsActionBy}
                 width={360}
                 onChange={handleNeedsChange}
-                placeholder=" "
+                placeholder="Select one"
               >
                 <option value={"staff"} key={"staff"}>
                   FF Staff
@@ -598,8 +598,8 @@ const CustomSalesReportsList: React.FC<any> = () => {
                       <Tr key={id}>
                         <Td
                           sx={{
-                            inlineSize: 160,
-                            maxW: 160,
+                            inlineSize: 180,
+                            maxW: 180,
                             whiteSpace: "normal",
                             wordBreak: "break-all",
                           }}
@@ -608,8 +608,8 @@ const CustomSalesReportsList: React.FC<any> = () => {
                         </Td>
                         <Td
                           sx={{
-                            inlineSize: 160,
-                            maxW: 160,
+                            inlineSize: 180,
+                            maxW: 180,
                             whiteSpace: "normal",
                             wordBreak: "break-all",
                           }}
