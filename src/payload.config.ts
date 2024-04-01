@@ -117,6 +117,7 @@ export default buildConfig({
     connectOptions: {
       useFacet: false,
     },
+    disableIndexHints: true,
     url: process.env.DATABASE_URI,
   }),
   debug: true,
