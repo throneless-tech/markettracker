@@ -24,6 +24,7 @@ env:
   CONTAINER_NAME: markettracker                # set this to the name of the container in the
                                                # containerDefinitions section of your task definition
 
+jobs:
   deploy:
     name: Deploy
     runs-on: ubuntu-latest
