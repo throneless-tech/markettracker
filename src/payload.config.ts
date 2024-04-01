@@ -115,7 +115,6 @@ export default buildConfig({
   cors: ["*", "https://markettracker.payloadcms.app"],
   db: mongooseAdapter({
     connectOptions: {
-      autoIndex: false,
       useFacet: false,
     },
     url: process.env.DATABASE_URI,
