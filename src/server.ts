@@ -8,23 +8,27 @@ const app = express();
 // Parse JSON request bodies
 app.use(express.json());
 
-// Serve images
-app.use("/assets", express.static(path.resolve(__dirname, "./assets")));
-
-// Redirect root to Admin panel
-app.get("/", (_, res) => {
-  res.redirect("/admin");
+app.get("*", (req, res) => {
+  res.redirect(301, "https://markettracker.freshfarm.org" + req.path);
 });
 
-// Initialize Payload
-payload.init({
-  secret: process.env.PAYLOAD_SECRET,
-  express: app,
-  loggerOptions: { level: "debug" },
-  onInit: () => {
-    payload.logger.info(`Payload Admin URL: ${payload.getAdminURL()}`);
-  },
-});
+// // Serve images
+// app.use("/assets", express.static(path.resolve(__dirname, "./assets")));
+
+// // Redirect root to Admin panel
+// app.get("/", (_, res) => {
+//   res.redirect("/admin");
+// });
+
+// // Initialize Payload
+// payload.init({
+//   secret: process.env.PAYLOAD_SECRET,
+//   express: app,
+//   loggerOptions: { level: "debug" },
+//   onInit: () => {
+//     payload.logger.info(`Payload Admin URL: ${payload.getAdminURL()}`);
+//   },
+// });
 
 // Add your own express routes here
 
