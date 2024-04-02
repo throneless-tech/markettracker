@@ -288,6 +288,7 @@ export const Nav: React.FC<any> = () => {
                         </LinkOverlay>
                       </Stack>
                     </LinkBox>
+                    {/*
                     <LinkBox
                       paddingX={2}
                       paddingY={2}
@@ -318,6 +319,7 @@ export const Nav: React.FC<any> = () => {
                         </LinkOverlay>
                       </Stack>
                     </LinkBox>
+                    */}
                   </>
                 )}
                 <LinkBox
@@ -656,6 +658,7 @@ export const Nav: React.FC<any> = () => {
                     </LinkOverlay>
                   </Stack>
                 </LinkBox>
+                {/*
                 <LinkBox
                   paddingX={6}
                   paddingY={8}
@@ -700,6 +703,7 @@ export const Nav: React.FC<any> = () => {
                     </LinkOverlay>
                   </Stack>
                 </LinkBox>
+  */}
               </>
             )}
             <LinkBox
