@@ -142,19 +142,39 @@ export const VendorsAppTab: React.FC<any> = () => {
               ? Object.entries(demos).map((key, _) => {
                   if (key[1] == "yes") {
                     if (key[0] == "firstGeneration") {
-                      return <Tag key={key[0]}>First generation farmer</Tag>;
+                      return (
+                        <Tag paddingY={1} key={key[0]}>
+                          First generation farmer
+                        </Tag>
+                      );
                     }
                     if (key[0] == "veteranOwned") {
-                      return <Tag key={key[0]}>Veteran-owned</Tag>;
+                      return (
+                        <Tag paddingY={1} key={key[0]}>
+                          Veteran-owned
+                        </Tag>
+                      );
                     }
                     if (key[0] == "bipoc") {
-                      return <Tag key={key[0]}>BIPOC</Tag>;
+                      return (
+                        <Tag paddingY={1} key={key[0]}>
+                          BIPOC
+                        </Tag>
+                      );
                     }
                     if (key[0] == "immigrantOrRefugee") {
-                      return <Tag key={key[0]}>Immigrant or refugee</Tag>;
+                      return (
+                        <Tag paddingY={1} key={key[0]}>
+                          Immigrant or refugee
+                        </Tag>
+                      );
                     }
                     if (key[0] == "lgbtqia") {
-                      return <Tag key={key[0]}>LGBTQIA</Tag>;
+                      return (
+                        <Tag paddingY={1} key={key[0]}>
+                          LGBTQIA
+                        </Tag>
+                      );
                     }
                   }
                 })
@@ -179,7 +199,7 @@ export const VendorsAppTab: React.FC<any> = () => {
       cell: (standingCell) => {
         const standing: any = standingCell.getValue();
         return (
-          <Tag textTransform="capitalize">
+          <Tag sx={{ maxHeight: 30 }} textTransform="capitalize">
             {standing == "underReview"
               ? "Under review"
               : standing == "approvedWithEdits"
@@ -281,7 +301,7 @@ export const VendorsAppTab: React.FC<any> = () => {
         );
         if (!res.ok) throw new Error(res.statusText);
         const newVendors = await res.json();
-        console.log("vendors: ", newVendors);
+        // console.log("vendors: ", newVendors);
         setVendors(newVendors);
         return newVendors;
       } catch (err) {
@@ -313,7 +333,7 @@ export const VendorsAppTab: React.FC<any> = () => {
         </Heading>
         <Divider color="gray.900" borderBottomWidth={2} opacity={1} />
       </Container>
-      <Container sx={{ maxWidth: "unset" }}>
+      <Container sx={{ maxWidth: "unset" }} marginTop={4}>
         <Flex wrap={{ base: "wrap", lg: "nowrap" }}>
           <Box
             bg={"gray.100"}
@@ -383,13 +403,14 @@ export const VendorsAppTab: React.FC<any> = () => {
           </Box>
           <Box
             sx={{
-              maxWidth: { base: 400, sm: 600, md: 900, lg: 1200, xl: 1660 },
+              maxWidth: { base: 400, sm: 700, md: 900, lg: 1200, xl: 1660 },
             }}
           >
             <Box
               sx={{
                 overflowX: "scroll",
                 overflowY: "auto",
+                height: "100vh",
               }}
               ref={ref}
             >

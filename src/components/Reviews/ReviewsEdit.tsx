@@ -57,9 +57,11 @@ const dayDiff = (d1, d2) => {
 export const ReviewsEdit: React.FC<any> = () => {
   const { user } = useAuth();
   const history = useHistory();
-  const { submit } = useForm();
+  const { submit, getData } = useForm();
   const { id } = useDocumentInfo();
   const [numMonths, setNumMonths] = useState(1);
+  const [startDate, setStartDate] = useState(null);
+  const [endDate, setEndDate] = useState(null);
 
   const { value: application, setValue: setApplication } =
     useField<Application>({
@@ -127,9 +129,11 @@ export const ReviewsEdit: React.FC<any> = () => {
 
   useEffect(() => {
     const trySubmit = async () => {
+      // console.log("getData->", await getData());
       await submit();
     };
     if (doSubmit) {
+      // console.log("submitting");
       trySubmit();
     }
   }, [doSubmit]);
@@ -214,11 +218,13 @@ export const ReviewsEdit: React.FC<any> = () => {
       shadowApp?.season?.marketDates?.startDate &&
       shadowApp?.season?.marketDates?.endDate
     ) {
-      // console.log("***shadowApp.season", shadowApp.season);
-      let calLength = monthDiff(
-        new Date(shadowApp.season.marketDates.startDate),
-        new Date(shadowApp.season.marketDates.endDate),
-      );
+      // console.log("***shadowApp.season", shadowApp);
+      let firstDate = new Date(shadowApp.season.marketDates.startDate);
+      let lastDate = new Date(shadowApp.season.marketDates.endDate);
+      setStartDate(new Date(shadowApp.season.marketDates.startDate));
+      setEndDate(new Date(shadowApp.season.marketDates.endDate));
+
+      let calLength = monthDiff(firstDate, lastDate);
       setNumMonths(calLength);
 
       let daysLength = dayDiff(
@@ -284,9 +290,7 @@ export const ReviewsEdit: React.FC<any> = () => {
     }
   }, [contacts, shadowApp]);
 
-  useEffect(() => {
-    console.log("PRIMARY CONTACT?", primaryContact);
-  }, [primaryContact]);
+  useEffect(() => {}, [endDate, primaryContact, startDate]);
 
   if (
     shadowApp &&
@@ -494,19 +498,23 @@ export const ReviewsEdit: React.FC<any> = () => {
                         (key, value) => {
                           if (key[1] == "yes") {
                             if (key[0] == "firstGeneration") {
-                              return <Tag>First generation farmer</Tag>;
+                              return (
+                                <Tag key={key[0]}>First generation farmer</Tag>
+                              );
                             }
                             if (key[0] == "veteranOwned") {
-                              return <Tag>Veteran-owned</Tag>;
+                              return <Tag key={key[0]}>Veteran-owned</Tag>;
                             }
                             if (key[0] == "bipoc") {
-                              return <Tag>BIPOC</Tag>;
+                              return <Tag key={key[0]}>BIPOC</Tag>;
                             }
                             if (key[0] == "immigrantOrRefugee") {
-                              return <Tag>Immigrant or refugee</Tag>;
+                              return (
+                                <Tag key={key[0]}>Immigrant or refugee</Tag>
+                              );
                             }
                             if (key[0] == "lgbtqia") {
-                              return <Tag>LGBTQIA</Tag>;
+                              return <Tag key={key[0]}>LGBTQIA</Tag>;
                             }
                           }
                         },
@@ -571,9 +579,9 @@ export const ReviewsEdit: React.FC<any> = () => {
                     ? Object.entries(shadowApp.vendor.setupNeeds).map(
                         (key, value) => {
                           if (key[1] == true) {
-                            return <Tag>{key[0]}</Tag>;
+                            return <Tag key={key[0]}>{key[0]}</Tag>;
                           } else {
-                            return <Tag>{`${key[1]} tent`}</Tag>;
+                            return <Tag key={key[0]}>{`${key[1]} tent`}</Tag>;
                           }
                         },
                       )
@@ -611,6 +619,7 @@ export const ReviewsEdit: React.FC<any> = () => {
                     <DatePicker
                       inline
                       readOnly={true}
+                      showPreviousMonths={startDate < new Date() ? true : false}
                       onChange={() => true}
                       dayClassName={(date) => {
                         let dateFound = null;
@@ -635,8 +644,8 @@ export const ReviewsEdit: React.FC<any> = () => {
                       includeDates={shadowApp.dates.map(
                         (item) => new Date(item.date),
                       )}
-                      minDate={shadowApp.startDate}
-                      maxDate={shadowApp.endDate}
+                      minDate={startDate}
+                      maxDate={endDate}
                       monthsShown={numMonths + 1}
                     />
                   </Wrap>
@@ -678,7 +687,7 @@ export const ReviewsEdit: React.FC<any> = () => {
                 </Heading>
                 <Stack>
                   {shadowApp.reviews.map((review) => (
-                    <>
+                    <Box key={review.id}>
                       {typeof review === "object" ? (
                         <>
                           <HStack marginTop={4} spacing={2}>
@@ -708,7 +717,7 @@ export const ReviewsEdit: React.FC<any> = () => {
                           None yet. Be the first to leave a review.
                         </Text>
                       )}
-                    </>
+                    </Box>
                   ))}
                 </Stack>
               </Container>

@@ -348,13 +348,14 @@ export const Account: React.FC<any> = () => {
                             ) : null}
                           </HStack>
                         </Flex>
-                        <Flex marginTop={4}>
-                          <HStack>
+                        <Flex direction={["column", "row"]} marginTop={4}>
+                          <Stack direction={["column", "row"]}>
                             <Text
                               as={"span"}
                               color={"gray.50"}
                               fontSize="2xl"
                               fontWeight={700}
+                              textTransform="capitalize"
                             >
                               {role === "vendor" && vendor && vendor.type
                                 ? `${vendor.type}`
@@ -369,10 +370,10 @@ export const Account: React.FC<any> = () => {
                                   }`
                                 : null}
                             </Text>
-                          </HStack>
+                          </Stack>
                           <Spacer />
                           {vendor && vendor.phoneNumber && (
-                            <HStack>
+                            <HStack marginTop={[3, 0]}>
                               <Text
                                 as={"span"}
                                 color={"gray.50"}

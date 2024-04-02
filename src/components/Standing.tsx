@@ -1,12 +1,12 @@
 import React from "react";
-import { HStack, Text, Tag } from "@chakra-ui/react";
+import { Stack, Text, Tag } from "@chakra-ui/react";
 
 export const Standing: React.FC<any> = (props) => {
   const { user } = props;
   return (
-    <HStack
+    <Stack
       padding={6}
-      direction="row"
+      direction={["column-reverse", "row"]}
       justify="space-between"
       align="flex-start"
       spacing={8}
@@ -22,7 +22,7 @@ export const Standing: React.FC<any> = (props) => {
         fontFamily="Outfit"
         lineHeight="1.33"
         fontWeight="regular"
-        fontSize="24px"
+        fontSize={[20, 24]}
         color="#000000"
         flex="1"
         marginBottom={0}
@@ -32,9 +32,15 @@ export const Standing: React.FC<any> = (props) => {
         is based on market attendance, sales report submissions, invoice
         payments, instances of rule violations, and site visit completion.
       </Text>
-      <Tag variant="solid" colorScheme="teal" marginTop={2}>
-        {user.vendor ? user.vendor.standing : "good"}
+      <Tag
+        variant="solid"
+        colorScheme="teal"
+        marginTop={2}
+        size={["lg", "sm"]}
+        textTransform="capitalize"
+      >
+        {user.vendor ? user.vendor.standing : "Good"}
       </Tag>
-    </HStack>
+    </Stack>
   );
 };

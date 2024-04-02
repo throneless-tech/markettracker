@@ -1,8 +1,9 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
+import qs from "qs";
 
 // Payload imports
-import { useField, useForm } from "payload/components/forms";
+import { useField, useForm, useFormFields } from "payload/components/forms";
 
 // Chakra imports
 import {
@@ -20,6 +21,7 @@ import {
   Heading,
   HStack,
   Input,
+  Link,
   Radio,
   RadioGroup,
   Select,
@@ -62,16 +64,75 @@ type PrimaryContact = {
 };
 
 export const VendorsEdit: React.FC<any> = ({ data: vendor }) => {
-  // console.log("***vendor:", vendor);
   const { submit } = useForm();
+  const { value: name, setValue: setName } = useField<string>({
+    path: "name",
+  });
+  const { value: isPrimaryContact, setValue: setIsPrimaryContact } =
+    useField<string>({
+      path: "isPrimaryContact",
+    });
+  const { value: isBillingContact, setValue: setIsBillingContact } =
+    useField<string>({
+      path: "isBillingContact",
+    });
+  const { value: street, setValue: setStreet } = useField<string>({
+    path: "address.street",
+  });
+  const { value: city, setValue: setCity } = useField<string>({
+    path: "address.city",
+  });
+  const { value: state, setValue: setState } = useField<string>({
+    path: "address.state",
+  });
+  const { value: zipcode, setValue: setZipcode } = useField<string>({
+    path: "address.zipcode",
+  });
+  const { value: phoneNumber, setValue: setPhoneNumber } = useField<string>({
+    path: "phoneNumber",
+  });
+  const { value: description, setValue: setDescription } = useField<string>({
+    path: "description",
+  });
+  const { value: yearEstablished, setValue: setYearEstablished } =
+    useField<string>({
+      path: "yearEstablished",
+    });
+  const { value: fullTime, setValue: setFullTime } = useField<string>({
+    path: "employees.fullTime",
+  });
+  const { value: partTime, setValue: setPartTime } = useField<string>({
+    path: "employees.partTime",
+  });
+  const { value: interns, setValue: setInterns } = useField<string>({
+    path: "employees.interns",
+  });
+  const { value: h2a, setValue: setH2a } = useField<string>({
+    path: "employees.h2a",
+  });
+  const { value: volunteers, setValue: setVolunteers } = useField<string>({
+    path: "employees.volunteers",
+  });
   const { value: notes, setValue: setNotes } = useField<string>({
     path: "notes",
+  });
+  const { value: type, setValue: setType } = useField<string>({
+    path: "type",
+  });
+  const { value: subtype, setValue: setSubtype } = useField<string>({
+    path: "subtype",
   });
   const [standing, setStanding] = useState<string>();
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
   const [contacts, setContacts] = useState([]);
+  const [licenses, setLicenses] = useState([]);
   const [vendorUser, setVendorUser] = useState<User>();
   const [primaryContact, setPrimaryContact] = useState<PrimaryContact>(null);
+
+  const formatDate = (dateString) => {
+    const d = new Date(dateString);
+    return d.toLocaleDateString("en-US");
+  };
 
   async function getVendorUser(userId) {
     const response = await fetch(`/api/users/${userId}`);
@@ -91,7 +152,28 @@ export const VendorsEdit: React.FC<any> = ({ data: vendor }) => {
     }
 
     if (vendor && vendor.user) {
+      const query = {
+        owner: {
+          equals: vendor.id,
+        },
+      };
+
+      const getVendorLicenses = async () => {
+        const stringifiedQuery = qs.stringify(
+          {
+            where: query, // ensure that `qs` adds the `where` property, too!
+          },
+          { addQueryPrefix: true },
+        );
+
+        const response = await fetch(`/api/licenses${stringifiedQuery}`);
+        let data = await response.json();
+        data = data.docs;
+        setLicenses(data);
+      };
+
       getVendorUser(vendor.user);
+      getVendorLicenses();
     }
   }, [vendor]);
 
@@ -112,7 +194,13 @@ export const VendorsEdit: React.FC<any> = ({ data: vendor }) => {
     }
   }, [contacts, vendorUser]);
 
-  const onChange = async (standing: string) => {
+  useEffect(() => {}, [licenses]);
+
+  const fields = useFormFields(([fields]) => fields);
+
+  const saveProfile = useCallback(async () => {
+    console.log(isPrimaryContact);
+
     try {
       const res = await fetch(`/api/vendors/${vendor.id}`, {
         method: "PATCH",
@@ -120,21 +208,50 @@ export const VendorsEdit: React.FC<any> = ({ data: vendor }) => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
+          name,
+          isPrimaryContact: isPrimaryContact == "true" ? true : false,
+          isBillingContact: isBillingContact == "true" ? true : false,
+          address: {
+            street: fields["address.street"].value,
+            city: fields["address.city"].value,
+            state: fields["address.state"].value,
+            zipcode: fields["address.zipcode"].value,
+          },
+          phoneNumber,
+          description,
+          yearEstablished,
+          employees: {
+            fullTime: fields["employees.fullTime"].value,
+            partTime: fields["employees.partTime"].value,
+            interns: fields["employees.interns"].value,
+            h2a: fields["employees.h2a"].value,
+            volunteers: fields["employees.volunteers"].value,
+          },
           standing,
+          subtype,
+          type,
         }),
       });
+      console.log(res);
+
       if (!res.ok) throw new Error(res.statusText);
-      setStanding(standing);
     } catch (err) {
       console.error(err.message);
     }
+  }, [fields]);
+
+  const updateProfile = async (standing: any) => {
+    if (standing) {
+      setStanding(standing);
+    }
+    await saveProfile();
   };
 
   const onChangeNotes = (notes: string) => {
     setNotes(notes);
   };
 
-  const updateNotes = async () => {
+  const updateNote = async () => {
     const trySubmit = async () => {
       await submit();
     };
@@ -174,7 +291,7 @@ export const VendorsEdit: React.FC<any> = ({ data: vendor }) => {
                     defaultValue={standing}
                     colorScheme="teal"
                     variant="filled"
-                    onChange={(e) => onChange(e.target.value)}
+                    onChange={(e) => updateProfile(e.target.value)}
                   >
                     <option value="good">Good</option>
                     <option value="bad">Bad</option>
@@ -316,7 +433,7 @@ export const VendorsEdit: React.FC<any> = ({ data: vendor }) => {
                                         <Td>{contact.email}</Td>
                                         <Td>{contact.phone}</Td>
                                         <Td>
-                                          <Button>Edit/delete</Button>
+                                          {/* <Button>Edit/delete</Button> */}
                                         </Td>
                                       </Tr>
                                     ))
@@ -327,7 +444,7 @@ export const VendorsEdit: React.FC<any> = ({ data: vendor }) => {
                                       <Td>{vendorUser.email}</Td>
                                       <Td></Td>
                                       <Td>
-                                        <Button>Edit/delete</Button>
+                                        {/* <Button>Edit/delete</Button> */}
                                       </Td>
                                     </Tr>
                                   ) : null}
@@ -363,9 +480,22 @@ export const VendorsEdit: React.FC<any> = ({ data: vendor }) => {
                           </AccordionButton>
                         </h2>
                         <AccordionPanel>
+                          <Button
+                            onClick={updateProfile}
+                            sx={{
+                              display: "block",
+                              height: "50px",
+                              marginLeft: "auto",
+                              marginRight: 0,
+                            }}
+                            variant="solid"
+                          >
+                            Update
+                          </Button>
                           <HStack marginTop={12} spacing={4}>
                             <Input
-                              value={vendor.name}
+                              value={name}
+                              onChange={(value) => setName(value)}
                               placeholder="Company name"
                             />
                           </HStack>
@@ -380,9 +510,14 @@ export const VendorsEdit: React.FC<any> = ({ data: vendor }) => {
                             <RadioGroup>
                               <Stack>
                                 <RadioGroup
-                                  defaultValue={vendor.isPrimaryContact}
+                                  value={isPrimaryContact}
+                                  onChange={(value) =>
+                                    setIsPrimaryContact(value)
+                                  }
                                 >
-                                  <Radio value="true">Yes</Radio>
+                                  <Radio mr={6} value="true">
+                                    Yes
+                                  </Radio>
                                   <Radio value="false">No</Radio>
                                 </RadioGroup>
                               </Stack>
@@ -394,11 +529,14 @@ export const VendorsEdit: React.FC<any> = ({ data: vendor }) => {
                             >
                               Are you the billing contact for this business?
                             </Text>
-                            <RadioGroup value={vendor.isBillingContact}>
-                              <Stack>
-                                <Radio value="true">Yes</Radio>
-                                <Radio value="false">No</Radio>
-                              </Stack>
+                            <RadioGroup
+                              onChange={(value) => setIsBillingContact(value)}
+                              value={isBillingContact}
+                            >
+                              <Radio mr={6} value="true">
+                                Yes
+                              </Radio>
+                              <Radio value="false">No</Radio>
                             </RadioGroup>
                           </Stack>
                           <Stack spacing={2} marginTop={4}>
@@ -410,19 +548,22 @@ export const VendorsEdit: React.FC<any> = ({ data: vendor }) => {
                               Company address (required)
                             </Text>
                             <Input
-                              value={vendor.address.street}
+                              value={street}
+                              onChange={(value) => setStreet(value)}
                               placeholder="Street"
                               isRequired
                             />
                             <Flex gap={2}>
                               <Input
-                                value={vendor.address.city}
+                                value={city}
+                                onChange={(value) => setCity(value)}
                                 placeholder="City"
                                 flex={6}
                                 isRequired
                               />
                               <Select
-                                value={vendor.address.state}
+                                value={state}
+                                onChange={(value) => setState(value)}
                                 placeholder="State"
                                 flex={2}
                                 isRequired
@@ -480,7 +621,8 @@ export const VendorsEdit: React.FC<any> = ({ data: vendor }) => {
                                 <option value="WY">WY</option>
                               </Select>
                               <Input
-                                value={vendor.address.zipcode}
+                                value={zipcode}
+                                onChange={(value) => setZipcode(value)}
                                 placeholder="Zipcode"
                                 flex={3}
                                 type="number"
@@ -497,7 +639,8 @@ export const VendorsEdit: React.FC<any> = ({ data: vendor }) => {
                               Company phone number (required)
                             </Text>
                             <Input
-                              value={vendor.phoneNumber}
+                              value={phoneNumber}
+                              onChange={(value) => setPhoneNumber(value)}
                               placeholder="xxx-xxx-xxxx"
                               type="tel"
                               isRequired
@@ -515,7 +658,8 @@ export const VendorsEdit: React.FC<any> = ({ data: vendor }) => {
                               Add a statement of explanation.
                             </Text>
                             <Textarea
-                              value={vendor.description}
+                              value={description}
+                              onChange={(value) => setDescription(value)}
                               placeholder="Start typing..."
                             />
                           </Stack>
@@ -528,7 +672,8 @@ export const VendorsEdit: React.FC<any> = ({ data: vendor }) => {
                               Year company established
                             </Text>
                             <Input
-                              value={vendor.yearEstablished}
+                              value={yearEstablished}
+                              onChange={(value) => setYearEstablished(value)}
                               placeholder="eg. 2017"
                               type="number"
                             />
@@ -556,7 +701,8 @@ export const VendorsEdit: React.FC<any> = ({ data: vendor }) => {
                                   Full time
                                 </Text>
                                 <Input
-                                  value={vendor.employees.fullTime}
+                                  value={fullTime}
+                                  onChange={(value) => setFullTime(value)}
                                   maxWidth={160}
                                   placeholder="# of full time staff"
                                 />
@@ -571,7 +717,8 @@ export const VendorsEdit: React.FC<any> = ({ data: vendor }) => {
                                   Part time
                                 </Text>
                                 <Input
-                                  value={vendor.employees.partTime}
+                                  value={partTime}
+                                  onChange={(value) => setPartTime(value)}
                                   maxWidth={160}
                                   placeholder="# of part time staff"
                                 />
@@ -586,7 +733,8 @@ export const VendorsEdit: React.FC<any> = ({ data: vendor }) => {
                                   Interns
                                 </Text>
                                 <Input
-                                  value={vendor.employees.interns}
+                                  value={interns}
+                                  onChange={(value) => setInterns(value)}
                                   maxWidth={160}
                                   placeholder="# of interns"
                                 />
@@ -601,7 +749,8 @@ export const VendorsEdit: React.FC<any> = ({ data: vendor }) => {
                                   H2A
                                 </Text>
                                 <Input
-                                  value={vendor.employees.h2a}
+                                  value={h2a}
+                                  onChange={(value) => setH2a(value)}
                                   maxWidth={160}
                                   placeholder="# of H2A"
                                 />
@@ -616,13 +765,26 @@ export const VendorsEdit: React.FC<any> = ({ data: vendor }) => {
                                   Volunteers
                                 </Text>
                                 <Input
-                                  value={vendor.employees.volunteers}
+                                  value={volunteers}
+                                  onChange={(value) => setVolunteers(value)}
                                   maxWidth={160}
                                   placeholder="# of volunteers"
                                 />
                               </WrapItem>
                             </Wrap>
                           </Stack>
+                          <Button
+                            onClick={updateProfile}
+                            sx={{
+                              display: "block",
+                              height: "50px",
+                              marginLeft: "auto",
+                              marginRight: 0,
+                            }}
+                            variant="solid"
+                          >
+                            Update
+                          </Button>
                         </AccordionPanel>
                       </>
                     )}
@@ -651,6 +813,18 @@ export const VendorsEdit: React.FC<any> = ({ data: vendor }) => {
                           </AccordionButton>
                         </h2>
                         <AccordionPanel>
+                          <Button
+                            onClick={updateProfile}
+                            sx={{
+                              display: "block",
+                              height: "50px",
+                              marginLeft: "auto",
+                              marginRight: 0,
+                            }}
+                            variant="solid"
+                          >
+                            Update
+                          </Button>
                           <Stack marginTop={4}>
                             <Text
                               as="div"
@@ -660,17 +834,60 @@ export const VendorsEdit: React.FC<any> = ({ data: vendor }) => {
                               What type of vendor are you? (required)
                             </Text>
                             <Select
-                              value={vendor.type}
+                              value={type}
+                              onChange={(value) => setType(value)}
                               placeholder="Farm, Producer"
                               flex={2}
                               isRequired
                             >
-                              <option value="farm">Farm</option>
+                              <option value="farmer">Farm</option>
                               <option value="producer">Producer</option>
                             </Select>
                             <Text as="div" color="gray.500">
                               Select the category that describes the majority of
                               what you sell
+                            </Text>
+                          </Stack>
+                          <Stack marginTop={4}>
+                            <Text
+                              as="div"
+                              textStyle="bodyMain"
+                              fontWeight={500}
+                            >
+                              What subtype of vendor are you? (required)
+                            </Text>
+                            <Select
+                              value={subtype}
+                              onChange={(value) => setSubtype(value)}
+                              placeholder="Select one"
+                              flex={2}
+                              isRequired
+                            >
+                              <option value="farm">Farm</option>
+                              <option value="farmProducer">
+                                Farm producer
+                              </option>
+                              <option value="farmConcessionaire">
+                                Farm concessionaire
+                              </option>
+                              <option value="nonFarmProducer">
+                                Non-farm producer
+                              </option>
+                              <option value="concessionaire">
+                                Concessionaire
+                              </option>
+                              <option value="farmSourcedAlcohol">
+                                Farm-sourced alcohol
+                              </option>
+                              <option value="coffeeExceptions">
+                                Coffee/exceptions
+                              </option>
+                              <option value="speciallyDefined">
+                                Specially defined
+                              </option>
+                            </Select>
+                            <Text as="div" color="gray.500">
+                              Select a subtype, related to market fees
                             </Text>
                           </Stack>
                           <Stack marginTop={4}>
@@ -1250,6 +1467,73 @@ export const VendorsEdit: React.FC<any> = ({ data: vendor }) => {
                               <Radio value="false">No</Radio>
                             </Stack>
                           </RadioGroup>
+                          <Button
+                            onClick={updateProfile}
+                            sx={{
+                              display: "block",
+                              height: "50px",
+                              marginLeft: "auto",
+                              marginRight: 0,
+                            }}
+                            variant="solid"
+                          >
+                            Update
+                          </Button>
+                        </AccordionPanel>
+                      </>
+                    )}
+                  </AccordionItem>
+                  <AccordionItem sx={{ border: "1px solid #000", marginY: 8 }}>
+                    {({ isExpanded }) => (
+                      <>
+                        <h2>
+                          <AccordionButton>
+                            <Box as="span" flex="1" textAlign="left">
+                              <Text
+                                textStyle="bodyMain"
+                                sx={{
+                                  fontWeight: 900,
+                                  textTransform: "uppercase",
+                                }}
+                              >
+                                Documents
+                              </Text>
+                            </Box>
+                            {isExpanded ? (
+                              <Text textStyle="bodyMain">Hide information</Text>
+                            ) : (
+                              <Text textStyle="bodyMain">Show information</Text>
+                            )}
+                          </AccordionButton>
+                        </h2>
+                        <AccordionPanel>
+                          {licenses && licenses.length ? (
+                            licenses.map((license) => (
+                              <Box key={license.id} marginBottom={8}>
+                                {typeof license.document === "object" ? (
+                                  <Link
+                                    href={`/documents/${license.document.filename}`}
+                                    color="teal.600"
+                                    fontSize={20}
+                                  >
+                                    {license.document.filename}
+                                  </Link>
+                                ) : (
+                                  ""
+                                )}
+                                <Text>
+                                  {license.type == "license"
+                                    ? "Business license"
+                                    : "Business insurance document"}{" "}
+                                  uploaded on {formatDate(license.createdAt)}.
+                                </Text>
+                              </Box>
+                            ))
+                          ) : (
+                            <>
+                              <Text fontSize={18}>No documents found.</Text>
+                            </>
+                          )}
                         </AccordionPanel>
                       </>
                     )}
@@ -1313,7 +1597,7 @@ export const VendorsEdit: React.FC<any> = ({ data: vendor }) => {
                               placeholder="Start typing..."
                               defaultValue={notes}
                             />
-                            <Button onClick={updateNotes} variant="solid">
+                            <Button onClick={updateNote} variant="solid">
                               Update note
                             </Button>
                           </Stack>

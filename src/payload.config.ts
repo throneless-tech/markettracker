@@ -10,6 +10,7 @@ import { Applications } from "./collections/Applications";
 import { Contacts } from "./collections/Contacts";
 import { Documents } from "./collections/Documents";
 import { Invoices } from "./collections/Invoices";
+import { Licenses } from "./collections/Licenses";
 import { MarketReports } from "./collections/MarketReports";
 import { Markets } from "./collections/Markets";
 import { Media } from "./collections/Media";
@@ -20,6 +21,9 @@ import { Seasons } from "./collections/Seasons";
 import { Supplies } from "./collections/Supplies";
 import { Users } from "./collections/Users";
 import { Vendors } from "./collections/Vendors";
+
+// globals
+import { Settings } from "./globals/Settings";
 
 // custom components
 import { Account } from "./components/Base/Account";
@@ -99,6 +103,7 @@ export default buildConfig({
     Contacts,
     Documents,
     Invoices,
+    Licenses,
     MarketReports,
     Markets,
     Media,
@@ -122,6 +127,7 @@ export default buildConfig({
   }),
   debug: true,
   editor: slateEditor({}),
+  globals: [Settings],
   plugins: [payloadCloud()],
   typescript: {
     outputFile: path.resolve(__dirname, "payload-types.ts"),

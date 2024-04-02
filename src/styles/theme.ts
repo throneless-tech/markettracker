@@ -23,6 +23,12 @@ const Button = defineStyleConfig({
     },
   },
   variants: {
+    ghost: {
+      backgroundColor: "gray.50",
+      border: "2px solid",
+      borderColor: "gray.700",
+      color: "gray.700",
+    },
     outline: {
       border: "2px solid",
       borderColor: "teal.700",
@@ -155,6 +161,7 @@ export const theme = extendTheme({
   components: {
     Button,
     Input: inputTheme,
+    NumberInput: inputTheme,
     Radio,
     Select: selectTheme,
     Tag,
@@ -199,7 +206,7 @@ export const theme = extendTheme({
       fontFamily: "'Zilla Slab', serif",
       fontSize: ["24px"],
       fontWeight: "700",
-      letterSpacing: "0.72px", 
+      letterSpacing: "0.72px",
       lineHeight: "24px",
       textTransform: "uppercase",
     },

@@ -197,16 +197,23 @@ p {
     background-color: #fff !important;
   }
 
+  .react-datepicker__day--disabled,
+  .react-datepicker__day--outside-month {
+    background-color: #fff;
+    border: none;
+  }
+
+  .react-datepicker__day--in-range {
+    background-color: #fff;
+    color: #a3a3a3;
+  }
+
   .react-datepicker__day--selected,
   .vendor-select {
     background-color: #83913a;
     border: 1px solid #90b132;
     border-radius: 8px;
-  }
-
-  .react-datepicker__day--disabled,
-  .react-datepicker__day--outside-month {
-    border: none;
+    color: #fff;
   }
 
   .react-datepicker__time-container {
@@ -227,6 +234,7 @@ p {
 }
 
 .seasons-create-dates {
+  &.react-datepicker,
   .react-datepicker {
     .react-datepicker__navigation {
       display: flex;
@@ -250,6 +258,7 @@ p {
     flex-wrap: wrap;
   }
 }
+
 /* react table */
 .ReactTable .rt-table .rt-thead {
   min-width: 0px !important;

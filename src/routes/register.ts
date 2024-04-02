@@ -7,20 +7,20 @@ const registerRoute = async (req, res, next) => {
         collection: "users",
         data: { ...req.body.user, role: "vendor" },
       });
-      console.log("***user", user);
+      // console.log("***user", user);
       if (!user) throw new Error("Failed to create user");
       const vendor: Vendor = await req.payload.create({
         collection: "vendors",
         data: { ...req.body.vendor, user: user.id },
       });
-      console.log("***vendor", vendor);
+      // console.log("***vendor", vendor);
       if (!vendor || !vendor.id) throw new Error("Failed to create vendor");
       const updated = await req.payload.update({
         id: user.id,
         collection: "users",
         data: { vendor: vendor.id },
       });
-      console.log("***updated", updated);
+      // console.log("***updated", updated);
       res.status(201).send({ user, vendor });
     } catch (err) {
       res.status(500).send({ error: err.message });

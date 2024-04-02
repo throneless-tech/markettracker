@@ -12,6 +12,7 @@ import {
   Heading,
   HStack,
   Spacer,
+  Stack,
   Text,
 } from "@chakra-ui/react";
 
@@ -96,14 +97,28 @@ export const SeasonsTab: React.FC<any> = ({
           ) : (
             <>
               <Spacer />
-              <HStack flexGrow={1} spacing={4} justify={"flex-end"}>
-                <Button as="a" href="/admin/collections/applications?limit=10">
+              <Stack
+                align={"center"}
+                direction={["column", "row"]}
+                flexGrow={1}
+                spacing={4}
+                justify={"flex-end"}
+              >
+                <Button
+                  as="a"
+                  href="/admin/collections/applications?limit=10"
+                  maxW={"230px"}
+                >
                   Review market applications
                 </Button>
-                <Button as="a" href="/admin/collections/markets/create">
+                <Button
+                  as="a"
+                  href="/admin/collections/markets/create"
+                  maxW={"230px"}
+                >
                   Create a new market
                 </Button>
-              </HStack>
+              </Stack>
             </>
           )}
         </Flex>

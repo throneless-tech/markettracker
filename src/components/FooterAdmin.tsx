@@ -9,9 +9,9 @@ export const FooterAdmin: React.FC<any> = () => (
     color="gray.50"
     fontFamily="Inter"
   >
-    <Flex padding={4}>
+    <Flex direction={["column", "row"]} padding={4}>
       <Text>
-        © 2023 FRESHFARM Markets, Inc. Registered 501(c)(3). EIN: 35-2169859
+        © 2024 FRESHFARM Markets, Inc. Registered 501(c)(3). EIN: 35-2169859
       </Text>
       <Spacer />
       <Flex gap={2}>

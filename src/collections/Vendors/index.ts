@@ -12,10 +12,15 @@ import {
   afterReadApplications,
   beforeValidateApplications,
 } from "./hooks/populateApplications";
+import { afterReadSalesReports } from "./hooks/populateSalesReports";
 import { beforeValidateUser } from "./hooks/populateUser";
 import { beforeValidateProducts } from "./hooks/populateProducts";
 import { afterReadStats } from "./hooks/populateStats";
 import { validateRoute } from "../../routes/validate";
+import {
+  afterReadLicenses,
+  beforeValidateLicenses,
+} from "./hooks/populateLicenses";
 
 export const Vendors: CollectionConfig = {
   slug: "vendors",
@@ -272,6 +277,47 @@ export const Vendors: CollectionConfig = {
           label:
             "A local producer who makes products featuring agricultural ingredients sourced from local farms",
           value: "producer",
+        },
+      ],
+      admin: {
+        description:
+          "Select the category that describes the majority of what you sell.",
+      },
+    },
+    {
+      name: "subtype",
+      label: "What subtype of vendor are you?",
+      type: "select",
+      //required: true,
+      hasMany: false,
+      options: [
+        {
+          label: "Farm",
+          value: "farm",
+        },
+        {
+          label: "Farm producer",
+          value: "farmProducer",
+        },
+        {
+          label: "Farm concessionaire",
+          value: "farmConcessionaire",
+        },
+        {
+          label: "Non-farm producer",
+          value: "nonFarmProducer",
+        },
+        {
+          label: "Concessionaire",
+          value: "concessionaire",
+        },
+        {
+          label: "Farm sourced alcohol",
+          value: "farmSourcedAlcohol",
+        },
+        {
+          label: "Coffee/exceptions",
+          value: "coffeeExceptions",
         },
       ],
       admin: {
@@ -767,13 +813,34 @@ export const Vendors: CollectionConfig = {
       hasMany: true,
       relationTo: "applications",
     },
+    {
+      name: "licenses",
+      label: "Licenses",
+      type: "relationship",
+      hasMany: true,
+      relationTo: "licenses",
+    },
+    {
+      name: "salesReports",
+      label: "Sales Reports",
+      type: "relationship",
+      hasMany: true,
+      relationTo: "sales-reports",
+    },
   ],
   hooks: {
-    afterRead: [afterReadApplications, afterReadContacts, afterReadStats],
+    afterRead: [
+      afterReadApplications,
+      afterReadContacts,
+      afterReadLicenses,
+      afterReadSalesReports,
+      afterReadStats,
+    ],
     beforeValidate: [
       beforeValidateContacts,
-      beforeValidateUser,
+      beforeValidateLicenses,
       beforeValidateProducts,
+      beforeValidateUser,
     ],
   },
 };

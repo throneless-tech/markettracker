@@ -243,13 +243,14 @@ export const SeasonCard: React.FC<any> = forwardRef<any, any>((props, ref) => {
         {user.role == "vendor" ? (
           <Center marginBottom={2}>
             <Button
-              isDisabled={status && status !== "pending"}
-              rightIcon={status !== "pending" ? null : <ArrowForwardIcon />}
+              isDisabled={status && status === "rejected"}
+              rightIcon={status === "rejected" ? null : <ArrowForwardIcon />}
               variant={"solid"}
               onClick={(e) => {
                 e.preventDefault;
                 applyToSeason(season, status);
               }}
+              sx={{ textTransform: "capitalize" }}
             >
               {status
                 ? status == "pending"
