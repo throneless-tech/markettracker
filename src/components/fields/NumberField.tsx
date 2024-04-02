@@ -120,7 +120,6 @@ export const NumberField: FC<Props> = ({
         colorName = "(red)";
         break;
       case "wic":
-        colorName = "(red)";
         break;
       case "ebt":
         colorName = "(purple)";

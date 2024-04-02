@@ -23,7 +23,7 @@ const monthlyInvoices = async (req, res, next) => {
   ];
 
   // invoices are run for the previous month
-  const month = months[new Date().getMonth() - 1];
+  const month = months[new Date().getMonth() - 2];
 
   let reports = await req.payload.find({
     collection: "sales-reports",
@@ -128,8 +128,8 @@ const monthlyInvoices = async (req, res, next) => {
       //   gWorld: 0,
       //   total: 0,
       // }
-      const [sales, penalties] = value.reduce(
-        ([acc, penalties], report) => {
+      const [sales, penaltiesAndCredits] = value.reduce(
+        ([acc, penaltiesAndCredits], report) => {
           let existing = acc.get(report.season.name);
           if (!existing) {
             existing = {
@@ -149,7 +149,7 @@ const monthlyInvoices = async (req, res, next) => {
               total: 0,
             };
           }
-          console.log("***existing", existing);
+          // console.log("***existing", existing);
 
           existing.marketDays += 1;
           existing.cashAndCredit += report.cashAndCredit ?? 0;
@@ -178,14 +178,24 @@ const monthlyInvoices = async (req, res, next) => {
           acc.set(report.season.name, existing);
 
           if (report.penalty) {
-            penalties.push({
+            penaltiesAndCredits.push({
               season: report.season.name,
               penalty: report.penalty,
               type: report.penaltyType,
               description: report.penaltyDescription,
             });
           }
-          return [acc, penalties];
+
+          if (report.credit) {
+            penaltiesAndCredits.push({
+              season: report.season.name,
+              credit: report.credit,
+              type: report.creditType,
+              description: report.creditDescription,
+            });
+          }
+
+          return [acc, penaltiesAndCredits];
         },
         [new Map(), []],
       );
@@ -197,16 +207,22 @@ const monthlyInvoices = async (req, res, next) => {
         },
         0,
       );
-      const penaltySubtotal = Array.from(penalties.values()).reduce<number>(
-        (acc, penalty: any) => {
-          acc += penalty.penalty;
-          return acc;
-        },
-        0,
-      );
-      console.log("***salesSubtotal", salesSubtotal);
-      console.log("***penaltySubtotal", penaltySubtotal);
-      const total = salesSubtotal - penaltySubtotal;
+      const penaltySubtotal = Array.from(
+        penaltiesAndCredits.values(),
+      ).reduce<number>((acc, penalty: any) => {
+        acc += penalty.penalty ? penalty.penalty : 0;
+        return acc;
+      }, 0);
+      const creditSubtotal = Array.from(
+        penaltiesAndCredits.values(),
+      ).reduce<number>((acc, credit: any) => {
+        acc += credit.credit ? credit.credit : 0;
+        return acc;
+      }, 0);
+      // console.log("***salesSubtotal", salesSubtotal);
+      // console.log("***penaltySubtotal", penaltySubtotal);
+      // console.log("***creditSubtotal", creditSubtotal);
+      const total = salesSubtotal + penaltySubtotal - creditSubtotal;
       const invoice = await req.payload.create({
         collection: "invoices",
         data: {
@@ -214,8 +230,9 @@ const monthlyInvoices = async (req, res, next) => {
           marketMonth: month,
           sales: Array.from(sales.values()),
           salesSubtotal,
-          penalties,
+          penaltiesAndCredits,
           penaltySubtotal,
+          creditSubtotal,
           total,
           reports: value.map((report) => report.id),
           date: new Date().toISOString(),

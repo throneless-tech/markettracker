@@ -195,6 +195,8 @@ const InvoicesList: React.FC<any> = (props) => {
       const json = await response.json();
       const newInvoices = json ? json.docs : [];
 
+      console.log(json.docs);
+
       if (clear) {
         setPage(json.page);
         setInvoices(newInvoices);
@@ -213,7 +215,16 @@ const InvoicesList: React.FC<any> = (props) => {
   const generateInvoices = async () => {
     const response = await fetch("/api/invoices/generate");
     const json = await response.json();
-    setInvoices(json.invoices);
+    console.log(json.invoices);
+
+    if (json.invoices.length) {
+      if (invoices.length) {
+        const newInvoices = [json.invoices, ...invoices];
+        setInvoices(newInvoices);
+      } else {
+        setInvoices(json.invoices);
+      }
+    }
   };
 
   // trigger to export invoices
@@ -330,15 +341,16 @@ const InvoicesList: React.FC<any> = (props) => {
                   letterSpacing="0.03em"
                   textTransform="capitalize"
                   color="gray.600"
+                  width={200}
                 >
                   Market month
                 </Text>
               </FormLabel>
               <Select
                 value={monthValue}
-                maxWidth={"360px"}
                 onChange={handleMonthChange}
                 sx={{ color: "gray.700" }}
+                width={360}
               >
                 {months.map((month: string, idx: React.Key) => {
                   return (
@@ -361,15 +373,16 @@ const InvoicesList: React.FC<any> = (props) => {
                   letterSpacing="0.03em"
                   textTransform="capitalize"
                   color="gray.600"
+                  width={200}
                 >
                   Choose a vendor
                 </Text>
               </FormLabel>
               <Select
                 value={vendorValue}
-                maxWidth={"360px"}
                 onChange={handleVendorChange}
                 sx={{ color: "gray.700" }}
+                width={360}
               >
                 {vendors.map((vendor) => {
                   return (
@@ -394,6 +407,8 @@ const InvoicesList: React.FC<any> = (props) => {
               borderColor: "gray.100",
               // borderTopLeftRadius: "8px !important",
               // borderTopRightRadius: "8px !important",
+              tableLayout: ["auto", "auto", "fixed"],
+              width: "100%",
             }}
           >
             <Thead sx={{ backgroundColor: "gray.100" }}>
@@ -442,8 +457,17 @@ const InvoicesList: React.FC<any> = (props) => {
                     fontWeight: 500,
                   }}
                 >
-                  Penalties/
-                  <br />
+                  Penalties
+                </Th>
+                <Th
+                  sx={{
+                    border: "1px solid",
+                    borderColor: "gray.100",
+                    color: "gray.900",
+                    fontFamily: "'Outfit', sans-serif",
+                    fontWeight: 500,
+                  }}
+                >
                   Credits
                 </Th>
                 <Th
@@ -515,6 +539,7 @@ const InvoicesList: React.FC<any> = (props) => {
                     total,
                     salesSubtotal,
                     penaltySubtotal,
+                    creditSubtotal,
                     paid,
                     approved,
                   } = invoice;
@@ -526,7 +551,7 @@ const InvoicesList: React.FC<any> = (props) => {
                       <Td
                         sx={{
                           inlineSize: 160,
-                          maxW: 160,
+                          maxW: 200,
                           whiteSpace: "normal",
                           wordBreak: "break-all",
                         }}
@@ -547,11 +572,12 @@ const InvoicesList: React.FC<any> = (props) => {
                           ? reports[0]?.vendor.contacts[0].email
                           : ""}
                       </Td>
-                      <Td>${salesSubtotal}</Td>
+                      <Td>${salesSubtotal.toFixed(2)}</Td>
                       <Td>${penaltySubtotal}</Td>
-                      <Td>${total}</Td>
+                      <Td>${creditSubtotal}</Td>
+                      <Td>${total.toFixed(2)}</Td>
                       <Td>{new Date(date).toLocaleDateString("en-US")}</Td>
-                      <Td>
+                      <Td minW={120}>
                         <StatusDropdown
                           status={approved ? "true" : "false"}
                           id={invoice.id}
@@ -568,6 +594,7 @@ const InvoicesList: React.FC<any> = (props) => {
                             e.preventDefault;
                             viewInvoice(invoice);
                           }}
+                          width={120}
                         >
                           View invoice
                         </Button>
@@ -578,8 +605,10 @@ const InvoicesList: React.FC<any> = (props) => {
               ) : (
                 <Tr>
                   <Td p={4}>
-                    No new invoices to export. Try generating invoices for new
-                    data.
+                    No new invoices
+                    {user.role !== "vendor"
+                      ? " to export. Try generating invoices for new data."
+                      : "."}
                   </Td>
                 </Tr>
               )}

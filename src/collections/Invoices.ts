@@ -133,7 +133,7 @@ export const Invoices: CollectionConfig = {
       ],
     },
     {
-      name: "penalties",
+      name: "penaltiesAndCredits",
       type: "array",
       fields: [
         {
@@ -142,6 +142,10 @@ export const Invoices: CollectionConfig = {
         },
         {
           name: "penalty",
+          type: "number",
+        },
+        {
+          name: "credit",
           type: "number",
         },
         {
@@ -160,6 +164,10 @@ export const Invoices: CollectionConfig = {
     },
     {
       name: "penaltySubtotal",
+      type: "number",
+    },
+    {
+      name: "creditSubtotal",
       type: "number",
     },
     {

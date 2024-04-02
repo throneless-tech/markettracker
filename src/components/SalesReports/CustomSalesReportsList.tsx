@@ -464,7 +464,7 @@ const CustomSalesReportsList: React.FC<any> = () => {
                 value={needsActionBy}
                 width={360}
                 onChange={handleNeedsChange}
-                placeholder=" "
+                placeholder="Select one"
               >
                 <option value={"staff"} key={"staff"}>
                   FF Staff
@@ -486,7 +486,7 @@ const CustomSalesReportsList: React.FC<any> = () => {
           <Table
             variant="striped"
             colorScheme={"green"}
-            sx={{ tableLayout: "fixed", width: "100%" }}
+            sx={{ tableLayout: ["auto", "auto", "fixed"], width: "100%" }}
           >
             <Thead background={"gray.100"}>
               <Tr>
@@ -494,7 +494,7 @@ const CustomSalesReportsList: React.FC<any> = () => {
                   sx={{
                     color: "gray.900",
                     fontFamily: "'Outfit', sans-serif",
-                    maxW: 160,
+                    maxW: 180,
                   }}
                 >
                   Market
@@ -503,7 +503,7 @@ const CustomSalesReportsList: React.FC<any> = () => {
                   sx={{
                     color: "gray.900",
                     fontFamily: "'Outfit', sans-serif",
-                    maxW: 160,
+                    maxW: 180,
                   }}
                 >
                   Vendor
@@ -551,10 +551,15 @@ const CustomSalesReportsList: React.FC<any> = () => {
                 </Th>
                 <Th
                   sx={{ color: "gray.900", fontFamily: "'Outfit', sans-serif" }}
-                ></Th>
-                <Th
-                  sx={{ color: "gray.900", fontFamily: "'Outfit', sans-serif" }}
-                ></Th>
+                />
+                {role !== "vendor" ? (
+                  <Th
+                    sx={{
+                      color: "gray.900",
+                      fontFamily: "'Outfit', sans-serif",
+                    }}
+                  />
+                ) : null}
               </Tr>
             </Thead>
             <Tbody>
@@ -581,8 +586,8 @@ const CustomSalesReportsList: React.FC<any> = () => {
                       <Tr key={id}>
                         <Td
                           sx={{
-                            inlineSize: 160,
-                            maxW: 160,
+                            inlineSize: 180,
+                            maxW: 180,
                             whiteSpace: "normal",
                             wordBreak: "break-all",
                           }}
@@ -591,8 +596,8 @@ const CustomSalesReportsList: React.FC<any> = () => {
                         </Td>
                         <Td
                           sx={{
-                            inlineSize: 160,
-                            maxW: 160,
+                            inlineSize: 180,
+                            maxW: 180,
                             whiteSpace: "normal",
                             wordBreak: "break-all",
                           }}
@@ -626,6 +631,7 @@ const CustomSalesReportsList: React.FC<any> = () => {
                         </Td>
                         <Td>
                           <Button
+                            width={110}
                             onClick={(e) => {
                               e.preventDefault;
                               viewReport(report);

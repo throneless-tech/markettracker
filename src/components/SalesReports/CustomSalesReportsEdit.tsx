@@ -318,13 +318,22 @@ const CustomSalesReportsEdit: React.FC<any> = () => {
 
     // WIC
     // only editable by vendor in MD, but admin can edit
-    if (role == "admin" || (role == "vendor" && location == "MD")) {
+    if (
+      role == "admin" ||
+      role == "senior" ||
+      (role == "vendor" && location == "MD")
+    ) {
       setWicDisable(false);
     } else {
       // unavailable in VA
       setWicDisable(true);
     }
   }, [location]);
+
+  useEffect(() => {
+    console.log("pp", ppDisable);
+    console.log("wic", wicDisable);
+  }, [ppDisable, sfmnpDisable, wicDisable]);
 
   useEffect(() => {
     getSeasons();
@@ -396,7 +405,8 @@ const CustomSalesReportsEdit: React.FC<any> = () => {
           <Box>
             {isEditView && history ? (
               <Heading as="h1" sx={{ textTransform: "uppercase" }}>
-                Updating {thisVendor}'s Sales Report: <br />
+                {invoiced ? "" : "Updating "}
+                {thisVendor}'s Sales Report: <br />
                 {thisMarket} on {thisDate}
               </Heading>
             ) : (
@@ -539,7 +549,7 @@ const CustomSalesReportsEdit: React.FC<any> = () => {
                 <NumberField
                   path="cashAndCredit"
                   label="Cash and credit sales"
-                  isDisabled={false}
+                  isDisabled={invoiced}
                   min={0}
                   // required
                   admin={{
@@ -552,7 +562,7 @@ const CustomSalesReportsEdit: React.FC<any> = () => {
                 <NumberField
                   path="producePlus"
                   label="Produce Plus sales"
-                  isDisabled={ppDisable}
+                  isDisabled={ppDisable || invoiced}
                   min={0}
                   admin={{
                     description: "Enter the sum total of Produce Plus sales",
@@ -564,7 +574,7 @@ const CustomSalesReportsEdit: React.FC<any> = () => {
                 <NumberField
                   path="sfmnp"
                   label="SFMNP sales"
-                  isDisabled={sfmnpDisable}
+                  isDisabled={sfmnpDisable || invoiced}
                   min={0}
                   admin={{
                     description:
@@ -577,7 +587,7 @@ const CustomSalesReportsEdit: React.FC<any> = () => {
                 <NumberField
                   path="wic"
                   label="WIC sales"
-                  isDisabled={wicDisable}
+                  isDisabled={wicDisable || invoiced}
                   min={0}
                   admin={{
                     description:
@@ -598,6 +608,7 @@ const CustomSalesReportsEdit: React.FC<any> = () => {
                       path="ebt"
                       label="EBT/SNAP sales"
                       min={0}
+                      isDisabled={invoiced}
                       admin={{
                         description: "Enter the sum total of EBT/SNAP sales",
                         placeholder: "EBT sales",
@@ -608,6 +619,7 @@ const CustomSalesReportsEdit: React.FC<any> = () => {
                     <NumberField
                       path="snapBonus"
                       label="SNAP Bonus sales"
+                      isDisabled={invoiced}
                       admin={{
                         description: "Enter the sum total of SNAP Bonus sales",
                         placeholder: "SNAP bonus sales",
@@ -619,6 +631,7 @@ const CustomSalesReportsEdit: React.FC<any> = () => {
                       path="fmnpBonus"
                       label="FMNP Bonus sales"
                       min={0}
+                      isDisabled={invoiced}
                       admin={{
                         description: "Enter the sum total of FMNP Bonus sales",
                         placeholder: "EBT sales",
@@ -630,6 +643,7 @@ const CustomSalesReportsEdit: React.FC<any> = () => {
                       path="cardCoupon"
                       label="Credit card coupon sales"
                       min={0}
+                      isDisabled={invoiced}
                       admin={{
                         description:
                           "Enter the sum total of credit card coupon sales",
@@ -642,6 +656,7 @@ const CustomSalesReportsEdit: React.FC<any> = () => {
                       path="marketGoods"
                       label="Market Goods coupon sales"
                       min={0}
+                      isDisabled={invoiced}
                       admin={{
                         description:
                           "Enter the sum total of Market Goods coupon sales",
@@ -653,8 +668,8 @@ const CustomSalesReportsEdit: React.FC<any> = () => {
                     <NumberField
                       path="gWorld"
                       label="GWorld coupon coupon sales"
-                      // isDisabled={role == "vendor" ? true : false}
                       min={0}
+                      isDisabled={invoiced}
                       admin={{
                         description:
                           "Enter the sum total of GWorld coupon sales",
@@ -674,6 +689,7 @@ const CustomSalesReportsEdit: React.FC<any> = () => {
                     <NumberField
                       path="penalty"
                       label="Penalty amount"
+                      isDisabled={invoiced}
                       min={0}
                       admin={{
                         description:
@@ -683,10 +699,15 @@ const CustomSalesReportsEdit: React.FC<any> = () => {
                     />
                   </GridItem>
                   <GridItem colSpan={1}>
-                    <TextField label="Type of penalty" path="penaltyType" />
+                    <TextField
+                      isDisabled={invoiced}
+                      label="Type of penalty"
+                      path="penaltyType"
+                    />
                   </GridItem>
                   <GridItem colSpan={2}>
                     <TextField
+                      isDisabled={invoiced}
                       label="Describe the penalty"
                       path="penaltyDescription"
                     />
@@ -699,6 +720,7 @@ const CustomSalesReportsEdit: React.FC<any> = () => {
                 >
                   <GridItem colSpan={2}>
                     <NumberField
+                      isDisabled={invoiced}
                       path="credit"
                       label="Credit amount"
                       // isDisabled={role == "vendor" ? true : false}
@@ -711,10 +733,15 @@ const CustomSalesReportsEdit: React.FC<any> = () => {
                     />
                   </GridItem>
                   <GridItem colSpan={1}>
-                    <TextField label="Type of credit" path="creditType" />
+                    <TextField
+                      isDisabled={invoiced}
+                      label="Type of credit"
+                      path="creditType"
+                    />
                   </GridItem>
                   <GridItem colSpan={2}>
                     <TextField
+                      isDisabled={invoiced}
                       label="Describe the credit"
                       path="creditDescription"
                     />

@@ -58,6 +58,8 @@ const InvoicesEdit: React.FC<any> = () => {
     }
   }, [history.location.state]);
 
+  console.log(invoice);
+
   /**
    * Invoice amount:
    * Market fees (total cash
@@ -101,6 +103,8 @@ const InvoicesEdit: React.FC<any> = () => {
               borderColor: "gray.100",
               // borderTopLeftRadius: "8px !important",
               // borderTopRightRadius: "8px !important",
+              tableLayout: ["auto", "auto", "fixed"],
+              width: "100%",
             }}
           >
             <Thead sx={{ backgroundColor: "gray.50" }}>
@@ -113,8 +117,8 @@ const InvoicesEdit: React.FC<any> = () => {
                     fontFamily: "'Outfit', sans-serif",
                     fontSize: 16,
                     fontWeight: 500,
-                    maxWidth: 300,
                     textTransform: "none",
+                    width: 180,
                   }}
                 >
                   Market
@@ -132,7 +136,8 @@ const InvoicesEdit: React.FC<any> = () => {
                     width: 100,
                   }}
                 >
-                  Market days
+                  Market <br />
+                  days
                 </Th>
                 <Th
                   isNumeric
@@ -147,7 +152,8 @@ const InvoicesEdit: React.FC<any> = () => {
                     width: 100,
                   }}
                 >
-                  Gross sales
+                  Gross <br />
+                  sales
                 </Th>
                 <Th
                   isNumeric
@@ -162,7 +168,8 @@ const InvoicesEdit: React.FC<any> = () => {
                     width: 100,
                   }}
                 >
-                  Market fees
+                  Market <br />
+                  fees
                 </Th>
                 <Th
                   isNumeric
@@ -192,7 +199,40 @@ const InvoicesEdit: React.FC<any> = () => {
                     width: 100,
                   }}
                 >
-                  SNAP Bonus
+                  SNAP <br />
+                  Bonus
+                </Th>
+                <Th
+                  isNumeric
+                  sx={{
+                    border: "1px solid",
+                    borderColor: "gray.100",
+                    color: "gray.900",
+                    fontFamily: "'Outfit', sans-serif",
+                    fontSize: 16,
+                    fontWeight: 500,
+                    textTransform: "none",
+                    width: 140,
+                  }}
+                >
+                  WIC/
+                  <br />
+                  Senior Bonus
+                </Th>
+                <Th
+                  isNumeric
+                  sx={{
+                    border: "1px solid",
+                    borderColor: "gray.100",
+                    color: "gray.900",
+                    fontFamily: "'Outfit', sans-serif",
+                    fontSize: 16,
+                    fontWeight: 500,
+                    textTransform: "none",
+                    width: 130,
+                  }}
+                >
+                  Credit card <br /> coupon
                 </Th>
                 <Th
                   isNumeric
@@ -207,37 +247,8 @@ const InvoicesEdit: React.FC<any> = () => {
                     width: 100,
                   }}
                 >
-                  WIC/Senior Bonus
-                </Th>
-                <Th
-                  isNumeric
-                  sx={{
-                    border: "1px solid",
-                    borderColor: "gray.100",
-                    color: "gray.900",
-                    fontFamily: "'Outfit', sans-serif",
-                    fontSize: 16,
-                    fontWeight: 500,
-                    textTransform: "none",
-                    width: 100,
-                  }}
-                >
-                  Credit card
-                </Th>
-                <Th
-                  isNumeric
-                  sx={{
-                    border: "1px solid",
-                    borderColor: "gray.100",
-                    color: "gray.900",
-                    fontFamily: "'Outfit', sans-serif",
-                    fontSize: 16,
-                    fontWeight: 500,
-                    textTransform: "none",
-                    width: 100,
-                  }}
-                >
-                  Market goods
+                  Market <br />
+                  goods
                 </Th>
                 <Th
                   isNumeric
@@ -267,6 +278,53 @@ const InvoicesEdit: React.FC<any> = () => {
                     width: 100,
                   }}
                 >
+                  SFMNP
+                </Th>
+                <Th
+                  isNumeric
+                  sx={{
+                    border: "1px solid",
+                    borderColor: "gray.100",
+                    color: "gray.900",
+                    fontFamily: "'Outfit', sans-serif",
+                    fontSize: 16,
+                    fontWeight: 500,
+                    textTransform: "none",
+                    width: 100,
+                  }}
+                >
+                  FMNP <br />
+                  Bonus
+                </Th>
+                <Th
+                  isNumeric
+                  sx={{
+                    border: "1px solid",
+                    borderColor: "gray.100",
+                    color: "gray.900",
+                    fontFamily: "'Outfit', sans-serif",
+                    fontSize: 16,
+                    fontWeight: 500,
+                    textTransform: "none",
+                    width: 100,
+                  }}
+                >
+                  Produce <br />
+                  Plus
+                </Th>
+                <Th
+                  isNumeric
+                  sx={{
+                    border: "1px solid",
+                    borderColor: "gray.100",
+                    color: "gray.900",
+                    fontFamily: "'Outfit', sans-serif",
+                    fontSize: 16,
+                    fontWeight: 500,
+                    textTransform: "none",
+                    width: 100,
+                  }}
+                >
                   Net
                 </Th>
               </Tr>
@@ -279,8 +337,10 @@ const InvoicesEdit: React.FC<any> = () => {
                         sx={{
                           border: "1px solid",
                           borderColor: "gray.100",
-                          fontWeight: "500",
-                          maxWidth: 300,
+                          inlineSize: 180,
+                          maxW: 180,
+                          whiteSpace: "normal",
+                          wordBreak: "break-all",
                         }}
                       >
                         {row.season}
@@ -313,7 +373,7 @@ const InvoicesEdit: React.FC<any> = () => {
                           width: 100,
                         }}
                       >
-                        {row.marketFee}
+                        {(row.marketFee / 100) * row.cashAndCredit}
                       </Td>
                       <Td
                         isNumeric
@@ -375,6 +435,36 @@ const InvoicesEdit: React.FC<any> = () => {
                       >
                         {row.gWorld}
                       </Td>
+                      <Td
+                        isNumeric
+                        sx={{
+                          border: "1px solid",
+                          borderColor: "gray.100",
+                          width: 100,
+                        }}
+                      >
+                        {row.sfmnp}
+                      </Td>
+                      <Td
+                        isNumeric
+                        sx={{
+                          border: "1px solid",
+                          borderColor: "gray.100",
+                          width: 100,
+                        }}
+                      >
+                        {row.fmnpBonus}
+                      </Td>
+                      <Td
+                        isNumeric
+                        sx={{
+                          border: "1px solid",
+                          borderColor: "gray.100",
+                          width: 100,
+                        }}
+                      >
+                        {row.producePlus}
+                      </Td>
                       <Td isNumeric sx={{ fontWeight: "bold" }}>
                         {row.total}
                       </Td>
@@ -387,7 +477,7 @@ const InvoicesEdit: React.FC<any> = () => {
         <Flex align="center" justify="flex-end" marginTop={6}>
           <Text sx={{ backgroundColor: "teal.100", padding: 4 }}>Subtotal</Text>
           <Text sx={{ backgroundColor: "teal.50", padding: 4 }}>
-            {invoice?.salesSubtotal}
+            {invoice?.salesSubtotal.toFixed(2)}
           </Text>
         </Flex>
         <Heading as="h3" marginTop={12} sx={{ fontSize: 24 }}>
@@ -401,6 +491,8 @@ const InvoicesEdit: React.FC<any> = () => {
               borderColor: "gray.100",
               // borderTopLeftRadius: "8px !important",
               // borderTopRightRadius: "8px !important",
+              tableLayout: ["auto", "auto", "fixed"],
+              width: "100%",
             }}
           >
             <Thead sx={{ backgroundColor: "gray.50" }}>
@@ -413,8 +505,8 @@ const InvoicesEdit: React.FC<any> = () => {
                     fontFamily: "'Outfit', sans-serif",
                     fontSize: 16,
                     fontWeight: 500,
-                    maxWidth: 300,
                     textTransform: "none",
+                    width: 180,
                   }}
                 >
                   Market
@@ -462,14 +554,18 @@ const InvoicesEdit: React.FC<any> = () => {
               </Tr>
             </Thead>
             <Tbody>
-              {invoice?.penalties && invoice?.penalties.length
-                ? invoice.penalties.map((row) => (
+              {invoice?.penaltiesAndCredits &&
+              invoice?.penaltiesAndCredits.length
+                ? invoice.penaltiesAndCredits.map((row) => (
                     <Tr key={row.id}>
                       <Td
                         sx={{
                           border: "1px solid",
                           borderColor: "gray.100",
-                          maxWidth: 300,
+                          inlineSize: 180,
+                          maxW: 180,
+                          whiteSpace: "normal",
+                          wordBreak: "break-all",
                         }}
                       >
                         {row.season}
@@ -482,7 +578,7 @@ const InvoicesEdit: React.FC<any> = () => {
                           width: 100,
                         }}
                       >
-                        {row.penalty}
+                        {row.penalty ? row.penalty : -Math.abs(row.credit)}
                       </Td>
                       <Td
                         sx={{
@@ -497,7 +593,7 @@ const InvoicesEdit: React.FC<any> = () => {
                         sx={{
                           border: "1px solid",
                           borderColor: "gray.100",
-                          width: 100,
+                          width: 400,
                         }}
                       >
                         {row.description}
@@ -511,7 +607,7 @@ const InvoicesEdit: React.FC<any> = () => {
         <Flex align="center" justify="flex-end" marginTop={6}>
           <Text sx={{ backgroundColor: "teal.100", padding: 4 }}>Subtotal</Text>
           <Text sx={{ backgroundColor: "teal.50", padding: 4 }}>
-            {invoice?.penaltySubtotal}
+            {invoice?.penaltySubtotal - invoice?.creditSubtotal}
           </Text>
         </Flex>
         <Flex align="center" justify="flex-end" marginTop={6}>
@@ -526,7 +622,7 @@ const InvoicesEdit: React.FC<any> = () => {
               padding: 4,
             }}
           >
-            {invoice?.total}
+            {invoice?.total.toFixed(2)}
           </Text>
         </Flex>
         <Flex align="center" justify="center" marginTop={6}>
