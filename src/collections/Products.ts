@@ -3,6 +3,11 @@ import { ProductsList } from "../components/Products/ProductsList";
 
 export const Products: CollectionConfig = {
   slug: "products",
+  access: {
+    create: ({ req }) => req.user.role === "admin",
+    update: ({ req }) => req.user.role === "admin",
+    delete: ({ req }) => req.user.role === "admin",
+  },
   admin: {
     components: {
       views: {
