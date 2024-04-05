@@ -336,7 +336,9 @@ const CustomSalesReportsList: React.FC<any> = () => {
                 </Button>
               </HStack>
             </>
-          ) : null}
+          ) : (
+            "Questions? Comments? Email salesreports@ffm.org"
+          )}
         </Flex>
         <Divider color="gray.900" borderBottomWidth={2} opacity={1} />
         <VStack align="flex-start" marginY={8}>
