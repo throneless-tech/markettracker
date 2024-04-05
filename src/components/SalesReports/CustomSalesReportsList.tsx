@@ -116,7 +116,7 @@ const CustomSalesReportsList: React.FC<any> = () => {
         marketGoods === undefined ||
         gWorld === undefined)
     ) {
-      return "Staff & vendor";
+      return "FF & vendor";
     }
 
     if (!cashAndCredit) {
@@ -134,7 +134,7 @@ const CustomSalesReportsList: React.FC<any> = () => {
       marketGoods === undefined ||
       gWorld === undefined
     ) {
-      return "Staff";
+      return "FF";
     }
   };
 
@@ -287,6 +287,7 @@ const CustomSalesReportsList: React.FC<any> = () => {
   }, [marketValue, monthValue, vendorValue, needsActionBy]);
 
   useEffect(() => {
+    console.log("***** ROLE", role);
     const getSeasons = async () => {
       try {
         const seasons = await fetchAllSeasons();
