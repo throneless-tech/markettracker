@@ -48,6 +48,34 @@ const exportInvoices = async (req, res, next) => {
 
   exported = exported.flat();
 
+  // let exportedInvoices = invoices.docs.filter(report => report.total >= 0)
+  // exportedInvoices.map(report => {
+  //   return {
+  //     type: "Invoice",
+  //     date: report.date,
+  //     num: "",
+  //     name: report.vendor.name,
+  //     // item:
+  //     // memo:
+  //     // class:
+  //     amount: report.total,
+  //   };
+  // })
+
+  // let exportedCreditMemos = invoices.docs.filter(report => report.total < 0);
+  // exportedCreditMemos.map(report => {
+  //   return {
+  //     type: "Credit Memo",
+  //     date: report.date,
+  //     num: "",
+  //     name: report.vendor.name,
+  //     // item:
+  //     // memo:
+  //     // class:
+  //     amount: Math.abs(report.total),
+  //   };
+  // })
+
   // if date and exported == false, update to true
   const result = await payload.update({
     collection: "invoices", // required
