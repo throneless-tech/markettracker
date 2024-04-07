@@ -23,20 +23,29 @@ import {
 
 // components
 import { FooterAdmin } from "../FooterAdmin";
-import { MarketReportCard } from "./MarketReportCard";
+import { MarketReportRow } from "./MarketReportRow";
 import { SeasonsTabs } from "../Seasons/SeasonsTabs";
 
 export const MarketReportsList: React.FC<any> = () => {
   const { user } = useAuth();
   const [markets, setMarkets] = useState([]);
 
-  // figure out which market days are in the future
+  // date options
   const options: any = {
     year: "numeric",
     month: "numeric",
     day: "numeric",
   };
 
+  // do not show markets that have ended
+  const isMarketCurrent = (endDate) => {
+    let today = new Date();
+    const date = new Date(endDate);
+
+    return today < date ? true : false;
+  };
+
+  // figure out which market days are in the future
   const nextMarketDate = (startDate) => {
     let today = new Date();
     const date = new Date(startDate);
@@ -48,6 +57,24 @@ export const MarketReportsList: React.FC<any> = () => {
       return date.toLocaleDateString("en-US", options);
     } else {
       today.setDate(today.getDate() + ((dayNum - (7 + today.getDay())) % 7));
+      return today.toLocaleDateString("en-US", options);
+    }
+  };
+
+  // find what day the market report is due and highlight if overdue
+  const getDueDate = (startDate) => {
+    let today = new Date();
+    const date = new Date(startDate);
+    const dayNum = date.getDay();
+
+    // show correct date for market reports if it is before market begins
+    if (today < date) {
+      date.setDate(date.getDate() + (((dayNum + (7 - date.getDay())) % 7) + 2));
+      return date.toLocaleDateString("en-US", options);
+    } else {
+      today.setDate(
+        today.getDate() + (((dayNum - (7 + today.getDay())) % 7) + 2),
+      );
       return today.toLocaleDateString("en-US", options);
     }
   };
@@ -157,39 +184,11 @@ export const MarketReportsList: React.FC<any> = () => {
               <Tbody>
                 {markets && markets.length ? (
                   markets.map((market) => (
-                    <Tr key={market.id}>
-                      <Td
-                        sx={{
-                          inlineSize: 180,
-                          maxW: 180,
-                          whiteSpace: "normal",
-                          wordBreak: "break-all",
-                        }}
-                      >
-                        {market.name}
-                      </Td>
-                      <Td
-                        sx={{
-                          inlineSize: 180,
-                          maxW: 180,
-                          whiteSpace: "normal",
-                          wordBreak: "break-all",
-                        }}
-                      >
-                        {nextMarketDate(market.marketDates.startDate)}
-                      </Td>
-                      <Td>
-                        {market.operators && market.operators.length
-                          ? market.operators.map((operator, index) => {
-                              if (index === market.operators.length - 1) {
-                                return operator.name;
-                              } else {
-                                return `${operator.name}, `;
-                              }
-                            })
-                          : null}
-                      </Td>
-                    </Tr>
+                    <>
+                      {isMarketCurrent(market.marketDates.endDate) ? (
+                        <MarketReportRow market={market} />
+                      ) : null}
+                    </>
                   ))
                 ) : (
                   <Tr>
