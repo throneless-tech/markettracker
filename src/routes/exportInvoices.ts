@@ -7,46 +7,178 @@ const exportInvoices = async (req, res, next) => {
     limit: 9999,
   });
 
+  let csvObject;
+
   let exported = invoices.docs.map((report) => {
     let markets = [];
 
     if (report.sales.length) {
       report.sales.map((sale, index) => {
-        let marketSales = {
-          invoiceDate: report.date,
-          customerName: report.vendor.name,
-          customerContact: report.vendor.email ? report.vendor.email : "",
-          customerStreet: report.vendor.address.street,
-          customerCity: report.vendor.address.city
-            ? report.vendor.address.city
-            : "",
-          customerState: report.vendor.address.state,
-          customerZipcode: report.vendor.address.zipcode,
-          invoiceOrCredit: report.total >= 0 ? "Invoice" : "Credit memo",
-          amount: Math.abs(report.total.toFixed(2)),
-          [`marketName-${index}`]: sale.season,
-          [`marketFee-${index}`]: (
-            (sale.marketFee / 100) *
-            sale.cashAndCredit
-          ).toFixed(2),
-          [`cardCoupon-${index}`]: sale.cardCoupon,
-          [`ebt-${index}`]: sale.ebt,
-          [`fmnpBonus-${index}`]: sale.fmnpBonus,
-          [`gWorld-${index}`]: sale.gWorld,
-          [`marketGoods-${index}`]: sale.marketGoods,
-          [`producePlus-${index}`]: sale.producePlus,
-          [`sfmnp-${index}`]: sale.sfmnp,
-          [`snapBonus-${index}`]: sale.snapBonus,
-          [`wic-${index}`]: sale.wic,
-        };
-        markets = [...markets, marketSales];
+        // TODO FIXME fix year to be dynamic
+        // TODO FIXME ensure day of week is correct if needed
+        let marketFeeRow = [
+          report.total >= 0 ? "Invoice" : "Credit memo",
+          report.date,
+          "",
+          report.vendor.name,
+          "Market Fees:Market Fee",
+          `${sale.season} Farmers' Market Fee ${
+            report.marketMonth.charAt(0).toUpperCase() +
+            report.marketMonth.slice(1)
+          } 2024, Gross Sales ${Math.abs(report.total.toFixed(2))}`,
+          `Program - Farmers Markets:Farmers Markets - All:${report.market.address.state}:${sale.season}`,
+          (sale.marketFee / 100) * sale.cashAndCredit,
+        ];
+
+        markets = [...markets, marketFeeRow];
+
+        let cardCouponRow,
+          ebtRow,
+          fmnpBonusRow,
+          gWorldRow,
+          marketGoodsRow,
+          producePlusRow,
+          sfmnpRow,
+          snapBonusRow,
+          wicRow;
+
+        if (sale.cardCoupon) {
+          cardCouponRow = [
+            report.total >= 0 ? "Invoice" : "Credit memo",
+            report.date,
+            "",
+            report.vendor.name,
+            "Tokens:Card Coupon",
+            `FIXME Card Coupon information`,
+            `Program - Farmers Markets:Farmers Markets - All:${report.market.address.state}:${sale.season}`,
+            sale.cardCoupon,
+          ];
+          markets = [...markets, cardCouponRow];
+        }
+
+        if (sale.ebt) {
+          ebtRow = [
+            report.total >= 0 ? "Invoice" : "Credit memo",
+            report.date,
+            "",
+            report.vendor.name,
+            "Tokens:EBT",
+            `FIXME EBT information`,
+            `Program - Farmers Markets:Farmers Markets - All:${report.market.address.state}:${sale.season}`,
+            sale.ebt,
+          ];
+          markets = [...markets, ebtRow];
+        }
+
+        if (sale.fmnpBonus) {
+          fmnpBonusRow = [
+            report.total >= 0 ? "Invoice" : "Credit memo",
+            report.date,
+            "",
+            report.vendor.name,
+            "Tokens:FMNP Bonus",
+            `FIXME FMNP Bonus information`,
+            `Program - Farmers Markets:Farmers Markets - All:${report.market.address.state}:${sale.season}`,
+            sale.fmnpBonus,
+          ];
+          markets = [...markets, fmnpBonusRow];
+        }
+
+        if (sale.gWorld) {
+          gWorldRow = [
+            report.total >= 0 ? "Invoice" : "Credit memo",
+            report.date,
+            "",
+            report.vendor.name,
+            "Tokens:GWorld",
+            `FIXME GWorld information`,
+            `Program - Farmers Markets:Farmers Markets - All:${report.market.address.state}:${sale.season}`,
+            sale.gWorld,
+          ];
+          markets = [...markets, gWorldRow];
+        }
+
+        if (sale.marketGoods) {
+          marketGoodsRow = [
+            report.total >= 0 ? "Invoice" : "Credit memo",
+            report.date,
+            "",
+            report.vendor.name,
+            "Tokens:Market Goods",
+            `Promo/Gift/Market Goods Coupons/Tokens Redeemed (yellow)`,
+            `Program - Farmers Markets:Farmers Markets - All:${report.market.address.state}:${sale.season}`,
+            sale.marketGoods,
+          ];
+          markets = [...markets, marketFeeRow];
+        }
+
+        if (sale.producePlus) {
+          producePlusRow = [
+            report.total >= 0 ? "Invoice" : "Credit memo",
+            report.date,
+            "",
+            report.vendor.name,
+            "Tokens:Produce Plus",
+            `FIXME Produce Plus information`,
+            `Program - Farmers Markets:Farmers Markets - All:${report.market.address.state}:${sale.season}`,
+            sale.producePlus,
+          ];
+          markets = [...markets, producePlusRow];
+        }
+
+        if (sale.sfmnp) {
+          sfmnpRow = [
+            report.total >= 0 ? "Invoice" : "Credit memo",
+            report.date,
+            "",
+            report.vendor.name,
+            "Tokens:SFMNP",
+            `FIXME SFMNP information`,
+            `Program - Farmers Markets:Farmers Markets - All:${report.market.address.state}:${sale.season}`,
+            sale.sfmnp,
+          ];
+          markets = [...markets, sfmnpRow];
+        }
+
+        if (sale.snapBonus) {
+          snapBonusRow = [
+            report.total >= 0 ? "Invoice" : "Credit memo",
+            report.date,
+            "",
+            report.vendor.name,
+            "Tokens:Produce Plus",
+            `SNAP/EBT Matching Coupons/Tokens Redeemed (white)`,
+            `Program - Farmers Markets:Farmers Markets - All:${report.market.address.state}:${sale.season}`,
+            sale.snapBonus,
+          ];
+          markets = [...markets, snapBonusRow];
+        }
+
+        if (sale.wic) {
+          wicRow = [
+            report.total >= 0 ? "Invoice" : "Credit memo",
+            report.date,
+            "",
+            report.vendor.name,
+            "Tokens:WIC Bonus",
+            `WIC Matching Coupons/Tokens Redeemed (red)`,
+            `Program - Farmers Markets:Farmers Markets - All:${report.market.address.state}:${sale.season}`,
+            sale.wic,
+          ];
+          markets = [...markets, wicRow];
+        }
       });
     }
 
     return markets;
   });
 
-  exported = exported.flat();
+  // exported = exported.flat();
+
+  csvObject = {
+    fields: ["Type", "Date", "Num", "Name", "Item", "Memo", "Class", "Amount"],
+    data: [exported],
+  };
 
   // let exportedInvoices = invoices.docs.filter(report => report.total >= 0)
   // exportedInvoices.map(report => {
@@ -96,8 +228,8 @@ const exportInvoices = async (req, res, next) => {
     depth: 0,
   });
 
-  console.log("result::::::::::::::::");
-  console.log(result);
+  console.log("csvObject::::::::::::::::");
+  console.log(csvObject);
 
   /**
    * when an invoice has been exported,
@@ -123,7 +255,7 @@ const exportInvoices = async (req, res, next) => {
   const today = new Date();
   const todayString = today.toISOString();
 
-  const file = await Papa.unparse(exported);
+  const file = await Papa.unparse(csvObject);
   res.attachment(`invoices-export-${todayString}.csv`);
   res.type("txt");
 

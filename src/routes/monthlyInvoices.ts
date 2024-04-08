@@ -134,6 +134,7 @@ const monthlyInvoices = async (req, res, next) => {
           if (!existing) {
             existing = {
               season: report.season.name,
+              region: report.season.address.state,
               marketDays: 0,
               cashAndCredit: 0,
               marketFee: 0,
@@ -176,6 +177,7 @@ const monthlyInvoices = async (req, res, next) => {
               (report.gWorld ?? 0));
 
           acc.set(report.season.name, existing);
+          acc.set(report.season.address.state, existing);
 
           if (report.penalty) {
             penaltiesAndCredits.push({

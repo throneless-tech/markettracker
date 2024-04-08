@@ -79,6 +79,10 @@ export const Invoices: CollectionConfig = {
           type: "text",
         },
         {
+          name: "region",
+          type: "text",
+        },
+        {
           name: "marketDays",
           type: "number",
         },

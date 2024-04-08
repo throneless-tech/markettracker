@@ -142,6 +142,8 @@ const InvoicesList: React.FC<any> = (props) => {
     nextPage: number,
     isNotExported: boolean,
   ) => {
+    console.log("is not exported: ", isNotExported);
+
     const queries = [];
     if (isNotExported) {
       queries.push({ exported: { equals: false } });
@@ -238,6 +240,7 @@ const InvoicesList: React.FC<any> = (props) => {
   useEffect(() => {
     const params = new URLSearchParams(location.search);
     const isNotExportedParam = params.get("where[exported][equals]");
+    console.log("checking exported param....");
 
     if (isNotExportedParam) {
       setIsNotExported(true);
@@ -248,31 +251,13 @@ const InvoicesList: React.FC<any> = (props) => {
     }
   }, [isNotExported, page]);
 
-  // useEffect(() => {
-  //   const params = new URLSearchParams(location.search);
-  //   const isNotExportedParam = params.get("where[exported][equals]");
-
-  //   if (isNotExportedParam) {
-  //     setIsNotExported(true);
-  //     getInvoices(1, true);
-  //   } else {
-  //     setIsNotExported(false);
-  //     getInvoices(1, false);
-  //   }
-  //   setPage(1);
-  // }, [monthValue]);
-
-  // useEffect(() => {
-  //   if (inView) {
-  //     setPage((prevState) => prevState + 1);
-  //   }
-  // }, [inView, isNotExported]);
-
   const loadMore = () => {
     getInvoices(false, page + 1, isNotExported);
   };
 
   useEffect(() => {
+    console.log("checking month and vendor value");
+
     getInvoices(true, 1, isNotExported);
   }, [monthValue, vendorValue]);
 
