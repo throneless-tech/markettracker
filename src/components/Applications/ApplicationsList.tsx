@@ -835,11 +835,7 @@ export const ApplicationsList: React.FC<any> = () => {
                 </Stack>
               </Flex>
             </Box>
-            <Box
-              sx={{
-                maxWidth: { base: 400, sm: 700, md: 900, lg: 1200, xl: 1660 },
-              }}
-            >
+            <Box width={{ base: "100%", md: "85%" }}>
               <Box marginBottom={3} textAlign={"right"}>
                 <Button
                   as="a"
@@ -855,9 +851,9 @@ export const ApplicationsList: React.FC<any> = () => {
               </Box>
               <Box
                 sx={{
+                  height: "100vh",
                   overflowX: "scroll",
                   overflowY: "auto",
-                  height: "100vh",
                 }}
               >
                 <DataTable columns={columns} fetchData={getApplications} />

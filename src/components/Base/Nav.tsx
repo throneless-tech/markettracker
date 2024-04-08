@@ -382,7 +382,7 @@ export const Nav: React.FC<any> = () => {
           background={"gray.700"}
         >
           <Flex gap="1" direction={"row"} align={"center"} justify={"center"}>
-            <Center paddingX={8} paddingY={4}>
+            <Center paddingX={{ md: 3, lg: 8 }} paddingY={4}>
               <IconButton
                 as="a"
                 href="/"
@@ -400,7 +400,7 @@ export const Nav: React.FC<any> = () => {
               />
             </Center>
             <LinkBox
-              paddingX={6}
+              paddingX={{ md: 3, lg: 6 }}
               paddingY={8}
               sx={{
                 borderLeft:
@@ -432,7 +432,7 @@ export const Nav: React.FC<any> = () => {
               </Stack>
             </LinkBox>
             <LinkBox
-              paddingX={6}
+              paddingX={{ md: 3, lg: 6 }}
               paddingY={8}
               sx={{
                 borderLeft:
@@ -478,7 +478,7 @@ export const Nav: React.FC<any> = () => {
             {user.role == "vendor" ? (
               <>
                 <LinkBox
-                  paddingX={6}
+                  paddingX={{ md: 3, lg: 6 }}
                   paddingY={8}
                   sx={{
                     borderLeft:
@@ -522,7 +522,7 @@ export const Nav: React.FC<any> = () => {
                   </Stack>
                 </LinkBox>
                 <LinkBox
-                  paddingX={6}
+                  paddingX={{ md: 3, lg: 6 }}
                   paddingY={8}
                   sx={{
                     borderLeft:
@@ -569,7 +569,7 @@ export const Nav: React.FC<any> = () => {
             ) : (
               <>
                 <LinkBox
-                  paddingX={6}
+                  paddingX={{ md: 3, lg: 6 }}
                   paddingY={8}
                   sx={{
                     borderLeft:
@@ -613,7 +613,7 @@ export const Nav: React.FC<any> = () => {
                   </Stack>
                 </LinkBox>
                 <LinkBox
-                  paddingX={6}
+                  paddingX={{ md: 3, lg: 6 }}
                   paddingY={8}
                   sx={{
                     borderLeft:
@@ -657,7 +657,7 @@ export const Nav: React.FC<any> = () => {
                   </Stack>
                 </LinkBox>
                 <LinkBox
-                  paddingX={6}
+                  paddingX={{ md: 3, lg: 6 }}
                   paddingY={8}
                   sx={{
                     borderLeft:
@@ -703,7 +703,7 @@ export const Nav: React.FC<any> = () => {
               </>
             )}
             <LinkBox
-              paddingX={6}
+              paddingX={{ md: 3, lg: 6 }}
               paddingY={8}
               sx={{
                 borderLeft:
