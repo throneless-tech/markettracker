@@ -1,5 +1,6 @@
 import Papa from "papaparse";
 import payload from "payload";
+import { BlobWriter, TextReader, ZipWriter } from "@zip.js/zip.js";
 
 const exportInvoices = async (req, res, next) => {
   const invoices = await req.payload.find({
@@ -12,17 +13,17 @@ const exportInvoices = async (req, res, next) => {
     limit: 9999,
   });
 
-  let csvObject;
+  let invoiceCsv, creditMemoCsv;
 
-  let exported = invoices.docs.map((report) => {
-    let markets = [];
+  let exportedInvoices = invoices.docs.map((report) => {
+    let theseInvoices = [];
 
     if (report.sales.length) {
       report.sales.map((sale, index) => {
         // TODO FIXME fix year to be dynamic
         // TODO FIXME ensure day of week is correct if needed
         let marketFeeRow = [
-          report.total >= 0 ? "Invoice" : "Credit memo",
+          "Invoice",
           report.date,
           "",
           report.vendor.name,
@@ -35,7 +36,7 @@ const exportInvoices = async (req, res, next) => {
           (sale.marketFee / 100) * sale.cashAndCredit,
         ];
 
-        markets = [...markets, marketFeeRow];
+        theseInvoices = [...theseInvoices, marketFeeRow];
 
         let cardCouponRow,
           ebtRow,
@@ -49,7 +50,7 @@ const exportInvoices = async (req, res, next) => {
 
         if (sale.cardCoupon) {
           cardCouponRow = [
-            report.total >= 0 ? "Invoice" : "Credit memo",
+            "Invoice",
             report.date,
             "",
             report.vendor.name,
@@ -58,12 +59,12 @@ const exportInvoices = async (req, res, next) => {
             `Program - Farmers Markets:Farmers Markets - All:${sale.region}:${sale.season}`,
             sale.cardCoupon,
           ];
-          markets = [...markets, cardCouponRow];
+          theseInvoices = [...theseInvoices, cardCouponRow];
         }
 
         if (sale.ebt) {
           ebtRow = [
-            report.total >= 0 ? "Invoice" : "Credit memo",
+            "Invoice",
             report.date,
             "",
             report.vendor.name,
@@ -72,12 +73,12 @@ const exportInvoices = async (req, res, next) => {
             `Program - Farmers Markets:Farmers Markets - All:${sale.region}:${sale.season}`,
             sale.ebt,
           ];
-          markets = [...markets, ebtRow];
+          theseInvoices = [...theseInvoices, ebtRow];
         }
 
         if (sale.fmnpBonus) {
           fmnpBonusRow = [
-            report.total >= 0 ? "Invoice" : "Credit memo",
+            "Invoice",
             report.date,
             "",
             report.vendor.name,
@@ -86,12 +87,12 @@ const exportInvoices = async (req, res, next) => {
             `Program - Farmers Markets:Farmers Markets - All:${sale.region}:${sale.season}`,
             sale.fmnpBonus,
           ];
-          markets = [...markets, fmnpBonusRow];
+          theseInvoices = [...theseInvoices, fmnpBonusRow];
         }
 
         if (sale.gWorld) {
           gWorldRow = [
-            report.total >= 0 ? "Invoice" : "Credit memo",
+            "Invoice",
             report.date,
             "",
             report.vendor.name,
@@ -100,12 +101,12 @@ const exportInvoices = async (req, res, next) => {
             `Program - Farmers Markets:Farmers Markets - All:${sale.region}:${sale.season}`,
             sale.gWorld,
           ];
-          markets = [...markets, gWorldRow];
+          theseInvoices = [...theseInvoices, gWorldRow];
         }
 
         if (sale.marketGoods) {
           marketGoodsRow = [
-            report.total >= 0 ? "Invoice" : "Credit memo",
+            "Invoice",
             report.date,
             "",
             report.vendor.name,
@@ -114,12 +115,12 @@ const exportInvoices = async (req, res, next) => {
             `Program - Farmers Markets:Farmers Markets - All:${sale.region}:${sale.season}`,
             sale.marketGoods,
           ];
-          markets = [...markets, marketFeeRow];
+          theseInvoices = [...theseInvoices, marketFeeRow];
         }
 
         if (sale.producePlus) {
           producePlusRow = [
-            report.total >= 0 ? "Invoice" : "Credit memo",
+            "Invoice",
             report.date,
             "",
             report.vendor.name,
@@ -128,12 +129,12 @@ const exportInvoices = async (req, res, next) => {
             `Program - Farmers Markets:Farmers Markets - All:${sale.region}:${sale.season}`,
             sale.producePlus,
           ];
-          markets = [...markets, producePlusRow];
+          theseInvoices = [...theseInvoices, producePlusRow];
         }
 
         if (sale.sfmnp) {
           sfmnpRow = [
-            report.total >= 0 ? "Invoice" : "Credit memo",
+            "Invoice",
             report.date,
             "",
             report.vendor.name,
@@ -142,12 +143,12 @@ const exportInvoices = async (req, res, next) => {
             `Program - Farmers Markets:Farmers Markets - All:${sale.region}:${sale.season}`,
             sale.sfmnp,
           ];
-          markets = [...markets, sfmnpRow];
+          theseInvoices = [...theseInvoices, sfmnpRow];
         }
 
         if (sale.snapBonus) {
           snapBonusRow = [
-            report.total >= 0 ? "Invoice" : "Credit memo",
+            "Invoice",
             report.date,
             "",
             report.vendor.name,
@@ -156,12 +157,12 @@ const exportInvoices = async (req, res, next) => {
             `Program - Farmers Markets:Farmers Markets - All:${sale.region}:${sale.season}`,
             sale.snapBonus,
           ];
-          markets = [...markets, snapBonusRow];
+          theseInvoices = [...theseInvoices, snapBonusRow];
         }
 
         if (sale.wic) {
           wicRow = [
-            report.total >= 0 ? "Invoice" : "Credit memo",
+            "Invoice",
             report.date,
             "",
             report.vendor.name,
@@ -170,19 +171,188 @@ const exportInvoices = async (req, res, next) => {
             `Program - Farmers Markets:Farmers Markets - All:${sale.region}:${sale.season}`,
             sale.wic,
           ];
-          markets = [...markets, wicRow];
+          theseInvoices = [...theseInvoices, wicRow];
         }
       });
     }
 
-    return markets;
+    return theseInvoices;
+  });
+
+  let exportedCreditMemos = invoices.docs.map((report) => {
+    let theseCreditReports = [];
+
+    if (report.sales.length) {
+      report.sales.map((sale, index) => {
+        // TODO FIXME fix year to be dynamic
+        // TODO FIXME ensure day of week is correct if needed
+        let marketFeeRow = [
+          "Credit memo",
+          report.date,
+          "",
+          report.vendor.name,
+          "Market Fees:Market Fee",
+          `${sale.season} Farmers' Market Fee ${
+            report.marketMonth.charAt(0).toUpperCase() +
+            report.marketMonth.slice(1)
+          } 2024, Gross Sales ${Math.abs(report.total.toFixed(2))}`,
+          `Program - Farmers Markets:Farmers Markets - All:${sale.region}:${sale.season}`,
+          (sale.marketFee / 100) * sale.cashAndCredit,
+        ];
+
+        theseCreditReports = [...theseCreditReports, marketFeeRow];
+
+        let cardCouponRow,
+          ebtRow,
+          fmnpBonusRow,
+          gWorldRow,
+          marketGoodsRow,
+          producePlusRow,
+          sfmnpRow,
+          snapBonusRow,
+          wicRow;
+
+        if (sale.cardCoupon) {
+          cardCouponRow = [
+            "Credit memo",
+            report.date,
+            "",
+            report.vendor.name,
+            "Tokens:Card Coupon",
+            `FIXME Card Coupon information`,
+            `Program - Farmers Markets:Farmers Markets - All:${sale.region}:${sale.season}`,
+            sale.cardCoupon,
+          ];
+          theseCreditReports = [...theseCreditReports, cardCouponRow];
+        }
+
+        if (sale.ebt) {
+          ebtRow = [
+            "Credit memo",
+            report.date,
+            "",
+            report.vendor.name,
+            "Tokens:EBT",
+            `FIXME EBT information`,
+            `Program - Farmers Markets:Farmers Markets - All:${sale.region}:${sale.season}`,
+            sale.ebt,
+          ];
+          theseCreditReports = [...theseCreditReports, ebtRow];
+        }
+
+        if (sale.fmnpBonus) {
+          fmnpBonusRow = [
+            "Credit memo",
+            report.date,
+            "",
+            report.vendor.name,
+            "Tokens:FMNP Bonus",
+            `FIXME FMNP Bonus information`,
+            `Program - Farmers Markets:Farmers Markets - All:${sale.region}:${sale.season}`,
+            sale.fmnpBonus,
+          ];
+          theseCreditReports = [...theseCreditReports, fmnpBonusRow];
+        }
+
+        if (sale.gWorld) {
+          gWorldRow = [
+            "Credit memo",
+            report.date,
+            "",
+            report.vendor.name,
+            "Tokens:GWorld",
+            `FIXME GWorld information`,
+            `Program - Farmers Markets:Farmers Markets - All:${sale.region}:${sale.season}`,
+            sale.gWorld,
+          ];
+          theseCreditReports = [...theseCreditReports, gWorldRow];
+        }
+
+        if (sale.marketGoods) {
+          marketGoodsRow = [
+            "Credit memo",
+            report.date,
+            "",
+            report.vendor.name,
+            "Tokens:Market Goods",
+            `Promo/Gift/Market Goods Coupons/Tokens Redeemed (yellow)`,
+            `Program - Farmers Markets:Farmers Markets - All:${sale.region}:${sale.season}`,
+            sale.marketGoods,
+          ];
+          theseCreditReports = [...theseCreditReports, marketFeeRow];
+        }
+
+        if (sale.producePlus) {
+          producePlusRow = [
+            "Credit memo",
+            report.date,
+            "",
+            report.vendor.name,
+            "Tokens:Produce Plus",
+            `FIXME Produce Plus information`,
+            `Program - Farmers Markets:Farmers Markets - All:${sale.region}:${sale.season}`,
+            sale.producePlus,
+          ];
+          theseCreditReports = [...theseCreditReports, producePlusRow];
+        }
+
+        if (sale.sfmnp) {
+          sfmnpRow = [
+            "Credit memo",
+            report.date,
+            "",
+            report.vendor.name,
+            "Tokens:SFMNP",
+            `FIXME SFMNP information`,
+            `Program - Farmers Markets:Farmers Markets - All:${sale.region}:${sale.season}`,
+            sale.sfmnp,
+          ];
+          theseCreditReports = [...theseCreditReports, sfmnpRow];
+        }
+
+        if (sale.snapBonus) {
+          snapBonusRow = [
+            "Credit memo",
+            report.date,
+            "",
+            report.vendor.name,
+            "Tokens:Produce Plus",
+            `SNAP/EBT Matching Coupons/Tokens Redeemed (white)`,
+            `Program - Farmers Markets:Farmers Markets - All:${sale.region}:${sale.season}`,
+            sale.snapBonus,
+          ];
+          theseCreditReports = [...theseCreditReports, snapBonusRow];
+        }
+
+        if (sale.wic) {
+          wicRow = [
+            "Credit memo",
+            report.date,
+            "",
+            report.vendor.name,
+            "Tokens:WIC Bonus",
+            `WIC Matching Coupons/Tokens Redeemed (red)`,
+            `Program - Farmers Markets:Farmers Markets - All:${sale.region}:${sale.season}`,
+            sale.wic,
+          ];
+          theseCreditReports = [...theseCreditReports, wicRow];
+        }
+      });
+    }
+
+    return theseCreditReports;
   });
 
   // exported = exported.flat();
 
-  csvObject = {
+  invoiceCsv = {
     fields: ["Type", "Date", "Num", "Name", "Item", "Memo", "Class", "Amount"],
-    data: [exported],
+    data: exportedInvoices,
+  };
+
+  creditMemoCsv = {
+    fields: ["Type", "Date", "Num", "Name", "Item", "Memo", "Class", "Amount"],
+    data: exportedCreditMemos,
   };
 
   // let exportedInvoices = invoices.docs.filter(report => report.total >= 0)
@@ -233,9 +403,6 @@ const exportInvoices = async (req, res, next) => {
     depth: 0,
   });
 
-  console.log("csvObject::::::::::::::::");
-  console.log(csvObject);
-
   /**
    * when an invoice has been exported,
    * the sales reports that make up that invoice
@@ -260,11 +427,38 @@ const exportInvoices = async (req, res, next) => {
   const today = new Date();
   const todayString = today.toISOString();
 
-  const file = await Papa.unparse(csvObject);
-  res.attachment(`invoices-export-${todayString}.csv`);
-  res.type("txt");
+  const invoiceFile = await Papa.unparse(invoiceCsv);
+  const creditMemoFile = await Papa.unparse(creditMemoCsv);
 
-  return res.status(200).send(file);
+  // zip up the two files into an archive for ease of downloading
+  const invoiceReader = new TextReader(invoiceFile);
+  const creditMemoReader = new TextReader(creditMemoFile);
+
+  async function getZipFileBlob() {
+    const zipWriter = new ZipWriter(new BlobWriter("application/zip"));
+    await Promise.all([
+      zipWriter.add(`invoices-${todayString}.csv`, invoiceReader),
+      zipWriter.add(`credit-memos-${todayString}.csv`, creditMemoReader),
+    ]);
+    return zipWriter.close();
+  }
+
+  function downloadFile(blob) {
+    return URL.createObjectURL(blob);
+  }
+
+  const zip = await getZipFileBlob().then(downloadFile);
+
+  console.log("****************************");
+  console.log(zip);
+
+  console.log("****************************");
+
+  res.attachment(`invoices-credit-memos-export-${todayString}.zip`);
+  res.type("application/zip");
+
+  return res.status(200).send(zip);
+  // return res.status(200).send({invoices: invoiceCsv, creditMemos: creditMemoCsv})
 };
 
 export { exportInvoices };

@@ -139,6 +139,7 @@ const InvoicesList: React.FC<any> = (props) => {
 
   const getInvoices = useCallback(
     async (clear: boolean, nextPage: number, isNotExported: boolean) => {
+      setIsFetching(true);
       const queries = [];
       if (isNotExported) {
         queries.push({ exported: { equals: false } });
@@ -203,12 +204,14 @@ const InvoicesList: React.FC<any> = (props) => {
       } catch (error) {
         console.error(error);
       }
+      setIsFetching(false);
     },
-    [hasNextPage, invoices, page],
+    [hasNextPage, invoices, isFetching, page],
   );
 
   // trigger to generate invoices
   const generateInvoices = useCallback(async () => {
+    setIsFetching(true);
     const response = await fetch("/api/invoices/generate");
     const json = await response.json();
 
@@ -220,6 +223,7 @@ const InvoicesList: React.FC<any> = (props) => {
         setInvoices(json.invoices);
       }
     }
+    setIsFetching(false);
   }, [invoices]);
 
   // trigger to export invoices
@@ -227,7 +231,7 @@ const InvoicesList: React.FC<any> = (props) => {
     const response = await fetch("/api/invoices/export");
     const json = await response.json();
     console.log("response: ", json);
-    history.go(0);
+    // history.go(0);
   }, []);
 
   useEffect(() => {
@@ -251,9 +255,7 @@ const InvoicesList: React.FC<any> = (props) => {
     getInvoices(true, 1, isNotExported);
   }, [isNotExported, monthValue, vendorValue]);
 
-  useEffect(() => {
-    console.log(invoices);
-  }, [invoices]);
+  useEffect(() => {}, [isFetching]);
 
   useEffect(() => {
     const getVendors = async () => {
@@ -379,7 +381,7 @@ const InvoicesList: React.FC<any> = (props) => {
         </VStack>
         <TableContainer marginTop={8}>
           <Table
-            variant={invoices.length ? "striped" : ""}
+            variant={isFetching || invoices.length ? "striped" : ""}
             colorScheme={"green"}
             sx={{
               border: "1px solid",
@@ -510,7 +512,11 @@ const InvoicesList: React.FC<any> = (props) => {
               </Tr>
             </Thead>
             <Tbody>
-              {invoices.length ? (
+              {isFetching ? (
+                <Tr>
+                  <Td p={4}>Loading...</Td>
+                </Tr>
+              ) : invoices.length ? (
                 invoices.map((invoice, idx) => {
                   const {
                     reports,

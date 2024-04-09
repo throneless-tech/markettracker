@@ -23,6 +23,7 @@ const monthlyInvoices = async (req, res, next) => {
   ];
 
   // invoices are run for the previous month
+  // TODO allow FF to select a specific month to query
   const month = months[new Date().getMonth() - 2];
 
   let reports = await req.payload.find({
@@ -242,15 +243,15 @@ const monthlyInvoices = async (req, res, next) => {
         },
       });
       invoicesArray.push(invoice);
-      // for (const report of value) {
-      //   const updated = await req.payload.update({
-      //     collection: "sales-reports",
-      //     id: report.id,
-      //     data: {
-      //       invoiceDate: new Date().toISOString(),
-      //     },
-      //   });
-      // }
+      for (const report of value) {
+        const updated = await req.payload.update({
+          collection: "sales-reports",
+          id: report.id,
+          data: {
+            invoiceDate: new Date().toISOString(),
+          },
+        });
+      }
     }
 
     return res.status(201).send({
