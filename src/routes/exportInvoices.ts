@@ -4,6 +4,11 @@ import payload from "payload";
 const exportInvoices = async (req, res, next) => {
   const invoices = await req.payload.find({
     collection: "invoices",
+    where: {
+      approved: {
+        equals: true,
+      },
+    },
     limit: 9999,
   });
 
@@ -26,7 +31,7 @@ const exportInvoices = async (req, res, next) => {
             report.marketMonth.charAt(0).toUpperCase() +
             report.marketMonth.slice(1)
           } 2024, Gross Sales ${Math.abs(report.total.toFixed(2))}`,
-          `Program - Farmers Markets:Farmers Markets - All:${report.market.address.state}:${sale.season}`,
+          `Program - Farmers Markets:Farmers Markets - All:${sale.region}:${sale.season}`,
           (sale.marketFee / 100) * sale.cashAndCredit,
         ];
 
@@ -50,7 +55,7 @@ const exportInvoices = async (req, res, next) => {
             report.vendor.name,
             "Tokens:Card Coupon",
             `FIXME Card Coupon information`,
-            `Program - Farmers Markets:Farmers Markets - All:${report.market.address.state}:${sale.season}`,
+            `Program - Farmers Markets:Farmers Markets - All:${sale.region}:${sale.season}`,
             sale.cardCoupon,
           ];
           markets = [...markets, cardCouponRow];
@@ -64,7 +69,7 @@ const exportInvoices = async (req, res, next) => {
             report.vendor.name,
             "Tokens:EBT",
             `FIXME EBT information`,
-            `Program - Farmers Markets:Farmers Markets - All:${report.market.address.state}:${sale.season}`,
+            `Program - Farmers Markets:Farmers Markets - All:${sale.region}:${sale.season}`,
             sale.ebt,
           ];
           markets = [...markets, ebtRow];
@@ -78,7 +83,7 @@ const exportInvoices = async (req, res, next) => {
             report.vendor.name,
             "Tokens:FMNP Bonus",
             `FIXME FMNP Bonus information`,
-            `Program - Farmers Markets:Farmers Markets - All:${report.market.address.state}:${sale.season}`,
+            `Program - Farmers Markets:Farmers Markets - All:${sale.region}:${sale.season}`,
             sale.fmnpBonus,
           ];
           markets = [...markets, fmnpBonusRow];
@@ -92,7 +97,7 @@ const exportInvoices = async (req, res, next) => {
             report.vendor.name,
             "Tokens:GWorld",
             `FIXME GWorld information`,
-            `Program - Farmers Markets:Farmers Markets - All:${report.market.address.state}:${sale.season}`,
+            `Program - Farmers Markets:Farmers Markets - All:${sale.region}:${sale.season}`,
             sale.gWorld,
           ];
           markets = [...markets, gWorldRow];
@@ -106,7 +111,7 @@ const exportInvoices = async (req, res, next) => {
             report.vendor.name,
             "Tokens:Market Goods",
             `Promo/Gift/Market Goods Coupons/Tokens Redeemed (yellow)`,
-            `Program - Farmers Markets:Farmers Markets - All:${report.market.address.state}:${sale.season}`,
+            `Program - Farmers Markets:Farmers Markets - All:${sale.region}:${sale.season}`,
             sale.marketGoods,
           ];
           markets = [...markets, marketFeeRow];
@@ -120,7 +125,7 @@ const exportInvoices = async (req, res, next) => {
             report.vendor.name,
             "Tokens:Produce Plus",
             `FIXME Produce Plus information`,
-            `Program - Farmers Markets:Farmers Markets - All:${report.market.address.state}:${sale.season}`,
+            `Program - Farmers Markets:Farmers Markets - All:${sale.region}:${sale.season}`,
             sale.producePlus,
           ];
           markets = [...markets, producePlusRow];
@@ -134,7 +139,7 @@ const exportInvoices = async (req, res, next) => {
             report.vendor.name,
             "Tokens:SFMNP",
             `FIXME SFMNP information`,
-            `Program - Farmers Markets:Farmers Markets - All:${report.market.address.state}:${sale.season}`,
+            `Program - Farmers Markets:Farmers Markets - All:${sale.region}:${sale.season}`,
             sale.sfmnp,
           ];
           markets = [...markets, sfmnpRow];
@@ -148,7 +153,7 @@ const exportInvoices = async (req, res, next) => {
             report.vendor.name,
             "Tokens:Produce Plus",
             `SNAP/EBT Matching Coupons/Tokens Redeemed (white)`,
-            `Program - Farmers Markets:Farmers Markets - All:${report.market.address.state}:${sale.season}`,
+            `Program - Farmers Markets:Farmers Markets - All:${sale.region}:${sale.season}`,
             sale.snapBonus,
           ];
           markets = [...markets, snapBonusRow];
@@ -162,7 +167,7 @@ const exportInvoices = async (req, res, next) => {
             report.vendor.name,
             "Tokens:WIC Bonus",
             `WIC Matching Coupons/Tokens Redeemed (red)`,
-            `Program - Farmers Markets:Farmers Markets - All:${report.market.address.state}:${sale.season}`,
+            `Program - Farmers Markets:Farmers Markets - All:${sale.region}:${sale.season}`,
             sale.wic,
           ];
           markets = [...markets, wicRow];

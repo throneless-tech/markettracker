@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 import { useAuth } from "payload/components/utilities";
 import { useInView } from "react-intersection-observer";
@@ -107,7 +107,7 @@ const InvoicesList: React.FC<any> = (props) => {
   const role = user.role;
   const [invoices, setInvoices] = useState([]);
   // const { ref, inView } = useInView({});
-  const [isNotExported, setIsNotExported] = useState(false);
+  const [isNotExported, setIsNotExported] = useState(true);
 
   const history = useHistory();
 
@@ -137,89 +137,82 @@ const InvoicesList: React.FC<any> = (props) => {
     });
   };
 
-  const getInvoices = async (
-    clear: boolean,
-    nextPage: number,
-    isNotExported: boolean,
-  ) => {
-    console.log("is not exported: ", isNotExported);
-
-    const queries = [];
-    if (isNotExported) {
-      queries.push({ exported: { equals: false } });
-    }
-
-    if (role === "vendor") {
-      queries.push({ vendor: { equals: (user.vendor as Vendor).id } });
-    }
-
-    if (vendorValue.toLowerCase() !== "all") {
-      queries.push({ vendor: { equals: vendorValue } });
-    }
-
-    if (monthValue.toLowerCase() !== "all") {
-      queries.push({ marketMonth: { equals: monthValue.toLowerCase() } });
-    }
-
-    let stringifiedQuery: string;
-    if (queries.length === 1) {
-      stringifiedQuery = qs.stringify(
-        {
-          where: queries[0],
-          page: nextPage,
-        },
-        { addQueryPrefix: true },
-      );
-    } else if (queries.length > 1) {
-      stringifiedQuery = qs.stringify(
-        {
-          where: {
-            and: queries,
-          },
-          page: nextPage,
-        },
-        { addQueryPrefix: true },
-      );
-    } else {
-      stringifiedQuery = qs.stringify(
-        {
-          page,
-        },
-        { addQueryPrefix: true },
-      );
-    }
-
-    console.log("stringifiedquery: ", stringifiedQuery);
-    try {
-      const response = await fetch(
-        `/api/invoices${stringifiedQuery ? stringifiedQuery : ""}`,
-      );
-      const json = await response.json();
-      const newInvoices = json ? json.docs : [];
-
-      console.log(json.docs);
-
-      if (clear) {
-        setPage(json.page);
-        setInvoices(newInvoices);
-        setHasNextPage(json.hasNextPage);
-      } else {
-        setPage(json.page);
-        setHasNextPage(json.hasNextPage);
-        setInvoices(invoices.concat(newInvoices));
+  const getInvoices = useCallback(
+    async (clear: boolean, nextPage: number, isNotExported: boolean) => {
+      const queries = [];
+      if (isNotExported) {
+        queries.push({ exported: { equals: false } });
       }
-    } catch (error) {
-      console.error(error);
-    }
-  };
+
+      if (role === "vendor") {
+        queries.push({ vendor: { equals: (user.vendor as Vendor).id } });
+      }
+
+      if (vendorValue.toLowerCase() !== "all") {
+        queries.push({ vendor: { equals: vendorValue } });
+      }
+
+      if (monthValue.toLowerCase() !== "all") {
+        queries.push({ marketMonth: { equals: monthValue.toLowerCase() } });
+      }
+
+      let stringifiedQuery: string;
+      if (queries.length === 1) {
+        stringifiedQuery = qs.stringify(
+          {
+            where: queries[0],
+            page: nextPage,
+          },
+          { addQueryPrefix: true },
+        );
+      } else if (queries.length > 1) {
+        stringifiedQuery = qs.stringify(
+          {
+            where: {
+              and: queries,
+            },
+            page: nextPage,
+          },
+          { addQueryPrefix: true },
+        );
+      } else {
+        stringifiedQuery = qs.stringify(
+          {
+            page,
+          },
+          { addQueryPrefix: true },
+        );
+      }
+
+      try {
+        const response = await fetch(
+          `/api/invoices${stringifiedQuery ? stringifiedQuery : ""}`,
+        );
+        const json = await response.json();
+        const newInvoices = json ? json.docs : [];
+
+        if (clear) {
+          setPage(json.page);
+          setInvoices(newInvoices);
+          setHasNextPage(json.hasNextPage);
+        } else {
+          setPage(json.page);
+          setHasNextPage(json.hasNextPage);
+          setInvoices(invoices.concat(newInvoices));
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    },
+    [hasNextPage, invoices, page],
+  );
 
   // trigger to generate invoices
-  const generateInvoices = async () => {
+  const generateInvoices = useCallback(async () => {
     const response = await fetch("/api/invoices/generate");
     const json = await response.json();
-    console.log(json.invoices);
 
-    if (json.invoices.length) {
+    if (json.invoices && json.invoices.length) {
       if (invoices.length) {
         const newInvoices = [json.invoices, ...invoices];
         setInvoices(newInvoices);
@@ -227,20 +220,19 @@ const InvoicesList: React.FC<any> = (props) => {
         setInvoices(json.invoices);
       }
     }
-  };
+  }, [invoices]);
 
   // trigger to export invoices
-  const exportInvoices = async () => {
+  const exportInvoices = useCallback(async () => {
     const response = await fetch("/api/invoices/export");
     const json = await response.json();
     console.log("response: ", json);
     history.go(0);
-  };
+  }, []);
 
   useEffect(() => {
     const params = new URLSearchParams(location.search);
     const isNotExportedParam = params.get("where[exported][equals]");
-    console.log("checking exported param....");
 
     if (isNotExportedParam) {
       setIsNotExported(true);
@@ -251,15 +243,17 @@ const InvoicesList: React.FC<any> = (props) => {
     }
   }, [isNotExported, page]);
 
-  const loadMore = () => {
+  const loadMore = useCallback(() => {
     getInvoices(false, page + 1, isNotExported);
-  };
+  }, []);
 
   useEffect(() => {
-    console.log("checking month and vendor value");
-
     getInvoices(true, 1, isNotExported);
-  }, [monthValue, vendorValue]);
+  }, [isNotExported, monthValue, vendorValue]);
+
+  useEffect(() => {
+    console.log(invoices);
+  }, [invoices]);
 
   useEffect(() => {
     const getVendors = async () => {
@@ -385,7 +379,7 @@ const InvoicesList: React.FC<any> = (props) => {
         </VStack>
         <TableContainer marginTop={8}>
           <Table
-            variant="striped"
+            variant={invoices.length ? "striped" : ""}
             colorScheme={"green"}
             sx={{
               border: "1px solid",

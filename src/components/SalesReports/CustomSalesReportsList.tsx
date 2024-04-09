@@ -86,6 +86,8 @@ const CustomSalesReportsList: React.FC<any> = () => {
     });
   };
 
+  console.log(reports);
+
   const needsAction = (report) => {
     const {
       season,

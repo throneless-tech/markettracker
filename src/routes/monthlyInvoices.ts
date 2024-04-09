@@ -128,13 +128,14 @@ const monthlyInvoices = async (req, res, next) => {
       //   gWorld: 0,
       //   total: 0,
       // }
+
       const [sales, penaltiesAndCredits] = value.reduce(
         ([acc, penaltiesAndCredits], report) => {
           let existing = acc.get(report.season.name);
           if (!existing) {
             existing = {
               season: report.season.name,
-              region: report.season.address.state,
+              region: report.season.market.address.state,
               marketDays: 0,
               cashAndCredit: 0,
               marketFee: 0,
@@ -152,6 +153,7 @@ const monthlyInvoices = async (req, res, next) => {
           }
           // console.log("***existing", existing);
 
+          existing.region = report.season.market.address.state;
           existing.marketDays += 1;
           existing.cashAndCredit += report.cashAndCredit ?? 0;
           existing.marketFee = report.marketFee ?? 0;
@@ -177,7 +179,6 @@ const monthlyInvoices = async (req, res, next) => {
               (report.gWorld ?? 0));
 
           acc.set(report.season.name, existing);
-          acc.set(report.season.address.state, existing);
 
           if (report.penalty) {
             penaltiesAndCredits.push({
@@ -251,14 +252,16 @@ const monthlyInvoices = async (req, res, next) => {
       //   });
       // }
     }
+
+    return res.status(201).send({
+      invoices: invoicesArray,
+    });
   } catch (err) {
-    res.status(500).send({
+    console.log(err);
+
+    return res.status(500).send({
       error: err.message,
     });
   }
-
-  return res.status(201).send({
-    invoices: invoicesArray,
-  });
 };
 export { monthlyInvoices };
