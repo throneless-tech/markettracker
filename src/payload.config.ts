@@ -52,6 +52,8 @@ const emptyProfileNotificationsPath = path.resolve(
   "collections/Documents/hooks/emptyProfileNotifications",
 );
 
+const exportInvoicesPath = path.resolve(__dirname, "routes/exportInvoices");
+
 const mockModulePath = path.resolve(__dirname, "mocks/emptyObject.js");
 
 export default buildConfig({
@@ -94,6 +96,7 @@ export default buildConfig({
           ...config.resolve.alias,
           [createCollectionDocumentPath]: mockModulePath,
           [emptyProfileNotificationsPath]: mockModulePath,
+          [exportInvoicesPath]: mockModulePath,
         },
       },
     }),

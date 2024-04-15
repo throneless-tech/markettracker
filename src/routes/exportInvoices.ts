@@ -1,3 +1,4 @@
+import { writeFile } from "fs/promises";
 import Papa from "papaparse";
 import payload from "payload";
 import { BlobWriter, TextReader, ZipWriter } from "@zip.js/zip.js";
@@ -6,9 +7,18 @@ const exportInvoices = async (req, res, next) => {
   const invoices = await req.payload.find({
     collection: "invoices",
     where: {
-      approved: {
-        equals: true,
-      },
+      and: [
+        {
+          approved: {
+            equals: true,
+          },
+        },
+        {
+          exported: {
+            equals: true,
+          },
+        },
+      ],
     },
     limit: 9999,
   });
@@ -343,7 +353,8 @@ const exportInvoices = async (req, res, next) => {
     return theseCreditReports;
   });
 
-  // exported = exported.flat();
+  exportedInvoices = exportedInvoices.flat();
+  exportedCreditMemos = exportedCreditMemos.flat();
 
   invoiceCsv = {
     fields: ["Type", "Date", "Num", "Name", "Item", "Memo", "Class", "Amount"],
@@ -354,34 +365,6 @@ const exportInvoices = async (req, res, next) => {
     fields: ["Type", "Date", "Num", "Name", "Item", "Memo", "Class", "Amount"],
     data: exportedCreditMemos,
   };
-
-  // let exportedInvoices = invoices.docs.filter(report => report.total >= 0)
-  // exportedInvoices.map(report => {
-  //   return {
-  //     type: "Invoice",
-  //     date: report.date,
-  //     num: "",
-  //     name: report.vendor.name,
-  //     // item:
-  //     // memo:
-  //     // class:
-  //     amount: report.total,
-  //   };
-  // })
-
-  // let exportedCreditMemos = invoices.docs.filter(report => report.total < 0);
-  // exportedCreditMemos.map(report => {
-  //   return {
-  //     type: "Credit Memo",
-  //     date: report.date,
-  //     num: "",
-  //     name: report.vendor.name,
-  //     // item:
-  //     // memo:
-  //     // class:
-  //     amount: Math.abs(report.total),
-  //   };
-  // })
 
   // if date and exported == false, update to true
   const result = await payload.update({
@@ -443,8 +426,13 @@ const exportInvoices = async (req, res, next) => {
     return zipWriter.close();
   }
 
-  function downloadFile(blob) {
-    return URL.createObjectURL(blob);
+  async function downloadFile(blob) {
+    const file = await writeFile(
+      `invoices-credit-memos-export-${todayString}.zip`,
+      URL.createObjectURL(blob),
+      "binary",
+    );
+    return file;
   }
 
   const zip = await getZipFileBlob().then(downloadFile);
@@ -453,9 +441,6 @@ const exportInvoices = async (req, res, next) => {
   console.log(zip);
 
   console.log("****************************");
-
-  res.attachment(`invoices-credit-memos-export-${todayString}.zip`);
-  res.type("application/zip");
 
   return res.status(200).send(zip);
   // return res.status(200).send({invoices: invoiceCsv, creditMemos: creditMemoCsv})
