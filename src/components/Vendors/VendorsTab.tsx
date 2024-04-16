@@ -400,11 +400,7 @@ export const VendorsTab: React.FC<any> = () => {
               </Stack>
             </Flex>
           </Box>
-          <Box
-            sx={{
-              maxWidth: { base: 400, sm: 700, md: 900, lg: 1200, xl: 1660 },
-            }}
-          >
+          <Box width={{ base: "100%", md: "85%" }}>
             <Box
               sx={{
                 overflowX: "scroll",

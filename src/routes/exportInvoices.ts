@@ -7,16 +7,74 @@ const exportInvoices = async (req, res, next) => {
     limit: 9999,
   });
 
-  console.log("invoices??", invoices);
+  let exported = invoices.docs.map((report) => {
+    let markets = [];
 
-  const exported = invoices.docs.map((report) => {
-    return {
-      invoiceDate: report.date,
-      customerName: report.vendor.name,
-      item: report.total >= 0 ? "Market Fee" : "Token by Type",
-      amount: Math.abs(report.total),
-    };
+    if (report.sales.length) {
+      report.sales.map((sale, index) => {
+        let marketSales = {
+          invoiceDate: report.date,
+          customerName: report.vendor.name,
+          customerContact: report.vendor.email ? report.vendor.email : "",
+          customerStreet: report.vendor.address.street,
+          customerCity: report.vendor.address.city
+            ? report.vendor.address.city
+            : "",
+          customerState: report.vendor.address.state,
+          customerZipcode: report.vendor.address.zipcode,
+          invoiceOrCredit: report.total >= 0 ? "Invoice" : "Credit memo",
+          amount: Math.abs(report.total.toFixed(2)),
+          [`marketName-${index}`]: sale.season,
+          [`marketFee-${index}`]: (
+            (sale.marketFee / 100) *
+            sale.cashAndCredit
+          ).toFixed(2),
+          [`cardCoupon-${index}`]: sale.cardCoupon,
+          [`ebt-${index}`]: sale.ebt,
+          [`fmnpBonus-${index}`]: sale.fmnpBonus,
+          [`gWorld-${index}`]: sale.gWorld,
+          [`marketGoods-${index}`]: sale.marketGoods,
+          [`producePlus-${index}`]: sale.producePlus,
+          [`sfmnp-${index}`]: sale.sfmnp,
+          [`snapBonus-${index}`]: sale.snapBonus,
+          [`wic-${index}`]: sale.wic,
+        };
+        markets = [...markets, marketSales];
+      });
+    }
+
+    return markets;
   });
+
+  exported = exported.flat();
+
+  // let exportedInvoices = invoices.docs.filter(report => report.total >= 0)
+  // exportedInvoices.map(report => {
+  //   return {
+  //     type: "Invoice",
+  //     date: report.date,
+  //     num: "",
+  //     name: report.vendor.name,
+  //     // item:
+  //     // memo:
+  //     // class:
+  //     amount: report.total,
+  //   };
+  // })
+
+  // let exportedCreditMemos = invoices.docs.filter(report => report.total < 0);
+  // exportedCreditMemos.map(report => {
+  //   return {
+  //     type: "Credit Memo",
+  //     date: report.date,
+  //     num: "",
+  //     name: report.vendor.name,
+  //     // item:
+  //     // memo:
+  //     // class:
+  //     amount: Math.abs(report.total),
+  //   };
+  // })
 
   // if date and exported == false, update to true
   const result = await payload.update({
@@ -37,6 +95,9 @@ const exportInvoices = async (req, res, next) => {
     },
     depth: 0,
   });
+
+  console.log("result::::::::::::::::");
+  console.log(result);
 
   /**
    * when an invoice has been exported,
@@ -65,6 +126,7 @@ const exportInvoices = async (req, res, next) => {
   const file = await Papa.unparse(exported);
   res.attachment(`invoices-export-${todayString}.csv`);
   res.type("txt");
+
   return res.status(200).send(file);
 };
 

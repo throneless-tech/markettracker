@@ -226,8 +226,8 @@ export function DataTable<Data extends object>({
 
   return (
     <Container
-      maxW="container.2xl"
       className="p-2 block max-w-full overflow-x-scroll overflow-y-hidden"
+      maxW="container.lg"
     >
       <Box
         className="h-2"
@@ -257,7 +257,6 @@ export function DataTable<Data extends object>({
                       sx={{
                         color: "gray.900",
                         fontFamily: "Outfit, sans-serif",
-                        minWidth: 150,
                       }}
                     >
                       {flexRender(

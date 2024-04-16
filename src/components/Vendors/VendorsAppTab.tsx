@@ -401,11 +401,7 @@ export const VendorsAppTab: React.FC<any> = () => {
               </Stack>
             </Flex>
           </Box>
-          <Box
-            sx={{
-              maxWidth: { base: 400, sm: 700, md: 900, lg: 1200, xl: 1660 },
-            }}
-          >
+          <Box width={{ base: "100%", md: "85%" }}>
             <Box
               sx={{
                 overflowX: "scroll",
@@ -415,7 +411,11 @@ export const VendorsAppTab: React.FC<any> = () => {
               ref={ref}
             >
               {inView ? (
-                <DataTable columns={columns} fetchData={getNewVendors} />
+                <DataTable
+                  columns={columns}
+                  fetchData={getNewVendors}
+                  isVendorApps
+                />
               ) : null}
             </Box>
           </Box>
