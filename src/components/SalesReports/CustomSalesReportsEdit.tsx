@@ -308,8 +308,9 @@ const CustomSalesReportsEdit: React.FC<any> = () => {
     // SFMNP
     // only editable by vendor in VA or MD
     if (
-      role == "admin" ||
-      (role == "vendor" && (location === "VA" || location == "MD"))
+      // role == "admin" ||
+      role == "vendor" &&
+      (location === "VA" || location == "MD")
     ) {
       setSfmnpDisable(false);
     } else if (role == "vendor" && location == "DC") {
@@ -319,9 +320,10 @@ const CustomSalesReportsEdit: React.FC<any> = () => {
     // WIC
     // only editable by vendor in MD, but admin can edit
     if (
-      role == "admin" ||
-      role == "senior" ||
-      (role == "vendor" && location == "MD")
+      // role == "admin" ||
+      // role == "senior" ||
+      role == "vendor" &&
+      location == "MD"
     ) {
       setWicDisable(false);
     } else {
