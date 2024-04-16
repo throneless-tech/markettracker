@@ -229,8 +229,8 @@ const InvoicesList: React.FC<any> = (props) => {
   // trigger to export invoices
   const exportInvoices = useCallback(async () => {
     const response = await fetch("/api/invoices/export");
-    const json = await response.json();
-    console.log("response: ", json);
+    // const json = await response.json();
+    console.log("response: ", response);
     // history.go(0);
   }, []);
 

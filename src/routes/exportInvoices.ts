@@ -426,24 +426,20 @@ const exportInvoices = async (req, res, next) => {
     return zipWriter.close();
   }
 
-  async function downloadFile(blob) {
-    const file = await writeFile(
-      `invoices-credit-memos-export-${todayString}.zip`,
-      URL.createObjectURL(blob),
-      "binary",
-    );
-    return file;
-  }
+  const blob = await getZipFileBlob();
+  const arrayBuffer = await blob.arrayBuffer();
+  const buffer = Buffer.from(arrayBuffer);
 
-  const zip = await getZipFileBlob().then(downloadFile);
+  res.set(
+    "Content-Disposition",
+    `attachment; filename=invoices-credit-memos-export-${todayString}.zip`,
+  );
+  res.set("Content-Length", buffer.length);
+  // res.status(200);
+  // res.send(buffer);
+  // res.end(buffer, 'binary');
 
-  console.log("****************************");
-  console.log(zip);
-
-  console.log("****************************");
-
-  return res.status(200).send(zip);
-  // return res.status(200).send({invoices: invoiceCsv, creditMemos: creditMemoCsv})
+  return res.status(200).send(buffer);
 };
 
 export { exportInvoices };
