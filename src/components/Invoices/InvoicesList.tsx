@@ -114,6 +114,7 @@ const InvoicesList: React.FC<any> = (props) => {
   //   const [filtered, setFiltered] = useState([])
 
   const [monthValue, setMonthValue] = useState("All");
+  const [yearValue, setYearValue] = useState("");
   // const [market, setMarket] = useState("All");
   const [vendorValue, setVendorValue] = useState<string>("All");
   const [vendors, setVendors] = useState<(Vendor | string)[]>(["All"]);
@@ -129,6 +130,10 @@ const InvoicesList: React.FC<any> = (props) => {
 
   const handleVendorChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setVendorValue(event.target.value);
+  };
+
+  const handleYearChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    setYearValue(event.target.value);
   };
   const viewInvoice = (invoice) => {
     history.push({
@@ -340,6 +345,38 @@ const InvoicesList: React.FC<any> = (props) => {
                     </option>
                   );
                 })}
+              </Select>
+            </FormControl>
+          </Box>
+          <Box>
+            <FormControl sx={{ alignItems: "center", display: "flex" }}>
+              <FormLabel>
+                <Text
+                  fontFamily="Zilla Slab"
+                  lineHeight="1"
+                  fontWeight="semibold"
+                  fontSize="24px"
+                  letterSpacing="0.03em"
+                  textTransform="capitalize"
+                  color="gray.600"
+                  width={200}
+                >
+                  Market year
+                </Text>
+              </FormLabel>
+              <Select
+                value={yearValue}
+                onChange={handleYearChange}
+                placeholder="Select one"
+                sx={{ color: "gray.700" }}
+                width={360}
+              >
+                <option value={2023} key={"2023"}>
+                  2023
+                </option>
+                <option value={2024} key={"2024"}>
+                  2024
+                </option>
               </Select>
             </FormControl>
           </Box>

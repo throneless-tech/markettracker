@@ -232,6 +232,7 @@ const monthlyInvoices = async (req, res, next) => {
         data: {
           vendor: key,
           marketMonth: month,
+          year: new Date().getFullYear(),
           sales: Array.from(sales.values()),
           salesSubtotal,
           penaltiesAndCredits,

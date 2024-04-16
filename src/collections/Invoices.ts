@@ -71,6 +71,10 @@ export const Invoices: CollectionConfig = {
       }),
     },
     {
+      name: "year",
+      type: "number",
+    },
+    {
       name: "sales",
       type: "array",
       fields: [
