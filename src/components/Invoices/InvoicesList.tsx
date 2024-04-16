@@ -158,6 +158,10 @@ const InvoicesList: React.FC<any> = (props) => {
         queries.push({ vendor: { equals: vendorValue } });
       }
 
+      if (!!Number(yearValue)) {
+        queries.push({ year: { equals: Number(yearValue) } });
+      }
+
       if (monthValue.toLowerCase() !== "all") {
         queries.push({ marketMonth: { equals: monthValue.toLowerCase() } });
       }
@@ -252,9 +256,29 @@ const InvoicesList: React.FC<any> = (props) => {
     }
   }, [isNotExported, page]);
 
-  const loadMore = useCallback(() => {
+  // useEffect(() => {
+  //   const params = new URLSearchParams(location.search);
+  //   const isNotExportedParam = params.get("where[exported][equals]");
+
+  //   if (isNotExportedParam) {
+  //     setIsNotExported(true);
+  //     getInvoices(1, true);
+  //   } else {
+  //     setIsNotExported(false);
+  //     getInvoices(1, false);
+  //   }
+  //   setPage(1);
+  // }, [monthValue]);
+
+  // useEffect(() => {
+  //   if (inView) {
+  //     setPage((prevState) => prevState + 1);
+  //   }
+  // }, [inView, isNotExported]);
+
+  const loadMore = () => {
     getInvoices(false, page + 1, isNotExported);
-  }, []);
+  };
 
   useEffect(() => {
     getInvoices(true, 1, isNotExported);
