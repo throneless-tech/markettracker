@@ -17,10 +17,11 @@
     "test": "true",
     "prepare": "husky install"
   },
+  "engines": {
+    "node": ">=18.x"
+  },
   "lint-staged": {
-    "**/*.+(js|jsx|css|less|scss|ts|tsx|md)": [
-      "prettier --write"
-    ]
+    "**/*.+(js|jsx|css|less|scss|ts|tsx|md)": ["prettier --write"]
   },
   "dependencies": {
     "@chakra-ui/icons": "^2.1.0",
