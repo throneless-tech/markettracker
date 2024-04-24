@@ -5,7 +5,10 @@ import { SeasonsList } from "../../components/Seasons/SeasonsList";
 import { createCollectionSeason } from "./hooks/createCollectionSeasons";
 import { createSlugField } from "./hooks/createSlugField";
 import { afterReadMarket, beforeValidateMarket } from "./hooks/populateMarket";
-import { afterReadMarketReports } from "./hooks/populateMarketReports";
+import {
+  afterReadMarketReports,
+  beforeValidateMarketReports,
+} from "./hooks/populateMarketReports";
 import {
   afterReadProductGaps,
   beforeValidateProductGaps,
@@ -40,6 +43,7 @@ export const Seasons: CollectionConfig = {
     beforeValidate: [
       beforeValidateApplications,
       beforeValidateMarket,
+      // beforeValidateMarketReports,
       beforeValidateProductGaps,
     ],
   },

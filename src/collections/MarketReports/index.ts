@@ -2,7 +2,6 @@ import { CollectionConfig } from "payload/types";
 import { withFormContext } from "../../utils/withFormContext";
 import { MarketReportsEdit } from "../../components/MarketReports/MarketReportsEdit";
 import { MarketReportsList } from "../../components/MarketReports/MarketReportsList";
-import { afterReadSeason, beforeValidateSeason } from "./hooks/populateSeason";
 import { createSalesReports } from "./hooks/createSalesReports";
 
 export const MarketReports: CollectionConfig = {
@@ -20,8 +19,6 @@ export const MarketReports: CollectionConfig = {
     useAsTitle: "name",
   },
   hooks: {
-    afterRead: [afterReadSeason],
-    beforeValidate: [beforeValidateSeason],
     afterChange: [createSalesReports],
   },
   versions: {

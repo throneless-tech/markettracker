@@ -172,6 +172,7 @@ const InvoicesList: React.FC<any> = (props) => {
           {
             where: queries[0],
             page: nextPage,
+            sort: "-date",
           },
           { addQueryPrefix: true },
         );
@@ -182,6 +183,7 @@ const InvoicesList: React.FC<any> = (props) => {
               and: queries,
             },
             page: nextPage,
+            sort: "-date",
           },
           { addQueryPrefix: true },
         );
@@ -189,6 +191,7 @@ const InvoicesList: React.FC<any> = (props) => {
         stringifiedQuery = qs.stringify(
           {
             page,
+            sort: "-date",
           },
           { addQueryPrefix: true },
         );

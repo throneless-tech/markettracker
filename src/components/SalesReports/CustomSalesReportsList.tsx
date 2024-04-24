@@ -59,7 +59,8 @@ const months = [
 
 type SalesReportMonth = SalesReport & { month: string };
 
-const CustomSalesReportsList: React.FC<any> = () => {
+const CustomSalesReportsList: React.FC<any> = (props) => {
+  // const { data } = props;
   const { user } = useAuth();
   const role = user.role;
   const history = useHistory();
@@ -204,7 +205,7 @@ const CustomSalesReportsList: React.FC<any> = () => {
           depth: 1,
           page: pageToFetch,
           limit: 11,
-          // sort,
+          sort: "-day",
         },
         { addQueryPrefix: true },
       );
@@ -217,7 +218,7 @@ const CustomSalesReportsList: React.FC<any> = () => {
           depth: 1,
           page: pageToFetch,
           limit: 11,
-          // sort,
+          sort: "-day",
         },
         { addQueryPrefix: true },
       );
@@ -227,6 +228,7 @@ const CustomSalesReportsList: React.FC<any> = () => {
           page: pageToFetch,
           depth: 1,
           limit: 11,
+          sort: "-day",
         },
         { addQueryPrefix: true },
       );
@@ -320,7 +322,9 @@ const CustomSalesReportsList: React.FC<any> = () => {
               Sales Reports
             </Heading>
           </Box>
-          {user.role !== "vendor" ? (
+          {user.role === "admin" ||
+          user.role === "exec" ||
+          user.role === "senior" ? (
             <>
               <Spacer />
               <HStack flexGrow={1} spacing={4} justify={"flex-end"}>
@@ -566,7 +570,7 @@ const CustomSalesReportsList: React.FC<any> = () => {
               </Tr>
             </Thead>
             <Tbody>
-              {reports.length
+              {reports && reports.length
                 ? reports.map((report, index) => {
                     const {
                       id,
@@ -640,10 +644,14 @@ const CustomSalesReportsList: React.FC<any> = () => {
                               viewReport(report);
                             }}
                           >
-                            View report
+                            {needsActionBy !== ""
+                              ? `Edit report`
+                              : `View report`}
                           </Button>
                         </Td>
-                        {role !== "vendor" ? (
+                        {user.role === "admin" ||
+                        user.role === "exec" ||
+                        user.role === "senior" ? (
                           <Td>
                             <Button
                               onClick={(e) => {
@@ -674,166 +682,3 @@ const CustomSalesReportsList: React.FC<any> = () => {
 };
 
 export default CustomSalesReportsList;
-
-// const getSalesReportsOld = useCallback(
-//   async (nextPage: number) => {
-//     const queries = [];
-//     console.log("***vendorValue in getSalesReports: ", vendorValue);
-//     console.log("***marketValue in getSalesReports: ", marketValue);
-//     console.log("***monthValue in getSalesReports: ", monthValue);
-
-//     if (vendorValue.toLowerCase() !== "all") {
-//       queries.push({ vendor: { equals: vendorValue } });
-//     }
-
-//     if (monthValue.toLowerCase() !== "all") {
-//       queries.push({ month: { equals: monthValue } });
-//     }
-
-//     if (marketValue.toLowerCase() !== "all") {
-//       queries.push({ season: { equals: marketValue } });
-//     }
-
-//     if (isFetching) return;
-
-//     let stringifiedQuery: string;
-
-//     if (queries.length === 1) {
-//       stringifiedQuery = qs.stringify(
-//         {
-//           where: queries[0],
-//           depth: 1,
-//           limit: 10,
-//           page: nextPage,
-//           // sort,
-//         },
-//         { addQueryPrefix: true },
-//       );
-//     } else if (queries.length > 1) {
-//       stringifiedQuery = qs.stringify(
-//         {
-//           where: {
-//             and: queries,
-//           },
-//           depth: 1,
-//           limit: 10,
-//           page: nextPage,
-//           // sort,
-//         },
-//         { addQueryPrefix: true },
-//       );
-//     } else {
-//       stringifiedQuery = qs.stringify(
-//         {
-//           page: nextPage,
-//           depth: 1,
-//           limit: 10,
-//           // limit,
-//           // sort,
-//         },
-//         { addQueryPrefix: true },
-//       );
-//     }
-
-//     setIsFetching(true);
-
-//     try {
-//       const response = await fetch(
-//         `/api/sales-reports${stringifiedQuery ? stringifiedQuery : ""}`,
-//       );
-//       const json = await response.json();
-//       const newReports = json ? json.docs : [];
-//       console.log("json =>", json);
-
-//       if (nextPage === 1) {
-//         console.log("nextPage in the function,", nextPage);
-//         setPage(json.page);
-//         console.log("if nextPage is 1 reports???", reports);
-//         setReports(newReports);
-//         setHasNextPage(json.hasNextPage);
-//       } else {
-//         setPage(json.page);
-//         setHasNextPage(json.hasNextPage);
-//         setReports(reports.concat(newReports));
-//       }
-//     } catch (error) {
-//       console.error(error);
-//     } finally {
-//       setIsFetching(false);
-//     }
-//   },
-//   [page, vendorValue, marketValue, monthValue],
-// );
-
-// useEffect(() => {
-//   let filtered = reports;
-
-//   if (monthValue.toLowerCase() !== "all") {
-//     filtered = filtered.filter(
-//       (report: SalesReportMonth) => report.month == monthValue,
-//     );
-//   }
-
-//   if (marketValue.toLowerCase() !== "all") {
-//     filtered = filtered.filter((report: SalesReportMonth) =>
-//       typeof report.season === "object"
-//         ? report.season.id === marketValue
-//         : report.season === marketValue,
-//     );
-//   }
-
-//   if (vendorValue.toLowerCase() !== "all") {
-//     filtered = filtered.filter((report: SalesReportMonth) =>
-//       typeof report.vendor === "object"
-//         ? report.vendor.id === vendorValue
-//         : report.vendor === vendorValue,
-//     );
-//   }
-
-//   setFilteredReports(filtered);
-// }, [monthValue, marketValue, vendorValue, reports]);
-
-// useEffect(() => {
-//   // if (reports.length) {
-//   //   const dedupSeasons = new Map();
-//   //   reports.map((report) =>
-//   //     dedupSeasons.set(
-//   //       report.season && typeof report.season == "object"
-//   //         ? report.season.id
-//   //         : null,
-//   //       report.season,
-//   //     ),
-//   //   );
-//   //   const seasons = Array.from(dedupSeasons.values());
-
-//   //   const dedupVendors = new Map();
-//   //   reports.map((report) =>
-//   //     dedupVendors.set(
-//   //       report.vendor && typeof report.vendor == "object"
-//   //         ? report.vendor.id
-//   //         : null,
-//   //       report.vendor,
-//   //     ),
-//   //   );
-//   //   const vendorsList = Array.from(dedupVendors.values());
-
-//   //   setVendors([...vendors, ...vendorsList]);
-//   //   setMarkets([...markets, ...seasons]);
-//   // }
-// }, [reports]);
-
-// useEffect(() => {
-//   role == "vendor" ? getVendorSalesReports() : getSalesReports();
-// }, [page]);
-
-// useEffect(() => {
-//   if (hasNextPage) {
-//     getSalesReports(page);
-//   }
-// }, [page]);
-
-// useEffect(() => {
-//   if (inView) {
-//     setPage((prevState) => prevState + 1);
-//   }
-// }, [inView]);

@@ -26,23 +26,17 @@ import { FooterAdmin } from "../FooterAdmin";
 import { MarketReportRow } from "./MarketReportRow";
 import { SeasonsTabs } from "../Seasons/SeasonsTabs";
 
-export const MarketReportsList: React.FC<any> = () => {
+export const MarketReportsList: React.FC<any> = (props) => {
+  const docs = props.data.docs;
   const { user } = useAuth();
   const [markets, setMarkets] = useState([]);
+  const [marketReports, setMarketReports] = useState([]);
 
   // date options
   const options: any = {
     year: "numeric",
     month: "numeric",
     day: "numeric",
-  };
-
-  // do not show markets that have ended
-  const isMarketCurrent = (endDate) => {
-    let today = new Date();
-    const date = new Date(endDate);
-
-    return today < date ? true : false;
   };
 
   // figure out which market days are in the future
@@ -118,7 +112,9 @@ export const MarketReportsList: React.FC<any> = () => {
     }
   }, []);
 
-  useEffect(() => {}, [markets]);
+  useEffect(() => {
+    console.log(markets);
+  }, [markets]);
 
   return (
     <>
@@ -183,11 +179,17 @@ export const MarketReportsList: React.FC<any> = () => {
               </Thead>
               <Tbody>
                 {markets && markets.length ? (
-                  markets.map((market) => (
+                  markets.map((market, index) => (
                     <>
-                      {isMarketCurrent(market.marketDates.endDate) ? (
-                        <MarketReportRow market={market} />
-                      ) : null}
+                      {market.seasonDates && market.seasonDates.length
+                        ? market.seasonDates.map((date) => (
+                            <MarketReportRow
+                              key={`${market.id}-${date}`}
+                              date={date}
+                              market={market}
+                            />
+                          ))
+                        : null}
                     </>
                   ))
                 ) : (

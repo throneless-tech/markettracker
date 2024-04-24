@@ -4,6 +4,7 @@ import InvoicesEdit from "../components/Invoices/InvoicesEdit";
 import { monthlyInvoices } from "../routes/monthlyInvoices";
 import { exportInvoices } from "../routes/exportInvoices";
 import { withFormContext } from "../utils/withFormContext";
+import DefaultList from "payload/dist/admin/components/views/collections/List/Default";
 
 const FullMonths = [
   "january",
@@ -29,7 +30,11 @@ export const Invoices: CollectionConfig = {
         Edit: withFormContext(InvoicesEdit),
       },
     },
+    pagination: {
+      defaultLimit: 9999,
+    },
   },
+  defaultSort: "-date",
   endpoints: [
     { path: "/generate", method: "get", handler: monthlyInvoices },
     { path: "/export", method: "get", handler: exportInvoices },

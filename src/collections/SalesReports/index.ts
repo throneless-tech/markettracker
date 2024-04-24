@@ -9,13 +9,16 @@ import { needsAction } from "./needsAction";
 
 export const SalesReports: CollectionConfig = {
   slug: "sales-reports",
-  defaultSort: "day",
+  defaultSort: "-day",
   admin: {
     components: {
       views: {
         Edit: withFormContext(CustomSalesReportsEdit),
         List: CustomSalesReportsList,
       },
+    },
+    pagination: {
+      defaultLimit: 9999,
     },
     // useAsTitle: "name",
   },
