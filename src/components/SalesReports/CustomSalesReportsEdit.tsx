@@ -680,75 +680,81 @@ const CustomSalesReportsEdit: React.FC<any> = () => {
                     />
                   </GridItem>
                 </Grid>
-                <Heading as="h2" marginTop={8}>
-                  Penalties and credits
-                </Heading>
-                <Grid
-                  templateColumns={["repeat(1, 1fr)", "repeat(5, 1fr)"]}
-                  gap={4}
-                >
-                  <GridItem colSpan={2}>
-                    <NumberField
-                      path="penalty"
-                      label="Penalty amount"
-                      isDisabled={invoiced}
-                      min={0}
-                      admin={{
-                        description:
-                          "Enter a penalty for this vendor for this market day, if any",
-                        placeholder: "",
-                      }}
-                    />
-                  </GridItem>
-                  <GridItem colSpan={1}>
-                    <TextField
-                      isDisabled={invoiced}
-                      label="Type of penalty"
-                      path="penaltyType"
-                    />
-                  </GridItem>
-                  <GridItem colSpan={2}>
-                    <TextField
-                      isDisabled={invoiced}
-                      label="Describe the penalty"
-                      path="penaltyDescription"
-                    />
-                  </GridItem>
-                </Grid>
-                <Grid
-                  templateColumns={["repeat(1, 1fr)", "repeat(5, 1fr)"]}
-                  gap={4}
-                  marginTop={4}
-                >
-                  <GridItem colSpan={2}>
-                    <NumberField
-                      isDisabled={invoiced}
-                      path="credit"
-                      label="Credit amount"
-                      // isDisabled={role == "vendor" ? true : false}
-                      min={0}
-                      admin={{
-                        description:
-                          "Enter a credit for this vendor for this market day, if any",
-                        placeholder: "",
-                      }}
-                    />
-                  </GridItem>
-                  <GridItem colSpan={1}>
-                    <TextField
-                      isDisabled={invoiced}
-                      label="Type of credit"
-                      path="creditType"
-                    />
-                  </GridItem>
-                  <GridItem colSpan={2}>
-                    <TextField
-                      isDisabled={invoiced}
-                      label="Describe the credit"
-                      path="creditDescription"
-                    />
-                  </GridItem>
-                </Grid>
+                {user.role === "admin" ||
+                user.role === "exec" ||
+                user.role === "senior" ? (
+                  <>
+                    <Heading as="h2" marginTop={8}>
+                      Penalties and credits
+                    </Heading>
+                    <Grid
+                      templateColumns={["repeat(1, 1fr)", "repeat(5, 1fr)"]}
+                      gap={4}
+                    >
+                      <GridItem colSpan={2}>
+                        <NumberField
+                          path="penalty"
+                          label="Penalty amount"
+                          isDisabled={invoiced}
+                          min={0}
+                          admin={{
+                            description:
+                              "Enter a penalty for this vendor for this market day, if any",
+                            placeholder: "",
+                          }}
+                        />
+                      </GridItem>
+                      <GridItem colSpan={1}>
+                        <TextField
+                          isDisabled={invoiced}
+                          label="Type of penalty"
+                          path="penaltyType"
+                        />
+                      </GridItem>
+                      <GridItem colSpan={2}>
+                        <TextField
+                          isDisabled={invoiced}
+                          label="Describe the penalty"
+                          path="penaltyDescription"
+                        />
+                      </GridItem>
+                    </Grid>
+                    <Grid
+                      templateColumns={["repeat(1, 1fr)", "repeat(5, 1fr)"]}
+                      gap={4}
+                      marginTop={4}
+                    >
+                      <GridItem colSpan={2}>
+                        <NumberField
+                          isDisabled={invoiced}
+                          path="credit"
+                          label="Credit amount"
+                          // isDisabled={role == "vendor" ? true : false}
+                          min={0}
+                          admin={{
+                            description:
+                              "Enter a credit for this vendor for this market day, if any",
+                            placeholder: "",
+                          }}
+                        />
+                      </GridItem>
+                      <GridItem colSpan={1}>
+                        <TextField
+                          isDisabled={invoiced}
+                          label="Type of credit"
+                          path="creditType"
+                        />
+                      </GridItem>
+                      <GridItem colSpan={2}>
+                        <TextField
+                          isDisabled={invoiced}
+                          label="Describe the credit"
+                          path="creditDescription"
+                        />
+                      </GridItem>
+                    </Grid>
+                  </>
+                ) : null}
               </>
             ) : null}
             {/** if a report has been invoiced, it can no longer be edited */}

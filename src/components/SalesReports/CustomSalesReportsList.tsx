@@ -644,7 +644,7 @@ const CustomSalesReportsList: React.FC<any> = (props) => {
                               viewReport(report);
                             }}
                           >
-                            {needsActionBy !== ""
+                            {needsAction(report.id)
                               ? `Edit report`
                               : `View report`}
                           </Button>
