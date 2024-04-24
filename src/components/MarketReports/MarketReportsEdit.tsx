@@ -40,6 +40,7 @@ import { FooterAdmin } from "../FooterAdmin";
 import { GreenCheckIcon } from "../../assets/icons/green-check";
 import { GrayCheckIcon } from "../../assets/icons/gray-check";
 import { RedXIcon } from "../../assets/icons/red-x";
+import { TicketIcon } from "../../assets/icons/ticket";
 import YellowClockIcon from "../../assets/icons/yellow-clock";
 
 type AttendanceArray =
@@ -115,10 +116,14 @@ export const MarketReportsEdit: React.FC<any> = () => {
           vendor: vendorId,
           status:
             statusFound.status == "undetermined"
+              ? "presentCoupons"
+              : statusFound.status == "presentCoupons"
               ? "present"
               : statusFound.status == "present"
               ? "absent"
               : statusFound.status == "absent"
+              ? "lateCoupons"
+              : statusFound.status == "lateCoupons"
               ? "late"
               : "undetermined",
         },
@@ -141,8 +146,22 @@ export const MarketReportsEdit: React.FC<any> = () => {
         ? vendorAttendance.find((item) => item.vendor == vendorId)
         : [];
     if (vendAttend) {
-      if (vendAttend.status == "present") {
+      if (vendAttend.status == "presentCoupons") {
+        return (
+          <HStack>
+            <TicketIcon height="50px" width="50px" />
+            <GreenCheckIcon height="50px" width="50px" />
+          </HStack>
+        );
+      } else if (vendAttend.status == "present") {
         return <GreenCheckIcon height="50px" width="50px" />;
+      } else if (vendAttend.status == "lateCoupons") {
+        return (
+          <HStack>
+            <TicketIcon height="50px" width="50px" />
+            <YellowClockIcon height="50px" width="50px" />
+          </HStack>
+        );
       } else if (vendAttend.status == "late") {
         return <YellowClockIcon height="50px" width="50px" />;
       } else if (vendAttend.status == "absent") {
@@ -457,20 +476,30 @@ export const MarketReportsEdit: React.FC<any> = () => {
               <TabPanel>
                 <Stack direction={["column", "row"]} spacing={4}>
                   <HStack>
+                    <TicketIcon height="30px" width="30px" />
                     <GreenCheckIcon height={"30px"} width={"30px"} />
-                    <Text>1-click, present</Text>
+                    <Text>1-click, present with coupons</Text>
+                  </HStack>
+                  <HStack>
+                    <GreenCheckIcon height={"30px"} width={"30px"} />
+                    <Text>2-clicks, present, no coupons</Text>
                   </HStack>
                   <HStack>
                     <RedXIcon height={"30px"} width={"30px"} />
-                    <Text>2-clicks, absent, unexcused</Text>
+                    <Text>3-clicks, absent, unexcused</Text>
+                  </HStack>
+                  <HStack>
+                    <TicketIcon height="30px" width="30px" />
+                    <YellowClockIcon height={"30px"} width={"30px"} />
+                    <Text>4-clicks, late, unexcused, with coupons</Text>
                   </HStack>
                   <HStack>
                     <YellowClockIcon height={"30px"} width={"30px"} />
-                    <Text>3-clicks, late, unexcused</Text>
+                    <Text>5-clicks, late, unexcused, no coupons</Text>
                   </HStack>
                   <HStack>
                     <GrayCheckIcon height={"30px"} width={"30px"} />
-                    <Text>0- or 4-clicks, clear, no report</Text>
+                    <Text>0- or 6-clicks, clear, no report</Text>
                   </HStack>
                 </Stack>
                 <Flex
@@ -530,7 +559,7 @@ export const MarketReportsEdit: React.FC<any> = () => {
                                     ) : null}
                                   </Stack>
                                 </Stack>
-                                <Box width={"50px"}>
+                                <Box width={"100px"}>
                                   {getVendorStatus(vendor.id)}
                                 </Box>
                               </Stack>
@@ -699,20 +728,30 @@ export const MarketReportsEdit: React.FC<any> = () => {
               <TabPanel>
                 <Stack direction={["column", "row"]} spacing={4}>
                   <HStack>
+                    <TicketIcon height="30px" width="30px" />
                     <GreenCheckIcon height={"30px"} width={"30px"} />
-                    <Text>1-click, present</Text>
+                    <Text>1-click, present with coupons</Text>
+                  </HStack>
+                  <HStack>
+                    <GreenCheckIcon height={"30px"} width={"30px"} />
+                    <Text>2-clicks, present, no coupons</Text>
                   </HStack>
                   <HStack>
                     <RedXIcon height={"30px"} width={"30px"} />
-                    <Text>2-clicks, absent, unexcused</Text>
+                    <Text>3-clicks, absent, unexcused</Text>
+                  </HStack>
+                  <HStack>
+                    <TicketIcon height="30px" width="30px" />
+                    <YellowClockIcon height={"30px"} width={"30px"} />
+                    <Text>4-clicks, late, unexcused, with coupons</Text>
                   </HStack>
                   <HStack>
                     <YellowClockIcon height={"30px"} width={"30px"} />
-                    <Text>3-clicks, late, unexcused</Text>
+                    <Text>5-clicks, late, unexcused, no coupons</Text>
                   </HStack>
                   <HStack>
                     <GrayCheckIcon height={"30px"} width={"30px"} />
-                    <Text>0- or 4-clicks, clear, no report</Text>
+                    <Text>0- or 6-clicks, clear, no report</Text>
                   </HStack>
                 </Stack>
                 <Flex
@@ -772,7 +811,7 @@ export const MarketReportsEdit: React.FC<any> = () => {
                                     ) : null}
                                   </Stack>
                                 </Stack>
-                                <Box width={"50px"}>
+                                <Box width={"100px"}>
                                   {getVendorStatus(vendor.id)}
                                 </Box>
                               </Stack>

@@ -79,11 +79,19 @@ export const MarketReports: CollectionConfig = {
                   defaultValue: "undetermined",
                   options: [
                     {
-                      label: "Present",
+                      label: "Present with coupons",
+                      value: "presentCoupons",
+                    },
+                    {
+                      label: "Present, no coupons",
                       value: "present",
                     },
                     {
-                      label: "Late",
+                      label: "Late with coupons",
+                      value: "lateCoupons",
+                    },
+                    {
+                      label: "Late, no coupons",
                       value: "late",
                     },
                     {
