@@ -199,45 +199,13 @@ export const SeasonsTab: React.FC<any> = ({
             marginTop={8}
             wrap={{ base: "wrap", lg: "nowrap" }}
           >
-            {/*
-                    <Box p={4} marginRight={4} minW={230} marginBottom={{ base: 4, lg: 0 }} bg={'gray.100'}>
-                      <Heading as='h2' size='xl' sx={{ fontWeight: 600 }}>
-                        Filter
-                      </Heading>
-                      <Flex wrap={{ base: "nowrap", lg: "wrap" }}>
-                        <FormControl>
-                          <FormLabel fontSize="sm" sx={{ fontWeight: 900, textTransform: "uppercase" }}>Search for market</FormLabel>
-                          <InputGroup>
-                            <InputLeftElement pointerEvents='none'>
-                              <Search2Icon color='gray.300' />
-                            </InputLeftElement>
-                            <Input placeholder="Start typing market name" />
-                          </InputGroup>
-                        </FormControl>
-                        <FormControl marginTop={4}>
-                          <FormLabel fontSize="sm" sx={{ fontWeight: 900, textTransform: "uppercase" }}>Show</FormLabel>
-                          <RadioGroup colorScheme='green' onChange={setValue} value={value}>
-                            <Stack direction='column'>
-                              <Radio value='all'>All markets</Radio>
-                              <Radio value='open'>Only markets accepting applications</Radio>
-                            </Stack>
-                          </RadioGroup>
-                        </FormControl>
-                        <FormControl marginTop={4}>
-                          <FormLabel fontSize="sm" sx={{ fontWeight: 900, textTransform: "uppercase" }}>Market location</FormLabel>
-                          <CheckboxGroup colorScheme='green'>
-                            <Stack spacing={2} direction="column">
-                              <Checkbox value='DC'>DC</Checkbox>
-                              <Checkbox value='MD'>Maryland</Checkbox>
-                              <Checkbox value='VA'>Virginia</Checkbox>
-                            </Stack>
-                          </CheckboxGroup>
-                        </FormControl>
-                      </Flex>
-                    </Box>
-                      */}
             <Spacer />
-            <HStack align={"flex-start"} wrap={"wrap"} spacing={6}>
+            <HStack
+              align={"flex-start"}
+              justify={"center"}
+              wrap={"wrap"}
+              spacing={6}
+            >
               {seasons &&
                 seasons.length &&
                 seasons.map((season, idx) => (

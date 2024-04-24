@@ -557,7 +557,16 @@ export const ApplicationsList: React.FC<any> = () => {
   if (applications) {
     return (
       <>
-        {user.role == "vendor" ? null : <SeasonsTabs selected="applications" />}
+        {user.role == "vendor" ? (
+          <Box margin={8}>
+            <Heading as="h2" sx={{ textTransform: "uppercase" }}>
+              Apply to Markets
+            </Heading>
+            <Divider color="gray.900" borderBottomWidth={2} opacity={1} />
+          </Box>
+        ) : (
+          <SeasonsTabs selected="applications" />
+        )}
         {season && season.market && typeof season.market === "object" ? (
           <Container maxW="container.xl">
             <Flex>
@@ -597,28 +606,26 @@ export const ApplicationsList: React.FC<any> = () => {
         ) : null}
         {user.role == "vendor" ? (
           <Container sx={{ maxWidth: "unset" }}>
-            <HStack align={"flex-start"} marginY={8} spacing={8}>
-              {/* <Stack backgroundColor={'gray.50'} padding={4} width={230}>
-          <Text>
-            Filter
-          </Text>
-        </Stack> */}
-              <HStack align={"flex-start"} wrap={"wrap"} spacing={6}>
-                {seasons?.length &&
-                  seasons.reduce((acc, season) => {
-                    if (
-                      !applications?.length ||
-                      !applications.findIndex(
-                        (app) =>
-                          app.season !== season.id &&
-                          (app.season as Season).id !== season.id,
-                      )
-                    ) {
-                      acc.push(<SeasonCard key={season.id} season={season} />);
-                    }
-                    return acc;
-                  }, [])}
-              </HStack>
+            <HStack
+              align={"flex-start"}
+              justify={"center"}
+              wrap={"wrap"}
+              spacing={6}
+            >
+              {seasons?.length &&
+                seasons.reduce((acc, season) => {
+                  if (
+                    !applications?.length ||
+                    !applications.findIndex(
+                      (app) =>
+                        app.season !== season.id &&
+                        (app.season as Season).id !== season.id,
+                    )
+                  ) {
+                    acc.push(<SeasonCard key={season.id} season={season} />);
+                  }
+                  return acc;
+                }, [])}
             </HStack>
           </Container>
         ) : (

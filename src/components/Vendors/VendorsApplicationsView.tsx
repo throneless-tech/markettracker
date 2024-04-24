@@ -11,26 +11,23 @@ export const VendorsApplicationsView: React.FC<any> = ({
 }) => {
   return (
     <Container sx={{ maxWidth: "unset" }}>
-      <HStack align={"flex-start"} marginTop={8} spacing={8}>
+      <HStack align={"flex-start"} justify={"center"} marginTop={8} spacing={8}>
         {/* <Stack backgroundColor={'gray.50'} padding={4} width={230}>
             <Text>
               Filter
             </Text>
-          </Stack> */}
-        <HStack align={"flex-start"} wrap={"wrap"} spacing={6}>
-          {" "}
-          {applications.map((application) => (
-            <>
-              <SeasonCard
-                key={`va-${application.id}`}
-                season={application.season}
-                isApplication
-                status={application.status}
-                appId={application.id}
-              />
-            </>
-          ))}
-        </HStack>
+          </Stack> */}{" "}
+        {applications.map((application) => (
+          <>
+            <SeasonCard
+              key={`va-${application.id}`}
+              season={application.season}
+              isApplication
+              status={application.status}
+              appId={application.id}
+            />
+          </>
+        ))}
       </HStack>
     </Container>
   );
