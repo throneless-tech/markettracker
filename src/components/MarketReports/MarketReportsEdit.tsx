@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
-import { useDocumentInfo } from "payload/components/utilities";
+import { useAuth, useDocumentInfo } from "payload/components/utilities";
 import { useField, useForm } from "payload/components/forms";
 import qs from "qs";
 
@@ -52,6 +52,7 @@ type AttendanceArray =
   | null;
 
 export const MarketReportsEdit: React.FC<any> = () => {
+  const { user } = useAuth();
   const { id } = useDocumentInfo();
   const { getData, submit, addFieldRow, removeFieldRow } = useForm();
   const [vendors, setVendors] = useState([]);
@@ -303,6 +304,7 @@ export const MarketReportsEdit: React.FC<any> = () => {
     try {
       await submit({
         overrides: {
+          operator: user.id,
           _status: "published",
         },
         skipValidation: false,

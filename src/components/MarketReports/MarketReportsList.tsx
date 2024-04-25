@@ -32,47 +32,6 @@ export const MarketReportsList: React.FC<any> = (props) => {
   const [markets, setMarkets] = useState([]);
   const [marketReports, setMarketReports] = useState([]);
 
-  // date options
-  const options: any = {
-    year: "numeric",
-    month: "numeric",
-    day: "numeric",
-  };
-
-  // figure out which market days are in the future
-  const nextMarketDate = (startDate) => {
-    let today = new Date();
-    const date = new Date(startDate);
-    const dayNum = date.getDay();
-
-    // show correct date for market reports if it is before market begins
-    if (today < date) {
-      date.setDate(date.getDate() + ((dayNum + (7 - date.getDay())) % 7));
-      return date.toLocaleDateString("en-US", options);
-    } else {
-      today.setDate(today.getDate() + ((dayNum - (7 + today.getDay())) % 7));
-      return today.toLocaleDateString("en-US", options);
-    }
-  };
-
-  // find what day the market report is due and highlight if overdue
-  const getDueDate = (startDate) => {
-    let today = new Date();
-    const date = new Date(startDate);
-    const dayNum = date.getDay();
-
-    // show correct date for market reports if it is before market begins
-    if (today < date) {
-      date.setDate(date.getDate() + (((dayNum + (7 - date.getDay())) % 7) + 2));
-      return date.toLocaleDateString("en-US", options);
-    } else {
-      today.setDate(
-        today.getDate() + (((dayNum - (7 + today.getDay())) % 7) + 2),
-      );
-      return today.toLocaleDateString("en-US", options);
-    }
-  };
-
   // query and call for operator-specific markets
   const query = {
     operators: {

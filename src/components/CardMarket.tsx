@@ -1,9 +1,11 @@
 import React, { FC } from "react";
 import { Box, Flex, Heading, Spacer, Stack, Text } from "@chakra-ui/react";
 import { MarketIcon } from "../assets/icons/market";
+import qs from "qs";
 
 interface CardProps {
   applications?: Array<any>;
+  operator?: string;
 }
 
 const dayNames = [
@@ -16,8 +18,9 @@ const dayNames = [
   "Saturday",
 ];
 
-export const CardMarket: FC<CardProps> = ({ applications }) => {
+export const CardMarket: FC<CardProps> = ({ applications, operator }) => {
   const [approvedApps, setApprovedApps] = React.useState([]);
+  const [operatorMarkets, setOperatorMarkets] = React.useState([]);
 
   // figure out which market days are in the future
   const options: any = {
@@ -42,6 +45,33 @@ export const CardMarket: FC<CardProps> = ({ applications }) => {
     return today.toLocaleDateString("en-US", options);
   };
 
+  // populate upcoming markets for the operator user
+  React.useEffect(() => {
+    if (operator) {
+      const query = {
+        operators: {
+          contains: operator,
+        },
+      };
+
+      const getUpcomingMarkets = async () => {
+        const stringifiedQuery = qs.stringify(
+          {
+            where: query,
+          },
+          { addQueryPrefix: true },
+        );
+
+        const response = await fetch(`/api/seasons${stringifiedQuery}`);
+        const json = await response.json();
+        setOperatorMarkets(json.docs);
+      };
+
+      getUpcomingMarkets();
+    }
+  }, [operator]);
+
+  // populate upcoming markets for the vendor user
   React.useEffect(() => {
     if (applications && applications.length) {
       const selectApplications = applications.filter(
@@ -145,6 +175,68 @@ export const CardMarket: FC<CardProps> = ({ applications }) => {
                 >
                   {app.season.marketDates
                     ? nextMarketDate(app.season.marketDates.startDate)
+                    : null}
+                </Text>
+              </Flex>
+            ))}
+          </Stack>
+        </>
+      ) : operatorMarkets.length ? (
+        <>
+          <Text
+            lineHeight="1.6"
+            fontWeight="semibold"
+            fontSize={12}
+            textTransform="uppercase"
+            textDecoration="underline"
+            color="#000"
+            textAlign="end"
+          >
+            Market Date
+          </Text>
+          <Stack justify="flex-start" align="flex-start" spacing={4}>
+            {operatorMarkets.map((market) => (
+              <Flex key={market.id} paddingY={1} width="100%" direction="row">
+                <Text
+                  fontFamily="Outfit"
+                  lineHeight="1.14"
+                  fontWeight="semibold"
+                  fontSize={14}
+                  textTransform="capitalize"
+                  color="#000000"
+                >
+                  {market.name} [
+                  {market.marketDates
+                    ? marketDay(market.marketDates.startDate)
+                    : null}
+                  ]
+                </Text>
+                <Spacer
+                  sx={{ position: "relative" }}
+                  _before={{
+                    borderBottom: "1px dotted #000",
+                    borderWidth: "2px",
+                    bottom: 0,
+                    content: '" "',
+                    display: "block",
+                    left: "50%",
+                    position: "absolute",
+                    top: "50%",
+                    transform: "translate(-50%, -50%)",
+                    width: "90%",
+                  }}
+                />
+                <Text
+                  fontFamily="Outfit"
+                  lineHeight="1.14"
+                  fontWeight="regular"
+                  fontSize={14}
+                  textTransform="capitalize"
+                  color="#000000"
+                  textAlign="end"
+                >
+                  {market.marketDates
+                    ? nextMarketDate(market.marketDates.startDate)
                     : null}
                 </Text>
               </Flex>

@@ -41,9 +41,9 @@ export const MarketReports: CollectionConfig = {
     },
     {
       name: "operator",
-      label: "Operator",
+      label: "Market Operator",
       type: "relationship",
-      relationTo: "contacts",
+      relationTo: "users",
     },
     {
       name: "date",

@@ -1,9 +1,11 @@
 import React, { FC, useEffect, useState } from "react";
 import { Box, Flex, Heading, Spacer, Stack, Text } from "@chakra-ui/react";
+import { MarketIcon } from "../assets/icons/market";
 import { SalesIcon } from "../assets/icons/sales";
-import formatDate from "../utils/formatDate";
+import qs from "qs";
 
 interface CardProps {
+  operator?: string;
   reports?: Array<any>;
 }
 
@@ -17,8 +19,9 @@ const dayNames = [
   "Saturday",
 ];
 
-export const CardSalesSubmitted: FC<CardProps> = ({ reports }) => {
+export const CardSalesSubmitted: FC<CardProps> = ({ operator, reports }) => {
   const [submittedReports, setSubmittedReports] = useState([]);
+  const [operatorReports, setOperatorReports] = React.useState([]);
 
   const options: any = {
     year: "numeric",
@@ -37,6 +40,7 @@ export const CardSalesSubmitted: FC<CardProps> = ({ reports }) => {
     return date.toLocaleDateString("en-US", options);
   };
 
+  // populate sales reports if the vendor user has any
   useEffect(() => {
     if (reports && reports.length) {
       console.log(reports);
@@ -64,16 +68,29 @@ export const CardSalesSubmitted: FC<CardProps> = ({ reports }) => {
       width={[320, 420]}
     >
       <Stack paddingBottom="8px" maxWidth="100%" direction="row">
-        <SalesIcon
-          sx={{
-            fill: "none",
-            height: "24px",
-            width: "24px",
-            "& path": {
-              stroke: "teal.300 !important",
-            },
-          }}
-        />
+        {operator ? (
+          <MarketIcon
+            sx={{
+              fill: "none",
+              height: "24px",
+              width: "24px",
+              "& path": {
+                stroke: "teal.300 !important",
+              },
+            }}
+          />
+        ) : (
+          <SalesIcon
+            sx={{
+              fill: "none",
+              height: "24px",
+              width: "24px",
+              "& path": {
+                stroke: "teal.300 !important",
+              },
+            }}
+          />
+        )}
         <Heading
           as="h2"
           lineHeight="1"
@@ -84,7 +101,7 @@ export const CardSalesSubmitted: FC<CardProps> = ({ reports }) => {
           color="#534C46"
           flex="1"
         >
-          Sales Reports Submitted
+          {operator ? "Market " : "Sales "} Reports Submitted
         </Heading>
       </Stack>
       {submittedReports.length ? (
@@ -153,7 +170,10 @@ export const CardSalesSubmitted: FC<CardProps> = ({ reports }) => {
           ))}
         </>
       ) : (
-        <Text>No sales reports have been submitted for this week.</Text>
+        <Text>
+          No {operator ? "market " : "sales "} reports have been submitted for
+          this week.
+        </Text>
       )}
     </Box>
   );

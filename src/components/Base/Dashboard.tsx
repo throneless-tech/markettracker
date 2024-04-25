@@ -27,8 +27,6 @@ import { Vendor } from "payload/generated-types";
 export const Dashboard: React.FC<any> = () => {
   const { user } = useAuth();
 
-  console.log(user);
-
   return (
     <>
       <Container maxW="container.xl" marginBottom={4}>
@@ -94,22 +92,24 @@ export const Dashboard: React.FC<any> = () => {
             applications={
               user.vendor ? (user.vendor as Vendor).applications : null
             }
-            // operator={user.role === "operator"}
+            operator={user.role === "operator" ? user.id : null}
           />
           <CardSalesDue
             reports={user.vendor ? (user.vendor as Vendor).salesReports : null}
-            // operator={user.role === "operator"}
+            operator={user.role === "operator" ? user.id : null}
           />
           <CardSalesSubmitted
             reports={user.vendor ? (user.vendor as Vendor).salesReports : null}
-            // operator={user.role === "operator"}
+            operator={user.role === "operator" ? user.id : null}
           />
         </Wrap>
-        <Stack spacing={8}>
-          <Stats />
-          {/* <StyledTable /> */}
-          {/* <Graph /> */}
-        </Stack>
+        {user.role === "vendor" ? (
+          <Stack spacing={8}>
+            <Stats />
+            {/* <StyledTable /> */}
+            {/* <Graph /> */}
+          </Stack>
+        ) : null}
       </Container>
       <FooterAdmin />
     </>
