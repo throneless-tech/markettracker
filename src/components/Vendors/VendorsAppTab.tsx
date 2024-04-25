@@ -333,8 +333,8 @@ export const VendorsAppTab: React.FC<any> = () => {
         </Heading>
         <Divider color="gray.900" borderBottomWidth={2} opacity={1} />
       </Container>
-      <Container sx={{ maxWidth: "unset" }} marginTop={4}>
-        <Flex wrap={{ base: "wrap", lg: "nowrap" }}>
+      <Container maxW="container.xl" marginTop={4}>
+        <Flex justify={"center"} wrap={{ base: "wrap", lg: "nowrap" }}>
           <Box
             bg={"gray.100"}
             // flexGrow={1}
