@@ -21,7 +21,9 @@
     "node": ">=18.x"
   },
   "lint-staged": {
-    "**/*.+(js|jsx|css|less|scss|ts|tsx|md)": ["prettier --write"]
+    "**/*.+(js|jsx|css|less|scss|ts|tsx|md)": [
+      "prettier --write"
+    ]
   },
   "dependencies": {
     "@chakra-ui/icons": "^2.1.0",
@@ -34,6 +36,7 @@
     "@fontsource/zilla-slab": "^5.0.7",
     "@payloadcms/bundler-webpack": "^1.0.4",
     "@payloadcms/db-mongodb": "^1.0.4",
+    "@payloadcms/email-resend": "^3.0.0-beta.29",
     "@payloadcms/plugin-cloud": "^2.2.1",
     "@payloadcms/richtext-slate": "^1.0.7",
     "@tanstack/match-sorter-utils": "^8.8.4",
