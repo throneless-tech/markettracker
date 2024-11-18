@@ -3,6 +3,7 @@ import { mongooseAdapter } from "@payloadcms/db-mongodb";
 import { slateEditor } from "@payloadcms/richtext-slate";
 import { webpackBundler } from "@payloadcms/bundler-webpack";
 import { payloadCloud } from "@payloadcms/plugin-cloud";
+import { resendAdapter } from "@payloadcms/email-resend";
 import path from "path";
 
 // import Examples from './collections/Examples';
@@ -127,6 +128,11 @@ export default buildConfig({
   }),
   debug: true,
   editor: slateEditor({}),
+  email: resendAdapter({
+    defaultFromAddress: "no-reply@markettracker.payloadcms.app",
+    defaultFromName: "FreshFarm MarketTracker",
+    apiKey: process.env.RESEND_API_KEY || "",
+  }),
   globals: [Settings],
   plugins: [payloadCloud()],
   typescript: {
