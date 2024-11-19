@@ -509,26 +509,26 @@ export const Vendors: CollectionConfig = {
         afterChange: [createFieldContacts],
       },
     },
-    {
-      name: "licenses",
-      label: {
-        singular: "Upload Business License",
-        plural: "Upload Business Licenses",
-      },
-      type: "array",
-      //required: true, //temporarily disabled for data import
-      fields: [
-        {
-          name: "licenseDocument",
-          type: "upload",
-          relationTo: "documents",
-          //required: true,
-        },
-      ],
-      admin: {
-        description: "TODO",
-      },
-    },
+    // {
+    //   name: "licenses",
+    //   label: {
+    //     singular: "Upload Business License",
+    //     plural: "Upload Business Licenses",
+    //   },
+    //   type: "array",
+    //   //required: true, //temporarily disabled for data import
+    //   fields: [
+    //     {
+    //       name: "licenseDocument",
+    //       type: "upload",
+    //       relationTo: "documents",
+    //       //required: true,
+    //     },
+    //   ],
+    //   admin: {
+    //     description: "TODO",
+    //   },
+    // },
     {
       name: "insurance",
       label: "Upload Insurance Documentation",
