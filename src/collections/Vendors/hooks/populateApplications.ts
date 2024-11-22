@@ -22,7 +22,8 @@ export const afterReadApplications: CollectionAfterReadHook = async ({
       context: { skipTrigger: true },
     });
     return { ...doc, applications: applications.docs };
-  } else if (!doc.applications || !doc.applications.length) {
+    // } else if (!doc.applications || !doc.applications.length) {
+  } else {
     const applications = await payload.find({
       collection: "applications",
       depth: 1,
@@ -32,7 +33,7 @@ export const afterReadApplications: CollectionAfterReadHook = async ({
     // console.log("***applications:", applications.docs);
     return { ...doc, applications: applications.docs };
   }
-  return doc;
+  // return doc;
 };
 
 export const beforeValidateApplications: CollectionBeforeValidateHook = async ({
