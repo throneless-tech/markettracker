@@ -44,7 +44,7 @@ export const Users: CollectionConfig = {
         return "Market Tracker - Reset Your Password";
       },
     },
-    // useAPIKey: true,
+    useAPIKey: true,
   },
   access: {
     // Anyone can create a user
