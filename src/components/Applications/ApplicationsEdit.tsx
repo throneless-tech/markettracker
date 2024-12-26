@@ -184,13 +184,11 @@ export const ApplicationsEdit: React.FC<any> = (props) => {
 
   useEffect(() => {
     if (selectAllDates) {
-      console.log("here...");
+      const newDates = marketDates.map((date) => {
+        return { date: date.toISOString() };
+      });
 
-      setDates(
-        marketDates.map((date) => {
-          return { date: date.toISOString() };
-        }),
-      );
+      setDates(newDates);
     } else {
       setDates([]);
     }
@@ -308,10 +306,8 @@ export const ApplicationsEdit: React.FC<any> = (props) => {
     const thisSeason = seasons.find((s) => s.id == id);
     setSeason(thisSeason);
 
-    let firstDate = new Date(thisSeason.marketDates.startDate);
-    let lastDate = new Date(thisSeason.marketDates.endDate);
-    setStartDate(new Date(thisSeason.marketDates.startDate));
-    setEndDate(new Date(thisSeason.marketDates.endDate));
+    let firstDate = new Date(thisSeason.marketDates.startDate.slice(0, -5));
+    let lastDate = new Date(thisSeason.marketDates.endDate.slice(0, -5));
 
     let calLength = monthDiff(firstDate, lastDate);
     setNumMonths(calLength);
@@ -325,6 +321,9 @@ export const ApplicationsEdit: React.FC<any> = (props) => {
         objectDaysArray.push({ date: new Date(d) });
       }
     }
+
+    setStartDate(new Date(thisSeason.marketDates.startDate.slice(0, -5)));
+    setEndDate(new Date(thisSeason.marketDates.endDate.slice(0, -5)));
     setMarketDates(days);
   };
 
@@ -418,6 +417,7 @@ export const ApplicationsEdit: React.FC<any> = (props) => {
 
   useEffect(() => {}, [
     approvedVendors,
+    dates,
     endDate,
     market,
     marketDates,
@@ -1750,11 +1750,15 @@ export const ApplicationsEdit: React.FC<any> = (props) => {
             <Wrap>
               <DatePicker
                 inline
+                showPreviousMonths={startDate < new Date() ? true : false}
                 dayClassName={(date) => {
                   let dateFound = null;
                   if (season && dates) {
                     dateFound = dates.find((item) => {
-                      return item.date === date.toISOString();
+                      return (
+                        item.date.slice(0, -14) ===
+                        date.toISOString().slice(0, -14)
+                      );
                     });
                   }
 
